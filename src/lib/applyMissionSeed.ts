@@ -24,7 +24,8 @@ export function applyMissionSeed(entry: MissionExplorerEntry): UnpolProjectData 
     const promptOverride = entry.starterPestelsPrompts[key];
     if (promptOverride) {
       item.finding = `[VERIFY PROMPT] ${promptOverride.prompt}`;
-      item.why = `[VERIFY RATIONALE] ${promptOverride.whyPrompt}`;
+      item.why = `[ASSUMPTION TO TEST] ${promptOverride.whyPrompt}`;
+      item.sequencing = '[PROMPT] Define sequencing only after the contextual assumption and mandate authority are verified.';
       // Set to neutral baseline score
       item.rating = {
         impact: 3,
@@ -35,7 +36,8 @@ export function applyMissionSeed(entry: MissionExplorerEntry): UnpolProjectData 
     } else {
       item.finding = '';
       item.why = '';
-      item.rating = { impact: 3, urgency: 3, confidence: 3, relevance: 3 };
+      item.sequencing = '';
+      item.rating = { impact: 3, urgency: 3, confidence: 2, relevance: 3 };
     }
     item.evidenceNotes = [];
   });

@@ -7,6 +7,7 @@ import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { calculateQualityWarnings } from '../lib/warnings';
 import { FileDown, FileUp, Clipboard, Printer, Check, AlertTriangle, ShieldAlert, AlertCircle } from 'lucide-react';
+import { evaluateCbdCell } from '../lib/scoring';
 
 interface ExportBriefProps {
   data: UnpolProjectData;
@@ -24,6 +25,12 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const warnings = calculateQualityWarnings(data);
+  const prioritizedCells = Object.entries(data.customCells)
+    .map(([key, cell]) => {
+      const assessment = evaluateCbdCell(cell);
+      return { key, cell, assessment };
+    })
+    .sort((a, b) => b.assessment.score - a.assessment.score);
 
   // Gather all Evidence Notes
   const allEvidenceNotes: { title: string; type: string; confidence: number; date: string; comment: string; item: string }[] = [];
@@ -184,7 +191,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
           <div className="border-b-4 border-slate-900 pb-6 flex flex-col gap-4">
             <div>
               <h2 className="text-xl md:text-2xl font-black uppercase text-slate-900 tracking-tight">
-                UNPOL CBD Planning Brief
+                Unofficial UNPOL CBD Planning Brief
               </h2>
               <span className="text-xs font-bold text-blue-600 tracking-widest uppercase block mt-1">
                 Contextual Development & Advisory Framework
@@ -345,8 +352,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
               {Object.keys(data.customCells).length === 0 ? (
                 <p className="text-slate-400 italic">No specific intersections configured with customized actions in Step 5.</p>
               ) : (
-                Object.keys(data.customCells).map(key => {
-                  const cell = data.customCells[key];
+                prioritizedCells.map(({ key, cell, assessment }) => {
                   const [row, col] = key.split('|');
                   return (
                     <div key={key} className="p-4 border border-slate-200 rounded-xl flex flex-col gap-2.5 bg-white page-break-inside-avoid">
@@ -355,7 +361,8 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
                           {row} &times; {col}
                         </span>
                         <div className="flex gap-1">
-                          <Badge variant="blue">Priority Score: {cell.priorityScore}/5</Badge>
+                          <Badge variant="blue">Computed Priority: {assessment.score.toFixed(1)}/5</Badge>
+                          <Badge variant="slate">{assessment.classification}</Badge>
                           <Badge variant="slate">Confidence: {cell.confidence}/5</Badge>
                         </div>
                       </div>
@@ -368,9 +375,9 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
                       </div>
                       
                       <div className="grid grid-cols-3 gap-2 text-[9px] text-slate-400 font-extrabold uppercase tracking-wider pt-1 border-t border-slate-100/60">
-                        <span>Feasibility: {cell.feasibility || 3}/5</span>
-                        <span>Risk rating: {cell.riskRating || 3}/5</span>
-                        <span>Stakeholder support: {cell.stakeholderSupport || 3}/5</span>
+                        <span>Feasibility: {assessment.inputs.feasibility}/5</span>
+                        <span>Risk rating: {assessment.inputs.risk}/5</span>
+                        <span>Stakeholder support: {assessment.inputs.stakeholderSupport}/5</span>
                       </div>
 
                       <div className="text-[11px] text-slate-600 flex flex-col gap-1 border-t border-slate-100 pt-2">

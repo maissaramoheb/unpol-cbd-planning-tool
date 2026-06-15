@@ -7,6 +7,7 @@ import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { EvidenceLogEditor } from '../components/EvidenceLogEditor';
 import { Plus, Trash2, Link, Users } from 'lucide-react';
+import { evaluateCbdCell } from '../lib/scoring';
 
 interface MatrixDetailsProps {
   selectedMode: 'cell' | 'dimension' | 'keyArea';
@@ -145,6 +146,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
   // Cell Mode
   const [rowId, colId] = selectedKey.split('|');
   const activeCell = getCellData(rowId, colId);
+  const activeAssessment = evaluateCbdCell(activeCell);
 
   const handleCellChange = (field: keyof CbdCell, value: string | string[] | number | EvidenceNote[]) => {
     onUpdateCell(`${rowId}|${colId}`, {
@@ -186,8 +188,8 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
           </h3>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant={activeCell.priorityScore >= 4 ? 'rose' : 'slate'}>
-            Priority Score: {activeCell.priorityScore}/5
+          <Badge variant={activeAssessment.score >= 4 ? 'rose' : 'slate'}>
+            Computed Priority: {activeAssessment.score.toFixed(1)}/5
           </Badge>
         </div>
       </CardHeader>

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 import { EvidenceNote, EvidenceSourceType } from '../types';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { Slider } from '../ui/Slider';
-import { Trash2, Plus, Calendar, FileText, CheckCircle2 } from 'lucide-react';
+import { Trash2, Plus, Calendar, FileText } from 'lucide-react';
 
 interface EvidenceLogEditorProps {
   notes: EvidenceNote[];
@@ -28,6 +28,7 @@ export const EvidenceLogEditor: React.FC<EvidenceLogEditorProps> = ({
   notes,
   onChange
 }) => {
+  const fieldIdPrefix = useId();
   const [isAdding, setIsAdding] = useState(false);
   const [newNote, setNewNote] = useState({
     sourceTitle: '',
@@ -90,8 +91,9 @@ export const EvidenceLogEditor: React.FC<EvidenceLogEditorProps> = ({
         <div className="p-4 border border-blue-100 bg-blue-50/20 rounded-xl flex flex-col gap-3">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Source Title / Reference</label>
+              <label htmlFor={`${fieldIdPrefix}-source-title`} className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Source Title / Reference</label>
               <input
+                id={`${fieldIdPrefix}-source-title`}
                 type="text"
                 value={newNote.sourceTitle}
                 onChange={e => setNewNote({ ...newNote, sourceTitle: e.target.value })}
@@ -100,8 +102,9 @@ export const EvidenceLogEditor: React.FC<EvidenceLogEditorProps> = ({
               />
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Source Type</label>
+              <label htmlFor={`${fieldIdPrefix}-source-type`} className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Source Type</label>
               <select
+                id={`${fieldIdPrefix}-source-type`}
                 value={newNote.sourceType}
                 onChange={e => setNewNote({ ...newNote, sourceType: e.target.value as EvidenceSourceType })}
                 className="px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
@@ -115,8 +118,9 @@ export const EvidenceLogEditor: React.FC<EvidenceLogEditorProps> = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-center">
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Verification Date</label>
+              <label htmlFor={`${fieldIdPrefix}-verification-date`} className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Verification Date</label>
               <input
+                id={`${fieldIdPrefix}-verification-date`}
                 type="date"
                 value={newNote.dateVerified}
                 onChange={e => setNewNote({ ...newNote, dateVerified: e.target.value })}
@@ -135,8 +139,9 @@ export const EvidenceLogEditor: React.FC<EvidenceLogEditorProps> = ({
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Comment / Findings Extract</label>
+            <label htmlFor={`${fieldIdPrefix}-comment`} className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Comment / Findings Extract</label>
             <textarea
+              id={`${fieldIdPrefix}-comment`}
               value={newNote.comment}
               onChange={e => setNewNote({ ...newNote, comment: e.target.value })}
               placeholder="Detail the supporting findings, page numbers, or interview context..."
@@ -198,8 +203,8 @@ export const EvidenceLogEditor: React.FC<EvidenceLogEditorProps> = ({
                 <Calendar size={10} />
                 <span>Verified: {note.dateVerified}</span>
                 <span className="text-slate-300 border-l border-slate-300 h-2 px-0.5" />
-                <CheckCircle2 size={10} className="text-emerald-500" />
-                <span className="text-emerald-600">Verified Citation</span>
+                <FileText size={10} className="text-slate-500" />
+                <span className="text-slate-600">Evidence Note</span>
               </div>
             </div>
           ))}

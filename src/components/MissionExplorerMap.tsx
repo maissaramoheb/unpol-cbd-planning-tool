@@ -38,7 +38,10 @@ export const MissionExplorerMap: React.FC<MissionExplorerMapProps> = ({
         viewBox="0 0 1000 500"
         className="w-full h-auto relative z-10 drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
         xmlns="http://www.w3.org/2000/svg"
+        role="img"
+        aria-label="Non-authoritative mission starter profile map"
       >
+        <title>Non-authoritative mission starter profile map</title>
         {/* Gridded Background Lines */}
         <g stroke="#ffffff" strokeWidth="0.5" strokeOpacity="0.05" fill="none">
           {/* Equator */}
@@ -72,9 +75,21 @@ export const MissionExplorerMap: React.FC<MissionExplorerMapProps> = ({
             <g
               key={entry.id}
               className="cursor-pointer group"
+              role="button"
+              tabIndex={0}
+              aria-label={`Select ${entry.missionAcronym}, ${entry.country}`}
+              aria-pressed={isSelected}
               onClick={() => onSelectEntry(entry.id)}
               onMouseEnter={() => onHoverEntry(entry.id)}
               onMouseLeave={() => onHoverEntry(null)}
+              onFocus={() => onHoverEntry(entry.id)}
+              onBlur={() => onHoverEntry(null)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  onSelectEntry(entry.id);
+                }
+              }}
             >
               {/* Pulse Ring */}
               {(isSelected || isHovered) && (
@@ -137,9 +152,17 @@ export const MissionExplorerMap: React.FC<MissionExplorerMapProps> = ({
         })}
       </svg>
 
+      {geographicEntries.length === 0 && (
+        <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
+          <span className="rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-xs font-semibold text-slate-300">
+            No geographic starter profiles match the selected filters.
+          </span>
+        </div>
+      )}
+
       {/* SVG Map Scale & Info Tag */}
       <div className="flex justify-between items-center text-[9px] text-slate-500 font-mono relative z-20 border-t border-slate-800/80 pt-2 mt-2">
-        <span>PROJECTION: ORTHOGRAPHIC FLAT VECTOR GRID</span>
+        <span>DISPLAY: ABSTRACT FLAT ORIENTATION GRID</span>
         <span>SCALE: NON-AUTHORITATIVE TRAINING GRID</span>
       </div>
     </div>

@@ -1,8 +1,8 @@
-# UNPOL CBD Integrated Planning Tool
+# Unofficial UNPOL CBD Integrated Planning Prototype
 
-v0.2.0 — Analysis & Visualization Upgrade
+v0.3.0 — Visual Workspace & Mission Explorer Upgrade
 
-The **UNPOL Capacity-Building & Development (CBD) Integrated Planning Tool** is an educational and planning-support framework designed to help UNPOL Advisory Teams, Security Sector Reform (SSR) specialists, and peace operations planning officers diagnose host-state environmental challenges, map critical stakeholders, configure targeted police capacity-building actions, and construct strategic sequencing pathways.
+The **Unofficial UNPOL Capacity-Building & Development (CBD) Integrated Planning Prototype** is an educational and planning-support framework designed to help UNPOL Advisory Teams, Security Sector Reform (SSR) specialists, and peace operations planning officers diagnose host-state environmental challenges, map critical stakeholders, configure targeted police capacity-building actions, and construct strategic sequencing pathways.
 
 ---
 

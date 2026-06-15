@@ -1,4 +1,9 @@
-export type MissionExplorerStatus = 'active' | 'historical' | 'template' | 'custom';
+export type MissionExplorerStatus =
+  | 'active'
+  | 'historical'
+  | 'verification-required'
+  | 'template'
+  | 'custom';
 
 export interface MissionExplorerEntry {
   id: string;
@@ -12,7 +17,8 @@ export interface MissionExplorerEntry {
   status: MissionExplorerStatus;
   isFictionalScenario: boolean;
   isOfficial: boolean;
-  lastReviewed: string;
+  sourceDate: string | null;
+  profileLastReviewed: string | null;
   sourceNote: string;
   disclaimer: string;
   hostStatePoliceInstitution: string;

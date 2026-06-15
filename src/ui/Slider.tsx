@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 
 interface SliderProps {
   label: string;
@@ -23,21 +23,26 @@ export const Slider: React.FC<SliderProps> = ({
   maxLabel = 'High',
   helperText
 }) => {
+  const inputId = useId();
+  const helperId = `${inputId}-helper`;
+
   return (
     <div className="w-full flex flex-col gap-1.5">
       <div className="flex justify-between items-center">
-        <label className="text-sm font-semibold text-slate-700">{label}</label>
+        <label htmlFor={inputId} className="text-sm font-semibold text-slate-700">{label}</label>
         <span className="text-sm font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
           {value}
         </span>
       </div>
 
       <input
+        id={inputId}
         type="range"
         min={min}
         max={max}
         step={step}
         value={value}
+        aria-describedby={helperText ? helperId : undefined}
         onChange={(e) => onChange(Number(e.target.value))}
         className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
       />
@@ -47,7 +52,7 @@ export const Slider: React.FC<SliderProps> = ({
         <span>{max} ({maxLabel})</span>
       </div>
 
-      {helperText && <span className="text-xs text-slate-400 mt-0.5">{helperText}</span>}
+      {helperText && <span id={helperId} className="text-xs text-slate-400 mt-0.5">{helperText}</span>}
     </div>
   );
 };

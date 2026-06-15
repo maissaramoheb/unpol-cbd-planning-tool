@@ -15,16 +15,20 @@ import { applyMissionSeed } from '../lib/applyMissionSeed';
 import { UnpolProjectData, MissionProfile as ProfileType, PestelsItem, Stakeholder, CbdCell, PriorityBrief } from '../types';
 import { loadProjectData, saveProjectData, getInitialProjectData } from '../lib/storage';
 import { matrixRows, matrixColumns } from '../data/cbdMatrixData';
+import { AlertTriangle, X } from 'lucide-react';
 
 export const AppShell: React.FC = () => {
   const [data, setData] = useState<UnpolProjectData | null>(null);
+  const [storageRecoveryMessage, setStorageRecoveryMessage] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isExplorerOpen, setIsExplorerOpen] = useState<boolean>(false);
 
   // Initialize data on client mount
   useEffect(() => {
+    const loaded = loadProjectData();
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setData(loadProjectData());
+    setData(loaded.data);
+    setStorageRecoveryMessage(loaded.recoveryMessage);
   }, []);
 
   // Sync with localStorage on changes
@@ -39,7 +43,7 @@ export const AppShell: React.FC = () => {
       <div className="min-h-screen bg-slate-50 flex items-center justify-center font-sans">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
-          <span className="text-sm font-bold text-slate-600">Initializing UNPOL CBD Planning Framework...</span>
+          <span className="text-sm font-bold text-slate-600">Initializing unofficial UNPOL CBD planning prototype...</span>
         </div>
       </div>
     );
@@ -237,6 +241,26 @@ export const AppShell: React.FC = () => {
 
       {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6 print:py-0 print:px-0">
+        {storageRecoveryMessage && (
+          <div
+            role="alert"
+            className="print:hidden flex items-start justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-900"
+          >
+            <div className="flex items-start gap-2">
+              <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-600" />
+              <span>{storageRecoveryMessage}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setStorageRecoveryMessage(null)}
+              aria-label="Dismiss storage recovery message"
+              className="rounded p-1 text-amber-700 hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-400"
+            >
+              <X size={14} />
+            </button>
+          </div>
+        )}
+
         {/* Step Tabs Indicator (Hidden in print) */}
         <div className="print:hidden">
           <ModuleTabs currentStep={currentStep} onStepChange={setCurrentStep} />

@@ -4,7 +4,7 @@ import { calculateQualityWarnings } from '../lib/warnings';
 import { Card, CardBody, CardHeader } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
-import { calculatePriorityScore } from '../lib/scoring';
+import { evaluateCbdCell } from '../lib/scoring';
 import {
   Shield,
   Users,
@@ -48,7 +48,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
             </div>
             <div>
               <h2 className="text-xl font-black text-slate-900 tracking-tight uppercase">
-                UNPOL CBD Diagnostic Workstation
+                Unofficial UNPOL CBD Planning Workspace
               </h2>
               <p className="text-sm text-slate-500 mt-2 leading-relaxed max-w-lg mx-auto">
                 Welcome to the UNPOL Capacity-Building & Development planning workspace. Your assessment data is currently empty.
@@ -135,16 +135,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
   // --- COMPUTE TOP 5 CBD PRIORITIES ---
   const scoredCells = Object.keys(customCells).map(key => {
     const cell = customCells[key];
-    const score = calculatePriorityScore({
-      impact: cell.priorityScore,
-      urgency: cell.priorityScore,
-      feasibility: cell.feasibility || 3,
-      risk: cell.riskRating || 3,
-      stakeholderSupport: cell.stakeholderSupport || 3,
-      mandateRelevance: 4,
-      confidenceLevel: cell.confidence
-    });
-    return { key, cell, score };
+    const assessment = evaluateCbdCell(cell);
+    return { key, cell, score: assessment.score };
   }).sort((a, b) => b.score - a.score).slice(0, 5);
 
   // --- STAKEHOLDER COORDINATE PLOTS ---
@@ -649,6 +641,15 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
               <ChevronRight size={12} className="ml-1 text-slate-400" />
             </Button>
           ))}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onOpenExplorer}
+            className="text-xs font-bold text-blue-700 border-blue-200 hover:border-blue-300 hover:bg-blue-50/50"
+          >
+            Browse Mission Explorer
+            <Globe size={12} className="ml-1 text-blue-500" />
+          </Button>
         </CardBody>
       </Card>
     </div>

@@ -4,7 +4,7 @@ import { Card, CardBody, CardHeader } from '../ui/Card';
 import { TextArea } from '../ui/TextArea';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
-import { calculatePriorityScore, classifyPriority } from '../lib/scoring';
+import { evaluateCbdCell } from '../lib/scoring';
 import { Plus, Trash2, Layers } from 'lucide-react';
 
 interface PrioritySequencingProps {
@@ -57,18 +57,13 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
   // Compile matrix priority cells using the scoring library
   const scoredCells = Object.keys(customCells).map(key => {
     const cell = customCells[key];
-    const inputs = {
-      impact: cell.priorityScore,
-      urgency: cell.priorityScore,
-      feasibility: 4, // base assumption
-      risk: cell.confidence > 3 ? 2 : 4, // proxy risk based on confidence
-      stakeholderSupport: 4,
-      mandateRelevance: 4,
-      confidenceLevel: cell.confidence
+    const assessment = evaluateCbdCell(cell);
+    return {
+      key,
+      cell,
+      score: assessment.score,
+      classification: assessment.classification
     };
-    const score = calculatePriorityScore(inputs);
-    const classification = classifyPriority(inputs);
-    return { key, cell, score, classification };
   }).sort((a, b) => b.score - a.score);
 
   return (

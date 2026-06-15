@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useId } from 'react';
 import { MissionExplorerEntry } from '../types/explorer';
 import { Badge } from '../ui/Badge';
 
 interface MissionExplorerListProps {
   entries: MissionExplorerEntry[];
+  filterOptionsEntries: MissionExplorerEntry[];
   selectedEntryId: string | null;
   onSelectEntry: (id: string) => void;
   searchQuery: string;
@@ -20,6 +21,7 @@ interface MissionExplorerListProps {
 
 export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
   entries,
+  filterOptionsEntries,
   selectedEntryId,
   onSelectEntry,
   searchQuery,
@@ -33,29 +35,14 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
   showFictional,
   onShowFictionalChange
 }) => {
+  const fieldIdPrefix = useId();
+
   // Extract unique regions, types, and statuses for filter dropdowns
-  const regions = Array.from(new Set(entries.map((e) => e.region).filter(Boolean)));
-  const types = Array.from(new Set(entries.map((e) => e.missionType).filter(Boolean)));
-  const statuses = Array.from(new Set(entries.map((e) => e.status).filter(Boolean)));
+  const regions = Array.from(new Set(filterOptionsEntries.map((entry) => entry.region).filter(Boolean)));
+  const types = Array.from(new Set(filterOptionsEntries.map((entry) => entry.missionType).filter(Boolean)));
+  const statuses = Array.from(new Set(filterOptionsEntries.map((entry) => entry.status).filter(Boolean)));
 
-  // Filter entries
-  const filteredEntries = entries.filter((entry) => {
-    const matchesSearch =
-      entry.country.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      entry.missionName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      entry.missionAcronym.toLowerCase().includes(searchQuery.toLowerCase());
-
-    const matchesRegion = selectedRegion === 'all' || entry.region === selectedRegion;
-    const matchesType = selectedType === 'all' || entry.missionType === selectedType;
-    const matchesStatus = selectedStatus === 'all' || entry.status === selectedStatus;
-
-    const matchesFictional =
-      showFictional === 'all' ||
-      (showFictional === 'real' && !entry.isFictionalScenario) ||
-      (showFictional === 'fictional' && entry.isFictionalScenario);
-
-    return matchesSearch && matchesRegion && matchesType && matchesStatus && matchesFictional;
-  });
+  const formatStatus = (status: string) => status.replaceAll('-', ' ');
 
   return (
     <div className="flex flex-col gap-4 w-full h-full">
@@ -63,8 +50,9 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl">
         {/* Search */}
         <div className="flex flex-col gap-1">
-          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Search</label>
+          <label htmlFor={`${fieldIdPrefix}-search`} className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Search</label>
           <input
+            id={`${fieldIdPrefix}-search`}
             type="text"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
@@ -75,8 +63,9 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
 
         {/* Region */}
         <div className="flex flex-col gap-1">
-          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Region</label>
+          <label htmlFor={`${fieldIdPrefix}-region`} className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Region</label>
           <select
+            id={`${fieldIdPrefix}-region`}
             value={selectedRegion}
             onChange={(e) => onRegionChange(e.target.value)}
             className="w-full text-xs px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:border-blue-500"
@@ -92,8 +81,9 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
 
         {/* Mission Type */}
         <div className="flex flex-col gap-1">
-          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Mandate Type</label>
+          <label htmlFor={`${fieldIdPrefix}-type`} className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Mandate Type</label>
           <select
+            id={`${fieldIdPrefix}-type`}
             value={selectedType}
             onChange={(e) => onTypeChange(e.target.value)}
             className="w-full text-xs px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:border-blue-500"
@@ -109,8 +99,9 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
 
         {/* Status */}
         <div className="flex flex-col gap-1">
-          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Status</label>
+          <label htmlFor={`${fieldIdPrefix}-status`} className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Status</label>
           <select
+            id={`${fieldIdPrefix}-status`}
             value={selectedStatus}
             onChange={(e) => onStatusChange(e.target.value)}
             className="w-full text-xs px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:border-blue-500"
@@ -118,7 +109,7 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
             <option value="all">All Statuses</option>
             {statuses.map((s) => (
               <option key={s} value={s}>
-                {s}
+                {formatStatus(s)}
               </option>
             ))}
           </select>
@@ -126,14 +117,15 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
 
         {/* Classification */}
         <div className="flex flex-col gap-1">
-          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Context Classification</label>
+          <label htmlFor={`${fieldIdPrefix}-classification`} className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Context Classification</label>
           <select
+            id={`${fieldIdPrefix}-classification`}
             value={showFictional}
             onChange={(e) => onShowFictionalChange(e.target.value as 'all' | 'real' | 'fictional')}
             className="w-full text-xs px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:border-blue-500"
           >
             <option value="all">All Contexts</option>
-            <option value="real">Real UN Mission Seeds</option>
+            <option value="real">Unofficial mission starter profiles</option>
             <option value="fictional">Fictional Training Scenarios</option>
           </select>
         </div>
@@ -141,12 +133,12 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
 
       {/* Grid List representation */}
       <div className="flex-1 overflow-y-auto max-h-[380px] pr-1 flex flex-col gap-2.5">
-        {filteredEntries.length === 0 ? (
+        {entries.length === 0 ? (
           <div className="text-center py-8 text-xs text-slate-400 italic bg-white border border-slate-200 rounded-xl">
             No planning contexts match the selected filters.
           </div>
         ) : (
-          filteredEntries.map((entry) => {
+          entries.map((entry) => {
             const isSelected = selectedEntryId === entry.id;
             return (
               <button
@@ -174,7 +166,7 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
                       </Badge>
                     ) : (
                       <Badge variant="blue" className="text-[8px] uppercase tracking-wider py-0.5 leading-none">
-                        UN Seed Context
+                        Unofficial starter planning profile
                       </Badge>
                     )}
                   </div>

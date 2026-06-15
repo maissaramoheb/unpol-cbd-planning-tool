@@ -32,6 +32,8 @@ export const MissionExplorerPanel: React.FC<MissionExplorerPanelProps> = ({
     );
   }
 
+  const formattedStatus = entry.status.replaceAll('-', ' ');
+
   return (
     <Card className="h-full border-slate-200 bg-white shadow-sm flex flex-col justify-between">
       <CardHeader className="border-b border-slate-100 pb-3 flex flex-col gap-2">
@@ -49,7 +51,9 @@ export const MissionExplorerPanel: React.FC<MissionExplorerPanelProps> = ({
             </h4>
           </div>
           <button
+            type="button"
             onClick={onClearSelection}
+            aria-label={`Clear selected profile ${entry.missionAcronym}`}
             className="text-[10px] font-bold text-slate-400 hover:text-slate-600 uppercase tracking-wider leading-none"
           >
             Clear
@@ -63,11 +67,11 @@ export const MissionExplorerPanel: React.FC<MissionExplorerPanelProps> = ({
             </Badge>
           ) : (
             <Badge variant="blue" className="text-[8px] uppercase tracking-wider">
-              UN Diagnostic Template
+              Unofficial starter planning profile
             </Badge>
           )}
           <Badge variant="slate" className="text-[8px] uppercase tracking-wider bg-slate-100 text-slate-650 border-slate-200">
-            {entry.status}
+            {formattedStatus}
           </Badge>
         </div>
       </CardHeader>
@@ -141,11 +145,13 @@ export const MissionExplorerPanel: React.FC<MissionExplorerPanelProps> = ({
 
         {/* Source note */}
         {entry.sourceNote && (
-          <div className="border-t border-slate-100 pt-3 text-[10px] text-slate-400 flex items-start gap-1">
+          <div className="border-t border-slate-100 pt-3 text-[10px] text-slate-500 flex items-start gap-1">
             <AlertCircle size={10} className="shrink-0 mt-0.5" />
-            <span>
-              <strong>Reference Source:</strong> {entry.sourceNote} (Reviewed: {entry.lastReviewed})
-            </span>
+            <div className="flex flex-col gap-1">
+              <span><strong>Source note:</strong> {entry.sourceNote}</span>
+              <span><strong>Source date:</strong> {entry.sourceDate || 'Not provided'}</span>
+              <span><strong>Profile last reviewed:</strong> {entry.profileLastReviewed || 'Not independently verified'}</span>
+            </div>
           </div>
         )}
 
@@ -157,7 +163,7 @@ export const MissionExplorerPanel: React.FC<MissionExplorerPanelProps> = ({
             className="w-full py-2.5 font-bold flex items-center justify-center gap-1.5 text-xs rounded-xl shadow-md shadow-blue-500/10"
           >
             <RefreshCw size={14} className="animate-spin-slow" />
-            Use This Planning Context
+            Use This Starter Profile
           </Button>
         </div>
       </CardBody>

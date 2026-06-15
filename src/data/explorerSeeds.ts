@@ -1,7 +1,7 @@
 import { MissionExplorerEntry } from '../types/explorer';
 
 export const EXPLORER_DISCLAIMER =
-  'Mission Explorer entries are starter planning profiles for orientation and training support. They are not an official UN mission database. Users must verify mission status, mandate, and country facts against current official sources before professional use.';
+  'These are unofficial starter planning profiles, not an official UN mission database or verified country analysis. Mission status, mandate, source currency, institutions, and all context assumptions must be checked against current official UN and host-state sources before professional use.';
 
 export const defaultExplorerSeeds: MissionExplorerEntry[] = [
   // --- 1. UNISFA (Abyei) ---
@@ -14,19 +14,20 @@ export const defaultExplorerSeeds: MissionExplorerEntry[] = [
     missionName: 'UN Interim Security Force for Abyei',
     missionAcronym: 'UNISFA',
     missionType: 'UN Peacekeeping Mission',
-    status: 'active',
+    status: 'verification-required',
     isFictionalScenario: false,
     isOfficial: false,
-    lastReviewed: '2026-06-15',
-    sourceNote: 'UN Security Council Resolution 1990 (2011) and subsequent mandates.',
+    sourceDate: '2011',
+    profileLastReviewed: null,
+    sourceNote: 'Baseline reference: UN Security Council Resolution 1990 (2011). Current mission status and mandate were not independently re-verified for this starter profile and must be checked before use.',
     disclaimer: EXPLORER_DISCLAIMER,
     hostStatePoliceInstitution: 'Abyei Joint Police Service (proposed) / Local police elements',
-    planningPurpose: 'Establish standard operational procedures for community policing in a disputed territory.',
+    planningPurpose: '[PROMPT] Define whether community-policing procedures are an appropriate planning priority for the verified context.',
     planningThemes: ['Disputed Border Policing', 'Community Peace Liaison Panels', 'Inter-communal Disputes'],
     starterProfile: {
-      mandateEnvironment: 'UNISFA operates under a Chapter VII mandate to protect civilians and facilitate humanitarian aid in a highly sensitive disputed border zone.',
-      conflictContext: 'Unresolved final status of Abyei leads to political administration voids, dual legal claims, and seasonal tensions between Ngok Dinka and Misseriya communities.',
-      planningPurpose: 'Draft a capacity-building strategy to operationalize community safety committees and basic police ledgers in the absence of a unified host-state police force.'
+      mandateEnvironment: '[VERIFY] Review the current UNISFA mandate and confirm the authorized role of the police component.',
+      conflictContext: '[ASSUMPTION TO TEST] Assess current governance, legal, mobility, and inter-community conditions affecting policing in the area.',
+      planningPurpose: '[PROMPT] Determine whether community-safety mechanisms and basic police administration are appropriate capacity-building priorities.'
     },
     starterPestelsPrompts: {
       political: {
@@ -88,19 +89,20 @@ export const defaultExplorerSeeds: MissionExplorerEntry[] = [
     missionName: 'UN Mission in South Sudan',
     missionAcronym: 'UNMISS',
     missionType: 'UN Peacekeeping Mission',
-    status: 'active',
+    status: 'verification-required',
     isFictionalScenario: false,
     isOfficial: false,
-    lastReviewed: '2026-06-15',
-    sourceNote: 'UN Security Council Resolution 2729 (2024) and mandate lines.',
+    sourceDate: '2024',
+    profileLastReviewed: null,
+    sourceNote: 'Baseline reference: UN Security Council Resolution 2729 (2024). Current mission status and mandate were not independently re-verified for this starter profile and must be checked before use.',
     disclaimer: EXPLORER_DISCLAIMER,
     hostStatePoliceInstitution: 'South Sudan National Police Service (SSNPS)',
-    planningPurpose: 'Upgrade SSNPS accountability mechanisms and human rights compliance in detention centers.',
+    planningPurpose: '[PROMPT] Assess whether police accountability and detention oversight should be prioritized in the verified context.',
     planningThemes: ['National Police Reform', 'Human Rights Due Diligence', 'Detention Accountability'],
     starterProfile: {
-      mandateEnvironment: 'UNMISS mandate includes protecting civilians, creating conditions for aid delivery, and supporting the implementation of the peace agreement.',
-      conflictContext: 'Fragile transition framework, local inter-communal violence, and limited state authority outside major regional state capitals.',
-      planningPurpose: 'Design an advisory program to strengthen internal investigation departments and detention inspection logs inside SSNPS.'
+      mandateEnvironment: '[VERIFY] Review the current UNMISS mandate and confirm the authorized police advisory functions.',
+      conflictContext: '[ASSUMPTION TO TEST] Assess current transition, public-safety, access, and local-governance conditions affecting policing.',
+      planningPurpose: '[PROMPT] Determine whether internal investigation and detention-inspection workflows are appropriate advisory priorities.'
     },
     starterPestelsPrompts: {
       political: {
@@ -157,19 +159,20 @@ export const defaultExplorerSeeds: MissionExplorerEntry[] = [
     missionName: 'UN Organization Stabilization Mission in the DRC',
     missionAcronym: 'MONUSCO',
     missionType: 'UN Peacekeeping Mission',
-    status: 'active',
+    status: 'verification-required',
     isFictionalScenario: false,
     isOfficial: false,
-    lastReviewed: '2026-06-15',
-    sourceNote: 'UN Security Council Resolution 2717 (2023) and transition planning.',
+    sourceDate: '2023',
+    profileLastReviewed: null,
+    sourceNote: 'Baseline reference: UN Security Council Resolution 2717 (2023). Current mission status, transition arrangements, and mandate were not independently re-verified for this starter profile and must be checked before use.',
     disclaimer: EXPLORER_DISCLAIMER,
     hostStatePoliceInstitution: 'Police Nationale Congolaise (PNC)',
-    planningPurpose: 'Transition planning and capacity transfer of PNC public order units in East DRC.',
+    planningPurpose: '[PROMPT] Verify current transition arrangements and assess appropriate police capacity-transfer priorities.',
     planningThemes: ['Transition Strategy', 'Crowd Control Standards', 'Provincial Police Advisors'],
     starterProfile: {
-      mandateEnvironment: 'MONUSCO is progressively transitioning and handing over primary security responsibilities to national authorities under sensitive conditions.',
-      conflictContext: 'Presence of multiple armed groups (e.g. M23, ADF) in East DRC, high levels of displacement, and regional diplomatic tensions.',
-      planningPurpose: 'Draft a transitional capacity plan to build crowd-control compliance and accountability guidelines for PNC units.'
+      mandateEnvironment: '[VERIFY] Review the current MONUSCO mandate and transition arrangements before defining police-support activities.',
+      conflictContext: '[ASSUMPTION TO TEST] Assess current conflict, displacement, public-order, and regional factors affecting civilian policing.',
+      planningPurpose: '[PROMPT] Determine whether public-order compliance, accountability, or capacity-transfer support should be prioritized.'
     },
     starterPestelsPrompts: {
       political: {
@@ -216,70 +219,71 @@ export const defaultExplorerSeeds: MissionExplorerEntry[] = [
     suggestedStakeholderCategories: ['UN Mission', 'Host State', 'Civil Society', 'Regional Actors']
   },
 
-  // --- 4. UNSOM (Somalia) ---
+  // --- 4. UNTMIS (Somalia) ---
   {
-    id: 'seed-unsom',
+    id: 'seed-untmis',
     country: 'Somalia',
     iso3: 'SOM',
     region: 'East Africa / Mogadishu Sector',
     coordinates: { x: 59, y: 53 },
-    missionName: 'UN Assistance Mission in Somalia',
-    missionAcronym: 'UNSOM',
+    missionName: 'United Nations Transitional Assistance Mission in Somalia',
+    missionAcronym: 'UNTMIS',
     missionType: 'Special Political Mission',
     status: 'active',
     isFictionalScenario: false,
     isOfficial: false,
-    lastReviewed: '2026-06-15',
-    sourceNote: 'UN Security Council Resolution 2702 (2023) and subsequent transition mandates.',
+    sourceDate: '2024-10-30',
+    profileLastReviewed: '2026-06-15',
+    sourceNote: 'UN Security Council Resolution 2753 (2024) established UNTMIS, succeeding UNSOM from 1 November 2024. The UNTMIS official mission site was reviewed on 15 June 2026; users must still verify current status and mandate before professional use.',
     disclaimer: EXPLORER_DISCLAIMER,
-    hostStatePoliceInstitution: 'Somali Police Force (SPF) / Federal Member State Police',
-    planningPurpose: 'Coordinating federal police reform and state-level capacity building under the New Policing Model.',
-    planningThemes: ['Federalism & Policing', 'Special Political Mission Mandate', 'Institutional Security Reform'],
+    hostStatePoliceInstitution: 'Federal and member-state police counterparts (verify current names and mandates)',
+    planningPurpose: '[PROMPT] Define a verified police-governance or capacity-building planning objective within the current UNTMIS mandate.',
+    planningThemes: ['Federal-State Police Coordination', 'Transition Mandate Verification', 'Institutional Security Reform'],
     starterProfile: {
-      mandateEnvironment: 'UNSOM is a Special Political Mission advising the Federal Government on peacebuilding, state-building, and security sector reform coordination.',
-      conflictContext: 'Asymmetric threat environment (Al-Shabaab), federated transition architecture, and the transition of security responsibilities from ATMIS to Somali security forces.',
-      planningPurpose: 'Formulate an institutional advisory framework to support federal-state police integration under the New Policing Model.'
+      mandateEnvironment: '[VERIFY] Review the current UNTMIS mandate and confirm which police, rule-of-law, or security-sector advisory functions remain authorized.',
+      conflictContext: '[ASSUMPTION TO TEST] Identify current political, federal-state, public-safety, and security-transition factors affecting police reform.',
+      planningPurpose: '[PROMPT] Define a limited advisory objective only after verifying current counterpart priorities and mandate authority.'
     },
     starterPestelsPrompts: {
       political: {
-        prompt: 'Assess how federal-state relations and political negotiations affect the rollout of the New Policing Model.',
-        whyPrompt: 'Decentralized governance requires state-by-state consensus on police command structures.'
+        prompt: 'Assess how current federal-state relations and political negotiations affect police governance and coordination.',
+        whyPrompt: 'Test whether governance arrangements create unresolved questions about police authority or reform sequencing.'
       },
       economic: {
-        prompt: 'Identify donor coordination mechanisms (e.g. Joint Police Programme) and host-state sustainability plans.',
-        whyPrompt: 'Heavy reliance on external funding poses sustainability risks for federal Member State police forces.'
+        prompt: 'Identify current police-sector funding, donor-coordination, and host-state sustainability arrangements.',
+        whyPrompt: 'Test whether funding dependencies create sustainability risks for police capacity-building priorities.'
       },
       social: {
-        prompt: 'Verify clan dynamics and how local representation inside the police force affects community acceptance.',
-        whyPrompt: 'Clan-based representation can influence local police impartiality and trust.'
+        prompt: 'Assess how representation, identity dynamics, and local perceptions affect police impartiality and community acceptance.',
+        whyPrompt: 'Test whether representation or trust concerns require locally adapted engagement approaches.'
       },
       technological: {
-        prompt: 'Identify the state of biometric registry coordination between federal and state police databases.',
-        whyPrompt: 'Incompatible database systems prevent unified officer records and payroll verification.'
+        prompt: 'Assess interoperability and reliability of personnel, payroll, criminal-record, and operational information systems.',
+        whyPrompt: 'Test whether fragmented information systems affect accountability or coordination.'
       },
       environmental: {
-        prompt: 'Examine how arid conditions and drought displace populations and create local policing demands.',
-        whyPrompt: 'IDP camp growth creates urgent requirements for dedicated gender-responsive safety patrols.'
+        prompt: 'Assess whether climate, displacement, mobility, or infrastructure conditions create specific policing demands.',
+        whyPrompt: 'Test whether service-delivery models need adaptation for displaced or hard-to-reach populations.'
       },
       legal: {
-        prompt: 'Analyze legal jurisdictions between traditional justice (Xeer), Islamic law (Sharia), and federal penal codes.',
-        whyPrompt: 'Overlapping systems complicate uniform standard operating procedures for arrest and trial.'
+        prompt: 'Review how current formal, customary, and religious justice arrangements interact with police procedure.',
+        whyPrompt: 'Test whether overlapping legal authorities create uncertainty for arrest, referral, or due-process workflows.'
       },
       security: {
-        prompt: 'Assess asymmetric threats (IEDs, targeted attacks) on police stations and personnel.',
-        whyPrompt: 'Severe threat profiles force police to prioritize survival over community safety programs.'
+        prompt: 'Assess current threats to police personnel, facilities, operations, and community-facing services.',
+        whyPrompt: 'Test whether threat conditions constrain civilian policing and long-term capacity-building activities.'
       }
     },
     starterStakeholderPrompts: [
       {
         category: 'Host State',
         rolePrompt: 'Guides national security policies, federal police deployments, and donor cooperation.',
-        suggestedStakeholders: ['Somali Federal Ministry of Internal Security', 'SPF Commissioner']
+        suggestedStakeholders: ['Federal internal-security counterpart (verify)', 'National police leadership counterpart (verify)']
       },
       {
         category: 'Regional Actors',
         rolePrompt: 'Supports joint transition operations and tactical security handovers.',
-        suggestedStakeholders: ['ATMIS Police Component', 'Federal Member State Police Commissioners']
+        suggestedStakeholders: ['Current African Union mission police counterpart (verify)', 'Federal Member State Police Commissioners (verify)']
       }
     ],
     suggestedStakeholderCategories: ['UN Mission', 'Host State', 'Regional Actors', 'Civil Society']
@@ -295,19 +299,20 @@ export const defaultExplorerSeeds: MissionExplorerEntry[] = [
     missionName: 'UN Integrated Office in Haiti',
     missionAcronym: 'BINUH',
     missionType: 'Special Political Mission',
-    status: 'active',
+    status: 'verification-required',
     isFictionalScenario: false,
     isOfficial: false,
-    lastReviewed: '2026-06-15',
-    sourceNote: 'UN Security Council Resolution 2692 (2023) and security support framework.',
+    sourceDate: '2023',
+    profileLastReviewed: null,
+    sourceNote: 'Baseline reference: UN Security Council Resolution 2692 (2023). Current mission status, mandate, and security-support arrangements were not independently re-verified for this starter profile and must be checked before use.',
     disclaimer: EXPLORER_DISCLAIMER,
     hostStatePoliceInstitution: 'Police Nationale d’Haïti (PNH)',
-    planningPurpose: 'Advising PNH on anti-gang strategy, structural governance, and community security.',
+    planningPurpose: '[PROMPT] Verify current mandate authority and define an appropriate police governance or community-safety planning objective.',
     planningThemes: ['Anti-Gang Operational Advice', 'Urban Security Stabilization', 'Internal Police Oversight'],
     starterProfile: {
-      mandateEnvironment: 'BINUH acts as a Special Political Mission advising the government on political stability, governance, and national police capacity reform.',
-      conflictContext: 'Severe urban gang violence controlling major sectors of Port-au-Prince, institutional instability, and parallel deployment of multinational security support.',
-      planningPurpose: 'Formulate structural capacity guidelines to improve PNH internal oversight, vetting, and anti-corruption compliance.'
+      mandateEnvironment: '[VERIFY] Review the current BINUH mandate and confirm authorized police and governance advisory functions.',
+      conflictContext: '[ASSUMPTION TO TEST] Assess current governance, public-safety, institutional, and international-support conditions affecting policing.',
+      planningPurpose: '[PROMPT] Determine whether oversight, vetting, integrity, or community-safety support should be prioritized.'
     },
     starterPestelsPrompts: {
       political: {
@@ -367,8 +372,9 @@ export const defaultExplorerSeeds: MissionExplorerEntry[] = [
     status: 'template',
     isFictionalScenario: true,
     isOfficial: false,
-    lastReviewed: '2026-06-15',
-    sourceNote: 'UNPOL SSR Standard Training Curriculum.',
+    sourceDate: null,
+    profileLastReviewed: null,
+    sourceNote: 'Illustrative fictional training scenario. No official publication or current country source is claimed.',
     disclaimer: EXPLORER_DISCLAIMER,
     hostStatePoliceInstitution: 'Solaria Federal Police (SFP)',
     planningPurpose: 'Designing demobilization integration, vetting frameworks, and new regional police commands.',
@@ -436,8 +442,9 @@ export const defaultExplorerSeeds: MissionExplorerEntry[] = [
     status: 'template',
     isFictionalScenario: true,
     isOfficial: false,
-    lastReviewed: '2026-06-15',
-    sourceNote: 'UNPOL Community-Oriented Policing Advisory Standards.',
+    sourceDate: null,
+    profileLastReviewed: null,
+    sourceNote: 'Illustrative fictional training scenario. No official publication or current country source is claimed.',
     disclaimer: EXPLORER_DISCLAIMER,
     hostStatePoliceInstitution: 'Altera Provincial Police Force (APPF)',
     planningPurpose: 'Formulating localized community safety panels to address systemic corruption and low public trust.',
@@ -505,8 +512,9 @@ export const defaultExplorerSeeds: MissionExplorerEntry[] = [
     status: 'template',
     isFictionalScenario: true,
     isOfficial: false,
-    lastReviewed: '2026-06-15',
-    sourceNote: 'UN Rules for the Treatment of Prisoners (Nelson Mandela Rules) Advisory Guide.',
+    sourceDate: null,
+    profileLastReviewed: null,
+    sourceNote: 'Illustrative fictional training scenario informed by general detention-oversight concepts. No official publication is claimed.',
     disclaimer: EXPLORER_DISCLAIMER,
     hostStatePoliceInstitution: 'Maris Gendarmerie and Prison Service',
     planningPurpose: 'Overhauling police custody registries, detention center oversight, and magistrate review procedures.',
@@ -574,8 +582,9 @@ export const defaultExplorerSeeds: MissionExplorerEntry[] = [
     status: 'template',
     isFictionalScenario: true,
     isOfficial: false,
-    lastReviewed: '2026-06-15',
-    sourceNote: 'UNPOL Gender-Responsive Policing Guidelines.',
+    sourceDate: null,
+    profileLastReviewed: null,
+    sourceNote: 'Illustrative fictional training scenario. No official publication or current country source is claimed.',
     disclaimer: EXPLORER_DISCLAIMER,
     hostStatePoliceInstitution: 'Vespera National Police (VNP) / Gender Protection Units',
     planningPurpose: 'Operationalizing Gender Desk units, SGBV referral chains, and improving female recruitment.',
@@ -643,8 +652,9 @@ export const defaultExplorerSeeds: MissionExplorerEntry[] = [
     status: 'template',
     isFictionalScenario: true,
     isOfficial: false,
-    lastReviewed: '2026-06-15',
-    sourceNote: 'UNPOL Conflict Prevention and Early Warning System Standards.',
+    sourceDate: null,
+    profileLastReviewed: null,
+    sourceNote: 'Illustrative fictional training scenario. No official publication or current country source is claimed.',
     disclaimer: EXPLORER_DISCLAIMER,
     hostStatePoliceInstitution: 'Meridia State Constabulary',
     planningPurpose: 'Establishing early-warning liaison channels, community monitoring networks, and crisis response SOPs.',

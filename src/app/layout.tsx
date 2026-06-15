@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "UNPOL CBD Integrated Planning Tool",
-  description: "Educational & planning-support framework for UNPOL Capacity-Building and Development (CBD).",
+  title: "Unofficial UNPOL CBD Planning Prototype",
+  description: "Unofficial educational planning-support prototype for UNPOL Capacity-Building and Development (CBD).",
 };
 
 export default function RootLayout({
@@ -31,4 +31,3 @@ export default function RootLayout({
     </html>
   );
 }
-

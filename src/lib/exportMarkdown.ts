@@ -1,5 +1,5 @@
 import { UnpolProjectData } from '../types';
-import { calculatePriorityScore } from './scoring';
+import { evaluateCbdCell } from './scoring';
 import { calculateQualityWarnings } from './warnings';
 
 export function generateMarkdownBrief(data: UnpolProjectData): string {
@@ -33,41 +33,16 @@ export function generateMarkdownBrief(data: UnpolProjectData): string {
   };
 
   // 3. Compute CBD Heatmap tags & priorities
-  const getHeatmapTagsList = (rowId: string, colId: string) => {
-    const key = `${rowId}|${colId}`;
-    const cell = customCells[key];
-    if (!cell) return [];
-
-    const tags: string[] = [];
-    const feasibility = cell.feasibility !== undefined ? cell.feasibility : 3;
-    const support = cell.stakeholderSupport !== undefined ? cell.stakeholderSupport : 3;
-
-    if (cell.priorityScore >= 4) {
-      if (support <= 2) tags.push('Sensitive');
-      else if (feasibility >= 4) tags.push('Quick Win');
-      else if (feasibility <= 2) tags.push('Long-term');
-      else tags.push('Priority');
-    }
-    if (cell.confidence <= 2) tags.push('Low Confidence');
-
-    return tags;
-  };
-
   const prioritizedCells = Object.keys(customCells)
     .map(key => {
       const cell = customCells[key];
-      const [row, col] = key.split('|');
-      const score = calculatePriorityScore({
-        impact: cell.priorityScore,
-        urgency: cell.priorityScore,
-        feasibility: cell.feasibility || 3,
-        risk: cell.riskRating || 3,
-        stakeholderSupport: cell.stakeholderSupport || 3,
-        mandateRelevance: 4,
-        confidenceLevel: cell.confidence
-      });
-      const tags = getHeatmapTagsList(row, col);
-      return { key, cell, score, tags };
+      const assessment = evaluateCbdCell(cell);
+      return {
+        key,
+        cell,
+        score: assessment.score,
+        tags: assessment.tags
+      };
     })
     .sort((a, b) => b.score - a.score);
 
@@ -131,7 +106,7 @@ export function generateMarkdownBrief(data: UnpolProjectData): string {
 `;
   }).join('\n') || '*No custom cells prioritized yet. Default matrix fallback actions will apply.*';
 
-  return `# UNPOL CBD Planning Brief
+  return `# Unofficial UNPOL CBD Planning Brief
 
 * **Country**: ${profile.countryName || 'N/A'}
 * **Mission**: ${profile.missionName || 'N/A'}
@@ -142,7 +117,7 @@ export function generateMarkdownBrief(data: UnpolProjectData): string {
     profile.templateId === 'blank'
       ? 'Started Blank'
       : profile.templateId?.startsWith('seed-')
-        ? `Mission Explorer (UN Seed Context: ${profile.templateId.replace('seed-', '').toUpperCase()})`
+        ? `Mission Explorer (Unofficial starter planning profile: ${profile.templateId.replace('seed-', '').toUpperCase()})`
         : profile.templateId?.startsWith('fictional-')
           ? `Mission Explorer (Fictional Training Scenario: ${profile.templateId.replace('fictional-', '').toUpperCase()})`
           : `Static Template (${profile.templateId || 'Unknown'})`

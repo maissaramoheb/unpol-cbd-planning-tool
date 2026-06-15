@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { MissionExplorerEntry } from '../types/explorer';
 import { defaultExplorerSeeds } from '../data/explorerSeeds';
 import { MissionExplorerMap } from './MissionExplorerMap';
@@ -6,6 +6,7 @@ import { MissionExplorerList } from './MissionExplorerList';
 import { MissionExplorerPanel } from './MissionExplorerPanel';
 import { Button } from '../ui/Button';
 import { Globe, List, X } from 'lucide-react';
+import { filterMissionExplorerEntries } from '../lib/explorerFilters';
 
 interface MissionExplorerProps {
   onUseProfile: (entry: MissionExplorerEntry) => void;
@@ -25,11 +26,34 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [showFictional, setShowFictional] = useState<'all' | 'real' | 'fictional'>('all');
 
-  const selectedEntry = defaultExplorerSeeds.find((e) => e.id === selectedEntryId) || null;
+  const filteredEntries = useMemo(
+    () =>
+      filterMissionExplorerEntries(defaultExplorerSeeds, {
+        searchQuery,
+        selectedRegion,
+        selectedType,
+        selectedStatus,
+        showFictional
+      }),
+    [searchQuery, selectedRegion, selectedType, selectedStatus, showFictional]
+  );
+
+  const selectedEntry = filteredEntries.find((entry) => entry.id === selectedEntryId) || null;
+
+  const handleFilterChange = (updateFilter: () => void) => {
+    updateFilter();
+    setSelectedEntryId(null);
+    setHoveredEntryId(null);
+  };
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-      <div className="w-full max-w-7xl bg-white border border-slate-200 rounded-2xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="mission-explorer-title"
+        className="w-full max-w-7xl bg-white border border-slate-200 rounded-2xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden"
+      >
         {/* Top Header Bar */}
         <div className="bg-slate-900 text-white px-5 py-4 border-b border-slate-800 flex justify-between items-center shrink-0">
           <div className="flex items-center gap-3">
@@ -37,8 +61,8 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
               <Globe size={18} />
             </div>
             <div>
-              <h2 className="text-sm sm:text-base font-black uppercase tracking-wider">
-                UNPOL Context & Mission Explorer
+              <h2 id="mission-explorer-title" className="text-sm sm:text-base font-black uppercase tracking-wider">
+                Unofficial UNPOL Planning Context Explorer
               </h2>
               <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-widest leading-none mt-1">
                 Select baseline planning starter profile or generic training template
@@ -46,8 +70,10 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-slate-800 transition-colors text-slate-400 hover:text-white focus:outline-none"
+            aria-label="Close Mission Explorer"
+            className="p-1.5 rounded-lg hover:bg-slate-800 transition-colors text-slate-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
             title="Close Explorer"
           >
             <X size={20} />
@@ -88,7 +114,7 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
               {/* Map Panel (Desktop always visible, mobile responsive toggle) */}
               <div className={`${viewMode === 'map' ? 'block' : 'hidden'} lg:block`}>
                 <MissionExplorerMap
-                  entries={defaultExplorerSeeds}
+                  entries={filteredEntries}
                   selectedEntryId={selectedEntryId}
                   onSelectEntry={setSelectedEntryId}
                   hoveredEntryId={hoveredEntryId}
@@ -99,19 +125,20 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
               {/* List & Filters (Desktop always visible, mobile responsive toggle) */}
               <div className={`${viewMode === 'list' ? 'block' : 'hidden'} lg:block flex-1`}>
                 <MissionExplorerList
-                  entries={defaultExplorerSeeds}
+                  entries={filteredEntries}
+                  filterOptionsEntries={defaultExplorerSeeds}
                   selectedEntryId={selectedEntryId}
                   onSelectEntry={setSelectedEntryId}
                   searchQuery={searchQuery}
-                  onSearchChange={setSearchQuery}
+                  onSearchChange={(value) => handleFilterChange(() => setSearchQuery(value))}
                   selectedRegion={selectedRegion}
-                  onRegionChange={setSelectedRegion}
+                  onRegionChange={(value) => handleFilterChange(() => setSelectedRegion(value))}
                   selectedType={selectedType}
-                  onTypeChange={setSelectedType}
+                  onTypeChange={(value) => handleFilterChange(() => setSelectedType(value))}
                   selectedStatus={selectedStatus}
-                  onStatusChange={setSelectedStatus}
+                  onStatusChange={(value) => handleFilterChange(() => setSelectedStatus(value))}
                   showFictional={showFictional}
-                  onShowFictionalChange={setShowFictional}
+                  onShowFictionalChange={(value) => handleFilterChange(() => setShowFictional(value))}
                 />
               </div>
             </div>

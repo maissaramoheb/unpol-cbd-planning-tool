@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CbdAxis, CbdCell } from '../types';
 import { ChevronDown, ChevronUp, Layers, CheckCircle2 } from 'lucide-react';
+import { CbdHeatmapTag, evaluateCbdCell } from '../lib/scoring';
 
 interface MatrixListViewProps {
   rows: CbdAxis[];
@@ -41,27 +42,22 @@ export const MatrixListView: React.FC<MatrixListViewProps> = ({
     const cell = customCells[key];
     if (!cell) return [];
 
-    const tags: { text: string; bg: string; textCol: string }[] = [];
-    const feasibility = cell.feasibility !== undefined ? cell.feasibility : 3;
-    const support = cell.stakeholderSupport !== undefined ? cell.stakeholderSupport : 3;
+    return evaluateCbdCell(cell).tags.map((tag) => getTagPresentation(tag));
+  };
 
-    if (cell.priorityScore >= 4) {
-      if (support <= 2) {
-        tags.push({ text: 'Sensitive', bg: 'bg-rose-50 border-rose-200', textCol: 'text-rose-700' });
-      } else if (feasibility >= 4) {
-        tags.push({ text: 'Quick Win', bg: 'bg-emerald-50 border-emerald-200', textCol: 'text-emerald-700' });
-      } else if (feasibility <= 2) {
-        tags.push({ text: 'Long-term', bg: 'bg-indigo-50 border-indigo-200', textCol: 'text-indigo-700' });
-      } else {
-        tags.push({ text: 'Priority', bg: 'bg-amber-50 border-amber-200', textCol: 'text-amber-705' });
-      }
+  const getTagPresentation = (tag: CbdHeatmapTag) => {
+    switch (tag) {
+      case 'Quick Win':
+        return { text: tag, bg: 'bg-emerald-50 border-emerald-200', textCol: 'text-emerald-700' };
+      case 'Sensitive Reform':
+        return { text: 'Sensitive', bg: 'bg-rose-50 border-rose-200', textCol: 'text-rose-700' };
+      case 'Long-Term Reform':
+        return { text: 'Long-term', bg: 'bg-indigo-50 border-indigo-200', textCol: 'text-indigo-700' };
+      case 'Low Confidence':
+        return { text: 'Low Conf', bg: 'bg-slate-50 border-slate-200', textCol: 'text-slate-500' };
+      default:
+        return { text: tag, bg: 'bg-amber-50 border-amber-200', textCol: 'text-amber-700' };
     }
-
-    if (cell.confidence <= 2) {
-      tags.push({ text: 'Low Conf', bg: 'bg-slate-50 border-slate-200', textCol: 'text-slate-500' });
-    }
-
-    return tags;
   };
 
   return (

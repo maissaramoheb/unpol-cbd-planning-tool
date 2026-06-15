@@ -1,3 +1,5 @@
+import { CbdCell } from '../types';
+
 export interface ScoringInputs {
   impact: number;            // 1-5
   urgency: number;           // 1-5
@@ -43,6 +45,34 @@ export function calculatePriorityScore(inputs: ScoringInputs): number {
 }
 
 export type PriorityType = 'Quick Win' | 'Sensitive Reform' | 'Long-Term Reform' | 'Standard Priority';
+export type CbdHeatmapTag =
+  | 'Priority'
+  | 'Quick Win'
+  | 'Sensitive Reform'
+  | 'Long-Term Reform'
+  | 'Low Confidence';
+
+export interface CbdPriorityAssessment {
+  inputs: ScoringInputs;
+  score: number;
+  classification: PriorityType;
+  tags: CbdHeatmapTag[];
+}
+
+const DEFAULT_RATING = 3;
+const DEFAULT_MANDATE_RELEVANCE = 4;
+
+export function getCbdScoringInputs(cell: CbdCell): ScoringInputs {
+  return {
+    impact: cell.priorityScore,
+    urgency: cell.priorityScore,
+    feasibility: cell.feasibility ?? DEFAULT_RATING,
+    risk: cell.riskRating ?? DEFAULT_RATING,
+    stakeholderSupport: cell.stakeholderSupport ?? DEFAULT_RATING,
+    mandateRelevance: DEFAULT_MANDATE_RELEVANCE,
+    confidenceLevel: cell.confidence
+  };
+}
 
 /**
  * Classifies a capacity building activity based on its parameters.
@@ -60,4 +90,20 @@ export function classifyPriority(inputs: ScoringInputs): PriorityType {
     return 'Long-Term Reform';
   }
   return 'Standard Priority';
+}
+
+export function evaluateCbdCell(cell: CbdCell): CbdPriorityAssessment {
+  const inputs = getCbdScoringInputs(cell);
+  const score = calculatePriorityScore(inputs);
+  const classification = classifyPriority(inputs);
+  const tags: CbdHeatmapTag[] = [];
+
+  if (inputs.impact >= 4) {
+    tags.push(classification === 'Standard Priority' ? 'Priority' : classification);
+  }
+  if (inputs.confidenceLevel <= 2) {
+    tags.push('Low Confidence');
+  }
+
+  return { inputs, score, classification, tags };
 }

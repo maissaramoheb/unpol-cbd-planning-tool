@@ -3,43 +3,49 @@ import { defaultPestelsData } from '../data/pestelsCategories';
 import { defaultStakeholders } from '../data/defaultStakeholders';
 import { customCells } from '../data/cbdMatrixData';
 import { defaultMissionTemplates } from '../data/defaultMissionTemplates';
+import { validateAndNormalizeProjectData } from './projectDataValidation';
 
 const STORAGE_KEY = 'unpol_planning_tool_project_data';
 
+export interface ProjectDataLoadResult {
+  data: UnpolProjectData;
+  recoveryMessage: string | null;
+}
+
 export const emptyPriorityBrief = {
   topPriorities: [
-    'Establish foundational coordination with Ministry and Police HQ on command authority.',
-    'Build reliable records and case tracking administrative SOPs.',
-    'Formulate community safety and gender advisory liaison panels.'
+    '[PROMPT] Identify whether command-authority coordination should be a top priority.',
+    '[PROMPT] Assess whether records and case-tracking workflows require priority support.',
+    '[PROMPT] Determine whether community safety and gender liaison mechanisms are appropriate.'
   ],
   quickWins: [
-    'Launch basic ledger formatting workshops at local police districts.',
-    'Conduct joint patrols with community representatives in urban centers.'
+    '[PROMPT] Test whether basic ledger-formatting support is feasible and low risk.',
+    '[PROMPT] Assess whether community-engagement activities qualify as safe quick wins.'
   ],
   sensitiveReforms: [
-    'Clarify command authority and political interference boundaries with Ministry.',
-    'Roll out independent complaints intake mechanisms managed by Civil Society.'
+    '[ASSUMPTION TO TEST] Command-authority clarification may require political cover.',
+    '[ASSUMPTION TO TEST] Independent complaints mechanisms may face institutional resistance.'
   ],
   longerTermReforms: [
-    'Update general Police Act in coordination with Justice and Ministry actors.',
-    'Establish regional training academy infrastructure and certified instructor pool.'
+    '[PROMPT] Verify whether police-law reform is required and appropriately sequenced.',
+    '[PROMPT] Assess the sustainability of training infrastructure and instructor development.'
   ],
   risksAssumptions: [
-    'Assumes continuous political buy-in and counterpart willingness to reform.',
-    'Assumes minimum physical security and stability in key districts to allow UNPOL co-location.',
-    'Assumes donor funding remains aligned with the prioritized capacity areas.'
+    '[ASSUMPTION TO TEST] Counterpart political support will remain sufficient for reform.',
+    '[ASSUMPTION TO TEST] Security conditions will permit planned advisory activities.',
+    '[ASSUMPTION TO TEST] Funding will remain aligned with verified capacity priorities.'
   ],
-  sequencingRecommendation: 'Begin with high-feasibility, low-risk administrative systems and local community engagement to establish trust, then leverage this credibility to tackle legal frameworks and institutional accountability mechanisms.'
+  sequencingRecommendation: '[PROMPT] Validate whether high-feasibility, low-risk administrative or engagement actions should precede sensitive legal and accountability reforms.'
 };
 
 export const defaultProfile: MissionProfile = {
-  countryName: 'South Sudan / Abyei Area',
-  missionName: 'UNISFA / UNMISS',
-  region: 'Abyei Box / Greater Upper Nile',
-  mandateEnvironment: 'Chapter VII, Protection of Civilians, Capacity Building Advisory, Co-location support',
-  hostStatePolice: 'Host-State Police Service (SPS / APS)',
-  conflictContext: 'Inter-communal violence, seasonal migration disputes, presence of armed militias',
-  planningPurpose: 'Align UNPOL co-location mentoring and training with structural policing capacity building',
+  countryName: 'Country / area to verify',
+  missionName: 'UN peace operations planning context',
+  region: 'Area of operations to verify',
+  mandateEnvironment: '[PROMPT] Confirm the current mandate and authorized advisory role.',
+  hostStatePolice: 'Host-state police institution to verify',
+  conflictContext: '[ASSUMPTION TO TEST] Identify the conflict and public-safety conditions relevant to planning.',
+  planningPurpose: '[PROMPT] Define the intended capacity-building planning purpose.',
   assessmentDate: new Date().toISOString().split('T')[0],
   analystName: 'Lt.Col Maissara Selim',
   templateId: 'peacekeeping'
@@ -121,9 +127,9 @@ export function getInitialProjectData(templateId = 'peacekeeping'): UnpolProject
   };
 }
 
-export function loadProjectData(): UnpolProjectData {
+export function loadProjectData(): ProjectDataLoadResult {
   if (typeof window === 'undefined') {
-    return getInitialProjectData();
+    return { data: getInitialProjectData(), recoveryMessage: null };
   }
 
   try {
@@ -131,42 +137,24 @@ export function loadProjectData(): UnpolProjectData {
     if (!raw) {
       const initial = getInitialProjectData();
       saveProjectData(initial);
-      return initial;
+      return { data: initial, recoveryMessage: null };
     }
-    const data = JSON.parse(raw) as UnpolProjectData;
-
-    // Backwards compatibility updates for v0.2.0
-    if (data.pestels) {
-      Object.keys(data.pestels).forEach(key => {
-        if (!data.pestels[key].evidenceNotes) {
-          data.pestels[key].evidenceNotes = [];
-        }
-      });
+    const validation = validateAndNormalizeProjectData(JSON.parse(raw));
+    if (!validation.data) {
+      const initial = getInitialProjectData();
+      return {
+        data: initial,
+        recoveryMessage: `Stored project data was invalid and has been replaced with safe starter data. ${validation.error}`
+      };
     }
 
-    if (data.stakeholders) {
-      data.stakeholders.forEach(s => {
-        if (!s.evidenceNotes) {
-          s.evidenceNotes = [];
-        }
-      });
-    }
-
-    if (data.customCells) {
-      Object.keys(data.customCells).forEach(key => {
-        const cell = data.customCells[key];
-        if (cell.feasibility === undefined) cell.feasibility = 3;
-        if (cell.riskRating === undefined) cell.riskRating = 3;
-        if (cell.stakeholderSupport === undefined) cell.stakeholderSupport = 3;
-        if (!cell.evidenceNotes) cell.evidenceNotes = [];
-      });
-    }
-
-    data.version = 'v0.3.0';
-    return data;
+    return { data: validation.data, recoveryMessage: null };
   } catch (error) {
     console.error('Error loading project data from localStorage', error);
-    return getInitialProjectData();
+    return {
+      data: getInitialProjectData(),
+      recoveryMessage: 'Stored project data could not be read and has been replaced with safe starter data.'
+    };
   }
 }
 
@@ -207,11 +195,13 @@ export function importProjectData(file: File): Promise<UnpolProjectData> {
     reader.onload = (event) => {
       try {
         const parsed = JSON.parse(event.target?.result as string);
-        if (parsed.profile && parsed.pestels && parsed.stakeholders) {
-          resolve(parsed as UnpolProjectData);
-        } else {
-          reject(new Error('Invalid project file format. Missing core fields.'));
+        const validation = validateAndNormalizeProjectData(parsed);
+        if (!validation.data) {
+          reject(new Error(`Invalid project file. ${validation.error}`));
+          return;
         }
+
+        resolve(validation.data);
       } catch {
         reject(new Error('Failed to parse JSON file.'));
       }

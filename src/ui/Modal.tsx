@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 import { X } from 'lucide-react';
 
 interface ModalProps {
@@ -18,6 +18,8 @@ export const Modal: React.FC<ModalProps> = ({
   footer,
   size = 'md'
 }) => {
+  const titleId = useId();
+
   if (!isOpen) return null;
 
   const sizeClasses = {
@@ -29,13 +31,20 @@ export const Modal: React.FC<ModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-slate-900/60 backdrop-blur-sm">
-      <div className={`w-full bg-white rounded-xl shadow-xl overflow-hidden flex flex-col ${sizeClasses[size]} transform transition-all`}>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        className={`w-full bg-white rounded-xl shadow-xl overflow-hidden flex flex-col ${sizeClasses[size]} transform transition-all`}
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
-          <h3 className="text-lg font-bold text-slate-900">{title}</h3>
+          <h3 id={titleId} className="text-lg font-bold text-slate-900">{title}</h3>
           <button
+            type="button"
             onClick={onClose}
-            className="p-1 rounded-lg hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition-colors"
+            aria-label={`Close ${title}`}
+            className="p-1 rounded-lg hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <X size={20} />
           </button>

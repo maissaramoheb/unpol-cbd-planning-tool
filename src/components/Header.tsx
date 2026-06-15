@@ -22,10 +22,10 @@ export const Header: React.FC<HeaderProps> = ({ onReset, missionName, analystNam
           </div>
           <div>
             <h1 className="text-md sm:text-lg font-extrabold tracking-tight">
-              UNPOL CBD <span className="text-blue-400">Integrated Planning Tool</span>
+              UNPOL CBD <span className="text-blue-400">Planning Prototype</span>
             </h1>
             <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider hidden sm:block">
-              Educational & Planning-Support Framework
+              Unofficial Educational & Planning-Support Framework
             </p>
           </div>
         </div>
@@ -43,6 +43,7 @@ export const Header: React.FC<HeaderProps> = ({ onReset, missionName, analystNam
             variant="outline"
             size="sm"
             onClick={() => setIsDisclaimerOpen(true)}
+            aria-label="Open disclaimer and rules of use"
             className="border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800"
           >
             <ShieldAlert size={16} className="mr-1.5 text-amber-400" />
@@ -53,6 +54,7 @@ export const Header: React.FC<HeaderProps> = ({ onReset, missionName, analystNam
             variant="ghost"
             size="sm"
             onClick={onReset}
+            aria-label="Reset current planning module"
             className="text-slate-400 hover:text-white hover:bg-slate-800"
             title="Reset current planning module to defaults"
           >

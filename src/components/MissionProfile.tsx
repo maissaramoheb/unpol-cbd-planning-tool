@@ -58,10 +58,10 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
               <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Visual Workspace & Mission Explorer Upgrade</span>
             </div>
             <h2 className="text-xl md:text-2xl font-black uppercase text-blue-400 tracking-tight mt-1.5">
-              UNPOL Capacity-Building & Development (CBD) Integrated Planning Tool
+              Unofficial UNPOL Capacity-Building & Development (CBD) Planning Prototype
             </h2>
             <p className="text-xs md:text-sm text-slate-300 mt-2 leading-relaxed">
-              This application helps UNPOL Advisory Teams, Security Sector Reform (SSR) specialists, and peace operations planning officers diagnose host-state environmental constraints, map critical stakeholders, and prioritize capacity-building interventions across key operational dimensions. It is an educational planning-support framework and does **not** constitute official United Nations doctrine.
+              This application helps UNPOL Advisory Teams, Security Sector Reform (SSR) specialists, and peace operations planning officers diagnose host-state environmental constraints, map critical stakeholders, and prioritize capacity-building interventions across key operational dimensions. It is an unofficial educational planning-support prototype and does not constitute official United Nations doctrine.
             </p>
           </div>
 
@@ -86,7 +86,7 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
           <div>
             <h3 className="text-lg font-bold text-slate-950">1. Context Template</h3>
             <p className="text-sm text-slate-500 mt-1">
-              Choose a baseline configuration template. Selecting a template will preload matching planning assumptions and PESTEL-S findings.
+              Choose a baseline configuration template. Selecting a template will preload editable planning prompts, assumptions to verify, and low-confidence PESTEL-S starter questions.
             </p>
           </div>
 
