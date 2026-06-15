@@ -17,7 +17,7 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
   // UI State
   const [selectedEntryId, setSelectedEntryId] = useState<string | null>(null);
   const [hoveredEntryId, setHoveredEntryId] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
+  const [viewMode, setViewMode] = useState<'map' | 'list'>('list');
 
   // Filter States
   const [searchQuery, setSearchQuery] = useState('');
@@ -84,8 +84,8 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
         <div className="flex-1 overflow-y-auto p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left/Middle: Map & List Lookup */}
           <div className="lg:col-span-2 flex flex-col gap-4">
-            {/* View Mode Toggle (Mobile / Tablet only) */}
-            <div className="flex justify-between items-center lg:hidden bg-slate-50 border border-slate-200 p-1.5 rounded-xl">
+            {/* Tablet toggle; compact mobile remains list-first */}
+            <div className="hidden sm:flex justify-between items-center lg:hidden bg-slate-50 border border-slate-200 p-1.5 rounded-xl">
               <span className="text-xs font-bold text-slate-500 pl-2">Display Mode:</span>
               <div className="flex gap-1">
                 <Button
@@ -95,7 +95,7 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
                   className="text-[10px] py-1 px-3"
                 >
                   <Globe size={12} className="mr-1" />
-                  Map Pin Grid
+                  World Map
                 </Button>
                 <Button
                   variant={viewMode === 'list' ? 'primary' : 'ghost'}
@@ -111,8 +111,8 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
 
             {/* Render Map / List based on viewMode */}
             <div className="flex-1 flex flex-col gap-4">
-              {/* Map Panel (Desktop always visible, mobile responsive toggle) */}
-              <div className={`${viewMode === 'map' ? 'block' : 'hidden'} lg:block`}>
+              {/* Map panel: desktop always visible, tablet toggle, compact mobile hidden */}
+              <div className={`${viewMode === 'map' ? 'hidden sm:block' : 'hidden'} lg:block`}>
                 <MissionExplorerMap
                   entries={filteredEntries}
                   selectedEntryId={selectedEntryId}
@@ -122,7 +122,7 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
                 />
               </div>
 
-              {/* List & Filters (Desktop always visible, mobile responsive toggle) */}
+              {/* List and filters: desktop always visible and compact mobile default */}
               <div className={`${viewMode === 'list' ? 'block' : 'hidden'} lg:block flex-1`}>
                 <MissionExplorerList
                   entries={filteredEntries}
