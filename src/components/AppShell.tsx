@@ -10,6 +10,8 @@ import { StakeholderMapping } from './StakeholderMapping';
 import { CBDMatrix } from '../matrix/CBDMatrix';
 import { PrioritySequencing } from './PrioritySequencing';
 import { ExportBrief } from './ExportBrief';
+import { MissionExplorer } from './MissionExplorer';
+import { applyMissionSeed } from '../lib/applyMissionSeed';
 import { UnpolProjectData, MissionProfile as ProfileType, PestelsItem, Stakeholder, CbdCell, PriorityBrief } from '../types';
 import { loadProjectData, saveProjectData, getInitialProjectData } from '../lib/storage';
 import { matrixRows, matrixColumns } from '../data/cbdMatrixData';
@@ -17,6 +19,7 @@ import { matrixRows, matrixColumns } from '../data/cbdMatrixData';
 export const AppShell: React.FC = () => {
   const [data, setData] = useState<UnpolProjectData | null>(null);
   const [currentStep, setCurrentStep] = useState<number>(1);
+  const [isExplorerOpen, setIsExplorerOpen] = useState<boolean>(false);
 
   // Initialize data on client mount
   useEffect(() => {
@@ -151,6 +154,7 @@ export const AppShell: React.FC = () => {
           <Dashboard
             data={data}
             onNavigateToStep={setCurrentStep}
+            onOpenExplorer={() => setIsExplorerOpen(true)}
           />
         );
       case 2:
@@ -159,6 +163,7 @@ export const AppShell: React.FC = () => {
             profile={data.profile}
             onChange={handleProfileChange}
             onTemplateChange={handleTemplateChange}
+            onOpenExplorer={() => setIsExplorerOpen(true)}
             onNext={() => setCurrentStep(3)}
           />
         );
@@ -253,10 +258,22 @@ export const AppShell: React.FC = () => {
             This tool is an educational and planning-support prototype. It is not official United Nations doctrine and does not replace mission mandate, official guidance, host-state law, human rights due diligence, command approval, or verified country analysis. Users should verify all context-specific findings through official and current sources before operational or policy use.
           </p>
           <div className="mt-2 text-slate-400 font-bold bg-slate-800/50 inline-block px-3 py-1 rounded-full border border-slate-800/80 mx-auto">
-            v0.2.0 — Analysis & Visualization Upgrade
+            v0.3.0 — Visual Workspace & Mission Explorer Upgrade
           </div>
         </div>
       </footer>
+
+      {isExplorerOpen && (
+        <MissionExplorer
+          onUseProfile={(entry) => {
+            const seeded = applyMissionSeed(entry);
+            setData(seeded);
+            setIsExplorerOpen(false);
+            setCurrentStep(1); // Redirect to Dashboard
+          }}
+          onClose={() => setIsExplorerOpen(false)}
+        />
+      )}
     </div>
   );
 };

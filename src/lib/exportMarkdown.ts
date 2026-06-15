@@ -138,7 +138,16 @@ export function generateMarkdownBrief(data: UnpolProjectData): string {
 * **Area of Operations**: ${profile.region || 'N/A'}
 * **Prepared by**: ${profile.analystName || 'UNPOL Advisory Team'}
 * **Assessment Date**: ${profile.assessmentDate || 'N/A'}
-* **Version**: v0.2.0 — Analysis & Visualization Upgrade
+* **Workspace Initialization**: ${
+    profile.templateId === 'blank'
+      ? 'Started Blank'
+      : profile.templateId?.startsWith('seed-')
+        ? `Mission Explorer (UN Seed Context: ${profile.templateId.replace('seed-', '').toUpperCase()})`
+        : profile.templateId?.startsWith('fictional-')
+          ? `Mission Explorer (Fictional Training Scenario: ${profile.templateId.replace('fictional-', '').toUpperCase()})`
+          : `Static Template (${profile.templateId || 'Unknown'})`
+  }
+* **Version**: v0.3.0 — Visual Workspace & Mission Explorer Upgrade
 
 ---
 

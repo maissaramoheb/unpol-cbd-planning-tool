@@ -117,7 +117,7 @@ export function getInitialProjectData(templateId = 'peacekeeping'): UnpolProject
           sequencingRecommendation: ''
         }
       : JSON.parse(JSON.stringify(emptyPriorityBrief)),
-    version: 'v0.2.0'
+    version: 'v0.3.0'
   };
 }
 
@@ -162,7 +162,7 @@ export function loadProjectData(): UnpolProjectData {
       });
     }
 
-    data.version = 'v0.2.0';
+    data.version = 'v0.3.0';
     return data;
   } catch (error) {
     console.error('Error loading project data from localStorage', error);

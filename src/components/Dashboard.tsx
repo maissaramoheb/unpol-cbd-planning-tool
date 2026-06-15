@@ -15,15 +15,17 @@ import {
   TrendingUp,
   Activity,
   Layers,
-  ArrowRight
+  ArrowRight,
+  Globe
 } from 'lucide-react';
 
 interface DashboardProps {
   data: UnpolProjectData;
   onNavigateToStep: (step: number) => void;
+  onOpenExplorer: () => void;
 }
 
-export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep }) => {
+export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, onOpenExplorer }) => {
   const { profile, pestels, stakeholders, customCells, priorityBrief } = data;
 
   const warnings = calculateQualityWarnings(data);
@@ -63,6 +65,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep }) 
               >
                 Configure Mission Profile
                 <ArrowRight size={14} />
+              </Button>
+              <Button
+                variant="outline"
+                onClick={onOpenExplorer}
+                className="font-semibold text-blue-600 border-blue-200 bg-blue-50/20 hover:bg-blue-50/40 flex items-center justify-center gap-1.5"
+              >
+                <Globe size={14} className="text-blue-500" />
+                Browse Mission Explorer
               </Button>
               <Button
                 variant="outline"

@@ -6,12 +6,13 @@ import { TextInput } from '../ui/Select';
 import { TextArea } from '../ui/TextArea';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
-import { Shield, BookOpen, Layers, Award, FileText } from 'lucide-react';
+import { Shield, BookOpen, Layers, Award, FileText, Globe } from 'lucide-react';
 
 interface MissionProfileProps {
   profile: ProfileType;
   onChange: (profile: ProfileType) => void;
   onTemplateChange: (templateId: string) => void;
+  onOpenExplorer: () => void;
   onNext: () => void;
 }
 
@@ -19,6 +20,7 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
   profile,
   onChange,
   onTemplateChange,
+  onOpenExplorer,
   onNext
 }) => {
   const handleInputChange = (field: keyof ProfileType, value: string) => {
@@ -52,8 +54,8 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
         <CardBody className="p-6 md:p-8 flex flex-col gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <Badge variant="blue" className="bg-blue-900 text-blue-100 border-blue-800">v0.2.0</Badge>
-              <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Analysis & Visualization Upgrade</span>
+              <Badge variant="blue" className="bg-blue-900 text-blue-100 border-blue-800">v0.3.0</Badge>
+              <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Visual Workspace & Mission Explorer Upgrade</span>
             </div>
             <h2 className="text-xl md:text-2xl font-black uppercase text-blue-400 tracking-tight mt-1.5">
               UNPOL Capacity-Building & Development (CBD) Integrated Planning Tool
@@ -87,6 +89,15 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
               Choose a baseline configuration template. Selecting a template will preload matching planning assumptions and PESTEL-S findings.
             </p>
           </div>
+
+          <Button
+            variant="outline"
+            onClick={onOpenExplorer}
+            className="w-full py-2.5 font-bold flex items-center justify-center gap-1.5 text-xs text-blue-600 border-blue-200 bg-blue-50/20 hover:bg-blue-50/40 rounded-xl"
+          >
+            <Globe size={14} className="text-blue-500" />
+            Browse Mission Explorer Map
+          </Button>
 
           <div className="flex flex-col gap-3">
             {defaultMissionTemplates.map((template) => {

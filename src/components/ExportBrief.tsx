@@ -213,8 +213,20 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
                 <span className="font-bold text-slate-800">{data.profile.assessmentDate || 'N/A'}</span>
               </div>
               <div>
+                <span className="font-extrabold text-[9px] text-slate-400 uppercase tracking-wider block">Context Source</span>
+                <span className="font-bold text-slate-800">
+                  {data.profile.templateId === 'blank'
+                    ? 'Started Blank'
+                    : data.profile.templateId?.startsWith('seed-')
+                      ? `Mission Explorer (${data.profile.templateId.replace('seed-', '').toUpperCase()})`
+                      : data.profile.templateId?.startsWith('fictional-')
+                        ? `Fictional Scenario (${data.profile.templateId.replace('fictional-', '').toUpperCase()})`
+                        : `Template (${data.profile.templateId || 'Unknown'})`}
+                </span>
+              </div>
+              <div>
                 <span className="font-extrabold text-[9px] text-slate-400 uppercase tracking-wider block">Version</span>
-                <span className="font-bold text-slate-850">v0.2.0 — Analysis & Visualization Upgrade</span>
+                <span className="font-bold text-slate-850 text-slate-900">v0.3.0 — Visual Workspace & Mission Explorer Upgrade</span>
               </div>
             </div>
           </div>
