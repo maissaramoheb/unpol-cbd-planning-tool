@@ -50,7 +50,7 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl">
         {/* Search */}
         <div className="flex flex-col gap-1">
-          <label htmlFor={`${fieldIdPrefix}-search`} className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Search</label>
+          <label htmlFor={`${fieldIdPrefix}-search`} className="text-xs font-bold text-slate-700">Search</label>
           <input
             id={`${fieldIdPrefix}-search`}
             type="text"
@@ -63,7 +63,7 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
 
         {/* Region */}
         <div className="flex flex-col gap-1">
-          <label htmlFor={`${fieldIdPrefix}-region`} className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Region</label>
+          <label htmlFor={`${fieldIdPrefix}-region`} className="text-xs font-bold text-slate-700">Region</label>
           <select
             id={`${fieldIdPrefix}-region`}
             value={selectedRegion}
@@ -81,7 +81,7 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
 
         {/* Mission Type */}
         <div className="flex flex-col gap-1">
-          <label htmlFor={`${fieldIdPrefix}-type`} className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Mandate Type</label>
+          <label htmlFor={`${fieldIdPrefix}-type`} className="text-xs font-bold text-slate-700">Mandate type</label>
           <select
             id={`${fieldIdPrefix}-type`}
             value={selectedType}
@@ -99,7 +99,7 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
 
         {/* Status */}
         <div className="flex flex-col gap-1">
-          <label htmlFor={`${fieldIdPrefix}-status`} className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Status</label>
+          <label htmlFor={`${fieldIdPrefix}-status`} className="text-xs font-bold text-slate-700">Status</label>
           <select
             id={`${fieldIdPrefix}-status`}
             value={selectedStatus}
@@ -117,7 +117,7 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
 
         {/* Classification */}
         <div className="flex flex-col gap-1">
-          <label htmlFor={`${fieldIdPrefix}-classification`} className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Context Classification</label>
+          <label htmlFor={`${fieldIdPrefix}-classification`} className="text-xs font-bold text-slate-700">Context classification</label>
           <select
             id={`${fieldIdPrefix}-classification`}
             value={showFictional}
@@ -146,7 +146,7 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
                 type="button"
                 onClick={() => onSelectEntry(entry.id)}
                 className={`
-                  w-full text-left p-3.5 rounded-xl border transition-all flex justify-between items-start gap-4 focus:outline-none
+                  w-full text-left p-3.5 rounded-xl border transition-colors flex justify-between items-start gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2
                   ${isSelected
                     ? 'border-blue-600 bg-blue-50/45 shadow-sm ring-1 ring-blue-500/20'
                     : 'border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300'
@@ -161,11 +161,11 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
                     <span className="text-[9px] text-slate-400 font-extrabold uppercase">|</span>
                     <span className="text-xs font-semibold text-slate-700">{entry.country}</span>
                     {entry.isFictionalScenario ? (
-                      <Badge variant="rose" className="text-[8px] uppercase tracking-wider py-0.5 leading-none">
+                      <Badge variant="rose" className="text-[10px] py-0.5 leading-none">
                         Fictional Scenario
                       </Badge>
                     ) : (
-                      <Badge variant="blue" className="text-[8px] uppercase tracking-wider py-0.5 leading-none">
+                      <Badge variant="blue" className="text-[10px] py-0.5 leading-none">
                         Unofficial starter planning profile
                       </Badge>
                     )}
@@ -173,8 +173,8 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
                   <h4 className="text-xs text-slate-500 leading-tight font-medium">
                     {entry.missionName}
                   </h4>
-                  <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-1 block">
-                    Region: {entry.region} | Type: {entry.missionType}
+                  <span className="text-[11px] text-slate-600 font-semibold mt-1 block">
+                    {entry.region} · {entry.sourceCategory}
                   </span>
                 </div>
                 <div className="shrink-0 flex items-center justify-center p-2 rounded-lg bg-slate-50 border border-slate-100 font-extrabold text-[9px] text-blue-600 uppercase tracking-wider">

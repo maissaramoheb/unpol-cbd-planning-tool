@@ -159,7 +159,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                 type="button"
                 onClick={() => setSelectedId(sh.id)}
                 className={`
-                  text-left p-3.5 rounded-xl border-2 transition-all flex flex-col gap-1.5 w-full focus:outline-none
+                  text-left p-3.5 rounded-xl border transition-colors flex flex-col gap-1.5 w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2
                   ${isSelected
                     ? 'border-blue-600 bg-blue-50/50 shadow-sm'
                     : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 bg-white'
@@ -261,7 +261,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                 </div>
 
                 {/* Meter Bars Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100 mt-2">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100 mt-2">
                   {[
                     { label: 'Legitimacy', field: 'legitimacy' as const },
                     { label: 'Relevance', field: 'relevance' as const },
@@ -282,22 +282,6 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                       </div>
                     </div>
                   ))}
-                  <div className="flex flex-col gap-1.5">
-                    <Select
-                      label="Risk Exposure"
-                      value={activeStakeholder.influence === 'High' ? 'High' : 'Medium'} // Defaulting or keeping to string
-                      options={HML_OPTIONS}
-                      onChange={(e) => handleFieldChange('influence', e.target.value)} // Re-using or mock
-                      className="py-1 text-xs invisible disabled"
-                    />
-                    {/* Visual Risk Metric placeholder */}
-                    <div className="flex flex-col gap-0.5 mt-2">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Spoiler Risk</span>
-                      <Badge variant={activeStakeholder.position === 'Spoiler risk' ? 'rose' : 'slate'} className="mt-0.5 justify-center">
-                        {activeStakeholder.position === 'Spoiler risk' ? 'Critical' : 'Standard'}
-                      </Badge>
-                    </div>
-                  </div>
                 </div>
 
                 <TextArea

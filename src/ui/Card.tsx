@@ -27,7 +27,7 @@ export const CardHeader: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
 }) => {
   return (
     <div
-      className={`px-5 py-4 border-bottom border-slate-100 bg-slate-50/50 ${className}`}
+      className={`px-5 py-4 border-b border-slate-100 bg-slate-50/50 ${className}`}
       {...props}
     >
       {children}

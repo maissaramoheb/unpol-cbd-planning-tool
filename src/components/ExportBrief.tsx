@@ -8,6 +8,8 @@ import { Badge } from '../ui/Badge';
 import { calculateQualityWarnings } from '../lib/warnings';
 import { FileDown, FileUp, Clipboard, Printer, Check, AlertTriangle, ShieldAlert, AlertCircle } from 'lucide-react';
 import { evaluateCbdCell } from '../lib/scoring';
+import { analyzeStakeholders, STAKEHOLDER_RATINGS_CAVEAT } from '../lib/stakeholderAnalysis';
+import { APP_VERSION_LABEL } from '../lib/version';
 
 interface ExportBriefProps {
   data: UnpolProjectData;
@@ -25,6 +27,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const warnings = calculateQualityWarnings(data);
+  const stakeholderAnalysis = analyzeStakeholders(data.stakeholders);
   const prioritizedCells = Object.entries(data.customCells)
     .map(([key, cell]) => {
       const assessment = evaluateCbdCell(cell);
@@ -74,21 +77,6 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
       });
     });
   });
-
-  // Stakeholder Quadrants
-  const mapAQuadrants = {
-    "High-influence allies": data.stakeholders.filter(s => (s.position === 'Enabler' || s.position === 'Persuadable') && s.influence === 'High'),
-    "High-influence resistance / sensitive": data.stakeholders.filter(s => (s.position === 'Blocker' || s.position === 'Spoiler risk') && s.influence === 'High'),
-    "Potential support base": data.stakeholders.filter(s => (s.position === 'Enabler' || s.position === 'Persuadable' || s.position === 'Neutral / unknown') && s.influence !== 'High'),
-    "Monitor / low immediate engagement": data.stakeholders.filter(s => (s.position === 'Blocker' || s.position === 'Spoiler risk' || s.position === 'Neutral / unknown') && s.influence !== 'High')
-  };
-
-  const mapBQuadrants = {
-    "Core institutional partners": data.stakeholders.filter(s => s.legitimacy === 'High' && s.relevance === 'High'),
-    "Operationally relevant actors": data.stakeholders.filter(s => s.legitimacy !== 'High' && s.relevance === 'High'),
-    "Legitimacy / accountability voices": data.stakeholders.filter(s => s.legitimacy === 'High' && s.relevance !== 'High'),
-    "Lower-priority monitoring": data.stakeholders.filter(s => s.legitimacy !== 'High' && s.relevance !== 'High')
-  };
 
   const handleCopyMarkdown = async () => {
     const md = generateMarkdownBrief(data);
@@ -232,8 +220,18 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
                 </span>
               </div>
               <div>
+                <span className="font-extrabold text-[9px] text-slate-400 uppercase tracking-wider block">Source Category</span>
+                <span className="font-bold text-slate-800">{data.profile.sourceCategory || 'User-defined / static template'}</span>
+              </div>
+              <div>
+                <span className="font-extrabold text-[9px] text-slate-400 uppercase tracking-wider block">Source Review</span>
+                <span className="font-bold text-slate-800">
+                  {data.profile.profileLastReviewed || 'Not independently verified'}
+                </span>
+              </div>
+              <div>
                 <span className="font-extrabold text-[9px] text-slate-400 uppercase tracking-wider block">Version</span>
-                <span className="font-bold text-slate-850 text-slate-900">v0.3.0 — Visual Workspace & Mission Explorer Upgrade</span>
+                <span className="font-bold text-slate-900">{APP_VERSION_LABEL}</span>
               </div>
             </div>
           </div>
@@ -290,57 +288,80 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
                 </div>
               ))}
             </div>
-          </div>          {/* Section 4: Stakeholder Quadrant Summary */}
+          </div>
+
+          {/* Section 4: Stakeholder Decision-Support Summary */}
           <div className="page-break-inside-avoid">
             <h3 className="text-xs font-black uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-1.5 mb-3">
-              4. Stakeholder Map Quadrant Summary
+              4. Stakeholder Decision-Support Summary
             </h3>
-            
-            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-2">Influence &times; Support Posture</span>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs mb-4">
-              {Object.entries(mapAQuadrants).map(([quadName, list]) => (
-                <div key={quadName} className="border border-slate-150 rounded-lg overflow-hidden bg-slate-50/20">
-                  <div className="px-3 py-1.5 bg-slate-100 border-b border-slate-150 font-bold uppercase text-[9px] text-slate-600 tracking-wider leading-snug">
-                    {quadName}
-                  </div>
-                  <div className="p-2 flex flex-col gap-1 bg-white">
-                    {list.length === 0 ? (
-                      <span className="text-slate-450 italic text-[10px] px-1">No stakeholders mapped</span>
-                    ) : (
-                      list.map(s => (
-                        <div key={s.id} className="flex justify-between items-center bg-slate-50 border border-slate-100 p-1.5 rounded text-[11px]">
-                          <span className="font-semibold text-slate-800">{s.name}</span>
-                          <span className="text-[9px] text-slate-400 uppercase font-bold">Inf: {s.influence}</span>
-                        </div>
-                      ))
-                    )}
-                  </div>
+
+            {[
+              {
+                title: 'Influence × Support Posture',
+                quadrants: stakeholderAnalysis.engagementQuadrants
+              },
+              {
+                title: 'Legitimacy / Accountability × Operational Relevance',
+                quadrants: stakeholderAnalysis.credibilityQuadrants
+              }
+            ].map((map) => (
+              <div key={map.title} className="mb-5 last:mb-0">
+                <span className="text-xs font-extrabold text-slate-700 block mb-2">{map.title}</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  {map.quadrants.map((quadrant) => (
+                    <div key={quadrant.id} className="border border-slate-200 rounded-lg bg-white p-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <span className="font-bold text-slate-900 leading-snug">{quadrant.title}</span>
+                        <Badge variant="slate">{quadrant.stakeholders.length}</Badge>
+                      </div>
+                      <p className="mt-1.5 text-[11px] leading-relaxed text-slate-600">
+                        {quadrant.stakeholders.map((stakeholder) => stakeholder.name).join(', ') || 'No stakeholders mapped'}
+                      </p>
+                      <p className="mt-2 border-t border-slate-100 pt-2 text-[11px] leading-relaxed text-slate-700">
+                        <strong>Recommended posture:</strong> {quadrant.recommendation}
+                      </p>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+            ))}
+
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 text-xs">
+              <div className="rounded-lg border border-rose-200 bg-rose-50/40 p-3">
+                <span className="font-bold text-rose-950">Major stakeholder risks</span>
+                <div className="mt-2 flex flex-col gap-2">
+                  {stakeholderAnalysis.insights.priorityRisks.length > 0 ? (
+                    stakeholderAnalysis.insights.priorityRisks.map((stakeholder) => (
+                      <p key={stakeholder.id} className="text-[11px] leading-relaxed text-rose-900">
+                        <strong>{stakeholder.name}:</strong> {stakeholder.risk}
+                      </p>
+                    ))
+                  ) : (
+                    <p className="text-[11px] text-rose-800">No elevated risks currently derived from the recorded ratings.</p>
+                  )}
+                </div>
+              </div>
+              <div className="rounded-lg border border-blue-200 bg-blue-50/40 p-3">
+                <span className="font-bold text-blue-950">Engagement posture overview</span>
+                <p className="mt-2 text-[11px] leading-relaxed text-blue-900">
+                  <strong>Leadership-level:</strong>{' '}
+                  {stakeholderAnalysis.insights.leadershipLevel.map((stakeholder) => stakeholder.name).join(', ') || 'None identified'}
+                </p>
+                <p className="mt-1 text-[11px] leading-relaxed text-blue-900">
+                  <strong>Technical working groups:</strong>{' '}
+                  {stakeholderAnalysis.insights.technicalWorkingGroups.map((stakeholder) => stakeholder.name).join(', ') || 'None identified'}
+                </p>
+                <p className="mt-1 text-[11px] leading-relaxed text-blue-900">
+                  <strong>Legitimacy consultation:</strong>{' '}
+                  {stakeholderAnalysis.insights.legitimacyConsultation.map((stakeholder) => stakeholder.name).join(', ') || 'None identified'}
+                </p>
+              </div>
             </div>
 
-            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-2">Legitimacy &times; Operational Relevance</span>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              {Object.entries(mapBQuadrants).map(([quadName, list]) => (
-                <div key={quadName} className="border border-slate-150 rounded-lg overflow-hidden bg-slate-50/20">
-                  <div className="px-3 py-1.5 bg-slate-100 border-b border-slate-150 font-bold uppercase text-[9px] text-slate-650 tracking-wider leading-snug">
-                    {quadName}
-                  </div>
-                  <div className="p-2 flex flex-col gap-1 bg-white">
-                    {list.length === 0 ? (
-                      <span className="text-slate-450 italic text-[10px] px-1">No stakeholders mapped</span>
-                    ) : (
-                      list.map(s => (
-                        <div key={s.id} className="flex justify-between items-center bg-slate-50 border border-slate-100 p-1.5 rounded text-[11px]">
-                          <span className="font-semibold text-slate-800">{s.name}</span>
-                          <span className="text-[9px] text-slate-400 uppercase font-bold">Rel: {s.relevance}</span>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
+            <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-2.5 text-[11px] leading-relaxed text-amber-900">
+              <strong>Analytical caveat:</strong> {STAKEHOLDER_RATINGS_CAVEAT}
+            </p>
           </div>
 
           {/* Section 5: Matrix Priorities */}

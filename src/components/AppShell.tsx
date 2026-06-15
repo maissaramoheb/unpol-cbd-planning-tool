@@ -16,6 +16,7 @@ import { UnpolProjectData, MissionProfile as ProfileType, PestelsItem, Stakehold
 import { loadProjectData, saveProjectData, getInitialProjectData } from '../lib/storage';
 import { matrixRows, matrixColumns } from '../data/cbdMatrixData';
 import { AlertTriangle, X } from 'lucide-react';
+import { APP_VERSION_LABEL } from '../lib/version';
 
 export const AppShell: React.FC = () => {
   const [data, setData] = useState<UnpolProjectData | null>(null);
@@ -42,7 +43,7 @@ export const AppShell: React.FC = () => {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center font-sans">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin motion-reduce:animate-none" />
           <span className="text-sm font-bold text-slate-600">Initializing unofficial UNPOL CBD planning prototype...</span>
         </div>
       </div>
@@ -282,7 +283,7 @@ export const AppShell: React.FC = () => {
             This tool is an educational and planning-support prototype. It is not official United Nations doctrine and does not replace mission mandate, official guidance, host-state law, human rights due diligence, command approval, or verified country analysis. Users should verify all context-specific findings through official and current sources before operational or policy use.
           </p>
           <div className="mt-2 text-slate-400 font-bold bg-slate-800/50 inline-block px-3 py-1 rounded-full border border-slate-800/80 mx-auto">
-            v0.3.0 — Visual Workspace & Mission Explorer Upgrade
+            {APP_VERSION_LABEL}
           </div>
         </div>
       </footer>

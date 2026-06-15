@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ShieldAlert, RefreshCw, BookOpen, User } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Modal } from '../ui/Modal';
+import { APP_VERSION_LABEL } from '../lib/version';
 
 interface HeaderProps {
   onReset: () => void;
@@ -88,7 +89,7 @@ export const Header: React.FC<HeaderProps> = ({ onReset, missionName, analystNam
             <strong>Data Privacy & Classification:</strong> This application runs entirely client-side in your browser. No data is sent to external servers. Custom configurations are stored locally in your browser storage. Do not enter sensitive, classified, or restricted host-state security or mission details into public web deployments of this tool.
           </p>
           <p>
-            <strong>Version History:</strong> v0.3.0 — Visual Workspace & Mission Explorer Upgrade. Developed by <strong>Lt.Col Maissara Selim</strong> to visualize capacity-building prioritization.
+            <strong>Current version:</strong> {APP_VERSION_LABEL}. Developed by <strong>Lt.Col Maissara Selim</strong> to visualize capacity-building prioritization.
           </p>
         </div>
       </Modal>

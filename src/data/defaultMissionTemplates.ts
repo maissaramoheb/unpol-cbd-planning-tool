@@ -4,7 +4,17 @@ export interface MissionTemplate {
   id: string;
   name: string;
   description: string;
-  profileDefaults: Omit<MissionProfile, 'templateId' | 'assessmentDate' | 'analystName'>;
+  profileDefaults: Omit<
+    MissionProfile,
+    | 'templateId'
+    | 'assessmentDate'
+    | 'analystName'
+    | 'sourceCategory'
+    | 'coverageScope'
+    | 'sourceUrl'
+    | 'sourceDate'
+    | 'profileLastReviewed'
+  >;
   pestelsOverrides?: Partial<Record<string, Partial<PestelsItem>>>;
 }
 

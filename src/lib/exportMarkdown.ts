@@ -1,6 +1,12 @@
 import { UnpolProjectData } from '../types';
 import { evaluateCbdCell } from './scoring';
 import { calculateQualityWarnings } from './warnings';
+import {
+  analyzeStakeholders,
+  formatStakeholderNames,
+  STAKEHOLDER_RATINGS_CAVEAT
+} from './stakeholderAnalysis';
+import { APP_VERSION_LABEL } from './version';
 
 export function generateMarkdownBrief(data: UnpolProjectData): string {
   const { profile, pestels, stakeholders, customCells, priorityBrief } = data;
@@ -17,20 +23,21 @@ export function generateMarkdownBrief(data: UnpolProjectData): string {
     .sort((a, b) => b.score - a.score)
     .slice(0, 3);
 
-  // 2. Compute Stakeholder Quadrants
-  const mapAQuadrants = {
-    allies: stakeholders.filter(s => (s.position === 'Enabler' || s.position === 'Persuadable') && s.influence === 'High'),
-    resistance: stakeholders.filter(s => (s.position === 'Blocker' || s.position === 'Spoiler risk') && s.influence === 'High'),
-    base: stakeholders.filter(s => (s.position === 'Enabler' || s.position === 'Persuadable' || s.position === 'Neutral / unknown') && s.influence !== 'High'),
-    monitor: stakeholders.filter(s => (s.position === 'Blocker' || s.position === 'Spoiler risk' || s.position === 'Neutral / unknown') && s.influence !== 'High')
-  };
-
-  const mapBQuadrants = {
-    partners: stakeholders.filter(s => s.legitimacy === 'High' && s.relevance === 'High'),
-    relevant: stakeholders.filter(s => s.legitimacy !== 'High' && s.relevance === 'High'),
-    voices: stakeholders.filter(s => s.legitimacy === 'High' && s.relevance !== 'High'),
-    monitoring: stakeholders.filter(s => s.legitimacy !== 'High' && s.relevance !== 'High')
-  };
+  // 2. Compute Stakeholder Decision-Support Summary
+  const stakeholderAnalysis = analyzeStakeholders(stakeholders);
+  const stakeholderQuadrantsMd = [
+    {
+      title: 'Influence × Support Posture',
+      quadrants: stakeholderAnalysis.engagementQuadrants
+    },
+    {
+      title: 'Legitimacy / Accountability × Operational Relevance',
+      quadrants: stakeholderAnalysis.credibilityQuadrants
+    }
+  ].map((map) => `### ${map.title}
+${map.quadrants.map((quadrant) => `- **${quadrant.title} (${quadrant.stakeholders.length})**: ${formatStakeholderNames(quadrant.stakeholders)}
+  - **Recommended posture**: ${quadrant.recommendation}
+  - **Review caveat**: ${quadrant.caveat}`).join('\n')}`).join('\n\n');
 
   // 3. Compute CBD Heatmap tags & priorities
   const prioritizedCells = Object.keys(customCells)
@@ -113,6 +120,9 @@ export function generateMarkdownBrief(data: UnpolProjectData): string {
 * **Area of Operations**: ${profile.region || 'N/A'}
 * **Prepared by**: ${profile.analystName || 'UNPOL Advisory Team'}
 * **Assessment Date**: ${profile.assessmentDate || 'N/A'}
+* **Source Category**: ${profile.sourceCategory || 'User-defined / static template'}
+* **Source Date**: ${profile.sourceDate || 'Not provided'}
+* **Profile Last Reviewed**: ${profile.profileLastReviewed || 'Not independently verified'}
 * **Workspace Initialization**: ${
     profile.templateId === 'blank'
       ? 'Started Blank'
@@ -122,7 +132,7 @@ export function generateMarkdownBrief(data: UnpolProjectData): string {
           ? `Mission Explorer (Fictional Training Scenario: ${profile.templateId.replace('fictional-', '').toUpperCase()})`
           : `Static Template (${profile.templateId || 'Unknown'})`
   }
-* **Version**: v0.3.0 — Visual Workspace & Mission Explorer Upgrade
+* **Version**: ${APP_VERSION_LABEL}
 
 ---
 
@@ -139,19 +149,21 @@ ${sortedPressures.map((p, i) => `${i + 1}. **${p.name}** (Pressure Score: ${p.sc
 
 ---
 
-## 1. Stakeholder quadrant Maps
+## 1. Stakeholder Decision-Support Summary
 
-### Influence × Support Posture Quadrants
-- **High-influence allies**: ${mapAQuadrants.allies.map(s => s.name).join(', ') || '*None*'}
-- **High-influence resistance / sensitive**: ${mapAQuadrants.resistance.map(s => s.name).join(', ') || '*None*'}
-- **Potential support base**: ${mapAQuadrants.base.map(s => s.name).join(', ') || '*None*'}
-- **Monitor / low engagement**: ${mapAQuadrants.monitor.map(s => s.name).join(', ') || '*None*'}
+${stakeholderQuadrantsMd}
 
-### Legitimacy × Operational Relevance Quadrants
-- **Core institutional partners**: ${mapBQuadrants.partners.map(s => s.name).join(', ') || '*None*'}
-- **Operationally relevant actors**: ${mapBQuadrants.relevant.map(s => s.name).join(', ') || '*None*'}
-- **Legitimacy / accountability voices**: ${mapBQuadrants.voices.map(s => s.name).join(', ') || '*None*'}
-- **Lower-priority monitoring**: ${mapBQuadrants.monitoring.map(s => s.name).join(', ') || '*None*'}
+### Recommended Engagement Posture
+- **Priority engagement risks**: ${formatStakeholderNames(stakeholderAnalysis.insights.priorityRisks)}
+- **Actors needing leadership-level engagement**: ${formatStakeholderNames(stakeholderAnalysis.insights.leadershipLevel)}
+- **Actors suitable for technical working groups**: ${formatStakeholderNames(stakeholderAnalysis.insights.technicalWorkingGroups)}
+- **Actors to consult for legitimacy/accountability**: ${formatStakeholderNames(stakeholderAnalysis.insights.legitimacyConsultation)}
+- **Actors currently requiring monitoring only**: ${formatStakeholderNames(stakeholderAnalysis.insights.monitoringOnly)}
+
+### Major Stakeholder Risk Notes
+${stakeholderAnalysis.insights.priorityRisks.map((stakeholder) => `- **${stakeholder.name}**: ${stakeholder.risk}`).join('\n') || '- No elevated stakeholder risks currently derived from the recorded ratings.'}
+
+> **Analytical caveat:** ${STAKEHOLDER_RATINGS_CAVEAT}
 
 ---
 

@@ -2,6 +2,7 @@ import { UnpolProjectData, MissionProfile, PestelsItem, Stakeholder, CbdCell } f
 import { MissionExplorerEntry } from '../types/explorer';
 import { defaultPestelsData } from '../data/pestelsCategories';
 import { emptyPriorityBrief } from './storage';
+import { APP_VERSION } from './version';
 
 export function applyMissionSeed(entry: MissionExplorerEntry): UnpolProjectData {
   const profile: MissionProfile = {
@@ -14,7 +15,12 @@ export function applyMissionSeed(entry: MissionExplorerEntry): UnpolProjectData 
     planningPurpose: entry.starterProfile.planningPurpose,
     assessmentDate: new Date().toISOString().split('T')[0],
     analystName: '',
-    templateId: entry.id
+    templateId: entry.id,
+    sourceCategory: entry.sourceCategory,
+    coverageScope: entry.coverageScope,
+    sourceUrl: entry.sourceUrl,
+    sourceDate: entry.sourceDate,
+    profileLastReviewed: entry.profileLastReviewed
   };
 
   // Populate PESTEL-S with prompts
@@ -84,6 +90,6 @@ export function applyMissionSeed(entry: MissionExplorerEntry): UnpolProjectData 
       risksAssumptions: entry.planningThemes.map((theme) => `Verify operational capacity-building indicators for: ${theme}.`),
       sequencingRecommendation: ''
     },
-    version: 'v0.3.0' // Keep backward storage compatibility
+    version: APP_VERSION
   };
 }

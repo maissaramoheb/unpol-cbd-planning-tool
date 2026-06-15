@@ -1,3 +1,5 @@
+import type { MissionCoverageScope, MissionSourceCategory } from './explorer';
+
 export interface MissionProfile {
   countryName: string;
   missionName: string;
@@ -9,6 +11,11 @@ export interface MissionProfile {
   assessmentDate: string;
   analystName: string;
   templateId: string;
+  sourceCategory: MissionSourceCategory | null;
+  coverageScope: MissionCoverageScope | null;
+  sourceUrl: string | null;
+  sourceDate: string | null;
+  profileLastReviewed: string | null;
 }
 
 export interface PestelsRating {
@@ -55,6 +62,8 @@ export interface PestelsItem {
 }
 
 export type StakeholderPosition = 'Enabler' | 'Persuadable' | 'Blocker' | 'Spoiler risk' | 'Neutral / unknown';
+export type RatingLevel = 'High' | 'Medium' | 'Low';
+export type CapacityLevel = RatingLevel | 'Variable';
 
 export interface Stakeholder {
   id: string;
@@ -62,11 +71,11 @@ export interface Stakeholder {
   category: string;
   role: string;
   authority: string;
-  influence: string;    // 'High' | 'Medium' | 'Low'
+  influence: RatingLevel;
   position: StakeholderPosition;
-  legitimacy: string;   // 'High' | 'Medium' | 'Low'
-  relevance: string;    // 'High' | 'Medium' | 'Low'
-  capacity: string;     // 'High' | 'Medium' | 'Low'
+  legitimacy: RatingLevel;
+  relevance: RatingLevel;
+  capacity: CapacityLevel;
   risk: string;
   entry: string;
   engagement: string;

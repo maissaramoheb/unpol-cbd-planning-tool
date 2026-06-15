@@ -5,6 +5,19 @@ export type MissionExplorerStatus =
   | 'template'
   | 'custom';
 
+export type MissionSourceCategory =
+  | 'Current UN Peacekeeping Operation'
+  | 'Special Political Mission'
+  | 'Regional Political Presence'
+  | 'Peacebuilding / Support Context'
+  | 'Fictional Training Scenario'
+  | 'Custom User Context';
+
+export type MissionCoverageScope =
+  | 'selected-starter'
+  | 'training'
+  | 'custom';
+
 export interface MissionExplorerEntry {
   id: string;
   country: string;
@@ -14,11 +27,14 @@ export interface MissionExplorerEntry {
   missionName: string;
   missionAcronym: string;
   missionType: string;
+  sourceCategory: MissionSourceCategory;
+  coverageScope: MissionCoverageScope;
   status: MissionExplorerStatus;
   isFictionalScenario: boolean;
   isOfficial: boolean;
   sourceDate: string | null;
   profileLastReviewed: string | null;
+  sourceUrl: string | null;
   sourceNote: string;
   disclaimer: string;
   hostStatePoliceInstitution: string;

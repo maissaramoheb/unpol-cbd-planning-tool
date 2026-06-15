@@ -4,24 +4,40 @@ import {
   MissionProfile,
   PestelsItem,
   PriorityBrief,
-  Stakeholder,
   StakeholderPosition,
   UnpolProjectData
 } from '../types';
 import { PESTELS_KEYS } from '../data/pestelsCategories';
+import type { MissionCoverageScope, MissionSourceCategory } from '../types/explorer';
+import { APP_VERSION } from './version';
 
 export interface ProjectDataValidationResult {
   data: UnpolProjectData | null;
   error: string | null;
 }
 
-const CURRENT_PROJECT_VERSION = 'v0.3.0';
 const STAKEHOLDER_POSITIONS = new Set<StakeholderPosition>([
   'Enabler',
   'Persuadable',
   'Blocker',
   'Spoiler risk',
   'Neutral / unknown'
+]);
+const RATING_LEVELS = new Set(['High', 'Medium', 'Low']);
+const LEGACY_RATING_LEVELS = new Set(['High', 'Medium', 'Low', 'Variable']);
+const CAPACITY_LEVELS = new Set(['High', 'Medium', 'Low', 'Variable']);
+const MISSION_SOURCE_CATEGORIES = new Set<MissionSourceCategory>([
+  'Current UN Peacekeeping Operation',
+  'Special Political Mission',
+  'Regional Political Presence',
+  'Peacebuilding / Support Context',
+  'Fictional Training Scenario',
+  'Custom User Context'
+]);
+const MISSION_COVERAGE_SCOPES = new Set<MissionCoverageScope>([
+  'selected-starter',
+  'training',
+  'custom'
 ]);
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -60,7 +76,7 @@ function hasValidEvidenceNotes(value: unknown): boolean {
 function isMissionProfile(value: unknown): value is MissionProfile {
   if (!isRecord(value)) return false;
 
-  return hasStringFields(value, [
+  const hasCoreFields = hasStringFields(value, [
     'countryName',
     'missionName',
     'region',
@@ -72,6 +88,20 @@ function isMissionProfile(value: unknown): value is MissionProfile {
     'analystName',
     'templateId'
   ]);
+
+  const hasValidSourceCategory =
+    value.sourceCategory === undefined ||
+    value.sourceCategory === null ||
+    MISSION_SOURCE_CATEGORIES.has(value.sourceCategory as MissionSourceCategory);
+  const hasValidCoverageScope =
+    value.coverageScope === undefined ||
+    value.coverageScope === null ||
+    MISSION_COVERAGE_SCOPES.has(value.coverageScope as MissionCoverageScope);
+  const hasValidOptionalMetadata = ['sourceUrl', 'sourceDate', 'profileLastReviewed'].every(
+    (field) => value[field] === undefined || value[field] === null || isString(value[field])
+  );
+
+  return hasCoreFields && hasValidSourceCategory && hasValidCoverageScope && hasValidOptionalMetadata;
 }
 
 function isPestelsItem(value: unknown): value is PestelsItem {
@@ -90,7 +120,7 @@ function isPestelsItem(value: unknown): value is PestelsItem {
   );
 }
 
-function isStakeholder(value: unknown): value is Stakeholder {
+function isStakeholder(value: unknown): boolean {
   if (!isRecord(value)) return false;
 
   return (
@@ -110,6 +140,10 @@ function isStakeholder(value: unknown): value is Stakeholder {
       'engagement'
     ]) &&
     STAKEHOLDER_POSITIONS.has(value.position as StakeholderPosition) &&
+    RATING_LEVELS.has(value.influence as string) &&
+    LEGACY_RATING_LEVELS.has(value.legitimacy as string) &&
+    RATING_LEVELS.has(value.relevance as string) &&
+    CAPACITY_LEVELS.has(value.capacity as string) &&
     isStringArray(value.cbdAreas) &&
     (value.isCustom === undefined || typeof value.isCustom === 'boolean') &&
     hasValidEvidenceNotes(value.evidenceNotes)
@@ -163,7 +197,15 @@ function isPriorityBrief(value: unknown): value is PriorityBrief {
 function normalizeProjectData(data: UnpolProjectData): UnpolProjectData {
   return {
     ...data,
-    version: CURRENT_PROJECT_VERSION,
+    version: APP_VERSION,
+    profile: {
+      ...data.profile,
+      sourceCategory: data.profile.sourceCategory ?? null,
+      coverageScope: data.profile.coverageScope ?? null,
+      sourceUrl: data.profile.sourceUrl ?? null,
+      sourceDate: data.profile.sourceDate ?? null,
+      profileLastReviewed: data.profile.profileLastReviewed ?? null
+    },
     pestels: Object.fromEntries(
       Object.entries(data.pestels).map(([key, item]) => [
         key,
@@ -172,6 +214,7 @@ function normalizeProjectData(data: UnpolProjectData): UnpolProjectData {
     ),
     stakeholders: data.stakeholders.map((stakeholder) => ({
       ...stakeholder,
+      legitimacy: String(stakeholder.legitimacy) === 'Variable' ? 'Medium' : stakeholder.legitimacy,
       evidenceNotes: stakeholder.evidenceNotes ?? []
     })),
     customCells: Object.fromEntries(

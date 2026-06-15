@@ -7,6 +7,7 @@ import { TextArea } from '../ui/TextArea';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { Shield, BookOpen, Layers, Award, FileText, Globe } from 'lucide-react';
+import { APP_RELEASE_NAME, APP_VERSION } from '../lib/version';
 
 interface MissionProfileProps {
   profile: ProfileType;
@@ -54,8 +55,8 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
         <CardBody className="p-6 md:p-8 flex flex-col gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <Badge variant="blue" className="bg-blue-900 text-blue-100 border-blue-800">v0.3.0</Badge>
-              <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Visual Workspace & Mission Explorer Upgrade</span>
+              <Badge variant="blue" className="bg-blue-900 text-blue-100 border-blue-800">{APP_VERSION}</Badge>
+              <span className="text-xs font-bold text-slate-300">{APP_RELEASE_NAME}</span>
             </div>
             <h2 className="text-xl md:text-2xl font-black uppercase text-blue-400 tracking-tight mt-1.5">
               Unofficial UNPOL Capacity-Building & Development (CBD) Planning Prototype

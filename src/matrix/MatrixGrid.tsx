@@ -164,7 +164,7 @@ export const MatrixGrid: React.FC<MatrixGridProps> = ({
                         {shortColName(col.name)}
                       </span>
                       {custom && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" title="Customized analysis available" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-600" title="Customized analysis available" />
                       )}
                     </div>
                     

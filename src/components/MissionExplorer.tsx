@@ -5,7 +5,7 @@ import { MissionExplorerMap } from './MissionExplorerMap';
 import { MissionExplorerList } from './MissionExplorerList';
 import { MissionExplorerPanel } from './MissionExplorerPanel';
 import { Button } from '../ui/Button';
-import { Globe, List, X } from 'lucide-react';
+import { AlertTriangle, Globe, List, X } from 'lucide-react';
 import { filterMissionExplorerEntries } from '../lib/explorerFilters';
 
 interface MissionExplorerProps {
@@ -78,6 +78,15 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
           >
             <X size={20} />
           </button>
+        </div>
+
+        <div className="shrink-0 border-b border-amber-200 bg-amber-50 px-5 py-3 text-xs leading-relaxed text-amber-950">
+          <div className="flex items-start gap-2.5">
+            <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-700" />
+            <p>
+              <strong>Coverage notice:</strong> Mission Explorer currently contains selected starter planning profiles and fictional training scenarios. It is not a complete UN mission registry. Mission status, mandate, and country facts must be verified against current official sources before professional use.
+            </p>
+          </div>
         </div>
 
         {/* Content Body Grid */}

@@ -1,10 +1,11 @@
 import React from 'react';
-import { UnpolProjectData, Stakeholder } from '../types';
+import { UnpolProjectData } from '../types';
 import { calculateQualityWarnings } from '../lib/warnings';
 import { Card, CardBody, CardHeader } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 import { evaluateCbdCell } from '../lib/scoring';
+import { StakeholderDecisionSupport } from './StakeholderDecisionSupport';
 import {
   Shield,
   Users,
@@ -138,60 +139,6 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
     const assessment = evaluateCbdCell(cell);
     return { key, cell, score: assessment.score };
   }).sort((a, b) => b.score - a.score).slice(0, 5);
-
-  // --- STAKEHOLDER COORDINATE PLOTS ---
-  const getCoordinates = (s: Stakeholder, index: number) => {
-    let x = 50;
-    let y = 50;
-    if (s.position === 'Enabler') x = 80;
-    else if (s.position === 'Persuadable') x = 65;
-    else if (s.position === 'Neutral / unknown') x = 50;
-    else if (s.position === 'Blocker') x = 35;
-    else if (s.position === 'Spoiler risk') x = 20;
-
-    if (s.influence === 'High') y = 75;
-    else if (s.influence === 'Medium') y = 50;
-    else if (s.influence === 'Low') y = 25;
-
-    // Small deterministic jitter based on index
-    const jitterX = ((index * 7) % 9) - 4; // -4% to +4%
-    const jitterY = ((index * 13) % 9) - 4;
-
-    return { x: Math.max(10, Math.min(90, x + jitterX)), y: Math.max(10, Math.min(90, y + jitterY)) };
-  };
-
-  const getMapBCoordinates = (s: Stakeholder, index: number) => {
-    let x = 50;
-    let y = 50;
-    if (s.relevance === 'High') x = 75;
-    else if (s.relevance === 'Medium') x = 50;
-    else if (s.relevance === 'Low') x = 25;
-
-    if (s.legitimacy === 'High') y = 75;
-    else if (s.legitimacy === 'Medium') y = 50;
-    else if (s.legitimacy === 'Low') y = 25;
-
-    const jitterX = ((index * 9) % 9) - 4;
-    const jitterY = ((index * 17) % 9) - 4;
-
-    return { x: Math.max(10, Math.min(90, x + jitterX)), y: Math.max(10, Math.min(90, y + jitterY)) };
-  };
-
-  // Group stakeholders by Map A quadrants
-  const mapAQuadrants = {
-    allies: stakeholders.filter(s => (s.position === 'Enabler' || s.position === 'Persuadable') && s.influence === 'High'),
-    resistance: stakeholders.filter(s => (s.position === 'Blocker' || s.position === 'Spoiler risk') && s.influence === 'High'),
-    base: stakeholders.filter(s => (s.position === 'Enabler' || s.position === 'Persuadable' || s.position === 'Neutral / unknown') && s.influence !== 'High'),
-    monitor: stakeholders.filter(s => (s.position === 'Blocker' || s.position === 'Spoiler risk' || s.position === 'Neutral / unknown') && s.influence !== 'High')
-  };
-
-  // Group stakeholders by Map B quadrants
-  const mapBQuadrants = {
-    partners: stakeholders.filter(s => s.legitimacy === 'High' && s.relevance === 'High'),
-    relevant: stakeholders.filter(s => s.legitimacy !== 'High' && s.relevance === 'High'),
-    voices: stakeholders.filter(s => s.legitimacy === 'High' && s.relevance !== 'High'),
-    monitoring: stakeholders.filter(s => s.legitimacy !== 'High' && s.relevance !== 'High')
-  };
 
   return (
     <div className="flex flex-col gap-6 w-full">
@@ -374,197 +321,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
             <Users size={16} className="text-blue-600" />
             Stakeholder Position Quadrants
           </h4>
+          <p className="mt-1 text-xs leading-relaxed text-slate-600">
+            Decision-support views derived from the current stakeholder ratings and recorded engagement assumptions.
+          </p>
         </CardHeader>
-        <CardBody className="flex flex-col gap-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Map 1: Influence × Support */}
-            <div className="flex flex-col gap-3">
-              <div className="text-center">
-                <h5 className="font-bold text-xs text-slate-800 uppercase tracking-wider">Stakeholder Engagement Matrix</h5>
-                <span className="text-[10px] text-slate-400 font-semibold block uppercase">Influence (Y) &times; Support Posture (X)</span>
-              </div>
-
-              {/* Visual 2x2 grid for Desktop/Tablet */}
-              <div className="hidden sm:block relative border-2 border-slate-300 w-full aspect-[4/3] rounded-xl bg-slate-50 overflow-hidden shadow-inner mt-2">
-                {/* Central Axes */}
-                <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-slate-300 border-dashed" />
-                <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-slate-300 border-dashed" />
-
-                {/* Quadrant Labels */}
-                <span className="absolute top-3 left-3 text-[9px] font-black uppercase text-slate-400 max-w-[140px] leading-tight">
-                  High-influence resistance
-                </span>
-                <span className="absolute top-3 right-3 text-[9px] font-black uppercase text-slate-400 max-w-[140px] leading-tight text-right">
-                  High-influence allies
-                </span>
-                <span className="absolute bottom-3 left-3 text-[9px] font-black uppercase text-slate-400 max-w-[140px] leading-tight">
-                  Monitor / low engagement
-                </span>
-                <span className="absolute bottom-3 right-3 text-[9px] font-black uppercase text-slate-400 max-w-[140px] leading-tight text-right">
-                  Potential support base
-                </span>
-
-                {/* Plot Nodes */}
-                {stakeholders.map((s, idx) => {
-                  const { x, y } = getCoordinates(s, idx);
-                  const isNegative = s.position === 'Blocker' || s.position === 'Spoiler risk';
-                  const isPositive = s.position === 'Enabler' || s.position === 'Persuadable';
-                  
-                  return (
-                    <div
-                      key={s.id}
-                      style={{ left: `${x}%`, bottom: `${y}%` }}
-                      className={`
-                        absolute -translate-x-1/2 translate-y-1/2 w-4.5 h-4.5 rounded-full flex items-center justify-center cursor-pointer transition-all border shadow-sm group hover:scale-125 hover:z-20
-                        ${isNegative
-                          ? 'bg-rose-500 border-rose-600 text-white'
-                          : isPositive
-                            ? 'bg-emerald-500 border-emerald-600 text-white'
-                            : 'bg-slate-400 border-slate-500 text-white'
-                        }
-                      `}
-                    >
-                      <span className="text-[8px] font-black">{idx + 1}</span>
-
-                      {/* Tooltip on Hover */}
-                      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white rounded-lg p-2.5 text-[10px] w-48 shadow-lg pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-30 leading-normal flex flex-col gap-0.5 border border-slate-700">
-                        <span className="font-extrabold block text-white border-b border-slate-700 pb-1 mb-1">{idx + 1}. {s.name}</span>
-                        <span>Posture: <strong>{s.position}</strong></span>
-                        <span>Influence: <strong>{s.influence}</strong></span>
-                        <span>Relevance: <strong>{s.relevance}</strong></span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Mobile stacked quadrant cards */}
-              <div className="block sm:hidden flex flex-col gap-2.5 mt-2">
-                {[
-                  { title: 'High-influence allies', list: mapAQuadrants.allies, color: 'border-emerald-200 bg-emerald-50/10' },
-                  { title: 'High-influence resistance', list: mapAQuadrants.resistance, color: 'border-rose-200 bg-rose-50/10' },
-                  { title: 'Potential support base', list: mapAQuadrants.base, color: 'border-blue-200 bg-blue-50/10' },
-                  { title: 'Monitor / low immediate engagement', list: mapAQuadrants.monitor, color: 'border-slate-200 bg-slate-50/30' }
-                ].map((quad, i) => (
-                  <div key={i} className={`p-3 border rounded-xl flex flex-col gap-1.5 ${quad.color}`}>
-                    <span className="text-[10px] font-black uppercase text-slate-500 tracking-wider border-b border-slate-200/40 pb-1">{quad.title}</span>
-                    {quad.list.length === 0 ? (
-                      <span className="text-xs text-slate-400 italic">No stakeholders assigned</span>
-                    ) : (
-                      <div className="flex flex-wrap gap-1.5 mt-1">
-                        {quad.list.map(s => (
-                          <Badge key={s.id} variant="slate" className="text-[10px]">{s.name}</Badge>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Map 2: Legitimacy × Operational Relevance */}
-            <div className="flex flex-col gap-3">
-              <div className="text-center">
-                <h5 className="font-bold text-xs text-slate-800 uppercase tracking-wider">Operational Credibility Map</h5>
-                <span className="text-[10px] text-slate-400 font-semibold block uppercase">Legitimacy (Y) &times; Relevance (X)</span>
-              </div>
-
-              {/* Visual 2x2 grid for Desktop/Tablet */}
-              <div className="hidden sm:block relative border-2 border-slate-300 w-full aspect-[4/3] rounded-xl bg-slate-50 overflow-hidden shadow-inner mt-2">
-                {/* Central Axes */}
-                <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-slate-300 border-dashed" />
-                <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-slate-300 border-dashed" />
-
-                {/* Quadrant Labels */}
-                <span className="absolute top-3 left-3 text-[9px] font-black uppercase text-slate-400 max-w-[140px] leading-tight">
-                  Legitimacy / accountability voices
-                </span>
-                <span className="absolute top-3 right-3 text-[9px] font-black uppercase text-slate-400 max-w-[140px] leading-tight text-right">
-                  Core institutional partners
-                </span>
-                <span className="absolute bottom-3 left-3 text-[9px] font-black uppercase text-slate-400 max-w-[140px] leading-tight">
-                  Lower-priority monitoring
-                </span>
-                <span className="absolute bottom-3 right-3 text-[9px] font-black uppercase text-slate-400 max-w-[140px] leading-tight text-right">
-                  Operationally relevant actors
-                </span>
-
-                {/* Plot Nodes */}
-                {stakeholders.map((s, idx) => {
-                  const { x, y } = getMapBCoordinates(s, idx);
-                  const isCore = s.legitimacy === 'High' && s.relevance === 'High';
-                  const isVoice = s.legitimacy === 'High' && s.relevance !== 'High';
-                  const isDeFacto = s.legitimacy !== 'High' && s.relevance === 'High';
-
-                  return (
-                    <div
-                      key={s.id}
-                      style={{ left: `${x}%`, bottom: `${y}%` }}
-                      className={`
-                        absolute -translate-x-1/2 translate-y-1/2 w-4.5 h-4.5 rounded-full flex items-center justify-center cursor-pointer transition-all border shadow-sm group hover:scale-125 hover:z-20
-                        ${isCore
-                          ? 'bg-blue-600 border-blue-700 text-white'
-                          : isVoice
-                            ? 'bg-purple-500 border-purple-650 text-white'
-                            : isDeFacto
-                              ? 'bg-amber-500 border-amber-650 text-white'
-                              : 'bg-slate-400 border-slate-500 text-white'
-                        }
-                      `}
-                    >
-                      <span className="text-[8px] font-black">{idx + 1}</span>
-
-                      {/* Tooltip on Hover */}
-                      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white rounded-lg p-2.5 text-[10px] w-48 shadow-lg pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-30 leading-normal flex flex-col gap-0.5 border border-slate-700">
-                        <span className="font-extrabold block text-white border-b border-slate-700 pb-1 mb-1">{idx + 1}. {s.name}</span>
-                        <span>Legitimacy: <strong>{s.legitimacy}</strong></span>
-                        <span>Relevance: <strong>{s.relevance}</strong></span>
-                        <span>Capacity: <strong>{s.capacity}</strong></span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Mobile stacked quadrant cards */}
-              <div className="block sm:hidden flex flex-col gap-2.5 mt-2">
-                {[
-                  { title: 'Core institutional partners', list: mapBQuadrants.partners, color: 'border-blue-200 bg-blue-50/10' },
-                  { title: 'Operationally relevant actors', list: mapBQuadrants.relevant, color: 'border-amber-200 bg-amber-50/10' },
-                  { title: 'Legitimacy / accountability voices', list: mapBQuadrants.voices, color: 'border-purple-200 bg-purple-50/10' },
-                  { title: 'Lower-priority monitoring', list: mapBQuadrants.monitoring, color: 'border-slate-200 bg-slate-50/30' }
-                ].map((quad, i) => (
-                  <div key={i} className={`p-3 border rounded-xl flex flex-col gap-1.5 ${quad.color}`}>
-                    <span className="text-[10px] font-black uppercase text-slate-500 tracking-wider border-b border-slate-200/40 pb-1">{quad.title}</span>
-                    {quad.list.length === 0 ? (
-                      <span className="text-xs text-slate-400 italic">No stakeholders assigned</span>
-                    ) : (
-                      <div className="flex flex-wrap gap-1.5 mt-1">
-                        {quad.list.map(s => (
-                          <Badge key={s.id} variant="slate" className="text-[10px]">{s.name}</Badge>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          
-          {/* Index Legend */}
-          <div className="bg-slate-50 border border-slate-200/60 p-3 rounded-xl">
-            <span className="text-[9px] font-extrabold text-slate-500 uppercase tracking-widest block mb-2 text-center">Stakeholder Roster Index</span>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-1.5 text-xs text-slate-700">
-              {stakeholders.map((s, idx) => (
-                <div key={s.id} className="flex gap-1.5 items-center leading-tight truncate">
-                  <span className="w-4.5 h-4.5 rounded bg-slate-200 text-slate-700 font-bold text-[9px] flex items-center justify-center shrink-0">
-                    {idx + 1}
-                  </span>
-                  <span className="truncate font-semibold">{s.name}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+        <CardBody>
+          <StakeholderDecisionSupport stakeholders={stakeholders} />
         </CardBody>
       </Card>
 

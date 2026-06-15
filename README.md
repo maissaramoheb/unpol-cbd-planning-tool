@@ -1,6 +1,6 @@
 # Unofficial UNPOL CBD Integrated Planning Prototype
 
-v0.3.0 — Visual Workspace & Mission Explorer Upgrade
+v0.3.1 — UI/UX Polish & Stakeholder Decision-Support Upgrade
 
 The **Unofficial UNPOL Capacity-Building & Development (CBD) Integrated Planning Prototype** is an educational and planning-support framework designed to help UNPOL Advisory Teams, Security Sector Reform (SSR) specialists, and peace operations planning officers diagnose host-state environmental challenges, map critical stakeholders, configure targeted police capacity-building actions, and construct strategic sequencing pathways.
 
@@ -22,9 +22,10 @@ This application runs entirely client-side in the browser. No data is transmitte
 1. **Context-Adaptable Mission Profiles**: Select from 6 preloaded baseline templates (UN Peacekeeping, Special Political Mission, Post-Conflict SSR, Police Reform Advisory, Capacity Building & Training, Rule of Law/Justice-Chain) or choose a clean **Start Blank** slate.
 2. **PESTEL-S Environmental Diagnosis**: Systematic analysis of 7 categories (Political, Economic, Social, Technological, Environmental, Legal, Security) shaping host-state policing constraints.
 3. **Actor Assessment & Stakeholder Mapping**: Categorize and analyze enablers, blockers, spoilers, and neutral actors. Define their real influence, reform posture, and UNPOL entry points.
-4. **Interactive 5×6 CBD Matrix**: Intersect 5 Key Reform Areas with 6 Capacity Dimensions to structure specific advisory inputs (Individual, Organizational, and Enabling Environment levels) along with monitoring indicators and risks.
-5. **Strategic Prioritization & Sequencing**: Compile Quick Wins, politically sensitive reforms, and long-term sequencing paths. Interventions are automatically prioritized using a multi-criteria scoring algorithm.
-6. **Production-Ready Reporting & Backups**:
+4. **Stakeholder Decision-Support Quadrants**: Review accessible engagement and operational-credibility matrices with shared classifications, engagement recommendations, risk caveats, and export summaries.
+5. **Interactive 5×6 CBD Matrix**: Intersect 5 Key Reform Areas with 6 Capacity Dimensions to structure specific advisory inputs (Individual, Organizational, and Enabling Environment levels) along with monitoring indicators and risks.
+6. **Strategic Prioritization & Sequencing**: Compile Quick Wins, politically sensitive reforms, and long-term sequencing paths. Interventions are automatically prioritized using a multi-criteria scoring algorithm.
+7. **Production-Ready Reporting & Backups**:
    - Preview and print a PDF-ready cover-sheet brief.
    - Copy a clean Markdown format report.
    - Save or upload the entire workspace configuration as a local JSON file.

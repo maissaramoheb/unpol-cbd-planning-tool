@@ -4,6 +4,7 @@ import { defaultStakeholders } from '../data/defaultStakeholders';
 import { customCells } from '../data/cbdMatrixData';
 import { defaultMissionTemplates } from '../data/defaultMissionTemplates';
 import { validateAndNormalizeProjectData } from './projectDataValidation';
+import { APP_VERSION } from './version';
 
 const STORAGE_KEY = 'unpol_planning_tool_project_data';
 
@@ -48,7 +49,12 @@ export const defaultProfile: MissionProfile = {
   planningPurpose: '[PROMPT] Define the intended capacity-building planning purpose.',
   assessmentDate: new Date().toISOString().split('T')[0],
   analystName: 'Lt.Col Maissara Selim',
-  templateId: 'peacekeeping'
+  templateId: 'peacekeeping',
+  sourceCategory: null,
+  coverageScope: null,
+  sourceUrl: null,
+  sourceDate: null,
+  profileLastReviewed: null
 };
 
 export function getInitialProjectData(templateId = 'peacekeeping'): UnpolProjectData {
@@ -64,7 +70,12 @@ export function getInitialProjectData(templateId = 'peacekeeping'): UnpolProject
     conflictContext: template.profileDefaults.conflictContext,
     planningPurpose: template.profileDefaults.planningPurpose,
     assessmentDate: new Date().toISOString().split('T')[0],
-    templateId: templateId
+    templateId: templateId,
+    sourceCategory: null,
+    coverageScope: null,
+    sourceUrl: null,
+    sourceDate: null,
+    profileLastReviewed: null
   };
 
   // Clone default PESTEL-S and apply overrides
@@ -123,7 +134,7 @@ export function getInitialProjectData(templateId = 'peacekeeping'): UnpolProject
           sequencingRecommendation: ''
         }
       : JSON.parse(JSON.stringify(emptyPriorityBrief)),
-    version: 'v0.3.0'
+    version: APP_VERSION
   };
 }
 
