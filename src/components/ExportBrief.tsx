@@ -1,0 +1,311 @@
+import React, { useRef, useState } from 'react';
+import { UnpolProjectData } from '../types';
+import { generateMarkdownBrief, copyToClipboard } from '../lib/exportMarkdown';
+import { exportProjectData, importProjectData } from '../lib/storage';
+import { Button } from '../ui/Button';
+import { Card } from '../ui/Card';
+import { Badge } from '../ui/Badge';
+import { FileDown, FileUp, Clipboard, Printer, Check, AlertTriangle, ShieldAlert } from 'lucide-react';
+
+interface ExportBriefProps {
+  data: UnpolProjectData;
+  onImportSuccess: (importedData: UnpolProjectData) => void;
+  onPrev: () => void;
+}
+
+export const ExportBrief: React.FC<ExportBriefProps> = ({
+  data,
+  onImportSuccess,
+  onPrev
+}) => {
+  const [copied, setCopied] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleCopyMarkdown = async () => {
+    const md = generateMarkdownBrief(data);
+    const success = await copyToClipboard(md);
+    if (success) {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleDownloadJSON = () => {
+    exportProjectData(data);
+  };
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setErrorMsg(null);
+      const parsed = await importProjectData(file);
+      onImportSuccess(parsed);
+      alert('Project configuration successfully restored!');
+    } catch (err) {
+      const error = err as Error;
+      setErrorMsg(error.message || 'Failed to parse JSON project file.');
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-6">
+      {/* Introduction & Quick Actions */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h3 className="text-lg font-bold text-slate-950">6. Export Planning Brief</h3>
+          <p className="text-sm text-slate-500 mt-1">
+            Export the completed planning brief to Markdown or print layout, or save/restore the full project JSON.
+          </p>
+        </div>
+
+        {/* Action Buttons Toolbar */}
+        <div className="flex flex-wrap gap-2 shrink-0">
+          <Button variant="outline" size="sm" onClick={handleCopyMarkdown} className="font-semibold text-slate-700">
+            {copied ? (
+              <>
+                <Check size={14} className="mr-1.5 text-emerald-600 animate-scale" />
+                Copied Markdown
+              </>
+            ) : (
+              <>
+                <Clipboard size={14} className="mr-1.5" />
+                Copy Markdown
+              </>
+            )}
+          </Button>
+
+          <Button variant="outline" size="sm" onClick={handlePrint} className="font-semibold text-slate-700">
+            <Printer size={14} className="mr-1.5" />
+            Print Brief
+          </Button>
+
+          <Button variant="outline" size="sm" onClick={handleDownloadJSON} className="font-semibold text-slate-700">
+            <FileDown size={14} className="mr-1.5 text-blue-600" />
+            Save JSON
+          </Button>
+
+          <Button variant="outline" size="sm" onClick={handleUploadClick} className="font-semibold text-slate-700">
+            <FileUp size={14} className="mr-1.5 text-indigo-600" />
+            Upload JSON
+          </Button>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept=".json"
+            className="hidden"
+          />
+        </div>
+      </div>
+
+      {errorMsg && (
+        <div className="bg-rose-50 border border-rose-200 text-rose-800 p-3 rounded-lg text-xs flex items-center gap-2">
+          <AlertTriangle size={16} className="shrink-0 text-rose-600" />
+          <span>{errorMsg}</span>
+        </div>
+      )}
+
+      {/* Structured Planning Brief Preview */}
+      <Card className="print:border-0 print:shadow-none bg-white p-6 md:p-8 max-w-4xl mx-auto shadow-sm border border-slate-200">
+        <div className="print-area flex flex-col gap-6 font-sans text-slate-800">
+          {/* Document Header */}
+          <div className="border-b-4 border-slate-900 pb-4 flex flex-col md:flex-row md:items-end justify-between gap-3">
+            <div>
+              <h2 className="text-xl md:text-2xl font-black uppercase text-slate-900 tracking-tight">
+                UNPOL CBD Integrated Planning Brief
+              </h2>
+              <span className="text-xs font-bold text-blue-600 tracking-widest uppercase block mt-1">
+                Contextual Development & Advisory Framework
+              </span>
+            </div>
+            <div className="text-left md:text-right text-xs text-slate-400">
+              <span className="block font-bold">Assessment Date: {data.profile.assessmentDate}</span>
+              <span className="block">Analyst: {data.profile.analystName || 'UNPOL Planning Team'}</span>
+            </div>
+          </div>
+
+          {/* Section 1: Country Profile */}
+          <div>
+            <h3 className="text-xs font-black uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-1.5 mb-3">
+              1. Country / Mission Profile
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 text-xs leading-relaxed">
+              {[
+                { label: 'Country / Context', val: data.profile.countryName },
+                { label: 'UN Mission', val: data.profile.missionName },
+                { label: 'Region / Sectors', val: data.profile.region },
+                { label: 'Host-State Police Force', val: data.profile.hostStatePolice },
+                { label: 'Planning Objective', val: data.profile.planningPurpose },
+                { label: 'Mandate Environment', val: data.profile.mandateEnvironment },
+                { label: 'Conflict Context', val: data.profile.conflictContext }
+              ].map((item, idx) => (
+                <div key={idx} className="flex flex-col gap-0.5">
+                  <span className="font-extrabold text-slate-400 uppercase text-[9px] tracking-tight">{item.label}</span>
+                  <span className="text-slate-800 font-semibold">{item.val || 'N/A'}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Section 2: Executive Summary */}
+          <div>
+            <h3 className="text-xs font-black uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-1.5 mb-2">
+              2. Executive Summary
+            </h3>
+            <p className="text-xs leading-relaxed text-slate-600">
+              This capacity-building and development (CBD) brief provides a structured alignment between the host-state environmental pressures, critical stakeholders, and targeted police development priority areas. It is designed to guide UNPOL advisors in sequencing training, administrative reforms, and legal interventions.
+            </p>
+          </div>
+
+          {/* Section 3: PESTEL-S Findings */}
+          <div>
+            <h3 className="text-xs font-black uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-1.5 mb-3">
+              3. Key PESTEL-S Situational Findings
+            </h3>
+            <div className="flex flex-col gap-4 text-xs">
+              {Object.values(data.pestels).map((p) => (
+                <div key={p.id} className="p-3 bg-slate-50/50 border border-slate-100 rounded-lg flex flex-col gap-1.5">
+                  <div className="flex items-center justify-between gap-2 border-b border-slate-200/60 pb-1.5">
+                    <span className="font-extrabold text-slate-900 uppercase tracking-tight text-[10px]">
+                      {p.name}
+                    </span>
+                    <Badge variant={p.rating.impact >= 4 ? 'rose' : 'slate'}>
+                      Impact: {p.rating.impact}/5 | Urgency: {p.rating.urgency}/5
+                    </Badge>
+                  </div>
+                  <p className="text-slate-700"><span className="font-bold text-slate-500 mr-1">Diagnosis:</span>{p.finding}</p>
+                  <p className="text-slate-600 italic"><span className="font-semibold text-slate-500 not-italic mr-1">Why it matters:</span>{p.why}</p>
+                  <p className="text-slate-500"><span className="font-bold text-slate-400 mr-1">Sequencing:</span>{p.sequencing}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Section 4: Stakeholder Summary */}
+          <div>
+            <h3 className="text-xs font-black uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-1.5 mb-3">
+              4. Stakeholder Map Summary
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+              {['Enabler', 'Persuadable', 'Blocker', 'Spoiler risk', 'Neutral / unknown'].map((pos) => {
+                const list = data.stakeholders.filter(s => s.position === pos);
+                return (
+                  <div key={pos} className="border border-slate-150 rounded-lg overflow-hidden bg-slate-50/20">
+                    <div className="px-3 py-1.5 bg-slate-100 border-b border-slate-150 font-bold uppercase text-[9px] text-slate-600 tracking-wider">
+                      {pos === 'Spoiler risk' ? 'Spoiler Risks' : `${pos}s`}
+                    </div>
+                    <div className="p-2.5 flex flex-col gap-1.5">
+                      {list.length === 0 ? (
+                        <span className="text-slate-400 italic text-[11px] px-1">None identified</span>
+                      ) : (
+                        list.map(s => (
+                          <div key={s.id} className="flex justify-between items-center bg-white border border-slate-100 p-1.5 rounded text-[11px]">
+                            <span className="font-semibold text-slate-800">{s.name}</span>
+                            <span className="text-[9px] text-slate-400 uppercase font-bold">Inf: {s.influence}</span>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Section 5: Matrix Priorities */}
+          <div>
+            <h3 className="text-xs font-black uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-1.5 mb-3">
+              5. Priority CBD Matrix Intersections
+            </h3>
+            <div className="flex flex-col gap-4 text-xs">
+              {Object.keys(data.customCells).length === 0 ? (
+                <p className="text-slate-400 italic">No specific intersections configured with customized actions in Step 4.</p>
+              ) : (
+                Object.keys(data.customCells).map(key => {
+                  const cell = data.customCells[key];
+                  const [row, col] = key.split('|');
+                  return (
+                    <div key={key} className="p-4 border border-slate-200 rounded-xl flex flex-col gap-2.5">
+                      <div className="flex justify-between items-center border-b border-slate-100 pb-2">
+                        <span className="font-black text-slate-900 text-[10px] uppercase">
+                          {row} &times; {col}
+                        </span>
+                        <Badge variant="blue">Priority Score: {cell.priorityScore}/5</Badge>
+                      </div>
+                      <p className="text-slate-700 leading-relaxed"><span className="font-bold text-slate-500 mr-1">Intersection Rationale:</span>{cell.why}</p>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 bg-slate-50 p-3 rounded-lg border border-slate-100 text-[11px] leading-relaxed">
+                        <div><span className="font-extrabold text-slate-500 block uppercase text-[9px] mb-1">Individual Action</span>{cell.individual}</div>
+                        <div><span className="font-extrabold text-slate-500 block uppercase text-[9px] mb-1">Organizational Action</span>{cell.organizational}</div>
+                        <div><span className="font-extrabold text-slate-500 block uppercase text-[9px] mb-1">Enabling Env Action</span>{cell.environment}</div>
+                      </div>
+                      <div className="text-[11px] text-slate-600 flex flex-col gap-1">
+                        <p><span className="font-bold text-slate-500 mr-1">Indicators:</span>{cell.indicators?.join('; ') || 'None'}</p>
+                        <p><span className="font-bold text-slate-500 mr-1">Sequencing:</span>{cell.sequencing}</p>
+                        <p><span className="font-bold text-rose-600 mr-1">Risks:</span>{cell.risks}</p>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+
+          {/* Section 6: Sequencing & Groups */}
+          <div>
+            <h3 className="text-xs font-black uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-1.5 mb-3">
+              6. Strategic Sequencing Groups
+            </h3>
+            <div className="flex flex-col gap-3 text-xs leading-relaxed">
+              {[
+                { label: 'Top 3 CBD Priorities', list: data.priorityBrief.topPriorities },
+                { label: 'Quick Wins (High Feasibility, Low Risk)', list: data.priorityBrief.quickWins },
+                { label: 'Sensitive Reforms (Requires Political Cover)', list: data.priorityBrief.sensitiveReforms },
+                { label: 'Longer-Term Reforms', list: data.priorityBrief.longerTermReforms },
+                { label: 'Risks & Planning Assumptions', list: data.priorityBrief.risksAssumptions }
+              ].map(({ label, list }) => (
+                <div key={label} className="flex flex-col gap-1">
+                  <span className="font-bold text-slate-800">{label}:</span>
+                  <ul className="list-disc pl-5 text-slate-600 space-y-0.5">
+                    {list?.map((item, idx) => <li key={idx}>{item}</li>)}
+                  </ul>
+                </div>
+              ))}
+
+              <div className="flex flex-col gap-1 mt-2 p-3 bg-blue-50/30 border border-blue-100 rounded-lg">
+                <span className="font-bold text-blue-950">Recommended Sequencing Pathway:</span>
+                <p className="text-blue-900 italic font-semibold">{data.priorityBrief.sequencingRecommendation}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Disclaimer Footer */}
+          <div className="mt-8 pt-4 border-t-2 border-slate-300 text-[10px] text-slate-400 italic leading-relaxed">
+            <div className="flex items-center gap-1.5 text-slate-500 font-bold mb-1 uppercase tracking-wider">
+              <ShieldAlert size={12} className="text-amber-500" />
+              <span>Advisory Disclaimer</span>
+            </div>
+            This document is generated by the UNPOL CBD Integrated Planning Tool for educational and capacity-building planning support. It does not replace official United Nations doctrine, operational command directives, or human rights due diligence compliance reviews (HRDDP). All factual configurations and assessments should be validated by authorized intelligence and planning analysts using current, official sources.
+          </div>
+        </div>
+      </Card>
+
+      {/* Navigation */}
+      <div className="flex justify-between items-center gap-3">
+        <Button variant="outline" onClick={onPrev}>
+          Back: Priority & Sequencing
+        </Button>
+      </div>
+    </div>
+  );
+};

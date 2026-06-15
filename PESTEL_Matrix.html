@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UNPOL CBD Integrated Planning Tool</title>
+  <style>
+    :root{
+      --bg:#eef3f8;
+      --card:#ffffff;
+      --card2:#f7fbff;
+      --line:#d7e2ee;
+      --text:#203040;
+      --muted:#5a6b7d;
+      --blue:#0b5cab;
+      --blueDark:#083d73;
+      --blueSoft:#dcecff;
+      --blueTint:#eef6ff;
+      --accent:#1f7a8c;
+      --shadow:0 8px 24px rgba(10,37,64,.08);
+      --radius:14px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:linear-gradient(180deg,#f5f8fc 0%,var(--bg) 100%);
+      color:var(--text);
+      line-height:1.5;
+    }
+    .page{max-width:1550px;margin:0 auto;padding:24px}
+    .hero,.card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+    .hero{padding:22px 24px;margin-bottom:18px}
+    .hero h1{margin:0 0 8px;color:var(--blueDark);font-size:1.7rem}
+    .hero p{margin:8px 0;color:var(--muted);max-width:1200px}
+    .legend{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:12px;margin-top:16px
+    }
+    .legend-card{
+      background:var(--card2);
+      border:1px solid var(--line);
+      border-radius:12px;padding:12px 14px
+    }
+    .legend-card h3{margin:0 0 6px;color:var(--blueDark);font-size:.95rem}
+    .legend-card p{margin:0;color:var(--muted);font-size:.9rem}
+
+    .tabs{
+      display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 12px
+    }
+    .tab-btn,.btn{
+      border:1px solid var(--line);
+      background:var(--card);
+      color:var(--blueDark);
+      border-radius:10px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-weight:700;
+      transition:.18s ease;
+    }
+    .tab-btn.active,.btn:hover,.tab-btn:hover{
+      background:var(--blueSoft);
+      border-color:#b9d4f5;
+    }
+
+    .toolbar{
+      display:flex;justify-content:space-between;align-items:center;
+      gap:12px;flex-wrap:wrap;margin:0 0 14px
+    }
+    .toolbar-note{color:var(--muted);font-size:.93rem}
+    .stack{display:grid;grid-template-columns:1fr;gap:18px}
+    .card-header{
+      padding:16px 18px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,#fff 0%,#f8fbff 100%);
+    }
+    .card-header h2{margin:0 0 4px;font-size:1.06rem;color:var(--blueDark)}
+    .card-header p{margin:0;color:var(--muted);font-size:.92rem}
+    .card-body{padding:18px}
+
+    .mode-badge{
+      display:inline-flex;align-items:center;gap:8px;
+      background:#edf5ff;color:var(--blueDark);
+      border:1px solid #bfd8f4;border-radius:999px;
+      padding:6px 12px;font-size:.8rem;font-weight:800;
+      margin-bottom:12px;text-transform:uppercase;letter-spacing:.02em;
+    }
+    .tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+    .tag{
+      background:var(--blueSoft);color:var(--blueDark);
+      border:1px solid #bfd8f4;border-radius:999px;
+      padding:5px 10px;font-size:.78rem;font-weight:700;
+    }
+
+    .panel-title{margin:0 0 8px;color:var(--blueDark);font-size:1.28rem}
+    .section{margin-top:16px;padding-top:14px;border-top:1px solid #e8eef5}
+    .section h3{margin:0 0 8px;color:var(--blueDark);font-size:.98rem}
+    .section p,.section li{margin:0;font-size:.94rem}
+    .summary-grid,.level-grid,.chip-grid,.card-grid{
+      display:grid;gap:12px;margin-top:8px
+    }
+    .summary-grid,.card-grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+    .chip-grid{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+    .summary-card,.level-card,.impact-box,.click-card{
+      border:1px solid var(--line);background:#fbfdff;border-radius:12px;padding:12px 13px
+    }
+    .summary-label,.level-label{
+      font-size:.8rem;text-transform:uppercase;letter-spacing:.02em;
+      color:var(--accent);font-weight:800;margin-bottom:6px
+    }
+    ul.clean{margin:8px 0 0 18px;padding:0}
+    ul.clean li+li{margin-top:6px}
+
+    .click-card{
+      cursor:pointer;transition:.18s ease;background:#fff
+    }
+    .click-card:hover{
+      background:var(--blueTint);border-color:#b8d3f2;transform:translateY(-1px)
+    }
+
+    .chip-btn{
+      text-align:left;border:1px solid var(--line);background:#fff;color:var(--text);
+      border-radius:10px;padding:10px 12px;cursor:pointer;font-size:.88rem;transition:.18s ease
+    }
+    .chip-btn:hover{background:var(--blueTint);border-color:#b8d3f2}
+
+    .matrix-wrap{overflow-x:auto;padding:16px}
+    .matrix{
+      display:grid;
+      grid-template-columns:190px repeat(6,minmax(150px,1fr));
+      gap:6px;min-width:1120px
+    }
+    .corner,.col-head,.row-head,.cell{
+      min-height:74px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+      text-align:center;padding:10px;transition:.18s ease
+    }
+    .corner{
+      background:#243447;color:#fff;font-weight:700;font-size:.84rem;line-height:1.25
+    }
+    .col-head,.row-head{
+      border:none;cursor:pointer;color:#fff;font-weight:700
+    }
+    .col-head{background:var(--blue);font-size:.88rem}
+    .row-head{background:var(--blueDark);font-size:.88rem;line-height:1.25}
+    .col-head:hover,.row-head:hover{filter:brightness(1.06)}
+    .col-head.active,.row-head.active{
+      outline:2px solid #fff;box-shadow:0 0 0 2px var(--blue), inset 0 0 0 1px rgba(255,255,255,.18)
+    }
+    .cell{
+      border:1px solid var(--line);background:#fbfdff;color:var(--text);
+      cursor:pointer;flex-direction:column;gap:4px;position:relative
+    }
+    .cell:hover{background:var(--blueTint);border-color:#8bb9ea;transform:translateY(-1px)}
+    .cell.active{
+      background:linear-gradient(180deg,#dcecff 0%,#eef6ff 100%);
+      border:2px solid var(--blue)
+    }
+    .cell.row-highlight,.cell.col-highlight{
+      background:var(--blueTint);border-color:#bfd8f4
+    }
+    .cell-main{font-weight:700;font-size:.88rem;color:var(--blueDark)}
+    .cell-sub{font-size:.77rem;color:var(--muted)}
+
+    .hidden{display:none}
+    .footer-note{margin-top:16px;color:var(--muted);font-size:.83rem}
+    .page-footer{margin-top:18px;text-align:center;color:var(--muted);font-size:.9rem;padding:14px 10px 6px}
+    .page-footer span{color:var(--blueDark);font-weight:600}
+
+    @media (max-width:720px){
+      .page{padding:14px}
+      .hero h1{font-size:1.35rem}
+      .panel-title{font-size:1.12rem}
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <h1>UNPOL CBD Integrated Planning Tool</h1>
+      <p>
+        This offline educational and planning tool links three modules: <strong>UNPOL Situational Analysis</strong>,
+        <strong>UNPOL Stakeholder Analysis & Mapping</strong>, and the <strong>UNPOL CBD Matrix</strong>.
+        It is designed to support context understanding, actor analysis, and targeted CBD prioritization.
+      </p>
+      <div class="legend">
+        <div class="legend-card">
+          <h3>Module 1</h3>
+          <p>Use UNPOL-adapted PESTEL to identify environmental pressures affecting host-state policing.</p>
+        </div>
+        <div class="legend-card">
+          <h3>Module 2</h3>
+          <p>Assess which actors enable, block, or shape the feasibility of police support and reform.</p>
+        </div>
+        <div class="legend-card">
+          <h3>Module 3</h3>
+          <p>Translate context and actor analysis into CBD action across key areas, dimensions, and sectors.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="situational">1. Situational Analysis</button>
+      <button class="tab-btn" data-tab="stakeholders">2. Stakeholder Analysis</button>
+      <button class="tab-btn" data-tab="cbd">3. CBD Matrix</button>
+    </div>
+
+    <div class="toolbar">
+      <div class="toolbar-note" id="toolbarNote">
+        Start with context, then move to actors, then use the CBD matrix as the implementation logic.
+      </div>
+      <div>
+        <button class="btn" id="resetBtn" type="button">Reset current module</button>
+      </div>
+    </div>
+
+    <div class="stack">
+      <!-- SITUATIONAL -->
+      <section class="card" id="situationalSection">
+        <div class="card-header">
+          <h2>UNPOL Situational Analysis</h2>
+          <p>UNPOL-adapted PESTEL starter content for Abyei / South Sudan context. Replace placeholders with mission-specific findings.</p>
+        </div>
+        <div class="card-body">
+          <div id="situationalPanelTop"></div>
+          <div class="card-grid" id="situationalCards"></div>
+          <div class="section">
+            <h3>Detail Panel</h3>
+            <div id="situationalDetail"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STAKEHOLDERS -->
+      <section class="card hidden" id="stakeholdersSection">
+        <div class="card-header">
+          <h2>Stakeholder Analysis & Mapping</h2>
+          <p>Starter stakeholder set excluding tribal actors, as requested. Edit names and ratings for your mission use.</p>
+        </div>
+        <div class="card-body">
+          <div id="stakeholderPanelTop"></div>
+          <div class="card-grid" id="stakeholderCards"></div>
+          <div class="section">
+            <h3>Mapping Summary</h3>
+            <div class="summary-grid">
+              <div class="summary-card">
+                <div class="summary-label">Influence × Support</div>
+                <p>Use this to identify reform champions, persuadable actors, blockers, and stakeholders that require high-level sequencing before lower-level rollout.</p>
+              </div>
+              <div class="summary-card">
+                <div class="summary-label">Legitimacy × Operational Relevance</div>
+                <p>Use this to distinguish actors who are formally weak but socially important from actors who are powerful but poorly trusted.</p>
+              </div>
+            </div>
+          </div>
+          <div class="section">
+            <h3>Detail Panel</h3>
+            <div id="stakeholderDetail"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CBD -->
+      <section class="card hidden" id="cbdSection">
+        <div class="card-header">
+          <h2>UNPOL CBD Matrix</h2>
+          <p>Rows = key areas. Columns = dimensions. Use Cell, Dimension, and Key Area reading modes.</p>
+        </div>
+        <div class="matrix-wrap">
+          <div class="matrix" id="matrix"></div>
+        </div>
+        <div class="card-body">
+          <div id="cbdPanel"></div>
+        </div>
+      </section>
+    </div>
+
+    <footer class="page-footer">
+      Educational visualization developed by <span>Lt.Col Maissara Selim</span>
+    </footer>
+  </div>
+
+  <script>
+    // --------------------------
+    // Starter data — edit freely
+    // --------------------------
+
+    const situationalData = {
+      "Political / Peace Process / Power Structure": {
+        definition: "Political authority, peace-process dynamics, command relationships, and power distribution affecting host-state policing and police legitimacy.",
+        finding: "Starter placeholder: command authority and political backing for policing remain uneven, which can weaken reform sequencing and operational consistency.",
+        why: "UNPOL cannot sequence CBD effectively when authority, political backing, and police role clarity are fragmented or contested.",
+        cbdAreas: ["Professionalism & Integrity", "Legal & Policy Framework", "Accountability Mechanisms"],
+        dimensions: ["Conflict Prevention", "Human Rights", "Gender"],
+        stakeholders: ["Mission Leadership / UNPOL Leadership", "Ministry / Interior Equivalents", "Police HQ Leadership", "Local Administration"],
+        sequencing: "Prioritize leadership-level clarification and coalition building before broad training rollout."
+      },
+      "Economic / Resourcing / Corruption Exposure": {
+        definition: "Funding reliability, logistics, salaries, procurement integrity, infrastructure support, and exposure to corruption or patronage.",
+        finding: "Starter placeholder: resource constraints and weak administrative systems risk undermining professional standards and continuity.",
+        why: "CBD efforts fail when administrative systems, logistics, payroll, or resource integrity are too weak to sustain change.",
+        cbdAreas: ["Administrative Systems", "Professionalism & Integrity", "Accountability Mechanisms"],
+        dimensions: ["Police Practice", "Human Rights"],
+        stakeholders: ["Police HQ Leadership", "Training Academy / Training Directorate", "Inspectorate / Professional Standards", "Donors / Mission Partners"],
+        sequencing: "Sequence administrative and oversight fixes alongside training, not after it."
+      },
+      "Social / Trust / Identity / Community Dynamics": {
+        definition: "Public trust, exclusion, identity-based grievances, reporting barriers, access disparities, and community perceptions of police.",
+        finding: "Starter placeholder: public trust and access to police may vary across communities, affecting reporting, legitimacy, and responsiveness.",
+        why: "UNPOL support that ignores trust and access barriers risks technical improvement without public legitimacy.",
+        cbdAreas: ["Stakeholder Engagement", "Professionalism & Integrity", "Accountability Mechanisms"],
+        dimensions: ["Gender", "Human Rights", "Protection of Civilians", "Conflict Prevention"],
+        stakeholders: ["Women’s Groups / Civil Society", "Local Administration", "Justice Actors", "Regional / Local Police Command"],
+        sequencing: "Use stakeholder engagement and accessible reporting channels early, not as a late-stage add-on."
+      },
+      "Technology / Information / Communications / Records": {
+        definition: "Communications systems, records reliability, data flow, case management, and information systems relevant to policing and oversight.",
+        finding: "Starter placeholder: weak records, fragmented reporting, or limited ICT can undermine administration, accountability, and continuity.",
+        why: "Without reliable information systems, UNPOL cannot sustain improvements in supervision, case tracking, or complaint handling.",
+        cbdAreas: ["Administrative Systems", "Accountability Mechanisms", "Legal & Policy Framework"],
+        dimensions: ["Police Practice", "Human Rights"],
+        stakeholders: ["Police HQ Leadership", "Training Academy / Training Directorate", "Inspectorate / Professional Standards", "Mission Leadership / UNPOL Leadership"],
+        sequencing: "Pair SOP reform with practical record and reporting workflow improvement."
+      },
+      "Environmental / Geography / Disaster / Infrastructure Stress": {
+        definition: "Mobility constraints, seasonal access issues, dispersed populations, disaster stress, and infrastructure weaknesses affecting public safety delivery.",
+        finding: "Starter placeholder: terrain, mobility, and infrastructure constraints may limit service reach, supervision, and continuity.",
+        why: "CBD plans that assume stable access, communication, and infrastructure often fail in fragile mission settings.",
+        cbdAreas: ["Administrative Systems", "Stakeholder Engagement", "Professionalism & Integrity"],
+        dimensions: ["Environmental Sustainability", "Protection of Civilians", "Police Practice"],
+        stakeholders: ["Regional / Local Police Command", "Local Administration", "Donors / Mission Partners", "Mission Leadership / UNPOL Leadership"],
+        sequencing: "Prioritize realistic service-delivery models and mobility-aware supervision plans."
+      },
+      "Legal / Policy / Oversight / Mandate Coherence": {
+        definition: "Police law, internal policy, disciplinary authority, complaints architecture, oversight arrangements, and mandate clarity.",
+        finding: "Starter placeholder: policy fragmentation or unclear oversight pathways may weaken legality, discipline, and accountability.",
+        why: "UNPOL advisory work becomes shallow if legal and policy ambiguity is not linked to operational procedure and oversight reform.",
+        cbdAreas: ["Legal & Policy Framework", "Accountability Mechanisms", "Professionalism & Integrity"],
+        dimensions: ["Human Rights", "Gender", "Conflict Prevention"],
+        stakeholders: ["Justice Actors", "Inspectorate / Professional Standards", "Ministry / Interior Equivalents", "Police HQ Leadership"],
+        sequencing: "Align legal-policy dialogue with practical SOP and workflow revision."
+      }
+    };
+
+    const stakeholderData = {
+      "Mission Leadership / UNPOL Leadership": {
+        role: "Mission-level direction, prioritization, coordination, and strategic signalling.",
+        authority: "High formal authority within mission structures.",
+        influence: "High",
+        position: "Enabler",
+        legitimacy: "Medium",
+        relevance: "High",
+        capacity: "High",
+        risk: "Can become too top-down if not linked to counterpart ownership.",
+        entry: "Use for prioritization, sequencing, and political cover.",
+        engagement: "Engage closely; use to sequence sensitive reforms and align component messaging.",
+        cbdAreas: ["All key areas"]
+      },
+      "Ministry / Interior Equivalents": {
+        role: "Political authority, policy direction, appointments, institutional backing.",
+        authority: "High",
+        influence: "High",
+        position: "Persuadable",
+        legitimacy: "Medium",
+        relevance: "High",
+        capacity: "Variable",
+        risk: "Potential blockage through political interference, appointment politics, or selective backing.",
+        entry: "Use high-level dialogue and policy framing.",
+        engagement: "Engage closely; secure buy-in before expanding technical rollout.",
+        cbdAreas: ["Legal & Policy Framework", "Professionalism & Integrity", "Administrative Systems"]
+      },
+      "Police HQ Leadership": {
+        role: "Operational command, internal direction, implementation control, supervision.",
+        authority: "High",
+        influence: "High",
+        position: "Persuadable",
+        legitimacy: "Medium",
+        relevance: "High",
+        capacity: "Variable",
+        risk: "May support training rhetorically but resist workflow or accountability reform.",
+        entry: "Use operational framing, sequencing logic, and pilot models.",
+        engagement: "Engage closely; link reform proposals to practical command and performance gains.",
+        cbdAreas: ["All key areas"]
+      },
+      "Regional / Local Police Command": {
+        role: "Field implementation, day-to-day supervision, service delivery, local responsiveness.",
+        authority: "Medium",
+        influence: "High operational influence",
+        position: "Persuadable",
+        legitimacy: "Variable",
+        relevance: "High",
+        capacity: "Variable",
+        risk: "May be overwhelmed by weak administration, mobility, and community-trust constraints.",
+        entry: "Use mentoring, pilot workflows, and feedback loops.",
+        engagement: "Consult regularly; use as operational reality-check for reform design.",
+        cbdAreas: ["Professionalism & Integrity", "Stakeholder Engagement", "Administrative Systems"]
+      },
+      "Inspectorate / Professional Standards": {
+        role: "Internal review, discipline, complaints handling, compliance monitoring.",
+        authority: "Medium",
+        influence: "Medium",
+        position: "Potential enabler",
+        legitimacy: "Medium",
+        relevance: "High",
+        capacity: "Often limited",
+        risk: "May exist formally but be procedurally weak or politically constrained.",
+        entry: "Use workflow strengthening, documentation reform, and review-pathway support.",
+        engagement: "Engage closely on accountability and standards work.",
+        cbdAreas: ["Accountability Mechanisms", "Professionalism & Integrity", "Legal & Policy Framework"]
+      },
+      "Training Academy / Training Directorate": {
+        role: "Curriculum, trainer development, institutional learning, doctrinal spread.",
+        authority: "Medium",
+        influence: "Medium",
+        position: "Enabler",
+        legitimacy: "Medium",
+        relevance: "High",
+        capacity: "Variable",
+        risk: "Training can become disconnected from command, HR, and accountability systems.",
+        entry: "Use training architecture, feedback loops, and competency-linked design.",
+        engagement: "Engage closely but link training to broader institutional reform.",
+        cbdAreas: ["Professionalism & Integrity", "Administrative Systems", "Stakeholder Engagement"]
+      },
+      "Justice Actors": {
+        role: "Legal process, prosecution, courts, detention legality, rule-of-law continuity.",
+        authority: "Medium to High",
+        influence: "High on legality and accountability outcomes",
+        position: "Persuadable",
+        legitimacy: "Medium to High",
+        relevance: "High",
+        capacity: "Variable",
+        risk: "Fragmented coordination can weaken police reform outcomes.",
+        entry: "Use rule-of-law coordination and process-focused dialogue.",
+        engagement: "Consult regularly; align police workflow changes with justice-chain realities.",
+        cbdAreas: ["Legal & Policy Framework", "Accountability Mechanisms"]
+      },
+      "Local Administration": {
+        role: "Local governance interface, access, coordination, public order expectations, political mediation.",
+        authority: "Medium",
+        influence: "Medium",
+        position: "Persuadable",
+        legitimacy: "Variable",
+        relevance: "Medium to High",
+        capacity: "Variable",
+        risk: "Can politicize police access, local deployment expectations, or grievance handling.",
+        entry: "Use structured coordination and service-delivery framing.",
+        engagement: "Consult regularly; use to support local feasibility and access.",
+        cbdAreas: ["Stakeholder Engagement", "Conflict Prevention-linked work"]
+      },
+      "Women’s Groups / Civil Society": {
+        role: "Community access, trust signals, reporting barriers, legitimacy, inclusion, rights visibility.",
+        authority: "Low formal authority",
+        influence: "Variable",
+        position: "Potential enabler",
+        legitimacy: "Often high socially",
+        relevance: "High",
+        capacity: "Variable",
+        risk: "Can be consulted symbolically without real integration into reform design.",
+        entry: "Use structured inclusion in stakeholder engagement and accessible reporting design.",
+        engagement: "Consult regularly and integrate practically, not symbolically.",
+        cbdAreas: ["Stakeholder Engagement", "Accountability Mechanisms", "Professionalism & Integrity"]
+      },
+      "Donors / Mission Partners": {
+        role: "Resources, technical support, parallel reform initiatives, infrastructure and training support.",
+        authority: "Low formal host-state authority",
+        influence: "Medium to High",
+        position: "Potential enabler",
+        legitimacy: "Medium",
+        relevance: "Medium to High",
+        capacity: "High",
+        risk: "Parallel programming can fragment sequencing and produce duplicative support.",
+        entry: "Use donor coordination and division-of-labour logic.",
+        engagement: "Keep closely coordinated; align support behind sequenced priorities.",
+        cbdAreas: ["Administrative Systems", "Training-related work", "Infrastructure-linked support"]
+      }
+    };
+
+    const rows = [
+      "Professionalism & Integrity",
+      "Administrative Systems",
+      "Legal & Policy Framework",
+      "Accountability Mechanisms",
+      "Stakeholder Engagement"
+    ];
+
+    const columns = [
+      "Police Practice",
+      "Environmental Sustainability",
+      "Conflict Prevention",
+      "Human Rights",
+      "Gender",
+      "Protection of Civilians"
+    ];
+
+    const dimensionDefs = {
+      "Police Practice": "How policing is actually conducted in supervision, response, service delivery, investigations, local engagement, and routine operational behaviour.",
+      "Environmental Sustainability": "How police institutions manage facilities, mobility, infrastructure, assets, and public resources responsibly and realistically in context.",
+      "Conflict Prevention": "How policing can reduce drivers of escalation, improve local responsiveness, and avoid practices that intensify tension or grievance.",
+      "Human Rights": "How police powers are exercised lawfully, proportionately, with dignity, due process, accountability, and protection against abuse.",
+      "Gender": "How policing addresses access, inclusion, differential security experience, non-discrimination, workplace conduct, and practical barriers to service.",
+      "Protection of Civilians": "How police presence, conduct, coordination, and response contribute to civilian safety, confidence, and harm reduction."
+    };
+
+    const keyAreaDefs = {
+      "Professionalism & Integrity": "Conduct, discipline, ethics, supervision, and professional standards that shape trusted police behaviour.",
+      "Administrative Systems": "Internal workflows, logistics, records, personnel systems, communications, and management routines enabling effective policing.",
+      "Legal & Policy Framework": "Laws, mandates, internal policies, oversight arrangements, and procedural coherence that define lawful police action.",
+      "Accountability Mechanisms": "Systems for complaints, internal review, discipline, inspection, compliance monitoring, and corrective action.",
+      "Stakeholder Engagement": "How police communicate, consult, coordinate, and build trust with communities, institutions, and service partners."
+    };
+
+    const customCells = {
+      "Accountability Mechanisms|Human Rights": {
+        why: "Rights protection depends on whether abuse, misconduct, unlawful detention, and procedural violations can be reported, reviewed, and acted upon in credible ways.",
+        individual: "Coach relevant personnel on documenting allegations properly, preserving evidence, and applying complaint or review procedures consistently.",
+        organizational: "Strengthen complaint-handling, detention review, and inspection workflows so rights-related concerns are traceable and acted upon.",
+        environment: "Support clearer relationships between police review bodies, justice actors, and external oversight so serious cases are not trapped inside weak internal pathways.",
+        result: "Rights-related failures become more visible, more reviewable, and less likely to repeat without consequence.",
+        indicators: [
+          "more complete complaint records",
+          "clearer referral pathways",
+          "more regular monitoring or review",
+          "better follow-up on substantiated cases"
+        ],
+        drivers: ["Legal / Policy / Oversight / Mandate Coherence", "Social / Trust / Identity / Community Dynamics"],
+        stakeholders: ["Inspectorate / Professional Standards", "Justice Actors", "Women’s Groups / Civil Society"],
+        engagement: "Sequence workflow strengthening with legal-policy clarification and external referral coordination."
+      },
+      "Stakeholder Engagement|Gender": {
+        why: "Gender-responsive stakeholder engagement improves access, trust, reporting, and understanding of how different groups experience police service and barriers to safety.",
+        individual: "Mentor liaison personnel on inclusive consultation, safe interviewing, respectful communication, and handling sensitive disclosures without causing harm.",
+        organizational: "Build practical engagement formats and referral pathways that include women’s groups and relevant service actors in a structured way.",
+        environment: "Use broader dialogue to normalize gender-responsive policing expectations and reduce the gap between policy language and community experience.",
+        result: "Stakeholder engagement becomes more representative, more credible, and more useful for service access and legitimacy.",
+        indicators: [
+          "more representative consultations",
+          "practical use of referral pathways",
+          "improved feedback on access barriers",
+          "better visibility of gender-responsive engagement routines"
+        ],
+        drivers: ["Social / Trust / Identity / Community Dynamics", "Legal / Policy / Oversight / Mandate Coherence"],
+        stakeholders: ["Women’s Groups / Civil Society", "Local Administration", "Regional / Local Police Command"],
+        engagement: "Engage representative women’s actors early and translate feedback into concrete access or reporting improvements."
+      },
+      "Administrative Systems|Police Practice": {
+        why: "Even strong policy intent fails if records, handovers, communications, tasking, and basic administrative continuity are weak.",
+        individual: "Train or mentor relevant staff on handover discipline, basic records quality, and task-tracking linked to operational work.",
+        organizational: "Standardize reporting, recordkeeping, and internal workflow routines so command decisions and follow-up are easier to sustain.",
+        environment: "Align administrative support priorities with broader mission realities such as mobility, communication reliability, and infrastructure constraints.",
+        result: "Operational work becomes more traceable, more predictable, and less dependent on improvisation.",
+        indicators: [
+          "improved records consistency",
+          "fewer workflow gaps",
+          "stronger handover discipline",
+          "better task follow-up"
+        ],
+        drivers: ["Technology / Information / Communications / Records", "Environmental / Geography / Disaster / Infrastructure Stress", "Economic / Resourcing / Corruption Exposure"],
+        stakeholders: ["Police HQ Leadership", "Regional / Local Police Command", "Training Academy / Training Directorate", "Donors / Mission Partners"],
+        engagement: "Pair workflow reform with realistic infrastructure and command buy-in."
+      }
+    };
+
+    const selection = {
+      tab: "situational",
+      situational: "Political / Peace Process / Power Structure",
+      stakeholder: "Police HQ Leadership",
+      cbdMode: "cell",
+      cbdKey: "Accountability Mechanisms|Human Rights"
+    };
+
+    const tabs = document.querySelectorAll(".tab-btn");
+    const sections = {
+      situational: document.getElementById("situationalSection"),
+      stakeholders: document.getElementById("stakeholdersSection"),
+      cbd: document.getElementById("cbdSection")
+    };
+    const toolbarNote = document.getElementById("toolbarNote");
+    const resetBtn = document.getElementById("resetBtn");
+
+    function setTab(tab) {
+      selection.tab = tab;
+      tabs.forEach(btn => btn.classList.toggle("active", btn.dataset.tab === tab));
+      Object.keys(sections).forEach(key => sections[key].classList.toggle("hidden", key !== tab));
+
+      if (tab === "situational") {
+        toolbarNote.textContent = "Start with context: identify which pressures matter most for policing, CBD sequencing, and mission engagement.";
+      } else if (tab === "stakeholders") {
+        toolbarNote.textContent = "Then identify who enables, blocks, or shapes the feasibility of CBD action.";
+      } else {
+        toolbarNote.textContent = "Finally translate context and actor analysis into CBD action across key areas, dimensions, and sectors.";
+      }
+    }
+
+    tabs.forEach(btn => btn.addEventListener("click", () => setTab(btn.dataset.tab)));
+
+    function renderSituational() {
+      document.getElementById("situationalPanelTop").innerHTML = `
+        <div class="mode-badge">Module 1: Situational Analysis</div>
+        <div class="tags">
+          <span class="tag">Context starter: UNISFA Abyei / UNMISS South Sudan</span>
+          <span class="tag">Status: editable placeholders</span>
+        </div>
+      `;
+
+      const cards = Object.keys(situationalData).map(key => `
+        <div class="click-card" data-situational="${key}">
+          <div class="summary-label">${key}</div>
+          <p>${situationalData[key].finding}</p>
+        </div>
+      `).join("");
+      document.getElementById("situationalCards").innerHTML = cards;
+
+      document.querySelectorAll("[data-situational]").forEach(el => {
+        el.addEventListener("click", () => {
+          selection.situational = el.dataset.situational;
+          renderSituationalDetail();
+        });
+      });
+
+      renderSituationalDetail();
+    }
+
+    function renderSituationalDetail() {
+      const d = situationalData[selection.situational];
+      document.getElementById("situationalDetail").innerHTML = `
+        <h2 class="panel-title">${selection.situational}</h2>
+        <div class="section">
+          <h3>Definition</h3>
+          <p>${d.definition}</p>
+        </div>
+        <div class="section">
+          <h3>Starter finding</h3>
+          <p>${d.finding}</p>
+        </div>
+        <div class="section">
+          <h3>Why this matters for host-state policing</h3>
+          <p>${d.why}</p>
+        </div>
+        <div class="section">
+          <h3>Likely CBD implications</h3>
+          <ul class="clean">${d.cbdAreas.map(x=>`<li>${x}</li>`).join("")}</ul>
+        </div>
+        <div class="section">
+          <h3>Activated dimensions</h3>
+          <ul class="clean">${d.dimensions.map(x=>`<li>${x}</li>`).join("")}</ul>
+        </div>
+        <div class="section">
+          <h3>Priority stakeholders</h3>
+          <ul class="clean">${d.stakeholders.map(x=>`<li>${x}</li>`).join("")}</ul>
+        </div>
+        <div class="section">
+          <h3>UNPOL sequencing implication</h3>
+          <div class="impact-box"><p>${d.sequencing}</p></div>
+        </div>
+      `;
+    }
+
+    function renderStakeholders() {
+      document.getElementById("stakeholderPanelTop").innerHTML = `
+        <div class="mode-badge">Module 2: Stakeholder Analysis</div>
+        <div class="tags">
+          <span class="tag">Mapping logic: Influence × Support</span>
+          <span class="tag">Mapping logic: Legitimacy × Operational Relevance</span>
+        </div>
+      `;
+
+      const cards = Object.keys(stakeholderData).map(key => {
+        const d = stakeholderData[key];
+        return `
+          <div class="click-card" data-stakeholder="${key}">
+            <div class="summary-label">${key}</div>
+            <p><strong>Position:</strong> ${d.position} <br><strong>Influence:</strong> ${d.influence} <br><strong>Operational relevance:</strong> ${d.relevance}</p>
+          </div>
+        `;
+      }).join("");
+      document.getElementById("stakeholderCards").innerHTML = cards;
+
+      document.querySelectorAll("[data-stakeholder]").forEach(el => {
+        el.addEventListener("click", () => {
+          selection.stakeholder = el.dataset.stakeholder;
+          renderStakeholderDetail();
+        });
+      });
+
+      renderStakeholderDetail();
+    }
+
+    function renderStakeholderDetail() {
+      const d = stakeholderData[selection.stakeholder];
+      document.getElementById("stakeholderDetail").innerHTML = `
+        <h2 class="panel-title">${selection.stakeholder}</h2>
+        <div class="section">
+          <h3>Role / mandate</h3>
+          <p>${d.role}</p>
+        </div>
+        <div class="section">
+          <h3>Assessment</h3>
+          <div class="summary-grid">
+            <div class="summary-card"><div class="summary-label">Formal authority</div><p>${d.authority}</p></div>
+            <div class="summary-card"><div class="summary-label">Real influence</div><p>${d.influence}</p></div>
+            <div class="summary-card"><div class="summary-label">Position on CBD objective</div><p>${d.position}</p></div>
+            <div class="summary-card"><div class="summary-label">Legitimacy / representativeness</div><p>${d.legitimacy}</p></div>
+            <div class="summary-card"><div class="summary-label">Operational relevance</div><p>${d.relevance}</p></div>
+            <div class="summary-card"><div class="summary-label">Capacity</div><p>${d.capacity}</p></div>
+          </div>
+        </div>
+        <div class="section">
+          <h3>Risk</h3>
+          <p>${d.risk}</p>
+        </div>
+        <div class="section">
+          <h3>UNPOL entry point</h3>
+          <p>${d.entry}</p>
+        </div>
+        <div class="section">
+          <h3>Recommended engagement style</h3>
+          <div class="impact-box"><p>${d.engagement}</p></div>
+        </div>
+        <div class="section">
+          <h3>Likely linkage to CBD areas</h3>
+          <ul class="clean">${d.cbdAreas.map(x=>`<li>${x}</li>`).join("")}</ul>
+        </div>
+      `;
+    }
+
+    function buildMatrix() {
+      let html = `<div class="corner">Dimensions &#8594;<br>Key Areas &#8595;</div>`;
+      columns.forEach(col => {
+        html += `<button class="col-head" type="button" data-col="${col}">${col}</button>`;
+      });
+
+      rows.forEach(row => {
+        html += `<button class="row-head" type="button" data-row="${row}">${row}</button>`;
+        columns.forEach(col => {
+          const key = `${row}|${col}`;
+          html += `
+            <button class="cell" type="button" data-key="${key}" data-row="${row}" data-col="${col}">
+              <div class="cell-main">${shortCol(col)}</div>
+              <div class="cell-sub">${shortRow(row)}</div>
+            </button>
+          `;
+        });
+      });
+
+      document.getElementById("matrix").innerHTML = html;
+
+      document.querySelectorAll(".cell").forEach(el => {
+        el.addEventListener("click", () => {
+          selection.cbdMode = "cell";
+          selection.cbdKey = el.dataset.key;
+          renderCBD();
+        });
+      });
+      document.querySelectorAll(".col-head").forEach(el => {
+        el.addEventListener("click", () => {
+          selection.cbdMode = "dimension";
+          selection.cbdKey = el.dataset.col;
+          renderCBD();
+        });
+      });
+      document.querySelectorAll(".row-head").forEach(el => {
+        el.addEventListener("click", () => {
+          selection.cbdMode = "keyArea";
+          selection.cbdKey = el.dataset.row;
+          renderCBD();
+        });
+      });
+    }
+
+    function shortRow(row) {
+      return row
+        .replace("Professionalism & Integrity","Professionalism")
+        .replace("Administrative Systems","Administration")
+        .replace("Legal & Policy Framework","Legal / Policy")
+        .replace("Accountability Mechanisms","Accountability")
+        .replace("Stakeholder Engagement","Stakeholder");
+    }
+
+    function shortCol(col) {
+      return col
+        .replace("Environmental Sustainability","Environment")
+        .replace("Conflict Prevention","Prevention")
+        .replace("Protection of Civilians","PoC");
+    }
+
+    function clearCBDHighlights() {
+      document.querySelectorAll(".cell").forEach(c => c.classList.remove("active","row-highlight","col-highlight"));
+      document.querySelectorAll(".row-head").forEach(r => r.classList.remove("active"));
+      document.querySelectorAll(".col-head").forEach(c => c.classList.remove("active"));
+    }
+
+    function renderCBDHighlights() {
+      clearCBDHighlights();
+      if (selection.cbdMode === "cell") {
+        const el = document.querySelector(`.cell[data-key="${CSS.escape(selection.cbdKey)}"]`);
+        if (el) el.classList.add("active");
+      }
+      if (selection.cbdMode === "dimension") {
+        const head = document.querySelector(`.col-head[data-col="${CSS.escape(selection.cbdKey)}"]`);
+        if (head) head.classList.add("active");
+        document.querySelectorAll(`.cell[data-col="${CSS.escape(selection.cbdKey)}"]`).forEach(c => c.classList.add("col-highlight"));
+      }
+      if (selection.cbdMode === "keyArea") {
+        const head = document.querySelector(`.row-head[data-row="${CSS.escape(selection.cbdKey)}"]`);
+        if (head) head.classList.add("active");
+        document.querySelectorAll(`.cell[data-row="${CSS.escape(selection.cbdKey)}"]`).forEach(c => c.classList.add("row-highlight"));
+      }
+    }
+
+    function fallbackCell(row, col) {
+      const linkedDrivers = Object.keys(situationalData).filter(k =>
+        situationalData[k].cbdAreas.includes(row) || situationalData[k].dimensions.includes(col)
+      ).slice(0,3);
+
+      const linkedStakeholders = Object.keys(stakeholderData).filter(k =>
+        stakeholderData[k].cbdAreas.includes(row) || stakeholderData[k].cbdAreas.includes("All key areas")
+      ).slice(0,4);
+
+      return {
+        why: `${row} × ${col} matters because this intersection shows how UNPOL can translate broad reform intent into targeted support that reflects both operational reality and cross-cutting obligations.`,
+        individual: `At individual level, support focuses on practical conduct, competence, and decision-making relevant to ${row.toLowerCase()} through the lens of ${col.toLowerCase()}.`,
+        organizational: `At organizational level, support focuses on workflows, supervision, standardization, and institutional routines that make this intersection sustainable.`,
+        environment: `At enabling-environment level, support focuses on law, policy, oversight, coordination, and external conditions that affect whether change can hold.`,
+        result: `More coherent CBD action at the intersection of ${row} and ${col}.`,
+        indicators: [
+          "clearer procedural consistency",
+          "improved supervisory or institutional follow-up",
+          "better linkage between policy intent and daily practice",
+          "stronger coordination around the selected issue"
+        ],
+        drivers: linkedDrivers,
+        stakeholders: linkedStakeholders,
+        engagement: "Start with the most influential and feasible entry points, then connect technical support to workflow and policy follow-through."
+      };
+    }
+
+    function getCell(row, col) {
+      return customCells[`${row}|${col}`] || fallbackCell(row, col);
+    }
+
+    function renderCBDCell(key) {
+      const [row, col] = key.split("|");
+      const d = getCell(row, col);
+
+      const sameRow = columns.filter(c => c !== col)
+        .map(c => `<button class="chip-btn" data-cbd-cell="${row}|${c}">${shortRow(row)} × ${shortCol(c)}</button>`).join("");
+
+      const sameCol = rows.filter(r => r !== row)
+        .map(r => `<button class="chip-btn" data-cbd-cell="${r}|${col}">${shortRow(r)} × ${shortCol(col)}</button>`).join("");
+
+      document.getElementById("cbdPanel").innerHTML = `
+        <div class="mode-badge">Viewing: Cell</div>
+        <div class="tags">
+          <span class="tag">Key Area: ${row}</span>
+          <span class="tag">Dimension: ${col}</span>
+          <span class="tag">Sectors: Individual · Organizational · Enabling Environment</span>
+        </div>
+        <h2 class="panel-title">${row} × ${col}</h2>
+
+        <div class="section">
+          <h3>Why this intersection matters</h3>
+          <p>${d.why}</p>
+        </div>
+
+        <div class="section">
+          <h3>Examples across the 3 focused sectors</h3>
+          <div class="level-grid">
+            <div class="level-card"><div class="level-label">Individual</div><p>${d.individual}</p></div>
+            <div class="level-card"><div class="level-label">Organizational</div><p>${d.organizational}</p></div>
+            <div class="level-card"><div class="level-label">Enabling Environment</div><p>${d.environment}</p></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Expected result</h3>
+          <div class="impact-box"><p>${d.result}</p></div>
+        </div>
+
+        <div class="section">
+          <h3>Indicators</h3>
+          <ul class="clean">${d.indicators.map(x=>`<li>${x}</li>`).join("")}</ul>
+        </div>
+
+        <div class="section">
+          <h3>Linked situational drivers</h3>
+          <ul class="clean">${d.drivers.map(x=>`<li>${x}</li>`).join("")}</ul>
+        </div>
+
+        <div class="section">
+          <h3>Linked stakeholders</h3>
+          <ul class="clean">${d.stakeholders.map(x=>`<li>${x}</li>`).join("")}</ul>
+        </div>
+
+        <div class="section">
+          <h3>Suggested UNPOL engagement path</h3>
+          <div class="impact-box"><p>${d.engagement}</p></div>
+        </div>
+
+        <div class="section">
+          <h3>Related cells — same key area</h3>
+          <div class="chip-grid">${sameRow}</div>
+        </div>
+
+        <div class="section">
+          <h3>Related cells — same dimension</h3>
+          <div class="chip-grid">${sameCol}</div>
+        </div>
+
+        <div class="footer-note">
+          Expand bespoke cell content over time. The starter version is designed to stay editable and mission-adaptable.
+        </div>
+      `;
+    }
+
+    function renderCBDDimension(col) {
+      document.getElementById("cbdPanel").innerHTML = `
+        <div class="mode-badge">Viewing: Dimension</div>
+        <div class="tags">
+          <span class="tag">Dimension: ${col}</span>
+          <span class="tag">Across all 5 key areas</span>
+        </div>
+        <h2 class="panel-title">${col}</h2>
+
+        <div class="section">
+          <h3>Definition</h3>
+          <p>${dimensionDefs[col]}</p>
+        </div>
+
+        <div class="section">
+          <h3>How this dimension appears across the 5 key areas</h3>
+          <div class="summary-grid">
+            ${rows.map(row => `
+              <div class="summary-card">
+                <div class="summary-label">${row}</div>
+                <p>${getCell(row,col).why}</p>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Related cells</h3>
+          <div class="chip-grid">
+            ${rows.map(row => `<button class="chip-btn" data-cbd-cell="${row}|${col}">${shortRow(row)} × ${shortCol(col)}</button>`).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCBDKeyArea(row) {
+      document.getElementById("cbdPanel").innerHTML = `
+        <div class="mode-badge">Viewing: Key Area</div>
+        <div class="tags">
+          <span class="tag">Key Area: ${row}</span>
+          <span class="tag">Across all 6 dimensions</span>
+        </div>
+        <h2 class="panel-title">${row}</h2>
+
+        <div class="section">
+          <h3>Definition</h3>
+          <p>${keyAreaDefs[row]}</p>
+        </div>
+
+        <div class="section">
+          <h3>How this key area is shaped by the 6 dimensions</h3>
+          <div class="summary-grid">
+            ${columns.map(col => `
+              <div class="summary-card">
+                <div class="summary-label">${col}</div>
+                <p>${getCell(row,col).why}</p>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Related cells</h3>
+          <div class="chip-grid">
+            ${columns.map(col => `<button class="chip-btn" data-cbd-cell="${row}|${col}">${shortRow(row)} × ${shortCol(col)}</button>`).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    function bindCBDPanelLinks() {
+      document.querySelectorAll("[data-cbd-cell]").forEach(el => {
+        el.addEventListener("click", () => {
+          selection.cbdMode = "cell";
+          selection.cbdKey = el.dataset.cbdCell;
+          renderCBD();
+        });
+      });
+    }
+
+    function renderCBD() {
+      renderCBDHighlights();
+      if (selection.cbdMode === "cell") renderCBDCell(selection.cbdKey);
+      if (selection.cbdMode === "dimension") renderCBDDimension(selection.cbdKey);
+      if (selection.cbdMode === "keyArea") renderCBDKeyArea(selection.cbdKey);
+      bindCBDPanelLinks();
+    }
+
+    resetBtn.addEventListener("click", () => {
+      if (selection.tab === "situational") {
+        selection.situational = "Political / Peace Process / Power Structure";
+        renderSituationalDetail();
+      } else if (selection.tab === "stakeholders") {
+        selection.stakeholder = "Police HQ Leadership";
+        renderStakeholderDetail();
+      } else {
+        selection.cbdMode = "cell";
+        selection.cbdKey = "Accountability Mechanisms|Human Rights";
+        renderCBD();
+      }
+    });
+
+    buildMatrix();
+    renderSituational();
+    renderStakeholders();
+    renderCBD();
+    setTab("situational");
+  </script>
+</body>
+</html>
