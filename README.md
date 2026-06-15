@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# UNPOL CBD Integrated Planning Tool
 
-## Getting Started
+Version 0.1 — Planning Support Prototype
 
-First, run the development server:
+The **UNPOL Capacity-Building & Development (CBD) Integrated Planning Tool** is an educational and planning-support framework designed to help UNPOL Advisory Teams, Security Sector Reform (SSR) specialists, and peace operations planning officers diagnose host-state environmental challenges, map critical stakeholders, configure targeted police capacity-building actions, and construct strategic sequencing pathways.
 
+---
+
+## ⚠️ Important Disclaimer & Rules of Use
+
+> [!IMPORTANT]
+> **Advisory Disclaimer**
+> This tool is an educational and planning-support prototype. It is not official United Nations doctrine and does not replace mission mandate, official guidance, host-state law, human rights due diligence, command approval, or verified country analysis. Users should verify all context-specific findings through official and current sources before operational or policy use.
+
+**Data Privacy & Classification Warning:**
+This application runs entirely client-side in the browser. No data is transmitted to external servers. Custom planning data is stored locally in the browser's storage. Do not input sensitive, classified, or restricted host-state security or mission details into public web deployments of this tool.
+
+---
+
+## 🚀 Key Features
+
+1. **Context-Adaptable Mission Profiles**: Select from 6 preloaded baseline templates (UN Peacekeeping, Special Political Mission, Post-Conflict SSR, Police Reform Advisory, Capacity Building & Training, Rule of Law/Justice-Chain) or choose a clean **Start Blank** slate.
+2. **PESTEL-S Environmental Diagnosis**: Systematic analysis of 7 categories (Political, Economic, Social, Technological, Environmental, Legal, Security) shaping host-state policing constraints.
+3. **Actor Assessment & Stakeholder Mapping**: Categorize and analyze enablers, blockers, spoilers, and neutral actors. Define their real influence, reform posture, and UNPOL entry points.
+4. **Interactive 5×6 CBD Matrix**: Intersect 5 Key Reform Areas with 6 Capacity Dimensions to structure specific advisory inputs (Individual, Organizational, and Enabling Environment levels) along with monitoring indicators and risks.
+5. **Strategic Prioritization & Sequencing**: Compile Quick Wins, politically sensitive reforms, and long-term sequencing paths. Interventions are automatically prioritized using a multi-criteria scoring algorithm.
+6. **Production-Ready Reporting & Backups**:
+   - Preview and print a PDF-ready cover-sheet brief.
+   - Copy a clean Markdown format report.
+   - Save or upload the entire workspace configuration as a local JSON file.
+
+---
+
+## 🛠️ Technology Stack
+
+- **Core**: Next.js (App Router), React 19, TypeScript
+- **Styling**: Tailwind CSS
+- **Icons**: Lucide React
+- **Animations**: Framer Motion
+- **Persistence**: Browser `localStorage` (client-side only)
+
+---
+
+## 💻 Local Development
+
+Follow these steps to run the application locally:
+
+### 1. Install Dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Start Development Server
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) with your browser to view the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Build for Production
+To verify typescript safety and build a production-ready bundle:
+```bash
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Run Linter
+To verify code style and quality compliance:
+```bash
+npm run lint
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🌐 Deployment to Vercel
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The project is optimized for deployment on the [Vercel Platform](https://vercel.com).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Push your local repository to a remote GitHub, GitLab, or Bitbucket repository.
+2. Import the project in Vercel.
+3. Vercel will automatically detect Next.js and apply the correct build settings.
+4. Click **Deploy**.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🗺️ Future Roadmap
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Offline-First Storage**: Migrate local storage to IndexedDB to support larger project portfolios offline.
+- **UNPOL Doctrine Integration**: Preload reference standards from DPKO/DFS guidelines on Police Capacity-Building and Development.
+- **Collaborative Sharing**: Implement secure, client-side encrypted sharing links to facilitate collaborative drafting.
+- **Offline AI Assistant**: Integrate secure WebGPU-based local LLM assistance for context-drafting without network requests.
+
+---
+
+## ✍️ Author Credit
+
+Developed by **Lt.Col Maissara Selim** as an educational tool to visualize policing capacity-building sequencing.

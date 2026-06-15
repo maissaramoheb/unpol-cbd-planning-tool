@@ -74,25 +74,19 @@ export const Header: React.FC<HeaderProps> = ({ onReset, missionName, analystNam
         }
       >
         <div className="space-y-4 text-sm text-slate-600 leading-relaxed">
-          <div className="bg-amber-50 border border-amber-200 p-3 rounded-lg text-amber-800 flex items-start gap-2.5">
-            <ShieldAlert size={20} className="shrink-0 mt-0.5" />
-            <div>
-              <p className="font-bold">Important Notice for Operations</p>
-              <p className="text-xs mt-0.5">This application is entirely client-side. No data is sent to external servers. All custom planning configurations remain in your browser storage.</p>
+          <div className="bg-amber-50 border border-amber-200 p-4 rounded-lg text-amber-800 flex items-start gap-3">
+            <ShieldAlert size={24} className="shrink-0 mt-0.5" />
+            <div className="text-xs leading-relaxed">
+              <p className="font-bold text-sm mb-1">Planning Support Disclaimer</p>
+              <p>This tool is an educational and planning-support prototype. It is not official United Nations doctrine and does not replace mission mandate, official guidance, host-state law, human rights due diligence, command approval, or verified country analysis. Users should verify all context-specific findings through official and current sources before operational or policy use.</p>
             </div>
           </div>
 
           <p>
-            <strong>1. Educational Framework:</strong> This tool is developed for training support and educational visualization of the UNPOL Capacity-Building and Development (CBD) Guidelines. It is not official United Nations doctrine, operational command directive, or formal policy.
+            <strong>Data Privacy & Classification:</strong> This application runs entirely client-side in your browser. No data is sent to external servers. Custom configurations are stored locally in your browser storage. Do not enter sensitive, classified, or restricted host-state security or mission details into public web deployments of this tool.
           </p>
           <p>
-            <strong>2. Vetting and Mandates:</strong> Using this framework does not replace the requirement for formal Human Rights Due Diligence Policy (HRDDP) reviews, host-state legal assessments, or mission command review.
-          </p>
-          <p>
-            <strong>3. Validation:</strong> All pre-loaded templates contain generic planning guidance and placeholder assertions. Country and mission analysis must be verified by qualified intelligence officers and planning advisors using current, verified operational sources.
-          </p>
-          <p>
-            <strong>4. Data Classification:</strong> Do not enter sensitive, classified, or restricted host-state security or mission details into public web deployments of this tool.
+            <strong>Version History:</strong> Version 0.1 — Planning Support Prototype. Developed by <strong>Lt.Col Maissara Selim</strong> to visualize capacity-building prioritization.
           </p>
         </div>
       </Modal>

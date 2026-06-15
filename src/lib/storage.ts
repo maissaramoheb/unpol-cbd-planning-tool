@@ -81,12 +81,23 @@ export function getInitialProjectData(templateId = 'peacekeeping'): UnpolProject
     });
   }
 
+  const isBlank = templateId === 'blank';
+
   return {
     profile,
     pestels,
-    stakeholders: JSON.parse(JSON.stringify(defaultStakeholders)),
-    customCells: JSON.parse(JSON.stringify(customCells)),
-    priorityBrief: JSON.parse(JSON.stringify(emptyPriorityBrief)),
+    stakeholders: isBlank ? [] : JSON.parse(JSON.stringify(defaultStakeholders)),
+    customCells: isBlank ? {} : JSON.parse(JSON.stringify(customCells)),
+    priorityBrief: isBlank
+      ? {
+          topPriorities: [],
+          quickWins: [],
+          sensitiveReforms: [],
+          longerTermReforms: [],
+          risksAssumptions: [],
+          sequencingRecommendation: ''
+        }
+      : JSON.parse(JSON.stringify(emptyPriorityBrief)),
     version: '1.0'
   };
 }

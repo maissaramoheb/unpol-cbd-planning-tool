@@ -231,14 +231,17 @@ export const AppShell: React.FC = () => {
       </main>
 
       {/* Footer (Hidden in print) */}
-      <footer className="bg-slate-900 border-t border-slate-800 text-slate-400 py-6 text-center text-xs print:hidden">
-        <div className="max-w-7xl mx-auto px-4">
-          <p className="font-semibold">
-            Educational visualization framework developed by <span className="text-white">Lt.Col Maissara Selim</span>
+      <footer className="bg-slate-900 border-t border-slate-800 text-slate-400 py-8 text-center text-xs print:hidden">
+        <div className="max-w-4xl mx-auto px-4 flex flex-col gap-3">
+          <p className="font-semibold text-slate-300">
+            Educational planning-support framework developed by <span className="text-white">Lt.Col Maissara Selim</span>
           </p>
-          <p className="mt-1 text-slate-500">
-            For operational capacity development planning support. Version 1.0. client-side only.
+          <p className="text-[11px] text-slate-500 leading-relaxed max-w-2xl mx-auto">
+            This tool is an educational and planning-support prototype. It is not official United Nations doctrine and does not replace mission mandate, official guidance, host-state law, human rights due diligence, command approval, or verified country analysis. Users should verify all context-specific findings through official and current sources before operational or policy use.
           </p>
+          <div className="mt-2 text-slate-400 font-bold bg-slate-800/50 inline-block px-3 py-1 rounded-full border border-slate-800/80 mx-auto">
+            Version 0.1 — Planning Support Prototype
+          </div>
         </div>
       </footer>
     </div>

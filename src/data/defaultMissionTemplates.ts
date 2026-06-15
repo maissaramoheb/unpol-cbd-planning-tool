@@ -180,5 +180,28 @@ export const defaultMissionTemplates: MissionTemplate[] = [
         rating: { impact: 3, urgency: 4, confidence: 4, relevance: 4 }
       }
     }
+  },
+  {
+    id: 'blank',
+    name: 'Start Blank (No Template)',
+    description: 'A clean slate for mission planning. Initial findings and context values are empty, ready for custom analysis.',
+    profileDefaults: {
+      countryName: '',
+      missionName: '',
+      region: '',
+      mandateEnvironment: '',
+      hostStatePolice: '',
+      conflictContext: '',
+      planningPurpose: ''
+    },
+    pestelsOverrides: {
+      political: { finding: '', why: '', sequencing: '', rating: { impact: 1, urgency: 1, confidence: 3, relevance: 1 } },
+      economic: { finding: '', why: '', sequencing: '', rating: { impact: 1, urgency: 1, confidence: 3, relevance: 1 } },
+      social: { finding: '', why: '', sequencing: '', rating: { impact: 1, urgency: 1, confidence: 3, relevance: 1 } },
+      technological: { finding: '', why: '', sequencing: '', rating: { impact: 1, urgency: 1, confidence: 3, relevance: 1 } },
+      environmental: { finding: '', why: '', sequencing: '', rating: { impact: 1, urgency: 1, confidence: 3, relevance: 1 } },
+      legal: { finding: '', why: '', sequencing: '', rating: { impact: 1, urgency: 1, confidence: 3, relevance: 1 } },
+      security: { finding: '', why: '', sequencing: '', rating: { impact: 1, urgency: 1, confidence: 3, relevance: 1 } }
+    }
   }
 ];
