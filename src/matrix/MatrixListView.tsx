@@ -36,6 +36,34 @@ export const MatrixListView: React.FC<MatrixListViewProps> = ({
     return selectedMode === 'cell' && selectedKey === `${rowId}|${colId}`;
   };
 
+  const getHeatmapTags = (rowId: string, colId: string) => {
+    const key = `${rowId}|${colId}`;
+    const cell = customCells[key];
+    if (!cell) return [];
+
+    const tags: { text: string; bg: string; textCol: string }[] = [];
+    const feasibility = cell.feasibility !== undefined ? cell.feasibility : 3;
+    const support = cell.stakeholderSupport !== undefined ? cell.stakeholderSupport : 3;
+
+    if (cell.priorityScore >= 4) {
+      if (support <= 2) {
+        tags.push({ text: 'Sensitive', bg: 'bg-rose-50 border-rose-200', textCol: 'text-rose-700' });
+      } else if (feasibility >= 4) {
+        tags.push({ text: 'Quick Win', bg: 'bg-emerald-50 border-emerald-200', textCol: 'text-emerald-700' });
+      } else if (feasibility <= 2) {
+        tags.push({ text: 'Long-term', bg: 'bg-indigo-50 border-indigo-200', textCol: 'text-indigo-700' });
+      } else {
+        tags.push({ text: 'Priority', bg: 'bg-amber-50 border-amber-200', textCol: 'text-amber-705' });
+      }
+    }
+
+    if (cell.confidence <= 2) {
+      tags.push({ text: 'Low Conf', bg: 'bg-slate-50 border-slate-200', textCol: 'text-slate-500' });
+    }
+
+    return tags;
+  };
+
   return (
     <div className="flex flex-col gap-3 w-full">
       <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg text-blue-900 text-xs flex items-start gap-2">
@@ -79,6 +107,7 @@ export const MatrixListView: React.FC<MatrixListViewProps> = ({
                   {columns.map((col) => {
                     const selected = isCellSelected(row.id, col.id);
                     const custom = hasBespokeContent(row.id, col.id);
+                    const tags = getHeatmapTags(row.id, col.id);
 
                     return (
                       <button
@@ -96,6 +125,15 @@ export const MatrixListView: React.FC<MatrixListViewProps> = ({
                         <div className="flex flex-col">
                           <span className="text-[9px] uppercase tracking-wider text-slate-400">Intersection Dimension</span>
                           <span className="font-bold text-slate-900 mt-0.5">{col.name}</span>
+                          {tags.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-1.5">
+                              {tags.map((tag, idx) => (
+                                <span key={idx} className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase border tracking-wider leading-none ${tag.bg} ${tag.textCol}`}>
+                                  {tag.text}
+                                </span>
+                              ))}
+                            </div>
+                          )}
                         </div>
 
                         <div className="flex items-center gap-2 shrink-0">

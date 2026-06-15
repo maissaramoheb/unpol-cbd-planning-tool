@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Compass, Users, Grid, ListTodo, FileText } from 'lucide-react';
+import { Shield, Compass, Users, Grid, ListTodo, FileText, LayoutDashboard } from 'lucide-react';
 
 interface ModuleTabsProps {
   currentStep: number;
@@ -18,12 +18,13 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
   onStepChange
 }) => {
   const steps: StepItem[] = [
-    { id: 1, label: 'Profile', sub: 'Context setup', icon: <Shield size={16} /> },
-    { id: 2, label: 'PESTEL-S', sub: 'Environment', icon: <Compass size={16} /> },
-    { id: 3, label: 'Actors', sub: 'Stakeholders', icon: <Users size={16} /> },
-    { id: 4, label: 'CBD Matrix', sub: 'Priorities', icon: <Grid size={16} /> },
-    { id: 5, label: 'Sequencing', sub: 'Priority setting', icon: <ListTodo size={16} /> },
-    { id: 6, label: 'Export', sub: 'Planning brief', icon: <FileText size={16} /> }
+    { id: 1, label: 'Dashboard', sub: 'Overview', icon: <LayoutDashboard size={16} /> },
+    { id: 2, label: 'Profile', sub: 'Context setup', icon: <Shield size={16} /> },
+    { id: 3, label: 'PESTEL-S', sub: 'Environment', icon: <Compass size={16} /> },
+    { id: 4, label: 'Actors', sub: 'Stakeholders', icon: <Users size={16} /> },
+    { id: 5, label: 'CBD Matrix', sub: 'Priorities', icon: <Grid size={16} /> },
+    { id: 6, label: 'Sequencing', sub: 'Priority setting', icon: <ListTodo size={16} /> },
+    { id: 7, label: 'Export', sub: 'Planning brief', icon: <FileText size={16} /> }
   ];
 
   return (

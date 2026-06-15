@@ -1,4 +1,4 @@
-import { UnpolProjectData, MissionProfile } from '../types';
+import { UnpolProjectData, MissionProfile, Stakeholder } from '../types';
 import { defaultPestelsData } from '../data/pestelsCategories';
 import { defaultStakeholders } from '../data/defaultStakeholders';
 import { customCells } from '../data/cbdMatrixData';
@@ -83,11 +83,30 @@ export function getInitialProjectData(templateId = 'peacekeeping'): UnpolProject
 
   const isBlank = templateId === 'blank';
 
+  const finalCells = JSON.parse(JSON.stringify(isBlank ? {} : customCells));
+  Object.keys(finalCells).forEach(key => {
+    const cell = finalCells[key];
+    if (cell.feasibility === undefined) cell.feasibility = 3;
+    if (cell.riskRating === undefined) cell.riskRating = 3;
+    if (cell.stakeholderSupport === undefined) cell.stakeholderSupport = 3;
+    cell.evidenceNotes = [];
+  });
+
+  const finalStakeholders = JSON.parse(JSON.stringify(isBlank ? [] : defaultStakeholders));
+  finalStakeholders.forEach((s: Stakeholder) => {
+    s.evidenceNotes = [];
+  });
+
+  const finalPestels = JSON.parse(JSON.stringify(pestels));
+  Object.keys(finalPestels).forEach(key => {
+    finalPestels[key].evidenceNotes = [];
+  });
+
   return {
     profile,
-    pestels,
-    stakeholders: isBlank ? [] : JSON.parse(JSON.stringify(defaultStakeholders)),
-    customCells: isBlank ? {} : JSON.parse(JSON.stringify(customCells)),
+    pestels: finalPestels,
+    stakeholders: finalStakeholders,
+    customCells: finalCells,
     priorityBrief: isBlank
       ? {
           topPriorities: [],
@@ -98,7 +117,7 @@ export function getInitialProjectData(templateId = 'peacekeeping'): UnpolProject
           sequencingRecommendation: ''
         }
       : JSON.parse(JSON.stringify(emptyPriorityBrief)),
-    version: '1.0'
+    version: 'v0.2.0'
   };
 }
 
@@ -114,7 +133,37 @@ export function loadProjectData(): UnpolProjectData {
       saveProjectData(initial);
       return initial;
     }
-    return JSON.parse(raw);
+    const data = JSON.parse(raw) as UnpolProjectData;
+
+    // Backwards compatibility updates for v0.2.0
+    if (data.pestels) {
+      Object.keys(data.pestels).forEach(key => {
+        if (!data.pestels[key].evidenceNotes) {
+          data.pestels[key].evidenceNotes = [];
+        }
+      });
+    }
+
+    if (data.stakeholders) {
+      data.stakeholders.forEach(s => {
+        if (!s.evidenceNotes) {
+          s.evidenceNotes = [];
+        }
+      });
+    }
+
+    if (data.customCells) {
+      Object.keys(data.customCells).forEach(key => {
+        const cell = data.customCells[key];
+        if (cell.feasibility === undefined) cell.feasibility = 3;
+        if (cell.riskRating === undefined) cell.riskRating = 3;
+        if (cell.stakeholderSupport === undefined) cell.stakeholderSupport = 3;
+        if (!cell.evidenceNotes) cell.evidenceNotes = [];
+      });
+    }
+
+    data.version = 'v0.2.0';
+    return data;
   } catch (error) {
     console.error('Error loading project data from localStorage', error);
     return getInitialProjectData();

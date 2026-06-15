@@ -81,7 +81,10 @@ export const customCells: Record<string, CbdCell> = {
     risks: "Host-state leadership may resist external oversight or suppress negative inspection findings.",
     sequencing: "Begin with technical record formats first, then establish formal joint justice review meetings.",
     confidence: 4,
-    priorityScore: 5
+    priorityScore: 5,
+    feasibility: 4,
+    riskRating: 2,
+    stakeholderSupport: 4
   },
   "Stakeholder Engagement|Gender": {
     key: "Stakeholder Engagement|Gender",
@@ -102,7 +105,10 @@ export const customCells: Record<string, CbdCell> = {
     risks: "Security concerns or cultural norms may limit women’s participation in public forums.",
     sequencing: "Build trusted relations with women's advocacy networks before holding open district-level town hall dialogues.",
     confidence: 3,
-    priorityScore: 4
+    priorityScore: 4,
+    feasibility: 4,
+    riskRating: 2,
+    stakeholderSupport: 3
   },
   "Administrative Systems|Police Practice": {
     key: "Administrative Systems|Police Practice",
@@ -123,7 +129,10 @@ export const customCells: Record<string, CbdCell> = {
     risks: "Chronic lack of paper, electricity, or digital tools can disrupt newly introduced workflows.",
     sequencing: "Provide low-tech paper ledger templates first before trying to deploy computerized case-tracking systems.",
     confidence: 4,
-    priorityScore: 4
+    priorityScore: 4,
+    feasibility: 3,
+    riskRating: 3,
+    stakeholderSupport: 4
   }
 };
 export interface FallbackCellInputs {
@@ -162,6 +171,9 @@ export function generateFallbackCell(rowId: string, colId: string, driversList: 
     sequencing: "Conduct basic process mapping before drafting standard operating procedures.",
     confidence: 3,
     priorityScore: 3,
+    feasibility: 3,
+    riskRating: 3,
+    stakeholderSupport: 3,
     result: `More coherent CBD action at the intersection of ${rowId} and ${colId}.`
   };
 }

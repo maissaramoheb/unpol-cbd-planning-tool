@@ -5,6 +5,7 @@ import { Button } from '../ui/Button';
 import { Slider } from '../ui/Slider';
 import { TextArea } from '../ui/TextArea';
 import { Badge } from '../ui/Badge';
+import { EvidenceLogEditor } from './EvidenceLogEditor';
 import { Activity, ShieldAlert, Award, Compass, Eye, AlertCircle } from 'lucide-react';
 
 interface SituationalAnalysisProps {
@@ -202,6 +203,15 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
                     </div>
                   </div>
                 </div>
+                <EvidenceLogEditor
+                  notes={activeItem.evidenceNotes || []}
+                  onChange={(newNotes) => {
+                    onChange(activeItem.id, {
+                      ...activeItem,
+                      evidenceNotes: newNotes
+                    });
+                  }}
+                />
               </CardBody>
             </Card>
 

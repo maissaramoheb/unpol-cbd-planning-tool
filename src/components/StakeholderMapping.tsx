@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Stakeholder, StakeholderPosition } from '../types';
+import { Stakeholder, StakeholderPosition, EvidenceNote } from '../types';
 import { Card, CardBody, CardHeader } from '../ui/Card';
 import { TextInput, Select } from '../ui/Select';
 import { TextArea } from '../ui/TextArea';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
+import { EvidenceLogEditor } from './EvidenceLogEditor';
 import { Plus, Trash2, User } from 'lucide-react';
 
 interface StakeholderMappingProps {
@@ -107,12 +108,12 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
     setSelectedId(newId);
   };
 
-  const handleFieldChange = (field: keyof Stakeholder, value: string | string[] | boolean) => {
+  const handleFieldChange = (field: keyof Stakeholder, value: string | string[] | boolean | EvidenceNote[]) => {
     if (!activeStakeholder) return;
     onUpdate({
       ...activeStakeholder,
       [field]: value
-    });
+    } as Stakeholder);
   };
 
   const handleCbdAreaToggle = (area: string) => {
@@ -355,6 +356,12 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                     })}
                   </div>
                 </div>
+                <EvidenceLogEditor
+                  notes={activeStakeholder.evidenceNotes || []}
+                  onChange={(newNotes) => {
+                    handleFieldChange('evidenceNotes', newNotes);
+                  }}
+                />
               </CardBody>
             </Card>
 

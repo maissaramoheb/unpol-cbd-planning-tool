@@ -52,8 +52,8 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
         <CardBody className="p-6 md:p-8 flex flex-col gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <Badge variant="blue" className="bg-blue-900 text-blue-100 border-blue-800">Version 0.1</Badge>
-              <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Planning Support Prototype</span>
+              <Badge variant="blue" className="bg-blue-900 text-blue-100 border-blue-800">v0.2.0</Badge>
+              <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Analysis & Visualization Upgrade</span>
             </div>
             <h2 className="text-xl md:text-2xl font-black uppercase text-blue-400 tracking-tight mt-1.5">
               UNPOL Capacity-Building & Development (CBD) Integrated Planning Tool

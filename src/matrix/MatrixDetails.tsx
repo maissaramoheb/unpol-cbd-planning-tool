@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { CbdCell, CbdAxis, PestelsItem, Stakeholder } from '../types';
+import { CbdCell, CbdAxis, PestelsItem, Stakeholder, EvidenceNote } from '../types';
 import { Card, CardBody, CardHeader } from '../ui/Card';
 import { TextArea } from '../ui/TextArea';
 import { Slider } from '../ui/Slider';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
+import { EvidenceLogEditor } from '../components/EvidenceLogEditor';
 import { Plus, Trash2, Link, Users } from 'lucide-react';
 
 interface MatrixDetailsProps {
@@ -145,15 +146,15 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
   const [rowId, colId] = selectedKey.split('|');
   const activeCell = getCellData(rowId, colId);
 
-  const handleCellChange = (field: keyof CbdCell, value: string | string[] | number) => {
-    onUpdateCell(selectedKey, {
+  const handleCellChange = (field: keyof CbdCell, value: string | string[] | number | EvidenceNote[]) => {
+    onUpdateCell(`${rowId}|${colId}`, {
       ...activeCell,
-      key: selectedKey,
       [field]: value
-    });
+    } as CbdCell);
   };
 
   const handleCheckboxToggle = (field: 'drivers' | 'stakeholders', itemId: string) => {
+    const activeCell = getCellData(rowId, colId);
     const list = activeCell[field] || [];
     const nextList = list.includes(itemId)
       ? list.filter(id => id !== itemId)
@@ -283,6 +284,30 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
           />
         </div>
 
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-slate-100">
+          <Slider
+            label="Feasibility"
+            value={activeCell.feasibility !== undefined ? activeCell.feasibility : 3}
+            onChange={(v) => handleCellChange('feasibility', v)}
+            minLabel="Low Feasibility"
+            maxLabel="High Feasibility"
+          />
+          <Slider
+            label="Risk Exposure"
+            value={activeCell.riskRating !== undefined ? activeCell.riskRating : 3}
+            onChange={(v) => handleCellChange('riskRating', v)}
+            minLabel="Low Risk"
+            maxLabel="High Risk"
+          />
+          <Slider
+            label="Stakeholder Support"
+            value={activeCell.stakeholderSupport !== undefined ? activeCell.stakeholderSupport : 3}
+            onChange={(v) => handleCellChange('stakeholderSupport', v)}
+            minLabel="Low Support"
+            maxLabel="High Support"
+          />
+        </div>
+
         {/* Risks & Sequencing */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-slate-100">
           <TextArea
@@ -352,6 +377,11 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
             </div>
           </div>
         </div>
+
+        <EvidenceLogEditor
+          notes={activeCell.evidenceNotes || []}
+          onChange={(newNotes) => handleCellChange('evidenceNotes', newNotes)}
+        />
       </CardBody>
     </Card>
   );

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from './Header';
 import { ModuleTabs } from './ModuleTabs';
+import { Dashboard } from './Dashboard';
 import { MissionProfile } from './MissionProfile';
 import { SituationalAnalysis } from './SituationalAnalysis';
 import { StakeholderMapping } from './StakeholderMapping';
@@ -113,21 +114,26 @@ export const AppShell: React.FC = () => {
 
     switch (currentStep) {
       case 1:
-        setData({ ...data, profile: fresh.profile });
+        if (confirm('This will wipe all modifications and reset the entire planning project. Continue?')) {
+          setData(fresh);
+        }
         break;
       case 2:
-        setData({ ...data, pestels: fresh.pestels });
+        setData({ ...data, profile: fresh.profile });
         break;
       case 3:
-        setData({ ...data, stakeholders: fresh.stakeholders });
+        setData({ ...data, pestels: fresh.pestels });
         break;
       case 4:
-        setData({ ...data, customCells: fresh.customCells });
+        setData({ ...data, stakeholders: fresh.stakeholders });
         break;
       case 5:
-        setData({ ...data, priorityBrief: fresh.priorityBrief });
+        setData({ ...data, customCells: fresh.customCells });
         break;
       case 6:
+        setData({ ...data, priorityBrief: fresh.priorityBrief });
+        break;
+      case 7:
         if (confirm('This will wipe all modifications and reset the entire planning project. Continue?')) {
           setData(fresh);
           setCurrentStep(1);
@@ -142,34 +148,41 @@ export const AppShell: React.FC = () => {
     switch (currentStep) {
       case 1:
         return (
-          <MissionProfile
-            profile={data.profile}
-            onChange={handleProfileChange}
-            onTemplateChange={handleTemplateChange}
-            onNext={() => setCurrentStep(2)}
+          <Dashboard
+            data={data}
+            onNavigateToStep={setCurrentStep}
           />
         );
       case 2:
         return (
-          <SituationalAnalysis
-            pestels={data.pestels}
-            onChange={handlePestelsChange}
+          <MissionProfile
+            profile={data.profile}
+            onChange={handleProfileChange}
+            onTemplateChange={handleTemplateChange}
             onNext={() => setCurrentStep(3)}
-            onPrev={() => setCurrentStep(1)}
           />
         );
       case 3:
+        return (
+          <SituationalAnalysis
+            pestels={data.pestels}
+            onChange={handlePestelsChange}
+            onNext={() => setCurrentStep(4)}
+            onPrev={() => setCurrentStep(2)}
+          />
+        );
+      case 4:
         return (
           <StakeholderMapping
             stakeholders={data.stakeholders}
             onAdd={handleAddStakeholder}
             onUpdate={handleUpdateStakeholder}
             onDelete={handleDeleteStakeholder}
-            onNext={() => setCurrentStep(4)}
-            onPrev={() => setCurrentStep(2)}
+            onNext={() => setCurrentStep(5)}
+            onPrev={() => setCurrentStep(3)}
           />
         );
-      case 4:
+      case 5:
         return (
           <CBDMatrix
             rows={matrixRows}
@@ -178,29 +191,29 @@ export const AppShell: React.FC = () => {
             pestels={data.pestels}
             stakeholders={data.stakeholders}
             onUpdateCell={handleUpdateCell}
-            onNext={() => setCurrentStep(5)}
-            onPrev={() => setCurrentStep(3)}
-          />
-        );
-      case 5:
-        return (
-          <PrioritySequencing
-            brief={data.priorityBrief}
-            customCells={data.customCells}
-            onChange={handlePriorityBriefChange}
             onNext={() => setCurrentStep(6)}
             onPrev={() => setCurrentStep(4)}
           />
         );
       case 6:
         return (
+          <PrioritySequencing
+            brief={data.priorityBrief}
+            customCells={data.customCells}
+            onChange={handlePriorityBriefChange}
+            onNext={() => setCurrentStep(7)}
+            onPrev={() => setCurrentStep(5)}
+          />
+        );
+      case 7:
+        return (
           <ExportBrief
             data={data}
             onImportSuccess={(imported) => {
               setData(imported);
-              setCurrentStep(6);
+              setCurrentStep(7);
             }}
-            onPrev={() => setCurrentStep(5)}
+            onPrev={() => setCurrentStep(6)}
           />
         );
       default:
@@ -240,7 +253,7 @@ export const AppShell: React.FC = () => {
             This tool is an educational and planning-support prototype. It is not official United Nations doctrine and does not replace mission mandate, official guidance, host-state law, human rights due diligence, command approval, or verified country analysis. Users should verify all context-specific findings through official and current sources before operational or policy use.
           </p>
           <div className="mt-2 text-slate-400 font-bold bg-slate-800/50 inline-block px-3 py-1 rounded-full border border-slate-800/80 mx-auto">
-            Version 0.1 — Planning Support Prototype
+            v0.2.0 — Analysis & Visualization Upgrade
           </div>
         </div>
       </footer>
