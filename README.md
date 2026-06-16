@@ -1,96 +1,140 @@
-# Unofficial UNPOL CBD Integrated Planning Prototype
+# UNPOL Capacity-Building & Development (CBD) Integrated Planning Tool (Prototype)
 
-v0.3.1 — UI/UX Polish & Stakeholder Decision-Support Upgrade
+An unofficial educational and decision-support framework designed to assist UNPOL Advisory Teams, Security Sector Reform (SSR) specialists, and peace operations planning officers in diagnosing host-state policing environments, mapping stakeholders, and structuring strategic capacity-building interventions.
 
-The **Unofficial UNPOL Capacity-Building & Development (CBD) Integrated Planning Prototype** is an educational and planning-support framework designed to help UNPOL Advisory Teams, Security Sector Reform (SSR) specialists, and peace operations planning officers diagnose host-state environmental challenges, map critical stakeholders, configure targeted police capacity-building actions, and construct strategic sequencing pathways.
-
----
-
-## ⚠️ Important Disclaimer & Rules of Use
-
-> [!IMPORTANT]
-> **Advisory Disclaimer**
-> This tool is an educational and planning-support prototype. It is not official United Nations doctrine and does not replace mission mandate, official guidance, host-state law, human rights due diligence, command approval, or verified country analysis. Users should verify all context-specific findings through official and current sources before operational or policy use.
-
-**Data Privacy & Classification Warning:**
-This application runs entirely client-side in the browser. No data is transmitted to external servers. Custom planning data is stored locally in the browser's storage. Do not input sensitive, classified, or restricted host-state security or mission details into public web deployments of this tool.
+## 🌐 Live Demo & Deployment
+This application operates strictly **client-side** in your web browser. No planning data is transmitted to external servers.
+- **Local Deployment**: Follow the [Getting Started](#-getting-started) instructions to run the application on an offline or secure workstation.
+- *(Note: If this project is hosted on a public platform such as Vercel, the live URL will be accessible via your deployment configurations.)*
 
 ---
 
-## 🚀 Key Features
+## ⚠️ Disclaimer
 
-1. **Context-Adaptable Mission Profiles**: Select from 6 preloaded baseline templates (UN Peacekeeping, Special Political Mission, Post-Conflict SSR, Police Reform Advisory, Capacity Building & Training, Rule of Law/Justice-Chain) or choose a clean **Start Blank** slate.
-2. **PESTEL-S Environmental Diagnosis**: Systematic analysis of 7 categories (Political, Economic, Social, Technological, Environmental, Legal, Security) shaping host-state policing constraints.
-3. **Actor Assessment & Stakeholder Mapping**: Categorize and analyze enablers, blockers, spoilers, and neutral actors. Define their real influence, reform posture, and UNPOL entry points.
-4. **Stakeholder Decision-Support Quadrants**: Review accessible engagement and operational-credibility matrices with shared classifications, engagement recommendations, risk caveats, and export summaries.
-5. **Interactive 5×6 CBD Matrix**: Intersect 5 Key Reform Areas with 6 Capacity Dimensions to structure specific advisory inputs (Individual, Organizational, and Enabling Environment levels) along with monitoring indicators and risks.
-6. **Strategic Prioritization & Sequencing**: Compile Quick Wins, politically sensitive reforms, and long-term sequencing paths. Interventions are automatically prioritized using a multi-criteria scoring algorithm.
-7. **Production-Ready Reporting & Backups**:
-   - Preview and print a PDF-ready cover-sheet brief.
-   - Copy a clean Markdown format report.
-   - Save or upload the entire workspace configuration as a local JSON file.
+This is an unofficial educational and planning-support prototype. It is not official United Nations doctrine, does not represent the United Nations, and does not replace mission mandates, official guidance, host-state law, human rights due diligence, command approval, or verified country analysis.
 
 ---
 
-## 🛠️ Technology Stack
+## 💡 Why This Project Matters
+In peace operations and post-conflict transition contexts, policing capacity-building is complex, politically sensitive, and highly context-dependent. Planners often struggle to translate high-level mandates into structured, sequenced advisory activities while accounting for local environmental constraints (PESTEL-S) and diverse actor motivations.
 
-- **Core**: Next.js (App Router), React 19, TypeScript
-- **Styling**: Tailwind CSS
+This tool bridges that gap by providing a structured, interactive playground to:
+- Methodically diagnose environmental drivers and constraints.
+- Categorize and visualize stakeholder influence and reform postures.
+- Map advisory interventions across the five core areas of police capacity development.
+- Prioritize and sequence activities using objective multi-criteria scoring, rather than ad-hoc decision-making.
+
+---
+
+## 🚀 Core Features
+
+1. **Context-Adaptable Mission Profiles**: Select from preloaded baseline templates (UN Peacekeeping, Special Political Mission, Post-Conflict SSR, Police Reform Advisory, Capacity Building & Training, Rule of Law/Justice-Chain) or start with a blank canvas.
+2. **PESTEL-S Environmental Diagnosis**: Conduct a systematic assessment of Political, Economic, Social, Technological, Environmental, Legal, and Security factors shaping host-state policing.
+3. **Actor Assessment & Stakeholder Mapping**: Define and analyze enablers, blockers, spoilers, and neutral actors, mapping their reform posture, influence levels, and key UNPOL entry points.
+4. **Decision-Support Quadrants**: Graphically analyze stakeholders based on operational influence and engagement priorities to identify risk caveats.
+5. **Interactive 5×6 CBD Planning Matrix**: Intersect 5 Key Reform Areas (e.g., Administration, Operations, Oversight) with 6 Capacity Dimensions (e.g., Skills, Systems, Infrastructure) to organize inputs.
+6. **Prioritization & Sequencing Engine**: Order activities into Quick Wins, Mid-Term, and Long-Term priorities using automated multi-criteria sequencing.
+7. **Quality-Control Warnings**: Real-time validation alerts highlighting incomplete sections, unsequenced tasks, or missing stakeholder attributes.
+8. **Exportable Briefs & Backups**: Preview PDF-ready briefs, copy structured Markdown reports, or export the entire planning workspace as a JSON file.
+
+---
+
+## 👥 Intended Users
+This prototype is tailored for public-sector planning and policing practitioners:
+- **United Nations Police (UNPOL)** Advisors & Planning Officers
+- **Security Sector Reform (SSR)** Officers and Policy Advisors
+- **Rule of Law (RoL)** practitioners within Peacekeeping and Special Political Missions
+- **Academic researchers and trainers** in international peace operations and police reform
+
+---
+
+## 📋 Use Cases
+- **Pre-deployment Briefings**: Prepare incoming advisory teams with simulated mission profiles.
+- **Strategic Planning Workshops**: Facilitate joint PESTEL-S and stakeholder mapping exercises during planning sessions.
+- **Mission Transition Assessment**: Structure capacity sequencing paths during mandate transition and drawdown phases.
+- **Training and Education**: Demonstrate the intersection of capacity development areas and dimensions in peacekeeping academies.
+
+---
+
+## ⚖️ Responsible Use Note
+This planning tool is an unofficial prototype designed to assist human planning processes; it does not generate automated strategic decisions. Users are solely responsible for ensuring that all planned activities:
+- Respect international human rights standards and the UN Human Rights Due Diligence Policy (HRDDP).
+- Conform to the host state's legal framework and local ownership principles.
+- Are verified using official, up-to-date mandate documentation.
+- Do not store classified, restricted, or sensitive operational intelligence in unencrypted or public browser environments.
+
+---
+
+## 🛠️ Tech Stack
+- **Framework**: Next.js 16.2 (App Router), React 19, TypeScript
+- **Styling**: Tailwind CSS 4.0
 - **Icons**: Lucide React
 - **Animations**: Framer Motion
-- **Persistence**: Browser `localStorage` (client-side only)
+- **Data Storage**: Client-side `localStorage` (100% offline-compatible)
 
 ---
 
-## 💻 Local Development
+## 💻 Getting Started
 
-Follow these steps to run the application locally:
+### Prerequisites
+- Node.js (version 18.x or later)
+- npm (version 9.x or later)
 
-### 1. Install Dependencies
-```bash
-npm install
-```
-
-### 2. Start Development Server
-```bash
-npm run dev
-```
-Open [http://localhost:3000](http://localhost:3000) with your browser to view the application.
-
-### 3. Build for Production
-To verify typescript safety and build a production-ready bundle:
-```bash
-npm run build
-```
-
-### 4. Run Linter
-To verify code style and quality compliance:
-```bash
-npm run lint
-```
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/maissaramoheb/unpol-cbd-planning-tool.git
+   cd unpol-cbd-planning-tool
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Run the local development server:
+   ```bash
+   npm run dev
+   ```
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 🌐 Deployment to Vercel
+## ⚙️ Available Scripts
+In the project directory, you can run the following npm scripts:
 
-The project is optimized for deployment on the [Vercel Platform](https://vercel.com).
-
-1. Push your local repository to a remote GitHub, GitLab, or Bitbucket repository.
-2. Import the project in Vercel.
-3. Vercel will automatically detect Next.js and apply the correct build settings.
-4. Click **Deploy**.
-
----
-
-## 🗺️ Future Roadmap
-
-- **Offline-First Storage**: Migrate local storage to IndexedDB to support larger project portfolios offline.
-- **UNPOL Doctrine Integration**: Preload reference standards from DPKO/DFS guidelines on Police Capacity-Building and Development.
-- **Collaborative Sharing**: Implement secure, client-side encrypted sharing links to facilitate collaborative drafting.
-- **Offline AI Assistant**: Integrate secure WebGPU-based local LLM assistance for context-drafting without network requests.
+- `npm run dev`: Starts the Next.js development server.
+- `npm run build`: Compiles the application for production deployment, verifying TypeScript types.
+- `npm run start`: Starts the production build server.
+- `npm run lint`: Checks for linting errors and code formatting compliance.
 
 ---
 
-## ✍️ Author Credit
+## 📊 Project Status
+- **Current Version**: v0.3.1
+- **Phase**: Early-stage prototype (Active development). Feedback from peace operations and policing practitioners is welcome.
 
-Developed by **Lt.Col Maissara Selim** as an educational tool to visualize policing capacity-building sequencing.
+---
+
+## 🗺️ Roadmap Summary
+Our near-term focus items include:
+- Preloaded country-based PESTEL-S environment templates.
+- Enhanced PDF cover-sheet rendering and custom styling options.
+- Sample mission scenario JSON profiles.
+- Private, client-side local LLM integration for review drafting.
+- Encryption layer for IndexedDB workspace backups.
+
+For more details, see the complete [ROADMAP.md](ROADMAP.md).
+
+---
+
+## 🤝 Contributing
+Contributions are welcome! Please read the [CONTRIBUTING.md](CONTRIBUTING.md) guide to learn about our development process, code styles, and contribution submission guidelines.
+
+---
+
+## 🔒 Security
+For information regarding security architecture, local data storage boundaries, or reporting vulnerability guidelines, please refer to [SECURITY.md](SECURITY.md).
+
+---
+
+## 📄 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
