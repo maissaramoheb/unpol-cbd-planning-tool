@@ -86,11 +86,11 @@ export const MatrixListView: React.FC<MatrixListViewProps> = ({
                 `}
               >
                 <div>
-                  <span className="text-[9px] uppercase tracking-wider block text-slate-400 font-extrabold">Key Area</span>
+                  <span className="text-[9px] uppercase tracking-wider block text-slate-500 font-extrabold">Key Area</span>
                   <span className="line-clamp-1">{row.name}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-slate-400 bg-white border border-slate-200 px-2 py-0.5 rounded font-bold">
+                  <span className="text-[10px] text-slate-500 bg-white border border-slate-200 px-2 py-0.5 rounded font-bold">
                     6 Dim
                   </span>
                   {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
@@ -119,7 +119,7 @@ export const MatrixListView: React.FC<MatrixListViewProps> = ({
                         `}
                       >
                         <div className="flex flex-col">
-                          <span className="text-[9px] uppercase tracking-wider text-slate-400">Intersection Dimension</span>
+                          <span className="text-[9px] uppercase tracking-wider text-slate-500">Intersection Dimension</span>
                           <span className="font-bold text-slate-900 mt-0.5">{col.name}</span>
                           {tags.length > 0 && (
                             <div className="flex flex-wrap gap-1 mt-1.5">

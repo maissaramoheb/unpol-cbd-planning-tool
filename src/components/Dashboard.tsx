@@ -54,7 +54,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
               <p className="text-sm text-slate-500 mt-2 leading-relaxed max-w-lg mx-auto">
                 Welcome to the UNPOL Capacity-Building & Development planning workspace. Your assessment data is currently empty.
               </p>
-              <p className="text-xs font-semibold text-slate-400 bg-slate-50 border border-slate-200/80 px-4 py-2.5 rounded-xl mt-4 max-w-md mx-auto italic">
+              <p className="text-xs font-semibold text-slate-600 bg-slate-50 border border-slate-200/80 px-4 py-2.5 rounded-xl mt-4 max-w-md mx-auto italic">
                 &ldquo;Start by creating a Mission Profile, then complete PESTEL-S and Stakeholder Mapping to populate the dashboard.&rdquo;
               </p>
             </div>
@@ -153,9 +153,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
           <Card key={idx} className="bg-white border-slate-200">
             <CardBody className="p-4 flex items-center justify-between gap-3">
               <div className="flex flex-col gap-0.5">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{kpi.label}</span>
+                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{kpi.label}</span>
                 <span className="text-xl font-extrabold text-slate-900 leading-tight">{kpi.val}</span>
-                <span className="text-[10px] text-slate-500 font-semibold">{kpi.sub}</span>
+                <span className="text-[10px] text-slate-600 font-semibold">{kpi.sub}</span>
               </div>
               <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">{kpi.icon}</div>
             </CardBody>
@@ -180,10 +180,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
             </CardHeader>
             <CardBody className="flex flex-col gap-3">
               {sortedPressures.length === 0 ? (
-                <p className="text-xs text-slate-400 italic">No findings configured in PESTEL-S step.</p>
+                <p className="text-xs text-slate-500 italic">No findings configured in PESTEL-S step.</p>
               ) : (
                 sortedPressures.map(p => (
-                  <div key={p.id} className="p-3 bg-slate-50/60 border border-slate-150 rounded-xl flex flex-col gap-1">
+                  <div key={p.id} className="p-3 bg-slate-50/60 border border-slate-200 rounded-xl flex flex-col gap-1">
                     <div className="flex justify-between items-center w-full gap-2">
                       <span className="font-extrabold text-[11px] text-slate-800 uppercase tracking-tight">{p.name}</span>
                       <div className="flex gap-1">
@@ -192,7 +192,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
                       </div>
                     </div>
                     <p className="text-xs text-slate-600 leading-relaxed font-medium mt-1 line-clamp-2">{p.finding}</p>
-                    <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block mt-1">
+                    <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider block mt-1">
                       Evidence: {p.evidenceNotes?.length || 0} citations
                     </span>
                   </div>
@@ -214,14 +214,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
             </CardHeader>
             <CardBody className="flex flex-col gap-3">
               {stakeholderRisks.length === 0 ? (
-                <p className="text-xs text-slate-400 italic">No blockers or spoiler risks identified in the actors database.</p>
+                <p className="text-xs text-slate-500 italic">No blockers or spoiler risks identified in the actors database.</p>
               ) : (
                 stakeholderRisks.map(s => (
-                  <div key={s.id} className="p-3 bg-slate-50/60 border border-slate-150 rounded-xl flex flex-col gap-1.5">
+                  <div key={s.id} className="p-3 bg-slate-50/60 border border-slate-200 rounded-xl flex flex-col gap-1.5">
                     <div className="flex justify-between items-start w-full gap-2">
                       <div>
                         <span className="font-bold text-xs text-slate-900 block leading-tight">{s.name}</span>
-                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mt-0.5">{s.category}</span>
+                        <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block mt-0.5">{s.category}</span>
                       </div>
                       <div className="flex gap-1 shrink-0">
                         <Badge variant="rose">{s.position}</Badge>
@@ -251,10 +251,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
             </CardHeader>
             <CardBody className="flex flex-col gap-3">
               {scoredCells.length === 0 ? (
-                <p className="text-xs text-slate-400 italic">No customized matrix intersections defined.</p>
+                <p className="text-xs text-slate-500 italic">No customized matrix intersections defined.</p>
               ) : (
                 scoredCells.map(({ key, cell, score }) => (
-                  <div key={key} className="p-3 bg-slate-50/60 border border-slate-150 rounded-xl flex flex-col gap-1">
+                  <div key={key} className="p-3 bg-slate-50/60 border border-slate-200 rounded-xl flex flex-col gap-1">
                     <div className="flex justify-between items-center w-full gap-2">
                       <span className="font-extrabold text-[10px] text-slate-900 uppercase tracking-tight">{key}</span>
                       <div className="flex gap-1 shrink-0">
@@ -286,9 +286,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
                   Quick Wins (High Feasibility)
                 </span>
                 {priorityBrief.quickWins?.length === 0 ? (
-                  <span className="text-xs text-slate-400 italic">None configured</span>
+                  <span className="text-xs text-slate-500 italic">None configured</span>
                 ) : (
-                  <ul className="text-xs text-slate-650 flex flex-col gap-1 list-disc pl-4 leading-normal">
+                  <ul className="text-xs text-slate-600 flex flex-col gap-1 list-disc pl-4 leading-normal">
                     {priorityBrief.quickWins?.slice(0, 3).map((qw, i) => (
                       <li key={i} className="line-clamp-2">{qw}</li>
                     ))}
@@ -300,9 +300,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
                   Sensitive Reforms (Requires Cover)
                 </span>
                 {priorityBrief.sensitiveReforms?.length === 0 ? (
-                  <span className="text-xs text-slate-400 italic">None configured</span>
+                  <span className="text-xs text-slate-500 italic">None configured</span>
                 ) : (
-                  <ul className="text-xs text-slate-650 flex flex-col gap-1 list-disc pl-4 leading-normal">
+                  <ul className="text-xs text-slate-600 flex flex-col gap-1 list-disc pl-4 leading-normal">
                     {priorityBrief.sensitiveReforms?.slice(0, 3).map((sr, i) => (
                       <li key={i} className="line-clamp-2">{sr}</li>
                     ))}
@@ -384,7 +384,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
       {/* Overview navigation buttons */}
       <Card>
         <CardBody className="p-4 flex flex-wrap gap-2.5 justify-center items-center">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mr-2">Go to Module:</span>
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mr-2">Go to Module:</span>
           {[
             { label: 'Complete Profile', step: 2 },
             { label: 'Review PESTEL-S', step: 3 },

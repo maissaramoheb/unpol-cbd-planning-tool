@@ -54,10 +54,10 @@ export const MissionExplorerPanel: React.FC<MissionExplorerPanelProps> = ({
               <span className="text-sm font-black text-slate-900 uppercase tracking-tight">
                 {entry.missionAcronym}
               </span>
-              <span className="text-xs text-slate-300 font-bold">|</span>
+              <span className="text-xs text-slate-500 font-bold">|</span>
               <span className="text-xs font-bold text-slate-600">{entry.country}</span>
             </div>
-            <h4 className="text-xs text-slate-600 font-semibold leading-snug mt-1">
+            <h4 className="text-xs text-slate-700 font-semibold leading-snug mt-1">
               {entry.missionName}
             </h4>
           </div>
@@ -119,14 +119,14 @@ export const MissionExplorerPanel: React.FC<MissionExplorerPanelProps> = ({
         {/* Specific Fields */}
         <div className="grid grid-cols-2 gap-3 border-t border-slate-100 pt-3 text-[11px]">
           <div>
-            <span className="font-bold text-slate-500 block">Host-State Police force</span>
+            <span className="font-bold text-slate-600 block">Host-State Police force</span>
             <span className="text-slate-800 font-semibold">{entry.hostStatePoliceInstitution || 'N/A'}</span>
           </div>
           <div>
-            <span className="font-bold text-slate-500 block">Mandate Themes</span>
+            <span className="font-bold text-slate-600 block">Mandate Themes</span>
             <div className="flex flex-wrap gap-1 mt-0.5">
               {entry.planningThemes.map((t, idx) => (
-                <span key={idx} className="bg-slate-100 text-slate-600 px-1 py-0.5 rounded text-[9px] font-semibold border border-slate-150">
+                <span key={idx} className="bg-slate-100 text-slate-600 px-1 py-0.5 rounded text-[9px] font-semibold border border-slate-200">
                   {t}
                 </span>
               ))}
@@ -145,12 +145,12 @@ export const MissionExplorerPanel: React.FC<MissionExplorerPanelProps> = ({
               return (
                 <div key={key} className="text-xs leading-relaxed">
                   <span className="font-bold text-slate-700 uppercase">{key}:</span>{' '}
-                  <span className="text-slate-500">{p.prompt}</span>
+                  <span className="text-slate-600">{p.prompt}</span>
                 </div>
               );
             })}
             {Object.keys(entry.starterPestelsPrompts).length > 3 && (
-              <span className="text-xs text-slate-500 font-semibold italic">
+              <span className="text-xs text-slate-600 font-semibold italic">
                 + {Object.keys(entry.starterPestelsPrompts).length - 3} more prompts will be loaded...
               </span>
             )}

@@ -49,7 +49,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           ))}
         </select>
         {error && <span id={feedbackId} className="text-xs font-semibold text-rose-500">{error}</span>}
-        {!error && helperText && <span id={feedbackId} className="text-xs text-slate-400">{helperText}</span>}
+        {!error && helperText && <span id={feedbackId} className="text-xs text-slate-500">{helperText}</span>}
       </div>
     );
   }
@@ -93,7 +93,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
           {...props}
         />
         {error && <span id={feedbackId} className="text-xs font-semibold text-rose-500">{error}</span>}
-        {!error && helperText && <span id={feedbackId} className="text-xs text-slate-400">{helperText}</span>}
+        {!error && helperText && <span id={feedbackId} className="text-xs text-slate-500">{helperText}</span>}
       </div>
     );
   }

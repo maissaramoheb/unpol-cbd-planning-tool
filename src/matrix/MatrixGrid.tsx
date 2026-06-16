@@ -114,7 +114,7 @@ export const MatrixGrid: React.FC<MatrixGridProps> = ({
                   }
                 `}
               >
-                <span className="uppercase tracking-wider text-[9px] text-slate-400 block mb-1">Dimension</span>
+                <span className="uppercase tracking-wider text-[9px] text-slate-500 block mb-1">Dimension</span>
                 <span className="line-clamp-2 leading-tight">{shortColName(col.name)}</span>
               </button>
             );
@@ -160,7 +160,7 @@ export const MatrixGrid: React.FC<MatrixGridProps> = ({
                     `}
                   >
                     <div className="flex justify-between items-start w-full">
-                      <span className="text-[8px] font-extrabold text-slate-400 uppercase tracking-tight line-clamp-1">
+                      <span className="text-[8px] font-extrabold text-slate-500 uppercase tracking-tight line-clamp-1">
                         {shortColName(col.name)}
                       </span>
                       {custom && (
@@ -191,7 +191,7 @@ export const MatrixGrid: React.FC<MatrixGridProps> = ({
       </div>
 
       {/* Heatmap Legend */}
-      <div className="p-3 bg-slate-50 border border-slate-200/60 rounded-xl text-[9px] flex flex-wrap gap-4 items-center justify-center font-extrabold text-slate-400 uppercase tracking-wider">
+      <div className="p-3 bg-slate-50 border border-slate-200/60 rounded-xl text-[9px] flex flex-wrap gap-4 items-center justify-center font-extrabold text-slate-500 uppercase tracking-wider">
         <span>Heatmap Legend:</span>
         <div className="flex items-center gap-1.5 text-slate-600">
           <span className="w-3 h-3 rounded bg-amber-50 border border-amber-200 flex" />

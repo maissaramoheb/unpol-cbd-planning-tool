@@ -91,7 +91,7 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
                 Interventions ranked by computed Priority Score:
               </span>
               {scoredCells.length === 0 ? (
-                <p className="text-xs text-slate-400 italic">No custom cells configured yet in Step 4. Default priority values will apply.</p>
+                <p className="text-xs text-slate-500 italic">No custom cells configured yet in Step 4. Default priority values will apply.</p>
               ) : (
                 scoredCells.map(({ key, score, classification }) => (
                   <div key={key} className="p-3 border border-slate-200 rounded-lg text-xs flex flex-col gap-1.5 bg-slate-50/50">

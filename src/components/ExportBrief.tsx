@@ -188,27 +188,27 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
             
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs bg-slate-50 p-4 rounded-xl border border-slate-100 print:bg-slate-50 print:border-slate-200">
               <div>
-                <span className="font-extrabold text-[9px] text-slate-400 uppercase tracking-wider block">Country</span>
+                <span className="font-extrabold text-[9px] text-slate-500 uppercase tracking-wider block">Country</span>
                 <span className="font-bold text-slate-800">{data.profile.countryName || 'N/A'}</span>
               </div>
               <div>
-                <span className="font-extrabold text-[9px] text-slate-400 uppercase tracking-wider block">Mission / Institution</span>
+                <span className="font-extrabold text-[9px] text-slate-500 uppercase tracking-wider block">Mission / Institution</span>
                 <span className="font-bold text-slate-800">{data.profile.missionName || 'N/A'}</span>
               </div>
               <div>
-                <span className="font-extrabold text-[9px] text-slate-400 uppercase tracking-wider block">Area of Operations</span>
+                <span className="font-extrabold text-[9px] text-slate-500 uppercase tracking-wider block">Area of Operations</span>
                 <span className="font-bold text-slate-800">{data.profile.region || 'N/A'}</span>
               </div>
               <div>
-                <span className="font-extrabold text-[9px] text-slate-400 uppercase tracking-wider block">Prepared By</span>
+                <span className="font-extrabold text-[9px] text-slate-500 uppercase tracking-wider block">Prepared By</span>
                 <span className="font-bold text-slate-800">{data.profile.analystName || 'UNPOL Advisory Team'}</span>
               </div>
               <div>
-                <span className="font-extrabold text-[9px] text-slate-400 uppercase tracking-wider block">Assessment Date</span>
+                <span className="font-extrabold text-[9px] text-slate-500 uppercase tracking-wider block">Assessment Date</span>
                 <span className="font-bold text-slate-800">{data.profile.assessmentDate || 'N/A'}</span>
               </div>
               <div>
-                <span className="font-extrabold text-[9px] text-slate-400 uppercase tracking-wider block">Context Source</span>
+                <span className="font-extrabold text-[9px] text-slate-500 uppercase tracking-wider block">Context Source</span>
                 <span className="font-bold text-slate-800">
                   {data.profile.templateId === 'blank'
                     ? 'Started Blank'
@@ -220,17 +220,17 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
                 </span>
               </div>
               <div>
-                <span className="font-extrabold text-[9px] text-slate-400 uppercase tracking-wider block">Source Category</span>
+                <span className="font-extrabold text-[9px] text-slate-500 uppercase tracking-wider block">Source Category</span>
                 <span className="font-bold text-slate-800">{data.profile.sourceCategory || 'User-defined / static template'}</span>
               </div>
               <div>
-                <span className="font-extrabold text-[9px] text-slate-400 uppercase tracking-wider block">Source Review</span>
+                <span className="font-extrabold text-[9px] text-slate-500 uppercase tracking-wider block">Source Review</span>
                 <span className="font-bold text-slate-800">
                   {data.profile.profileLastReviewed || 'Not independently verified'}
                 </span>
               </div>
               <div>
-                <span className="font-extrabold text-[9px] text-slate-400 uppercase tracking-wider block">Version</span>
+                <span className="font-extrabold text-[9px] text-slate-500 uppercase tracking-wider block">Version</span>
                 <span className="font-bold text-slate-900">{APP_VERSION_LABEL}</span>
               </div>
             </div>
@@ -249,7 +249,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
                 { label: 'Conflict Context', val: data.profile.conflictContext }
               ].map((item, idx) => (
                 <div key={idx} className="flex flex-col gap-0.5">
-                  <span className="font-extrabold text-slate-400 uppercase text-[9px] tracking-tight">{item.label}</span>
+                  <span className="font-extrabold text-slate-500 uppercase text-[9px] tracking-tight">{item.label}</span>
                   <span className="text-slate-800 font-semibold">{item.val || 'N/A'}</span>
                 </div>
               ))}
@@ -284,7 +284,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
                   </div>
                   <p className="text-slate-700"><span className="font-bold text-slate-500 mr-1">Diagnosis:</span>{p.finding}</p>
                   <p className="text-slate-600 italic"><span className="font-semibold text-slate-500 not-italic mr-1">Why it matters:</span>{p.why}</p>
-                  <p className="text-slate-500"><span className="font-bold text-slate-400 mr-1">Sequencing:</span>{p.sequencing}</p>
+                  <p className="text-slate-500"><span className="font-bold text-slate-500 mr-1">Sequencing:</span>{p.sequencing}</p>
                 </div>
               ))}
             </div>
@@ -371,7 +371,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
             </h3>
             <div className="flex flex-col gap-4 text-xs">
               {Object.keys(data.customCells).length === 0 ? (
-                <p className="text-slate-400 italic">No specific intersections configured with customized actions in Step 5.</p>
+                <p className="text-slate-500 italic">No specific intersections configured with customized actions in Step 5.</p>
               ) : (
                 prioritizedCells.map(({ key, cell, assessment }) => {
                   const [row, col] = key.split('|');
@@ -395,7 +395,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
                         <div><span className="font-extrabold text-slate-500 block uppercase text-[9px] mb-1">Enabling Env Action</span>{cell.environment}</div>
                       </div>
                       
-                      <div className="grid grid-cols-3 gap-2 text-[9px] text-slate-400 font-extrabold uppercase tracking-wider pt-1 border-t border-slate-100/60">
+                      <div className="grid grid-cols-3 gap-2 text-[9px] text-slate-500 font-extrabold uppercase tracking-wider pt-1 border-t border-slate-100/60">
                         <span>Feasibility: {assessment.inputs.feasibility}/5</span>
                         <span>Risk rating: {assessment.inputs.risk}/5</span>
                         <span>Stakeholder support: {assessment.inputs.stakeholderSupport}/5</span>
@@ -472,7 +472,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
                       <Badge variant="blue" className="text-[9px] uppercase tracking-wider">{note.type}</Badge>
                     </div>
                     {note.comment && <p className="text-slate-600 bg-white border border-slate-100 p-2 rounded-lg italic leading-relaxed">&ldquo;{note.comment}&rdquo;</p>}
-                    <span className="text-[9px] text-slate-400 font-extrabold uppercase tracking-wider">
+                    <span className="text-[9px] text-slate-500 font-extrabold uppercase tracking-wider">
                       Attached to: {note.item} | Confidence: {note.confidence}/5 | Verified: {note.date}
                     </span>
                   </div>
@@ -486,7 +486,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
             <h3 className="text-xs font-black uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-1.5 mb-3">
               9. Planning Assumptions & Limitations
             </h3>
-            <div className="text-xs text-slate-650 flex flex-col gap-2 leading-relaxed">
+            <div className="text-xs text-slate-600 flex flex-col gap-2 leading-relaxed">
               <p>• **Counterpart Ownership**: The successful execution of capacity-building reforms assumes host-state leadership maintains a baseline commitment to professionalization and structural institutional changes.</p>
               <p>• **Security Environment**: This planning sequence assumes that minimum security stability is maintained. Drastic escalation of conflict may require suspending capacity building in favor of emergency operations.</p>
               <p>• **Information Freshness**: The validity of this plan depends on the verifying dates logged in the Evidence Index. Users must review and update source logs as host-state conditions evolve.</p>
@@ -494,7 +494,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
           </div>
 
           {/* Disclaimer Footer */}
-          <div className="mt-8 pt-4 border-t-2 border-slate-300 text-[10px] text-slate-400 italic leading-relaxed page-break-inside-avoid">
+          <div className="mt-8 pt-4 border-t-2 border-slate-300 text-[10px] text-slate-500 italic leading-relaxed page-break-inside-avoid">
             <div className="flex items-center gap-1.5 text-slate-500 font-bold mb-1 uppercase tracking-wider">
               <ShieldAlert size={12} className="text-amber-500" />
               <span>Advisory Disclaimer</span>

@@ -134,7 +134,7 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
       {/* Grid List representation */}
       <div className="flex-1 overflow-y-auto max-h-[380px] pr-1 flex flex-col gap-2.5">
         {entries.length === 0 ? (
-          <div className="text-center py-8 text-xs text-slate-400 italic bg-white border border-slate-200 rounded-xl">
+          <div className="text-center py-8 text-xs text-slate-500 italic bg-white border border-slate-200 rounded-xl">
             No planning contexts match the selected filters.
           </div>
         ) : (
@@ -158,7 +158,7 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
                     <span className="text-xs font-black text-slate-900 uppercase tracking-wide">
                       {entry.missionAcronym}
                     </span>
-                    <span className="text-[9px] text-slate-400 font-extrabold uppercase">|</span>
+                    <span className="text-[9px] text-slate-500 font-extrabold uppercase">|</span>
                     <span className="text-xs font-semibold text-slate-700">{entry.country}</span>
                     {entry.isFictionalScenario ? (
                       <Badge variant="rose" className="text-[10px] py-0.5 leading-none">
@@ -170,7 +170,7 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
                       </Badge>
                     )}
                   </div>
-                  <h4 className="text-xs text-slate-500 leading-tight font-medium">
+                  <h4 className="text-xs text-slate-600 leading-tight font-medium">
                     {entry.missionName}
                   </h4>
                   <span className="text-[11px] text-slate-600 font-semibold mt-1 block">
