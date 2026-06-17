@@ -95,11 +95,16 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
         <div className="flex-1 overflow-y-auto p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left/Middle: Map & List Lookup */}
           <div className="lg:col-span-2 flex flex-col gap-4">
-            <div className="flex flex-col gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700 sm:flex-row sm:items-center sm:justify-between">
-              <span className="font-bold">
-                Showing {shownCount} of {totalCount} contexts
-              </span>
-              <span className="text-slate-600">
+            <div className="flex flex-col gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-700 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <span className="font-bold block text-sm text-slate-900">
+                  Showing {shownCount} of {totalCount} contexts
+                </span>
+                <span className="text-slate-500 font-medium mt-0.5 block leading-normal">
+                  11 current UN Peacekeeping references · selected starter profiles · fictional training scenarios
+                </span>
+              </div>
+              <span className="text-slate-600 text-[10px] font-semibold bg-white border border-slate-200 px-2.5 py-1.5 rounded-lg shrink-0">
                 Filters apply to both the map pins and the list.
               </span>
             </div>

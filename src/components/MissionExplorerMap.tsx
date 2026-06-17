@@ -13,8 +13,7 @@ interface MissionExplorerMapProps {
 
 const MAP_WIDTH = 1000;
 const MAP_HEIGHT = 500;
-const LABEL_WIDTH = 104;
-const LABEL_HEIGHT = 34;
+
 
 const projectPosition = ({ longitude, latitude }: MissionMapPosition) => ({
   x: ((longitude + 180) / 360) * MAP_WIDTH,
@@ -47,6 +46,21 @@ export const MissionExplorerMap: React.FC<MissionExplorerMapProps> = ({
   const selectedEntry = geographicEntries.find((entry) => entry.id === selectedEntryId) || null;
   const hoveredEntry = geographicEntries.find((entry) => entry.id === hoveredEntryId) || null;
   const previewEntry = selectedEntry || hoveredEntry;
+  const anySelected = selectedEntryId !== null;
+
+  // Sort entries so hovered and selected entries are drawn last, placing them on top layer
+  const sortedEntries = [...geographicEntries].sort((a, b) => {
+    const aSelected = a.id === selectedEntryId;
+    const bSelected = b.id === selectedEntryId;
+    const aHovered = a.id === hoveredEntryId;
+    const bHovered = b.id === hoveredEntryId;
+
+    if (aSelected && !bSelected) return 1;
+    if (!aSelected && bSelected) return -1;
+    if (aHovered && !bHovered) return 1;
+    if (!aHovered && bHovered) return -1;
+    return 0;
+  });
 
   return (
     <div className="w-full overflow-hidden rounded-2xl border border-slate-700 bg-slate-900 p-3 shadow-sm sm:p-4">
@@ -68,19 +82,29 @@ export const MissionExplorerMap: React.FC<MissionExplorerMapProps> = ({
             preserveAspectRatio="xMidYMid meet"
           />
 
-          {geographicEntries.map((entry) => {
+          {sortedEntries.map((entry) => {
             const position = MISSION_MAP_POSITIONS[entry.id];
             const { x, y } = projectPosition(position);
-            const labelX = clampLabelPosition(x + position.labelOffset.x, LABEL_WIDTH, MAP_WIDTH);
-            const labelY = clampLabelPosition(y + position.labelOffset.y, LABEL_HEIGHT, MAP_HEIGHT);
             const isSelected = selectedEntryId === entry.id;
             const isHovered = hoveredEntryId === entry.id;
             const isEmphasized = isSelected || isHovered;
 
+            // Reduce default label clutter by showing a compact acronym-only label card by default.
+            // Expand to show country details on hover or selection.
+            const currentLabelWidth = isEmphasized ? 104 : 58;
+            const currentLabelHeight = isEmphasized ? 34 : 20;
+
+            const labelX = clampLabelPosition(x + position.labelOffset.x, currentLabelWidth, MAP_WIDTH);
+            const labelY = clampLabelPosition(y + position.labelOffset.y, currentLabelHeight, MAP_HEIGHT);
+
+            // Slightly dim non-selected labels/pins when one mission is selected (except the hovered one)
+            const isDimmed = anySelected && !isSelected && !isHovered;
+
             return (
               <g
                 key={entry.id}
-                className="cursor-pointer outline-none"
+                className="cursor-pointer outline-none transition-all duration-150 motion-reduce:transition-none"
+                style={{ opacity: isDimmed ? 0.35 : 1 }}
                 role="button"
                 tabIndex={0}
                 focusable="true"
@@ -124,38 +148,38 @@ export const MissionExplorerMap: React.FC<MissionExplorerMapProps> = ({
                   <circle
                     cx={x}
                     cy={y}
-                    r={20}
+                    r={18}
                     fill="none"
-                    stroke="#60a5fa"
-                    strokeOpacity="0.28"
-                    strokeWidth="5"
+                    stroke="#3b82f6"
+                    strokeOpacity="0.45"
+                    strokeWidth="5.5"
                     className="transition-opacity duration-150 motion-reduce:transition-none"
                   />
                 ) : null}
                 <circle
                   cx={x}
                   cy={y}
-                  r={isSelected ? 8 : isHovered ? 7 : 6}
-                  fill={isSelected ? '#60a5fa' : '#cbd5e1'}
+                  r={isSelected ? 8.5 : isHovered ? 7.5 : 6}
+                  fill={isSelected ? '#3b82f6' : '#cbd5e1'}
                   stroke="#0f172a"
                   strokeWidth="2.5"
                   className="transition-all duration-150 motion-reduce:transition-none"
                 />
                 <rect
-                  x={labelX - LABEL_WIDTH / 2}
-                  y={labelY - LABEL_HEIGHT / 2}
-                  width={LABEL_WIDTH}
-                  height={LABEL_HEIGHT}
-                  rx="6"
+                  x={labelX - currentLabelWidth / 2}
+                  y={labelY - currentLabelHeight / 2}
+                  width={currentLabelWidth}
+                  height={currentLabelHeight}
+                  rx="4"
                   fill={isSelected ? '#1e3a8a' : '#172033'}
                   fillOpacity="0.97"
-                  stroke={isSelected ? '#93c5fd' : isHovered ? '#cbd5e1' : '#64748b'}
+                  stroke={isSelected ? '#ffffff' : isHovered ? '#cbd5e1' : '#64748b'}
                   strokeWidth={isSelected ? 2 : 1}
                   className="transition-colors duration-150 motion-reduce:transition-none"
                 />
                 <text
                   x={labelX}
-                  y={labelY - 2}
+                  y={isEmphasized ? labelY - 2 : labelY + 4}
                   fill="#f8fafc"
                   fontSize="11"
                   fontWeight="700"
@@ -164,17 +188,19 @@ export const MissionExplorerMap: React.FC<MissionExplorerMapProps> = ({
                 >
                   {entry.missionAcronym}
                 </text>
-                <text
-                  x={labelX}
-                  y={labelY + 10}
-                  fill={isSelected ? '#dbeafe' : '#cbd5e1'}
-                  fontSize="7.5"
-                  fontWeight="600"
-                  textAnchor="middle"
-                  fontFamily="Arial, sans-serif"
-                >
-                  {entry.country.length > 24 ? `${entry.country.slice(0, 23)}…` : entry.country}
-                </text>
+                {isEmphasized ? (
+                  <text
+                    x={labelX}
+                    y={labelY + 10}
+                    fill={isSelected ? '#dbeafe' : '#cbd5e1'}
+                    fontSize="7.5"
+                    fontWeight="600"
+                    textAnchor="middle"
+                    fontFamily="Arial, sans-serif"
+                  >
+                    {entry.country.length > 24 ? `${entry.country.slice(0, 23)}…` : entry.country}
+                  </text>
+                ) : null}
               </g>
             );
           })}
