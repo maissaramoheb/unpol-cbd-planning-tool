@@ -136,7 +136,7 @@ ${map.quadrants.map((quadrant) => `- **${quadrant.title} (${quadrant.stakeholder
 
 ---
 
-## Executive Dashboard Overview
+## Planning Overview
 
 * **Total Stakeholders Mapped**: ${stakeholders.length}
 * **Priorities Configured**: ${prioritizedCells.length}

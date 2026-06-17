@@ -7,7 +7,6 @@ import { Button } from '../ui/Button';
 import { evaluateCbdCell } from '../lib/scoring';
 import { StakeholderDecisionSupport } from './StakeholderDecisionSupport';
 import {
-  Shield,
   Users,
   Grid,
   ListTodo,
@@ -17,16 +16,20 @@ import {
   Activity,
   Layers,
   ArrowRight,
-  Globe
+  Globe,
+  Compass,
+  FileText,
+  BookOpen
 } from 'lucide-react';
 
 interface DashboardProps {
   data: UnpolProjectData;
   onNavigateToStep: (step: number) => void;
   onOpenExplorer: () => void;
+  onLoadDemoTemplate: () => void;
 }
 
-export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, onOpenExplorer }) => {
+export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, onOpenExplorer, onLoadDemoTemplate }) => {
   const { profile, pestels, stakeholders, customCells, priorityBrief } = data;
 
   const warnings = calculateQualityWarnings(data);
@@ -38,56 +41,174 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
   const isCustomCellsEmpty = Object.keys(customCells).length === 0;
 
   const isEmptyState = isProfileEmpty && isPestelsEmpty && isStakeholdersEmpty && isCustomCellsEmpty;
+  const isDemoTemplate = profile.templateId === 'demo-peacekeeping';
+
+  const workflowSteps = [
+    'Define mission context',
+    'Scan PESTEL-S pressures',
+    'Map actors and stakeholders',
+    'Identify CBD priorities',
+    'Sequence interventions',
+    'Export planning brief'
+  ];
 
   if (isEmptyState) {
     return (
-      <div className="flex flex-col gap-6 w-full py-8">
-        <Card className="max-w-3xl mx-auto border-blue-100 bg-white shadow-sm p-6 text-center">
-          <CardBody className="flex flex-col items-center gap-5">
-            <div className="w-16 h-16 rounded-full bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
-              <Shield size={32} />
+      <div className="flex flex-col gap-6 w-full">
+        <Card className="border-blue-100 bg-white shadow-sm">
+          <CardBody className="p-6 sm:p-8 lg:p-10">
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.25fr_0.75fr] lg:items-start">
+              <div className="flex flex-col gap-5">
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="blue">Unofficial prototype</Badge>
+                  <Badge variant="slate">Local browser workspace</Badge>
+                  <Badge variant="amber">Verification required</Badge>
+                </div>
+
+                <div>
+                  <h1 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
+                    Planning Overview
+                  </h1>
+                  <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
+                    This unofficial planning-support workspace helps structure UNPOL/CBD analysis from mission context to an exportable planning brief.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 gap-3 text-sm leading-relaxed text-slate-700 md:grid-cols-3">
+                  <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+                    <span className="text-xs font-black uppercase tracking-wider text-slate-500">For</span>
+                    <p className="mt-1 font-semibold">Structured analysis, training, advisory planning, and workshop preparation.</p>
+                  </div>
+                  <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+                    <span className="text-xs font-black uppercase tracking-wider text-slate-500">Output</span>
+                    <p className="mt-1 font-semibold">Markdown/print planning brief plus JSON workspace backup.</p>
+                  </div>
+                  <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+                    <span className="text-xs font-black uppercase tracking-wider text-slate-500">Boundary</span>
+                    <p className="mt-1 font-semibold">Not UN doctrine, not an official UN system, and not verified country analysis.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-amber-200 bg-amber-50/70 p-4 text-xs leading-relaxed text-amber-950">
+                <div className="flex items-start gap-2">
+                  <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-700" />
+                  <div>
+                    <h2 className="font-black uppercase tracking-wider">Trust and safety note</h2>
+                    <p className="mt-2">
+                      It is not UN doctrine, not an official UN system, not a complete UN mission database, and not verified country analysis. Mission status, mandate, and facts must be checked against current official sources before professional use.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div>
-              <h2 className="text-xl font-black text-slate-900 tracking-tight uppercase">
-                Unofficial UNPOL CBD Planning Workspace
-              </h2>
-              <p className="text-sm text-slate-500 mt-2 leading-relaxed max-w-lg mx-auto">
-                Welcome to the UNPOL Capacity-Building & Development planning workspace. Your assessment data is currently empty.
-              </p>
-              <p className="text-xs font-semibold text-slate-600 bg-slate-50 border border-slate-200/80 px-4 py-2.5 rounded-xl mt-4 max-w-md mx-auto italic">
-                &ldquo;Start by creating a Mission Profile, then complete PESTEL-S and Stakeholder Mapping to populate the dashboard.&rdquo;
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3 w-full justify-center mt-2">
+          </CardBody>
+        </Card>
+
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <Card className="border-blue-200 bg-blue-50/35">
+            <CardBody className="flex h-full flex-col gap-4 p-5">
+              <div className="flex items-start gap-3">
+                <div className="rounded-xl border border-blue-200 bg-white p-2.5 text-blue-700">
+                  <Compass size={20} />
+                </div>
+                <div>
+                  <h2 className="text-base font-black text-slate-950">Start from Scratch</h2>
+                  <p className="mt-1 text-xs font-semibold leading-relaxed text-slate-600">
+                    Use when starting a new mission, workshop, or advisory planning exercise.
+                  </p>
+                </div>
+              </div>
               <Button
                 variant="primary"
                 onClick={() => onNavigateToStep(2)}
-                className="font-bold flex items-center justify-center gap-1.5"
+                className="mt-auto w-full gap-1.5 font-bold"
               >
-                Configure Mission Profile
+                Open Profile / Context Setup
                 <ArrowRight size={14} />
               </Button>
+            </CardBody>
+          </Card>
+
+          <Card>
+            <CardBody className="flex h-full flex-col gap-4 p-5">
+              <div className="flex items-start gap-3">
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-blue-700">
+                  <Globe size={20} />
+                </div>
+                <div>
+                  <h2 className="text-base font-black text-slate-950">Browse Mission Explorer</h2>
+                  <p className="mt-1 text-xs font-semibold leading-relaxed text-slate-600">
+                    Review selected starter profiles, fictional training scenarios, and current UN Peacekeeping reference entries.
+                  </p>
+                </div>
+              </div>
               <Button
                 variant="outline"
                 onClick={onOpenExplorer}
-                className="font-semibold text-blue-600 border-blue-200 bg-blue-50/20 hover:bg-blue-50/40 flex items-center justify-center gap-1.5"
+                className="mt-auto w-full gap-1.5 border-blue-200 bg-white font-bold text-blue-700 hover:bg-blue-50"
               >
-                <Globe size={14} className="text-blue-500" />
-                Browse Mission Explorer
+                Open Mission Explorer
+                <Globe size={14} />
               </Button>
+            </CardBody>
+          </Card>
+
+          <Card>
+            <CardBody className="flex h-full flex-col gap-4 p-5">
+              <div className="flex items-start gap-3">
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-slate-700">
+                  <BookOpen size={20} />
+                </div>
+                <div>
+                  <h2 className="text-base font-black text-slate-950">Load Demo Template</h2>
+                  <p className="mt-1 text-xs font-semibold leading-relaxed text-slate-600">
+                    Load demonstration material to understand the workflow quickly. Demo content is not country analysis.
+                  </p>
+                </div>
+              </div>
               <Button
                 variant="outline"
-                onClick={() => {
-                  if (confirm('Would you like to load the UN Peacekeeping starter template to populate the workspace?')) {
-                    // This will reset state, but AppShell handles the templates.
-                    // We trigger navigation to step 2 where they can select it.
-                    onNavigateToStep(2);
-                  }
-                }}
-                className="font-semibold text-slate-700 hover:bg-slate-50"
+                onClick={onLoadDemoTemplate}
+                className="mt-auto w-full gap-1.5 bg-white font-bold text-slate-700"
               >
-                Load Demo Template
+                Load Demonstration Data
+                <FileText size={14} />
               </Button>
+            </CardBody>
+          </Card>
+        </div>
+
+        <Card>
+          <CardHeader className="border-b border-slate-100 pb-3">
+            <h2 className="text-sm font-black text-slate-950">How the workflow works</h2>
+            <p className="mt-1 text-xs leading-relaxed text-slate-600">
+              Move left to right, then revisit earlier steps as evidence improves.
+            </p>
+          </CardHeader>
+          <CardBody className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-6">
+            {workflowSteps.map((step, index) => (
+              <div key={step} className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-900 text-xs font-black text-white">
+                  {index + 1}
+                </span>
+                <p className="mt-3 text-xs font-bold leading-snug text-slate-800">{step}</p>
+              </div>
+            ))}
+          </CardBody>
+        </Card>
+
+        <Card className="border-slate-200 bg-slate-900 text-white">
+          <CardBody className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-sm font-black">Output preview</h2>
+              <p className="mt-1 text-xs leading-relaxed text-slate-300">
+                The workspace produces an exportable planning brief with mission context, PESTEL-S prompts, stakeholder analysis, CBD priorities, sequencing notes, evidence gaps, and warnings.
+              </p>
+            </div>
+            <div className="flex shrink-0 items-center gap-2 rounded-xl border border-slate-700 bg-slate-800 px-3 py-2 text-xs font-bold text-slate-200">
+              <FileText size={15} />
+              Markdown · Print · JSON
             </div>
           </CardBody>
         </Card>
@@ -113,6 +234,20 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
     confidenceItemsCount++;
   });
   const avgConfidence = confidenceItemsCount > 0 ? (totalConfidenceSum / confidenceItemsCount).toFixed(1) : '3.0';
+  const evidenceNotesCount =
+    Object.values(pestels).reduce((sum, item) => sum + (item.evidenceNotes?.length || 0), 0) +
+    stakeholders.reduce((sum, item) => sum + (item.evidenceNotes?.length || 0), 0) +
+    Object.values(customCells).reduce((sum, item) => sum + (item.evidenceNotes?.length || 0), 0);
+
+  const continueStep = isProfileEmpty
+    ? 2
+    : isPestelsEmpty
+      ? 3
+      : isStakeholdersEmpty
+        ? 4
+        : isCustomCellsEmpty
+          ? 5
+          : 7;
 
   // --- COMPUTE TOP 3 PRESSURES ---
   const sortedPressures = Object.values(pestels)
@@ -142,6 +277,55 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
 
   return (
     <div className="flex flex-col gap-6 w-full">
+      <Card className="border-blue-100 bg-white">
+        <CardBody className="flex flex-col gap-4 p-5 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant="blue">Planning Overview</Badge>
+              {isDemoTemplate ? (
+                <Badge variant="amber">Demonstration material</Badge>
+              ) : null}
+              {profile.sourceCategory ? (
+                <Badge variant="slate">{profile.sourceCategory}</Badge>
+              ) : null}
+            </div>
+            <div>
+              <h1 className="text-xl font-black tracking-tight text-slate-950">
+                {profile.missionName || 'Planning context in progress'}
+              </h1>
+              <p className="mt-1 text-xs font-semibold leading-relaxed text-slate-600">
+                {profile.countryName || 'Country / area not set'} · {profile.region || 'Region not set'}
+              </p>
+            </div>
+            <p className="max-w-3xl text-xs leading-relaxed text-slate-600">
+              Continue refining the context, evidence base, stakeholder assumptions, CBD priorities, and export readiness. Ratings and findings remain analytical judgments requiring review.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-2 text-xs sm:grid-cols-4 lg:min-w-[420px]">
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+              <span className="font-black text-slate-500">Evidence notes</span>
+              <strong className="mt-1 block text-lg text-slate-950">{evidenceNotesCount}</strong>
+            </div>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+              <span className="font-black text-slate-500">Warnings</span>
+              <strong className="mt-1 block text-lg text-slate-950">{warnings.length}</strong>
+            </div>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+              <span className="font-black text-slate-500">Confidence</span>
+              <strong className="mt-1 block text-lg text-slate-950">{avgConfidence}/5</strong>
+            </div>
+            <Button
+              variant="primary"
+              onClick={() => onNavigateToStep(continueStep)}
+              className="min-h-[72px] rounded-xl text-xs font-black"
+            >
+              Continue
+              <ArrowRight size={14} className="ml-1" />
+            </Button>
+          </div>
+        </CardBody>
+      </Card>
+
       {/* Header Diagnostic Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[

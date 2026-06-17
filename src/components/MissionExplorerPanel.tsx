@@ -25,13 +25,13 @@ export const MissionExplorerPanel: React.FC<MissionExplorerPanelProps> = ({
         <div className="text-center">
           <h4 className="text-sm font-extrabold text-slate-900">Select a planning context</h4>
           <p className="text-xs text-slate-600 mt-1.5 max-w-xs mx-auto leading-relaxed">
-            Review a selected starter profile before loading its editable prompts into the workspace.
+            Review a selected reference entry, starter profile, or training scenario before loading its editable prompts into the workspace.
           </p>
         </div>
         <div className="grid w-full max-w-xs grid-cols-1 gap-2 text-left text-xs text-slate-700">
           <div className="flex items-start gap-2 rounded-lg bg-white p-2.5 ring-1 ring-slate-200">
             <Search size={14} className="mt-0.5 shrink-0 text-blue-600" />
-            Search or filter the available starter contexts.
+            Search or filter the available planning contexts.
           </div>
           <div className="flex items-start gap-2 rounded-lg bg-white p-2.5 ring-1 ring-slate-200">
             <MapPinned size={14} className="mt-0.5 shrink-0 text-blue-600" />
@@ -44,6 +44,15 @@ export const MissionExplorerPanel: React.FC<MissionExplorerPanelProps> = ({
 
   const formattedStatus = entry.status.replaceAll('-', ' ');
   const formattedCoverageScope = entry.coverageScope.replaceAll('-', ' ');
+  const coverageBadge = (() => {
+    if (entry.coverageScope === 'current-peacekeeping-reference') {
+      return { label: 'Current UN Peacekeeping reference', variant: 'green' as const };
+    }
+    if (entry.isFictionalScenario) {
+      return { label: 'Fictional Training Context', variant: 'rose' as const };
+    }
+    return { label: 'Unofficial starter planning profile', variant: 'blue' as const };
+  })();
 
   return (
     <Card className="h-full border-slate-200 bg-white shadow-sm flex flex-col justify-between">
@@ -72,15 +81,9 @@ export const MissionExplorerPanel: React.FC<MissionExplorerPanelProps> = ({
         </div>
 
         <div className="flex flex-wrap gap-1.5 mt-1">
-          {entry.isFictionalScenario ? (
-            <Badge variant="rose" className="text-[10px]">
-              Fictional Training Context
-            </Badge>
-          ) : (
-            <Badge variant="blue" className="text-[10px]">
-              Unofficial starter planning profile
-            </Badge>
-          )}
+          <Badge variant={coverageBadge.variant} className="text-[10px]">
+            {coverageBadge.label}
+          </Badge>
           <Badge variant="slate" className="text-[10px] bg-slate-100 text-slate-700 border-slate-200">
             {formattedStatus}
           </Badge>
@@ -189,7 +192,7 @@ export const MissionExplorerPanel: React.FC<MissionExplorerPanelProps> = ({
             className="w-full py-2.5 font-bold flex items-center justify-center gap-1.5 text-xs rounded-xl shadow-md shadow-blue-500/10"
           >
             <ArrowRight size={14} />
-            Use This Starter Profile
+            Use This Planning Context
           </Button>
         </div>
       </CardBody>

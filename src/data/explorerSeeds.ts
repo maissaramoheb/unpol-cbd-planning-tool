@@ -1,9 +1,212 @@
 import { MissionExplorerEntry } from '../types/explorer';
 
+export const PEACEKEEPING_REFERENCE_NOTICE =
+  'Reference coverage: current UN Peacekeeping Operations listed by UN Peacekeeping as of the source/review date. This is not an official UN registry. Verify mission status, mandate, and facts against current official sources before professional use.';
+
 export const EXPLORER_DISCLAIMER =
-  'These are unofficial starter planning profiles, not an official UN mission database or verified country analysis. Mission status, mandate, source currency, institutions, and all context assumptions must be checked against current official UN and host-state sources before professional use.';
+  'These are unofficial planning-context entries, not an official UN mission database or verified country analysis. Mission status, mandate, source currency, institutions, and all context assumptions must be checked against current official UN and host-state sources before professional use.';
+
+const PEACEKEEPING_SOURCE_URL = 'https://peacekeeping.un.org/en/where-we-operate';
+const PEACEKEEPING_PROFILE_LAST_REVIEWED = '2026-06-17';
+
+interface PeacekeepingReferenceSeed {
+  id: string;
+  country: string;
+  iso3: string;
+  region: string;
+  missionName: string;
+  missionAcronym: string;
+  coordinates: { x: number; y: number };
+}
+
+const genericPeacekeepingPestelsPrompts = {
+  political: {
+    prompt: 'Identify the current mandate, consent, political constraints, and coordination requirements that must be verified before planning support.',
+    whyPrompt: 'Political authority and mandate boundaries determine whether any proposed CBD activity is feasible and appropriate.'
+  },
+  economic: {
+    prompt: 'Assess whether verified budget, logistics, salary, infrastructure, or partner-resourcing constraints affect feasible policing support.',
+    whyPrompt: 'Resource conditions shape whether proposed activities can be sustained beyond short-term advisory support.'
+  },
+  social: {
+    prompt: 'Identify community trust, inclusion, protection, gender, or access issues that require verification before engagement design.',
+    whyPrompt: 'Social legitimacy and community access determine whether police capacity-building will be credible and safe.'
+  },
+  technological: {
+    prompt: 'Verify communications, records, case-management, data-protection, and reporting capabilities relevant to police support.',
+    whyPrompt: 'Technology and records constraints affect accountability, coordination, and evidence-informed planning.'
+  },
+  environmental: {
+    prompt: 'Assess whether terrain, climate, mobility, disaster, or access constraints affect police advisory planning.',
+    whyPrompt: 'Environmental and access conditions can determine sequencing, delivery modality, and operational reach.'
+  },
+  legal: {
+    prompt: 'Review the applicable mandate, host-state law, human-rights obligations, and police accountability framework before defining priorities.',
+    whyPrompt: 'Legal and accountability constraints define what support can be responsibly advised or sequenced.'
+  },
+  security: {
+    prompt: 'Verify current threat, public-order, protection, and mission-security conditions before setting CBD priorities.',
+    whyPrompt: 'Security conditions affect feasibility, risk controls, and the civilian-policing relevance of planned activities.'
+  }
+};
+
+const createPeacekeepingReferenceEntry = (seed: PeacekeepingReferenceSeed): MissionExplorerEntry => ({
+  id: seed.id,
+  country: seed.country,
+  iso3: seed.iso3,
+  region: seed.region,
+  coordinates: seed.coordinates,
+  missionName: seed.missionName,
+  missionAcronym: seed.missionAcronym,
+  missionType: 'Current UN Peacekeeping Operation',
+  sourceCategory: 'Current UN Peacekeeping Operation',
+  coverageScope: 'current-peacekeeping-reference',
+  status: 'active',
+  isFictionalScenario: false,
+  isOfficial: false,
+  sourceDate: null,
+  profileLastReviewed: PEACEKEEPING_PROFILE_LAST_REVIEWED,
+  sourceUrl: PEACEKEEPING_SOURCE_URL,
+  sourceNote: `${PEACEKEEPING_REFERENCE_NOTICE} Source date is recorded as not provided when the source page does not expose a separate publication or last-updated date.`,
+  disclaimer: `${PEACEKEEPING_REFERENCE_NOTICE} This entry is a minimal unofficial planning reference, not an official UN profile.`,
+  hostStatePoliceInstitution: 'Host-state police or relevant security-sector institution to verify',
+  planningPurpose: '[PROMPT] Use this minimal reference entry only to establish a planning context before verifying mandate, status, and country facts.',
+  planningThemes: [
+    'Mandate verification',
+    'Police component relevance',
+    'Stakeholder mapping',
+    'Evidence gaps'
+  ],
+  starterProfile: {
+    mandateEnvironment: `[VERIFY] Review the current official mandate and confirm whether ${seed.missionAcronym} has police, rule-of-law, protection, or advisory relevance for this planning exercise.`,
+    conflictContext: '[PROMPT] Identify the current public-safety, protection, political, legal, and institutional conditions from verified sources before recording findings.',
+    planningPurpose: '[PROMPT] Define a CBD planning purpose only after mandate scope, counterpart institutions, and evidence gaps are verified.'
+  },
+  starterPestelsPrompts: genericPeacekeepingPestelsPrompts,
+  starterStakeholderPrompts: [
+    {
+      category: 'UN Mission',
+      rolePrompt: 'Identify the verified mission component, police adviser, rule-of-law focal point, or coordination office relevant to the planning question.',
+      suggestedStakeholders: ['Verified mission focal point to identify']
+    },
+    {
+      category: 'Host State',
+      rolePrompt: 'Identify the host-state police, justice, interior, or oversight institution whose mandate and authority must be verified.',
+      suggestedStakeholders: ['Host-state police institution to verify']
+    },
+    {
+      category: 'Civil Society',
+      rolePrompt: 'Identify legitimacy, accountability, gender, protection, or community-safety voices that should be consulted after context verification.',
+      suggestedStakeholders: ['Accountability or community-safety actor to verify']
+    }
+  ],
+  suggestedStakeholderCategories: ['UN Mission', 'Host State', 'Police Institution', 'Civil Society']
+});
+
+const currentPeacekeepingReferenceEntries: MissionExplorerEntry[] = [
+  createPeacekeepingReferenceEntry({
+    id: 'pk-minurso',
+    country: 'Western Sahara',
+    iso3: 'ESH',
+    region: 'North Africa / Western Sahara',
+    coordinates: { x: 46, y: 48 },
+    missionName: 'United Nations Mission for the Referendum in Western Sahara',
+    missionAcronym: 'MINURSO'
+  }),
+  createPeacekeepingReferenceEntry({
+    id: 'pk-minusca',
+    country: 'Central African Republic',
+    iso3: 'CAF',
+    region: 'Central Africa / Central African Republic',
+    coordinates: { x: 53, y: 56 },
+    missionName: 'United Nations Multidimensional Integrated Stabilization Mission in the Central African Republic',
+    missionAcronym: 'MINUSCA'
+  }),
+  createPeacekeepingReferenceEntry({
+    id: 'pk-monusco',
+    country: 'Democratic Republic of the Congo',
+    iso3: 'COD',
+    region: 'Central Africa / Democratic Republic of the Congo',
+    coordinates: { x: 53, y: 59 },
+    missionName: 'United Nations Organization Stabilization Mission in the Democratic Republic of the Congo',
+    missionAcronym: 'MONUSCO'
+  }),
+  createPeacekeepingReferenceEntry({
+    id: 'pk-undof',
+    country: 'Golan',
+    iso3: 'SYR',
+    region: 'Middle East / Golan',
+    coordinates: { x: 60, y: 45 },
+    missionName: 'United Nations Disengagement Observer Force',
+    missionAcronym: 'UNDOF'
+  }),
+  createPeacekeepingReferenceEntry({
+    id: 'pk-unficyp',
+    country: 'Cyprus',
+    iso3: 'CYP',
+    region: 'Europe / Cyprus',
+    coordinates: { x: 59, y: 43 },
+    missionName: 'United Nations Peacekeeping Force in Cyprus',
+    missionAcronym: 'UNFICYP'
+  }),
+  createPeacekeepingReferenceEntry({
+    id: 'pk-unifil',
+    country: 'Lebanon',
+    iso3: 'LBN',
+    region: 'Middle East / Lebanon',
+    coordinates: { x: 60, y: 45 },
+    missionName: 'United Nations Interim Force in Lebanon',
+    missionAcronym: 'UNIFIL'
+  }),
+  createPeacekeepingReferenceEntry({
+    id: 'pk-unisfa',
+    country: 'Sudan / South Sudan (Abyei Area)',
+    iso3: 'SSD',
+    region: 'East Africa / Abyei Area',
+    coordinates: { x: 55, y: 55 },
+    missionName: 'United Nations Interim Security Force for Abyei',
+    missionAcronym: 'UNISFA'
+  }),
+  createPeacekeepingReferenceEntry({
+    id: 'pk-unmik',
+    country: 'Kosovo',
+    iso3: 'XKX',
+    region: 'Europe / Kosovo',
+    coordinates: { x: 56, y: 41 },
+    missionName: 'United Nations Interim Administration Mission in Kosovo',
+    missionAcronym: 'UNMIK'
+  }),
+  createPeacekeepingReferenceEntry({
+    id: 'pk-unmiss',
+    country: 'South Sudan',
+    iso3: 'SSD',
+    region: 'East Africa / South Sudan',
+    coordinates: { x: 54, y: 57 },
+    missionName: 'United Nations Mission in South Sudan',
+    missionAcronym: 'UNMISS'
+  }),
+  createPeacekeepingReferenceEntry({
+    id: 'pk-unmogip',
+    country: 'India and Pakistan',
+    iso3: 'IND',
+    region: 'South Asia / India and Pakistan',
+    coordinates: { x: 70, y: 42 },
+    missionName: 'United Nations Military Observer Group in India and Pakistan',
+    missionAcronym: 'UNMOGIP'
+  }),
+  createPeacekeepingReferenceEntry({
+    id: 'pk-untso',
+    country: 'Middle East',
+    iso3: 'ISR',
+    region: 'Middle East / Regional',
+    coordinates: { x: 60, y: 46 },
+    missionName: 'United Nations Truce Supervision Organization',
+    missionAcronym: 'UNTSO'
+  })
+];
 
 export const defaultExplorerSeeds: MissionExplorerEntry[] = [
+  ...currentPeacekeepingReferenceEntries,
   // --- 1. UNISFA (Abyei) ---
   {
     id: 'seed-unisfa',

@@ -140,22 +140,22 @@ export function getInitialProjectData(templateId = 'peacekeeping'): UnpolProject
 
 export function loadProjectData(): ProjectDataLoadResult {
   if (typeof window === 'undefined') {
-    return { data: getInitialProjectData(), recoveryMessage: null };
+    return { data: getInitialProjectData('blank'), recoveryMessage: null };
   }
 
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
-      const initial = getInitialProjectData();
+      const initial = getInitialProjectData('blank');
       saveProjectData(initial);
       return { data: initial, recoveryMessage: null };
     }
     const validation = validateAndNormalizeProjectData(JSON.parse(raw));
     if (!validation.data) {
-      const initial = getInitialProjectData();
+      const initial = getInitialProjectData('blank');
       return {
         data: initial,
-        recoveryMessage: `Stored project data was invalid and has been replaced with safe starter data. ${validation.error}`
+        recoveryMessage: `Stored project data was invalid and has been replaced with a safe blank workspace. ${validation.error}`
       };
     }
 
@@ -163,8 +163,8 @@ export function loadProjectData(): ProjectDataLoadResult {
   } catch (error) {
     console.error('Error loading project data from localStorage', error);
     return {
-      data: getInitialProjectData(),
-      recoveryMessage: 'Stored project data could not be read and has been replaced with safe starter data.'
+      data: getInitialProjectData('blank'),
+      recoveryMessage: 'Stored project data could not be read and has been replaced with a safe blank workspace.'
     };
   }
 }
@@ -179,7 +179,7 @@ export function saveProjectData(data: UnpolProjectData): void {
   }
 }
 
-export function clearProjectData(templateId = 'peacekeeping'): UnpolProjectData {
+export function clearProjectData(templateId = 'blank'): UnpolProjectData {
   const initial = getInitialProjectData(templateId);
   saveProjectData(initial);
   return initial;

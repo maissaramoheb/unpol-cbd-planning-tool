@@ -18,7 +18,7 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
   onStepChange
 }) => {
   const steps: StepItem[] = [
-    { id: 1, label: 'Dashboard', sub: 'Overview', icon: <LayoutDashboard size={16} /> },
+    { id: 1, label: 'Planning Overview', sub: 'Start page', icon: <LayoutDashboard size={16} /> },
     { id: 2, label: 'Profile', sub: 'Context setup', icon: <Shield size={16} /> },
     { id: 3, label: 'PESTEL-S', sub: 'Environment', icon: <Compass size={16} /> },
     { id: 4, label: 'Actors', sub: 'Stakeholders', icon: <Users size={16} /> },

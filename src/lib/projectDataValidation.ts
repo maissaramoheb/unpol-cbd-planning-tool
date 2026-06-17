@@ -35,6 +35,7 @@ const MISSION_SOURCE_CATEGORIES = new Set<MissionSourceCategory>([
   'Custom User Context'
 ]);
 const MISSION_COVERAGE_SCOPES = new Set<MissionCoverageScope>([
+  'current-peacekeeping-reference',
   'selected-starter',
   'training',
   'custom'

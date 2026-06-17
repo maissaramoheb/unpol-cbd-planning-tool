@@ -7,6 +7,8 @@ interface MissionExplorerListProps {
   filterOptionsEntries: MissionExplorerEntry[];
   selectedEntryId: string | null;
   onSelectEntry: (id: string) => void;
+  hoveredEntryId: string | null;
+  onHoverEntry: (id: string | null) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
   selectedRegion: string;
@@ -24,6 +26,8 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
   filterOptionsEntries,
   selectedEntryId,
   onSelectEntry,
+  hoveredEntryId,
+  onHoverEntry,
   searchQuery,
   onSearchChange,
   selectedRegion,
@@ -43,6 +47,24 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
   const statuses = Array.from(new Set(filterOptionsEntries.map((entry) => entry.status).filter(Boolean)));
 
   const formatStatus = (status: string) => status.replaceAll('-', ' ');
+  const getCoverageBadge = (entry: MissionExplorerEntry) => {
+    if (entry.coverageScope === 'current-peacekeeping-reference') {
+      return {
+        label: 'Current UN Peacekeeping reference',
+        variant: 'green' as const
+      };
+    }
+    if (entry.isFictionalScenario) {
+      return {
+        label: 'Fictional Scenario',
+        variant: 'rose' as const
+      };
+    }
+    return {
+      label: 'Unofficial starter planning profile',
+      variant: 'blue' as const
+    };
+  };
 
   return (
     <div className="flex flex-col gap-4 w-full h-full">
@@ -125,7 +147,7 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
             className="w-full text-xs px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:border-blue-500"
           >
             <option value="all">All Contexts</option>
-            <option value="real">Unofficial mission starter profiles</option>
+            <option value="real">Reference and starter profiles</option>
             <option value="fictional">Fictional Training Scenarios</option>
           </select>
         </div>
@@ -140,15 +162,24 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
         ) : (
           entries.map((entry) => {
             const isSelected = selectedEntryId === entry.id;
+            const isHovered = hoveredEntryId === entry.id;
+            const badge = getCoverageBadge(entry);
             return (
               <button
                 key={entry.id}
                 type="button"
                 onClick={() => onSelectEntry(entry.id)}
+                onMouseEnter={() => onHoverEntry(entry.id)}
+                onMouseLeave={() => onHoverEntry(null)}
+                onFocus={() => onHoverEntry(entry.id)}
+                onBlur={() => onHoverEntry(null)}
+                aria-pressed={isSelected}
                 className={`
                   w-full text-left p-3.5 rounded-xl border transition-colors flex justify-between items-start gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2
                   ${isSelected
                     ? 'border-blue-600 bg-blue-50/45 shadow-sm ring-1 ring-blue-500/20'
+                    : isHovered
+                      ? 'border-blue-300 bg-blue-50/25'
                     : 'border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300'
                   }
                 `}
@@ -160,15 +191,9 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
                     </span>
                     <span className="text-[9px] text-slate-500 font-extrabold uppercase">|</span>
                     <span className="text-xs font-semibold text-slate-700">{entry.country}</span>
-                    {entry.isFictionalScenario ? (
-                      <Badge variant="rose" className="text-[10px] py-0.5 leading-none">
-                        Fictional Scenario
-                      </Badge>
-                    ) : (
-                      <Badge variant="blue" className="text-[10px] py-0.5 leading-none">
-                        Unofficial starter planning profile
-                      </Badge>
-                    )}
+                    <Badge variant={badge.variant} className="text-[10px] py-0.5 leading-none">
+                      {badge.label}
+                    </Badge>
                   </div>
                   <h4 className="text-xs text-slate-600 leading-tight font-medium">
                     {entry.missionName}

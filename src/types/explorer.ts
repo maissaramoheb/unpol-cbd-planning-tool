@@ -14,6 +14,7 @@ export type MissionSourceCategory =
   | 'Custom User Context';
 
 export type MissionCoverageScope =
+  | 'current-peacekeeping-reference'
   | 'selected-starter'
   | 'training'
   | 'custom';

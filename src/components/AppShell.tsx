@@ -65,6 +65,25 @@ export const AppShell: React.FC = () => {
     }
   };
 
+  const handleLoadDemoTemplate = () => {
+    if (!confirm('Load demonstration material? This will replace the current workspace with safe demo data.')) {
+      return;
+    }
+
+    const demoData = getInitialProjectData('peacekeeping');
+    setData({
+      ...demoData,
+      profile: {
+        ...demoData.profile,
+        countryName: 'Demonstration context (not country analysis)',
+        missionName: 'Demonstration Template - UN peacekeeping planning context',
+        planningPurpose: '[DEMO] Explore the workflow using editable demonstration material. Replace with verified context before professional use.',
+        templateId: 'demo-peacekeeping'
+      }
+    });
+    setCurrentStep(1);
+  };
+
   const handlePestelsChange = (id: string, updatedItem: PestelsItem) => {
     setData({
       ...data,
@@ -160,6 +179,7 @@ export const AppShell: React.FC = () => {
             data={data}
             onNavigateToStep={setCurrentStep}
             onOpenExplorer={() => setIsExplorerOpen(true)}
+            onLoadDemoTemplate={handleLoadDemoTemplate}
           />
         );
       case 2:
@@ -294,7 +314,7 @@ export const AppShell: React.FC = () => {
             const seeded = applyMissionSeed(entry);
             setData(seeded);
             setIsExplorerOpen(false);
-            setCurrentStep(1); // Redirect to Dashboard
+            setCurrentStep(1); // Redirect to Planning Overview
           }}
           onClose={() => setIsExplorerOpen(false)}
         />

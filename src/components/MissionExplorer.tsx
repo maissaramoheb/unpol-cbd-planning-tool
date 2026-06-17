@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { MissionExplorerEntry } from '../types/explorer';
-import { defaultExplorerSeeds } from '../data/explorerSeeds';
+import { defaultExplorerSeeds, PEACEKEEPING_REFERENCE_NOTICE } from '../data/explorerSeeds';
 import { MissionExplorerMap } from './MissionExplorerMap';
 import { MissionExplorerList } from './MissionExplorerList';
 import { MissionExplorerPanel } from './MissionExplorerPanel';
@@ -39,6 +39,8 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
   );
 
   const selectedEntry = filteredEntries.find((entry) => entry.id === selectedEntryId) || null;
+  const shownCount = filteredEntries.length;
+  const totalCount = defaultExplorerSeeds.length;
 
   const handleFilterChange = (updateFilter: () => void) => {
     updateFilter();
@@ -65,7 +67,7 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
                 Unofficial UNPOL Planning Context Explorer
               </h2>
               <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-widest leading-none mt-1">
-                Select baseline planning starter profile or generic training template
+                Selected starters, training scenarios, and peacekeeping reference entries
               </p>
             </div>
           </div>
@@ -84,7 +86,7 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
           <div className="flex items-start gap-2.5">
             <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-700" />
             <p>
-              <strong>Coverage notice:</strong> Mission Explorer currently contains selected starter planning profiles and fictional training scenarios. It is not a complete UN mission registry. Mission status, mandate, and country facts must be verified against current official sources before professional use.
+              <strong>Coverage notice:</strong> {PEACEKEEPING_REFERENCE_NOTICE} Selected non-peacekeeping starter profiles are not comprehensive DPPA/SPM coverage.
             </p>
           </div>
         </div>
@@ -93,6 +95,15 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
         <div className="flex-1 overflow-y-auto p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left/Middle: Map & List Lookup */}
           <div className="lg:col-span-2 flex flex-col gap-4">
+            <div className="flex flex-col gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700 sm:flex-row sm:items-center sm:justify-between">
+              <span className="font-bold">
+                Showing {shownCount} of {totalCount} contexts
+              </span>
+              <span className="text-slate-600">
+                Filters apply to both the map pins and the list.
+              </span>
+            </div>
+
             {/* Tablet toggle; compact mobile remains list-first */}
             <div className="hidden sm:flex justify-between items-center lg:hidden bg-slate-50 border border-slate-200 p-1.5 rounded-xl">
               <span className="text-xs font-bold text-slate-500 pl-2">Display Mode:</span>
@@ -138,6 +149,8 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
                   filterOptionsEntries={defaultExplorerSeeds}
                   selectedEntryId={selectedEntryId}
                   onSelectEntry={setSelectedEntryId}
+                  hoveredEntryId={hoveredEntryId}
+                  onHoverEntry={setHoveredEntryId}
                   searchQuery={searchQuery}
                   onSearchChange={(value) => handleFilterChange(() => setSearchQuery(value))}
                   selectedRegion={selectedRegion}
