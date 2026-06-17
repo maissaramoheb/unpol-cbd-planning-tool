@@ -132,43 +132,18 @@ export const AppShell: React.FC = () => {
     });
   };
 
-  const handleResetModule = () => {
-    if (!confirm('Are you sure you want to reset the current step module to its default configurations?')) {
+  const handleResetWorkspace = () => {
+    if (!confirm('Are you sure you want to reset the entire planning workspace?')) {
       return;
     }
 
-    const fresh = getInitialProjectData(data.profile.templateId);
-
-    switch (currentStep) {
-      case 1:
-        if (confirm('This will wipe all modifications and reset the entire planning project. Continue?')) {
-          setData(fresh);
-        }
-        break;
-      case 2:
-        setData({ ...data, profile: fresh.profile });
-        break;
-      case 3:
-        setData({ ...data, pestels: fresh.pestels });
-        break;
-      case 4:
-        setData({ ...data, stakeholders: fresh.stakeholders });
-        break;
-      case 5:
-        setData({ ...data, customCells: fresh.customCells });
-        break;
-      case 6:
-        setData({ ...data, priorityBrief: fresh.priorityBrief });
-        break;
-      case 7:
-        if (confirm('This will wipe all modifications and reset the entire planning project. Continue?')) {
-          setData(fresh);
-          setCurrentStep(1);
-        }
-        break;
-      default:
-        break;
+    if (!confirm('This will wipe all modifications, custom findings, and stakeholders, returning the project to a blank slate. This action cannot be undone. Continue?')) {
+      return;
     }
+
+    const fresh = getInitialProjectData('blank');
+    setData(fresh);
+    setCurrentStep(1);
   };
 
   const renderStepContent = () => {
@@ -255,7 +230,7 @@ export const AppShell: React.FC = () => {
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800 print:bg-white print:text-black">
       {/* Top Header */}
       <Header
-        onReset={handleResetModule}
+        onReset={handleResetWorkspace}
         missionName={data.profile.missionName}
         analystName={data.profile.analystName}
       />

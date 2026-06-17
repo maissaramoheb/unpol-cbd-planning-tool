@@ -55,12 +55,12 @@ export const Header: React.FC<HeaderProps> = ({ onReset, missionName, analystNam
             variant="ghost"
             size="sm"
             onClick={onReset}
-            aria-label="Reset current planning module"
+            aria-label="Reset entire planning workspace to blank slate"
             className="text-slate-400 hover:text-white hover:bg-slate-800"
-            title="Reset current planning module to defaults"
+            title="Reset entire planning workspace to blank slate"
           >
             <RefreshCw size={16} className="mr-1.5" />
-            <span className="hidden sm:inline">Reset Module</span>
+            <span className="hidden sm:inline">Reset Workspace</span>
           </Button>
         </div>
       </div>
