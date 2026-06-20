@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "security:zap:baseline": "bash security/zap/zap-baseline.sh"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
