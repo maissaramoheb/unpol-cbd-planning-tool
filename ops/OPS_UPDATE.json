@@ -1,0 +1,22 @@
+{
+  "project": "UNPOL CBD Planning Tool",
+  "category": "App",
+  "status": "Active",
+  "priority": "Medium",
+  "next_action": "Create current source-of-truth audit and confirm production status",
+  "blocker": "Current production status and latest validation need confirmation",
+  "decision_needed": "Should this tool be packaged as a demo product, consultancy support tool, or maintained as portfolio proof?",
+  "latest_branch": "main",
+  "latest_commit": "32919e9",
+  "repo_url": "https://github.com/maissaramoheb/unpol-cbd-planning-tool.git",
+  "preview_url": "",
+  "production_url": "",
+  "validation_results": [],
+  "remaining_risks": [
+    "Current deployment status needs verification",
+    "Latest build/test status needs verification",
+    "Product packaging and demo brief not yet prepared"
+  ],
+  "recommended_next_step": "Run a source-of-truth audit, confirm production URL, run validation checks, and prepare a short demo/product brief.",
+  "notion_page_update": "UNPOL CBD Planning Tool has been added to the OPS_UPDATE system. Current next step is to verify the live deployment, latest build/test status, and product packaging path."
+}
