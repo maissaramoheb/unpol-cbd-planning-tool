@@ -212,6 +212,8 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
                 <span className="font-bold text-slate-800">
                   {data.profile.templateId === 'blank'
                     ? 'Started Blank'
+                    : data.profile.templateId === 'fictional-carana-demo'
+                      ? 'CARANA fictional training demonstration'
                     : data.profile.templateId?.startsWith('seed-')
                       ? `Mission Explorer (${data.profile.templateId.replace('seed-', '').toUpperCase()})`
                       : data.profile.templateId?.startsWith('fictional-')

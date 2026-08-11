@@ -17,6 +17,7 @@ import { loadProjectData, saveProjectData, getInitialProjectData } from '../lib/
 import { matrixRows, matrixColumns } from '../data/cbdMatrixData';
 import { AlertTriangle, X } from 'lucide-react';
 import { APP_VERSION_LABEL } from '../lib/version';
+import { buildCaranaDemoData } from '../data/caranaDemo';
 
 export const AppShell: React.FC = () => {
   const [data, setData] = useState<UnpolProjectData | null>(null);
@@ -66,21 +67,12 @@ export const AppShell: React.FC = () => {
   };
 
   const handleLoadDemoTemplate = () => {
-    if (!confirm('Load demonstration material? This will replace the current workspace with safe demo data.')) {
+    if (!confirm('Load the fictional CARANA demonstration? This will replace the current workspace with training data.')) {
       return;
     }
 
     const demoData = getInitialProjectData('peacekeeping');
-    setData({
-      ...demoData,
-      profile: {
-        ...demoData.profile,
-        countryName: 'Demonstration context (not country analysis)',
-        missionName: 'Demonstration Template - UN peacekeeping planning context',
-        planningPurpose: '[DEMO] Explore the workflow using editable demonstration material. Replace with verified context before professional use.',
-        templateId: 'demo-peacekeeping'
-      }
-    });
+    setData(buildCaranaDemoData(demoData));
     setCurrentStep(1);
   };
 

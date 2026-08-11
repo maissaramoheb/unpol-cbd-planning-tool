@@ -126,6 +126,8 @@ ${map.quadrants.map((quadrant) => `- **${quadrant.title} (${quadrant.stakeholder
 * **Workspace Initialization**: ${
     profile.templateId === 'blank'
       ? 'Started Blank'
+      : profile.templateId === 'fictional-carana-demo'
+        ? 'CARANA fictional training demonstration (not an official UN assessment or recommendation)'
       : profile.templateId?.startsWith('seed-')
         ? `Mission Explorer (Unofficial starter planning profile: ${profile.templateId.replace('seed-', '').toUpperCase()})`
         : profile.templateId?.startsWith('fictional-')

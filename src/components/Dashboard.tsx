@@ -42,7 +42,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
   const isCustomCellsEmpty = Object.keys(customCells).length === 0;
 
   const isEmptyState = isProfileEmpty && isPestelsEmpty && isStakeholdersEmpty && isCustomCellsEmpty;
-  const isDemoTemplate = profile.templateId === 'demo-peacekeeping';
+  const isDemoTemplate = profile.templateId === 'fictional-carana-demo';
 
   const workflowSteps = [
     'Review planning overview',
@@ -163,9 +163,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
                   <BookOpen size={20} />
                 </div>
                 <div>
-                  <h2 className="text-base font-black text-slate-950">Load Demo Template</h2>
+                  <h2 className="text-base font-black text-slate-950">Load CARANA Demonstration</h2>
                   <p className="mt-1 text-xs font-semibold leading-relaxed text-slate-600">
-                    Load demonstration material to understand the workflow quickly. Demo content is not country analysis.
+                    Explore a coherent fictional UN peacekeeping CBD case for demonstration and training. It is not an official UN assessment or recommendation.
                   </p>
                 </div>
               </div>
@@ -174,7 +174,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
                 onClick={onLoadDemoTemplate}
                 className="mt-auto w-full gap-1.5 bg-white font-bold text-slate-700"
               >
-                Load Demonstration Data
+                Load CARANA Demo
                 <FileText size={14} />
               </Button>
             </CardBody>
@@ -282,7 +282,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
             <div className="flex flex-wrap items-center gap-2">
               <Badge variant="blue">Planning Overview</Badge>
               {isDemoTemplate ? (
-                <Badge variant="amber">Demonstration material</Badge>
+                <Badge variant="amber">Fictional demonstration material</Badge>
               ) : null}
               {profile.sourceCategory ? (
                 <Badge variant="slate">{profile.sourceCategory}</Badge>
