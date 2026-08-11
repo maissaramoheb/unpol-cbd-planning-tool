@@ -1,4 +1,5 @@
 import { UnpolProjectData } from '../types';
+import { evaluateCbdCell } from './scoring';
 
 export interface QualityWarning {
   id: string;
@@ -67,12 +68,13 @@ export function calculateQualityWarnings(data: UnpolProjectData): QualityWarning
   // 3. High priority but low confidence in CBD Matrix cells
   Object.keys(customCells).forEach((key) => {
     const cell = customCells[key];
-    if (cell.priorityScore >= 4 && cell.confidence <= 2) {
+    const assessment = evaluateCbdCell(cell);
+    if (assessment.score >= 4 && cell.confidence <= 2) {
       warnings.push({
         id: `matrix-high-priority-low-conf-${key}`,
         type: 'warning',
         category: 'matrix',
-        message: `Analytical caution: CBD intersection "${key}" is marked high priority (${cell.priorityScore}/5) but has low confidence (${cell.confidence}/5). Verify before using in a planning brief.`,
+        message: `Analytical caution: CBD intersection "${key}" has a high indicative priority (${assessment.score.toFixed(1)}/5) but low confidence (${cell.confidence}/5). Verify before using in a planning brief.`,
         itemKey: key
       });
     }
@@ -81,8 +83,9 @@ export function calculateQualityWarnings(data: UnpolProjectData): QualityWarning
   // 4. High priority but low stakeholder support in CBD Matrix cells
   Object.keys(customCells).forEach((key) => {
     const cell = customCells[key];
+    const assessment = evaluateCbdCell(cell);
     const support = cell.stakeholderSupport !== undefined ? cell.stakeholderSupport : 3;
-    if (cell.priorityScore >= 4 && support <= 2) {
+    if (assessment.score >= 4 && support <= 2) {
       warnings.push({
         id: `matrix-high-priority-low-support-${key}`,
         type: 'warning',
@@ -108,7 +111,8 @@ export function calculateQualityWarnings(data: UnpolProjectData): QualityWarning
 
   Object.keys(customCells).forEach((key) => {
     const cell = customCells[key];
-    if (cell.priorityScore >= 4 && (!cell.evidenceNotes || cell.evidenceNotes.length === 0)) {
+    const assessment = evaluateCbdCell(cell);
+    if (assessment.score >= 4 && (!cell.evidenceNotes || cell.evidenceNotes.length === 0)) {
       warnings.push({
         id: `matrix-no-evidence-${key}`,
         type: 'warning',

@@ -100,7 +100,7 @@ ${map.quadrants.map((quadrant) => `- **${quadrant.title} (${quadrant.stakeholder
   const prioritizedCellsMd = prioritizedCells.map(({ key, cell, score, tags }) => {
     const [row, col] = key.split('|');
     return `
-### ${row} × ${col} (Priority Score: ${score.toFixed(1)}/5.0)
+### ${row} × ${col} (Indicative Priority: ${score.toFixed(1)}/5.0)
 - **Visual Tags**: ${tags.map(t => `\`${t}\``).join(', ') || '*Standard*'}
 - **Why this matters**: ${cell.why}
 - **Action Levels**:
@@ -118,7 +118,7 @@ ${map.quadrants.map((quadrant) => `- **${quadrant.title} (${quadrant.stakeholder
 * **Country**: ${profile.countryName || 'N/A'}
 * **Mission**: ${profile.missionName || 'N/A'}
 * **Area of Operations**: ${profile.region || 'N/A'}
-* **Prepared by**: ${profile.analystName || 'UNPOL Advisory Team'}
+* **Prepared by**: ${profile.analystName || 'Participant / Team'}
 * **Assessment Date**: ${profile.assessmentDate || 'N/A'}
 * **Source Category**: ${profile.sourceCategory || 'User-defined / static template'}
 * **Source Date**: ${profile.sourceDate || 'Not provided'}
@@ -190,7 +190,11 @@ ${Object.keys(pestels).map(k => {
 
 ---
 
-## 4. Priority Capacity Building Intersections
+## 4. CBD Key Areas × Cross-Cutting Analytical Lenses
+
+This 5×6 matrix is a prototype analytical structure, not a formal UN taxonomy.
+
+> **Prototype planning heuristic — not UN doctrine.** Indicative Priority = 25% Impact + 20% Urgency + 20% Mandate Relevance + 15% Feasibility + 10% Stakeholder Support + 10% inverse Implementation Risk. Evidence Confidence is shown as a caution and is not included in the score. The result supports discussion and does not replace professional judgement.
 ${prioritizedCellsMd}
 
 ---
@@ -220,7 +224,7 @@ ${warnings.map(w => `- **[${w.type.toUpperCase()}]** ${w.message}`).join('\n') |
 ---
 
 ## 7. Evidence & Source Verification Index
-${allEvidenceNotes.map((n, i) => `${i + 1}. **${n.title}** [${n.type}] (Confidence: ${n.confidence}/5, Verified: ${n.date})
+${allEvidenceNotes.map((n, i) => `${i + 1}. **${n.title}** [${n.type}] (Confidence: ${n.confidence}/5, Source reviewed: ${n.date})
    - *Attached to*: ${n.item}
    - *Extract / Analyst Comment*: &ldquo;${n.comment}&rdquo;`).join('\n') || '*No source citations logged.*'}
 
@@ -228,7 +232,7 @@ ${allEvidenceNotes.map((n, i) => `${i + 1}. **${n.title}** [${n.type}] (Confiden
 
 ## 8. Assumptions & Limitations
 - **Counterpart Buy-In**: Assumes minimum host-state leadership willingness to co-locate and cooperate with advisory inputs.
-- **Data Limits**: The diagnostic findings rely on client-side parameters verified on the dates logged in the Evidence Index.
+- **Data Limits**: The diagnostic findings rely on user-entered assessments and source-review dates logged in the Evidence Index.
 - **Legal Authority Limits**: Mentorship actions assume advisory status and do not authorize executive operations.
 
 ---

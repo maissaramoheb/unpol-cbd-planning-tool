@@ -1,4 +1,4 @@
-import { CbdCell } from '../types';
+import type { CbdCell } from '../types';
 
 export interface ScoringInputs {
   impact: number;            // 1-5
@@ -11,15 +11,18 @@ export interface ScoringInputs {
 }
 
 /**
- * Calculates priority score on a 1.0 - 5.0 scale.
+ * Prototype planning heuristic — not UN doctrine.
+ * Calculates an indicative priority score on a 1.0 - 5.0 scale.
  * Weighted formula:
- * - Impact: 20%
+ * - Impact: 25%
  * - Urgency: 20%
- * - Feasibility: 20%
- * - Stakeholder Support: 15%
- * - Mandate Relevance: 15%
- * - Risk (inverse): 5% (higher risk reduces score)
- * - Confidence Level: 5%
+ * - Mandate Relevance: 20%
+ * - Feasibility: 15%
+ * - Stakeholder Support: 10%
+ * - Implementation Risk (inverse): 10%
+ *
+ * Evidence confidence is deliberately excluded from the arithmetic: it qualifies
+ * how strongly the assessment is supported and is surfaced as a caution instead.
  */
 export function calculatePriorityScore(inputs: ScoringInputs): number {
   const {
@@ -28,20 +31,18 @@ export function calculatePriorityScore(inputs: ScoringInputs): number {
     feasibility,
     risk,
     stakeholderSupport,
-    mandateRelevance,
-    confidenceLevel
+    mandateRelevance
   } = inputs;
 
   const score =
-    impact * 0.20 +
+    impact * 0.25 +
     urgency * 0.20 +
-    feasibility * 0.20 +
-    stakeholderSupport * 0.15 +
-    mandateRelevance * 0.15 +
-    (6 - risk) * 0.05 + // 6 - risk maps 1->5, 5->1
-    confidenceLevel * 0.05;
+    mandateRelevance * 0.20 +
+    feasibility * 0.15 +
+    stakeholderSupport * 0.10 +
+    (6 - risk) * 0.10; // 6 - risk maps 1->5, 5->1
 
-  return Math.round(score * 100) / 100;
+  return Math.round(score * 10) / 10;
 }
 
 export type PriorityType = 'Quick Win' | 'Sensitive Reform' | 'Long-Term Reform' | 'Standard Priority';
@@ -60,16 +61,15 @@ export interface CbdPriorityAssessment {
 }
 
 const DEFAULT_RATING = 3;
-const DEFAULT_MANDATE_RELEVANCE = 4;
 
 export function getCbdScoringInputs(cell: CbdCell): ScoringInputs {
   return {
-    impact: cell.priorityScore,
-    urgency: cell.priorityScore,
+    impact: cell.impact ?? cell.priorityScore,
+    urgency: cell.urgency ?? DEFAULT_RATING,
     feasibility: cell.feasibility ?? DEFAULT_RATING,
     risk: cell.riskRating ?? DEFAULT_RATING,
     stakeholderSupport: cell.stakeholderSupport ?? DEFAULT_RATING,
-    mandateRelevance: DEFAULT_MANDATE_RELEVANCE,
+    mandateRelevance: cell.mandateRelevance ?? DEFAULT_RATING,
     confidenceLevel: cell.confidence
   };
 }

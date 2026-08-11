@@ -3,8 +3,8 @@
 An unofficial educational and decision-support framework designed to assist UNPOL Advisory Teams, Security Sector Reform (SSR) specialists, and peace operations planning officers in diagnosing host-state policing environments, mapping stakeholders, and structuring strategic capacity-building interventions.
 
 ## 🌐 Live Demo & Deployment
-This application operates strictly **client-side** in your web browser. No planning data is transmitted to external servers.
-- **Local Deployment**: Follow the [Getting Started](#-getting-started) instructions to run the application on an offline or secure workstation.
+Planning workspace content is processed in the browser and persisted in browser `localStorage`. The deployed site still requires network access to load, and hosting-level request metadata may be processed by the hosting platform.
+- **Local Deployment**: Follow the [Getting Started](#-getting-started) instructions to run a local copy. A local copy is not automatically a secure or accredited system.
 - *(Note: If this project is hosted on a public platform such as Vercel, the live URL will be accessible via your deployment configurations.)*
 
 ---
@@ -22,7 +22,7 @@ This tool bridges that gap by providing a structured, interactive playground to:
 - Methodically diagnose environmental drivers and constraints.
 - Categorize and visualize stakeholder influence and reform postures.
 - Map advisory interventions across the five core areas of police capacity development.
-- Prioritize and sequence activities using objective multi-criteria scoring, rather than ad-hoc decision-making.
+- Compare and sequence activities using a transparent prototype planning heuristic alongside professional judgement.
 
 ---
 
@@ -32,8 +32,8 @@ This tool bridges that gap by providing a structured, interactive playground to:
 2. **PESTEL-S Environmental Diagnosis**: Conduct a systematic assessment of Political, Economic, Social, Technological, Environmental, Legal, and Security factors shaping host-state policing.
 3. **Actor Assessment & Stakeholder Mapping**: Define and analyze enablers, blockers, spoilers, and neutral actors, mapping their reform posture, influence levels, and key UNPOL entry points.
 4. **Decision-Support Quadrants**: Graphically analyze stakeholders based on operational influence and engagement priorities to identify risk caveats.
-5. **Interactive 5×6 CBD Planning Matrix**: Intersect 5 Key Reform Areas (e.g., Administration, Operations, Oversight) with 6 Capacity Dimensions (e.g., Skills, Systems, Infrastructure) to organize inputs.
-6. **Prioritization & Sequencing Engine**: Order activities into Quick Wins, Mid-Term, and Long-Term priorities using automated multi-criteria sequencing.
+5. **CBD Key Areas × Cross-Cutting Analytical Lenses**: Use a prototype 5×6 structure to examine possible interventions. The complete matrix is not presented as a formal UN taxonomy.
+6. **Priority & Sequencing Support**: Compare user-entered ratings through a transparent heuristic, then record human-reviewed Quick Wins, Sensitive Reforms, and Longer-Term Reforms.
 7. **Quality-Control Warnings**: Real-time validation alerts highlighting incomplete sections, unsequenced tasks, or missing stakeholder attributes.
 8. **Exportable Briefs & Backups**: Preview PDF-ready briefs, copy structured Markdown reports, or export the entire planning workspace as a JSON file.
 
@@ -70,14 +70,14 @@ This planning tool is an unofficial prototype designed to assist human planning 
 - **Styling**: Tailwind CSS 4.0
 - **Icons**: Lucide React
 - **Animations**: Framer Motion
-- **Data Storage**: Client-side `localStorage` (100% offline-compatible)
+- **Data Storage**: Browser `localStorage`; JSON backup/restore is available. Availability and security depend on the browser, device, and deployment context.
 
 ---
 
 ## 💻 Getting Started
 
 ### Prerequisites
-- Node.js (version 18.x or later)
+- Node.js (version 20.9 or later, matching Next.js 16 requirements)
 - npm (version 9.x or later)
 
 ### Installation
@@ -115,12 +115,7 @@ In the project directory, you can run the following npm scripts:
 ---
 
 ## 🗺️ Roadmap Summary
-Our near-term focus items include:
-- Preloaded country-based PESTEL-S environment templates.
-- Enhanced PDF cover-sheet rendering and custom styling options.
-- Sample mission scenario JSON profiles.
-- Private, client-side local LLM integration for review drafting.
-- Encryption layer for IndexedDB workspace backups.
+Near-term items requiring practitioner or maintainer validation are tracked in [ROADMAP.md](ROADMAP.md). They are not implemented capabilities.
 
 For more details, see the complete [ROADMAP.md](ROADMAP.md).
 

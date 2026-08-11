@@ -163,7 +163,7 @@ export const EvidenceLogEditor: React.FC<EvidenceLogEditorProps> = ({
 
       {notes.length === 0 ? (
         <p className="text-xs text-slate-500 italic bg-slate-50 p-3 rounded-lg border border-dashed border-slate-200">
-          No verified evidence notes logged yet. It is highly recommended to substantiate this parameter for planning workshops.
+          No evidence notes logged yet. Add current sources and record when each source was reviewed.
         </p>
       ) : (
         <div className="flex flex-col gap-2.5">
@@ -201,7 +201,7 @@ export const EvidenceLogEditor: React.FC<EvidenceLogEditorProps> = ({
 
               <div className="flex items-center gap-1.5 text-[9px] text-slate-500 font-semibold uppercase tracking-wider">
                 <Calendar size={10} />
-                <span>Verified: {note.dateVerified}</span>
+                <span>Source reviewed: {note.dateVerified}</span>
                 <span className="text-slate-300 border-l border-slate-300 h-2 px-0.5" />
                 <FileText size={10} className="text-slate-500" />
                 <span className="text-slate-600">Evidence Note</span>

@@ -53,9 +53,9 @@ export const CBDMatrix: React.FC<CBDMatrixProps> = ({
     <div className="flex flex-col gap-6">
       {/* Introduction */}
       <div>
-        <h3 className="text-lg font-bold text-slate-950">4. Interactive UNPOL CBD Matrix</h3>
+        <h3 className="text-lg font-bold text-slate-950">5. CBD Key Areas × Cross-Cutting Analytical Lenses</h3>
         <p className="text-sm text-slate-500 mt-1">
-          Click cells to customize indicators and actions, or click Row/Column headers to inspect full Key Areas and Dimensions.
+          This prototype structure supports analysis; it is not presented as a formal UN taxonomy. Select a cell to examine a Key Area through an analytical lens.
         </p>
       </div>
 

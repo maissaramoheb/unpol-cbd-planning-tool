@@ -141,7 +141,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
       <div className="lg:col-span-1 flex flex-col gap-3">
         <div className="flex justify-between items-center">
           <div>
-            <h3 className="text-lg font-bold text-slate-950">3. Stakeholder Analysis</h3>
+            <h3 className="text-lg font-bold text-slate-950">4. Actors / Stakeholder Analysis</h3>
             <p className="text-xs text-slate-500 mt-0.5">Define key actors and assess their posture toward CBD reform.</p>
           </div>
           <Button variant="outline" size="sm" onClick={handleCreateCustom} className="shrink-0">

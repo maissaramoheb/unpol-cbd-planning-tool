@@ -95,7 +95,7 @@ export const MatrixGrid: React.FC<MatrixGridProps> = ({
         <div className="min-w-[980px] grid grid-cols-7 gap-2">
           {/* Corner Cell */}
           <div className="bg-slate-900 rounded-lg p-3 text-center flex flex-col justify-center items-center text-white text-[10px] font-extrabold uppercase tracking-wider h-24">
-            <span>Dimensions &rarr;</span>
+            <span>Analytical Lenses &rarr;</span>
             <span className="mt-1 border-t border-slate-700 pt-1 w-full">Key Areas &darr;</span>
           </div>
 
@@ -114,7 +114,7 @@ export const MatrixGrid: React.FC<MatrixGridProps> = ({
                   }
                 `}
               >
-                <span className="uppercase tracking-wider text-[9px] text-slate-500 block mb-1">Dimension</span>
+                <span className="uppercase tracking-wider text-[9px] text-slate-500 block mb-1">Analytical Lens</span>
                 <span className="line-clamp-2 leading-tight">{shortColName(col.name)}</span>
               </button>
             );

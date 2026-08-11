@@ -59,7 +59,7 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
       {/* PESTEL-S List */}
       <div className="lg:col-span-1 flex flex-col gap-3">
         <div>
-          <h3 className="text-lg font-bold text-slate-950">2. PESTEL-S Situational Analysis</h3>
+          <h3 className="text-lg font-bold text-slate-950">3. PESTEL-S Situational Analysis</h3>
           <p className="text-sm text-slate-500 mt-1">
             Assess environmental factors impacting host-state policing. Select a factor to edit findings and ratings.
           </p>
@@ -172,7 +172,7 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
                       value={activeItem.rating.confidence}
                       onChange={(v) => handleRatingChange('confidence', v)}
                       minLabel="Low Data"
-                      maxLabel="Verified / Triangulated"
+                      maxLabel="Well Supported"
                     />
                     <Slider
                       label="CBD Intervention Relevance"
@@ -195,7 +195,7 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
                     </div>
                   </div>
                   <div>
-                    <span className="font-bold text-slate-700 block mb-2">Activated CBD Dimensions</span>
+                    <span className="font-bold text-slate-700 block mb-2">Relevant Cross-Cutting Analytical Lenses</span>
                     <div className="flex flex-wrap gap-1.5">
                       {activeItem.dimensions.map((dim, idx) => (
                         <Badge key={idx} variant="teal">{dim}</Badge>

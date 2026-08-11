@@ -12,7 +12,7 @@ By participating in this project, you agree to abide by our [Code of Conduct](CO
 
 ## Domain Focus & Tone
 
-This is a specialized tool for peace operations, UNPOL, community-based policing, and public-sector planning.
+This is a specialized tool for peace operations, UNPOL Police Capacity-Building & Development (CBD), and public-sector planning. Community policing may appear as a policing approach or scenario topic; it is distinct from CBD.
 - **Tone**: Keep wording clear, objective, evidence-based, and practitioner-oriented. Avoid exaggerated claims or hyperbole.
 - **Privacy & Security**: Never input or commit actual classified, restricted, or sensitive host-state security details to the codebase, public issues, or demo sites. All planning data must run client-side.
 

@@ -119,7 +119,7 @@ export const MatrixListView: React.FC<MatrixListViewProps> = ({
                         `}
                       >
                         <div className="flex flex-col">
-                          <span className="text-[9px] uppercase tracking-wider text-slate-500">Intersection Dimension</span>
+                          <span className="text-[9px] uppercase tracking-wider text-slate-500">Cross-Cutting Analytical Lens</span>
                           <span className="font-bold text-slate-900 mt-0.5">{col.name}</span>
                           {tags.length > 0 && (
                             <div className="flex flex-wrap gap-1 mt-1.5">

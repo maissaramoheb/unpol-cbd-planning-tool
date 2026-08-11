@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [Unreleased]
+### Changed
+- Reframed the 5×6 matrix as **CBD Key Areas × Cross-Cutting Analytical Lenses**, a prototype analytical structure rather than a formal UN taxonomy.
+- Replaced circular priority scoring inputs with independent Impact, Urgency, Mandate Relevance, Feasibility, Stakeholder Support, and Implementation Risk ratings; Evidence Confidence remains a separate caution.
+- Aligned the visible seven-step workflow and prevented the dashboard Continue action from skipping Priority & Sequencing.
+- Replaced the default personal analyst identity with `Participant / Team`.
+- Tightened storage, offline, scoring, and reference-alignment claims across documentation and exports.
+
 ## [0.3.1] - 2026-06-16
 ### Added
 - **Disclaimer Updates**: Enhanced context-specific warning notes regarding client-side data privacy boundaries.

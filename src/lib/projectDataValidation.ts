@@ -175,9 +175,12 @@ function isCbdCell(value: unknown): value is CbdCell {
     isStringArray(value.stakeholders) &&
     isRating(value.confidence) &&
     isRating(value.priorityScore) &&
+    isOptionalRating(value.impact) &&
+    isOptionalRating(value.urgency) &&
     isOptionalRating(value.feasibility) &&
     isOptionalRating(value.riskRating) &&
     isOptionalRating(value.stakeholderSupport) &&
+    isOptionalRating(value.mandateRelevance) &&
     hasValidEvidenceNotes(value.evidenceNotes)
   );
 }
@@ -223,9 +226,12 @@ function normalizeProjectData(data: UnpolProjectData): UnpolProjectData {
         key,
         {
           ...cell,
+          impact: cell.impact ?? cell.priorityScore,
+          urgency: cell.urgency ?? 3,
           feasibility: cell.feasibility ?? 3,
           riskRating: cell.riskRating ?? 3,
           stakeholderSupport: cell.stakeholderSupport ?? 3,
+          mandateRelevance: cell.mandateRelevance ?? 3,
           evidenceNotes: cell.evidenceNotes ?? []
         }
       ])

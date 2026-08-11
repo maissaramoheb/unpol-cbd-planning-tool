@@ -96,10 +96,13 @@ export interface CbdCell {
   risks: string;
   sequencing: string;
   confidence: number;  // 1 to 5
-  priorityScore: number; // 1 to 5
+  priorityScore: number; // Legacy 1 to 5 impact value retained for imported workspaces
+  impact?: number; // 1 to 5
+  urgency?: number; // 1 to 5
   feasibility?: number; // 1 to 5
   riskRating?: number; // 1 to 5 (named riskRating to avoid conflicts with 'risks' string)
   stakeholderSupport?: number; // 1 to 5
+  mandateRelevance?: number; // 1 to 5
   result: string;
   engagement: string;
   evidenceNotes?: EvidenceNote[];

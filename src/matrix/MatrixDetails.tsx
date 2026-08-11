@@ -66,6 +66,12 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
       sequencing: "Conduct basic process mapping before drafting standard operating procedures.",
       confidence: 3,
       priorityScore: 3,
+      impact: 3,
+      urgency: 3,
+      feasibility: 3,
+      riskRating: 3,
+      stakeholderSupport: 3,
+      mandateRelevance: 3,
       result: `More coherent CBD action at the intersection of ${rowId} and ${colId}.`,
       engagement: "Start with the most influential and feasible entry points, then connect technical support to workflow and policy follow-through."
     };
@@ -78,7 +84,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
     return (
       <Card>
         <CardHeader className="bg-blue-600 text-white rounded-t-xl">
-          <span className="text-[10px] uppercase font-extrabold tracking-wider block text-blue-200">Dimension Analysis</span>
+          <span className="text-[10px] uppercase font-extrabold tracking-wider block text-blue-200">Analytical Lens</span>
           <h3 className="text-base font-extrabold">{col.name}</h3>
           <p className="text-xs text-blue-100 mt-1">{col.definition}</p>
         </CardHeader>
@@ -120,7 +126,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
         </CardHeader>
         <CardBody className="flex flex-col gap-4">
           <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-            How this Key Area is shaped by Dimensions
+            How this Key Area is examined through each analytical lens
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {columns.map((col) => {
@@ -189,7 +195,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
         </div>
         <div className="flex items-center gap-2">
           <Badge variant={activeAssessment.score >= 4 ? 'rose' : 'slate'}>
-            Computed Priority: {activeAssessment.score.toFixed(1)}/5
+            Indicative Priority: {activeAssessment.score.toFixed(1)}/5
           </Badge>
         </div>
       </CardHeader>
@@ -269,14 +275,35 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
         </div>
 
         {/* Sliders */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-100">
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs leading-relaxed text-amber-950">
+          <strong>Prototype planning heuristic — not UN doctrine.</strong> This indicative score supports discussion; it is not objective and does not replace mandate review, evidence, consultation, or professional judgement. Confidence qualifies the assessment but does not increase the score.
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-slate-100">
           <Slider
-            label="Priority Score"
-            value={activeCell.priorityScore}
-            onChange={(v) => handleCellChange('priorityScore', v)}
-            minLabel="Optional"
-            maxLabel="Critical Path"
+            label="Impact"
+            value={activeCell.impact ?? activeCell.priorityScore}
+            onChange={(v) => handleCellChange('impact', v)}
+            minLabel="Limited"
+            maxLabel="Major"
           />
+          <Slider
+            label="Urgency"
+            value={activeCell.urgency ?? 3}
+            onChange={(v) => handleCellChange('urgency', v)}
+            minLabel="Can Wait"
+            maxLabel="Immediate"
+          />
+          <Slider
+            label="Mandate Relevance"
+            value={activeCell.mandateRelevance ?? 3}
+            onChange={(v) => handleCellChange('mandateRelevance', v)}
+            minLabel="Indirect"
+            maxLabel="Direct"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 pt-4 border-t border-slate-100">
           <Slider
             label="Confidence Level"
             value={activeCell.confidence}
@@ -284,9 +311,6 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
             minLabel="Assumption"
             maxLabel="Evidence-Based"
           />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-slate-100">
           <Slider
             label="Feasibility"
             value={activeCell.feasibility !== undefined ? activeCell.feasibility : 3}
@@ -295,7 +319,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
             maxLabel="High Feasibility"
           />
           <Slider
-            label="Risk Exposure"
+            label="Implementation Risk"
             value={activeCell.riskRating !== undefined ? activeCell.riskRating : 3}
             onChange={(v) => handleCellChange('riskRating', v)}
             minLabel="Low Risk"

@@ -73,7 +73,7 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
               <div><span className="text-blue-700 font-bold block mb-0.5">1. Profile Setup</span> Select a template or start blank to define the host-state context parameters.</div>
               <div><span className="text-blue-700 font-bold block mb-0.5">2. PESTEL-S Diagnosis</span> Assess and rate 7 categories of environmental challenges affecting policing.</div>
               <div><span className="text-blue-700 font-bold block mb-0.5">3. Actor Assessment</span> Define and map enablers, blockers, and spoilers, rating their reform posture.</div>
-              <div><span className="text-blue-700 font-bold block mb-0.5">4. CBD Matrix Grid</span> Map intersections across 5 Key Areas and 6 Dimensions to configure targeted actions.</div>
+              <div><span className="text-blue-700 font-bold block mb-0.5">5. CBD Matrix</span> Use 5 Key Areas and 6 cross-cutting analytical lenses to structure possible actions.</div>
               <div><span className="text-blue-700 font-bold block mb-0.5">5. Sequencing Priorities</span> Formulate Quick Wins, sensitive reforms, and long-term sequencing pathways.</div>
               <div><span className="text-blue-700 font-bold block mb-0.5">6. Brief & Export</span> Export clean Markdown reports, print PDF-ready briefs, or backup JSON configs.</div>
             </div>
@@ -85,7 +85,7 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
         {/* Template Selector Card */}
         <div className="lg:col-span-1 flex flex-col gap-4">
           <div>
-            <h3 className="text-lg font-bold text-slate-950">1. Context Template</h3>
+            <h3 className="text-lg font-bold text-slate-950">2. Profile / Context Setup</h3>
             <p className="text-sm text-slate-600 mt-1">
               Choose a baseline configuration template. Selecting a template will preload editable planning prompts, assumptions to verify, and low-confidence PESTEL-S starter questions.
             </p>
@@ -198,7 +198,7 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
                   label="Analyst / Advisory Team"
                   value={profile.analystName}
                   onChange={(e) => handleInputChange('analystName', e.target.value)}
-                  placeholder="e.g. Lt.Col Maissara Selim"
+                  placeholder="Participant / Team"
                 />
                 <TextInput
                   label="Assessment Date"

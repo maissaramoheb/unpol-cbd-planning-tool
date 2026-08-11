@@ -5,6 +5,7 @@ import { Card, CardBody, CardHeader } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 import { evaluateCbdCell } from '../lib/scoring';
+import { getDashboardContinueStep } from '../lib/workflow';
 import { StakeholderDecisionSupport } from './StakeholderDecisionSupport';
 import {
   Users,
@@ -44,10 +45,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
   const isDemoTemplate = profile.templateId === 'demo-peacekeeping';
 
   const workflowSteps = [
+    'Review planning overview',
     'Define mission context',
     'Scan PESTEL-S pressures',
     'Map actors and stakeholders',
-    'Identify CBD priorities',
+    'Apply CBD analytical lenses',
     'Sequence interventions',
     'Export planning brief'
   ];
@@ -239,15 +241,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
     stakeholders.reduce((sum, item) => sum + (item.evidenceNotes?.length || 0), 0) +
     Object.values(customCells).reduce((sum, item) => sum + (item.evidenceNotes?.length || 0), 0);
 
-  const continueStep = isProfileEmpty
-    ? 2
-    : isPestelsEmpty
-      ? 3
-      : isStakeholdersEmpty
-        ? 4
-        : isCustomCellsEmpty
-          ? 5
-          : 7;
+  const continueStep = getDashboardContinueStep({
+    isProfileEmpty,
+    isPestelsEmpty,
+    isStakeholdersEmpty,
+    isCustomCellsEmpty
+  });
 
   // --- COMPUTE TOP 3 PRESSURES ---
   const sortedPressures = Object.values(pestels)
@@ -427,7 +426,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
             <CardHeader className="flex items-center justify-between border-b border-slate-100 pb-3">
               <h4 className="text-sm font-bold text-slate-950 flex items-center gap-2">
                 <Layers size={16} className="text-indigo-500" />
-                Scored Matrix Priorities (Top 5)
+                Indicative Matrix Priorities (Top 5)
               </h4>
               <Button variant="ghost" size="sm" onClick={() => onNavigateToStep(5)} className="text-[11px] font-bold text-blue-600 py-0.5 px-2">
                 Open Matrix Grid
@@ -574,6 +573,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
             { label: 'Review PESTEL-S', step: 3 },
             { label: 'Open Stakeholder Map', step: 4 },
             { label: 'Open CBD Matrix', step: 5 },
+            { label: 'Set Priority & Sequence', step: 6 },
             { label: 'Review Export Brief', step: 7 }
           ].map(shortcut => (
             <Button

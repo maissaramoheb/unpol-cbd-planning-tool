@@ -119,7 +119,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
       {/* Introduction & Quick Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h3 className="text-lg font-bold text-slate-950">6. Export Planning Brief</h3>
+          <h3 className="text-lg font-bold text-slate-950">7. Export Planning Brief</h3>
           <p className="text-sm text-slate-500 mt-1">
             Export the completed planning brief to Markdown or print layout, or save/restore the full project JSON.
           </p>
@@ -201,7 +201,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
               </div>
               <div>
                 <span className="font-extrabold text-[9px] text-slate-500 uppercase tracking-wider block">Prepared By</span>
-                <span className="font-bold text-slate-800">{data.profile.analystName || 'UNPOL Advisory Team'}</span>
+                <span className="font-bold text-slate-800">{data.profile.analystName || 'Participant / Team'}</span>
               </div>
               <div>
                 <span className="font-extrabold text-[9px] text-slate-500 uppercase tracking-wider block">Assessment Date</span>
@@ -262,7 +262,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
               2. Executive Summary
             </h3>
             <p className="text-xs leading-relaxed text-slate-600">
-              This capacity-building and development (CBD) brief provides a structured alignment between the host-state environmental pressures, critical stakeholders, and targeted police development priority areas. It is designed to guide UNPOL advisors in sequencing training, administrative reforms, and legal interventions.
+              This capacity-building and development (CBD) brief records a prototype analysis of environmental pressures, stakeholders, and possible police-development priorities. It supports structured discussion and professional judgement; it does not determine or authorize interventions.
             </p>
           </div>
 
@@ -367,8 +367,11 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
           {/* Section 5: Matrix Priorities */}
           <div>
             <h3 className="text-xs font-black uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-1.5 mb-3">
-              5. Priority CBD Matrix Intersections
+              5. CBD Key Areas × Cross-Cutting Analytical Lenses
             </h3>
+            <p className="mb-3 rounded-lg border border-amber-200 bg-amber-50 p-2.5 text-[11px] leading-relaxed text-amber-950">
+              <strong>Prototype planning heuristic — not UN doctrine.</strong> Indicative Priority = 25% Impact + 20% Urgency + 20% Mandate Relevance + 15% Feasibility + 10% Stakeholder Support + 10% inverse Implementation Risk. Evidence Confidence is a caution, not a scoring input. Human judgement remains primary.
+            </p>
             <div className="flex flex-col gap-4 text-xs">
               {Object.keys(data.customCells).length === 0 ? (
                 <p className="text-slate-500 italic">No specific intersections configured with customized actions in Step 5.</p>
@@ -382,7 +385,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
                           {row} &times; {col}
                         </span>
                         <div className="flex gap-1">
-                          <Badge variant="blue">Computed Priority: {assessment.score.toFixed(1)}/5</Badge>
+                          <Badge variant="blue">Indicative Priority: {assessment.score.toFixed(1)}/5</Badge>
                           <Badge variant="slate">{assessment.classification}</Badge>
                           <Badge variant="slate">Confidence: {cell.confidence}/5</Badge>
                         </div>
@@ -396,8 +399,11 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
                       </div>
                       
                       <div className="grid grid-cols-3 gap-2 text-[9px] text-slate-500 font-extrabold uppercase tracking-wider pt-1 border-t border-slate-100/60">
+                        <span>Impact: {assessment.inputs.impact}/5</span>
+                        <span>Urgency: {assessment.inputs.urgency}/5</span>
+                        <span>Mandate relevance: {assessment.inputs.mandateRelevance}/5</span>
                         <span>Feasibility: {assessment.inputs.feasibility}/5</span>
-                        <span>Risk rating: {assessment.inputs.risk}/5</span>
+                        <span>Implementation risk: {assessment.inputs.risk}/5</span>
                         <span>Stakeholder support: {assessment.inputs.stakeholderSupport}/5</span>
                       </div>
 
@@ -473,7 +479,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
                     </div>
                     {note.comment && <p className="text-slate-600 bg-white border border-slate-100 p-2 rounded-lg italic leading-relaxed">&ldquo;{note.comment}&rdquo;</p>}
                     <span className="text-[9px] text-slate-500 font-extrabold uppercase tracking-wider">
-                      Attached to: {note.item} | Confidence: {note.confidence}/5 | Verified: {note.date}
+                      Attached to: {note.item} | Confidence: {note.confidence}/5 | Source reviewed: {note.date}
                     </span>
                   </div>
                 ))}
@@ -489,7 +495,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({
             <div className="text-xs text-slate-600 flex flex-col gap-2 leading-relaxed">
               <p>• **Counterpart Ownership**: The successful execution of capacity-building reforms assumes host-state leadership maintains a baseline commitment to professionalization and structural institutional changes.</p>
               <p>• **Security Environment**: This planning sequence assumes that minimum security stability is maintained. Drastic escalation of conflict may require suspending capacity building in favor of emergency operations.</p>
-              <p>• **Information Freshness**: The validity of this plan depends on the verifying dates logged in the Evidence Index. Users must review and update source logs as host-state conditions evolve.</p>
+              <p>• **Information Freshness**: The usefulness of this plan depends on the source-review dates logged in the Evidence Index. Users must review and update source logs as host-state conditions evolve.</p>
             </div>
           </div>
 

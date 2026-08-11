@@ -48,7 +48,7 @@ export const defaultProfile: MissionProfile = {
   conflictContext: '[ASSUMPTION TO TEST] Identify the conflict and public-safety conditions relevant to planning.',
   planningPurpose: '[PROMPT] Define the intended capacity-building planning purpose.',
   assessmentDate: new Date().toISOString().split('T')[0],
-  analystName: 'Lt.Col Maissara Selim',
+  analystName: 'Participant / Team',
   templateId: 'peacekeeping',
   sourceCategory: null,
   coverageScope: null,
@@ -103,9 +103,12 @@ export function getInitialProjectData(templateId = 'peacekeeping'): UnpolProject
   const finalCells = JSON.parse(JSON.stringify(isBlank ? {} : customCells));
   Object.keys(finalCells).forEach(key => {
     const cell = finalCells[key];
+    if (cell.impact === undefined) cell.impact = cell.priorityScore;
+    if (cell.urgency === undefined) cell.urgency = 3;
     if (cell.feasibility === undefined) cell.feasibility = 3;
     if (cell.riskRating === undefined) cell.riskRating = 3;
     if (cell.stakeholderSupport === undefined) cell.stakeholderSupport = 3;
+    if (cell.mandateRelevance === undefined) cell.mandateRelevance = 3;
     cell.evidenceNotes = [];
   });
 

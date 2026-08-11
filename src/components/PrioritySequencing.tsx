@@ -70,9 +70,9 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
     <div className="flex flex-col gap-6">
       {/* Introduction */}
       <div>
-        <h3 className="text-lg font-bold text-slate-950">5. Priority Setting & Sequencing</h3>
+        <h3 className="text-lg font-bold text-slate-950">6. Priority & Sequencing</h3>
         <p className="text-sm text-slate-500 mt-1">
-          Review scored matrix interventions, define sequencing groups, and list top strategic objectives.
+          Review indicative heuristic scores, apply professional judgement, and record sequencing groups and priorities.
         </p>
       </div>
 
@@ -88,16 +88,16 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
             </CardHeader>
             <CardBody className="flex flex-col gap-3 max-h-[500px] overflow-y-auto">
               <span className="text-[11px] text-slate-500">
-                Interventions ranked by computed Priority Score:
+                Indicative ranking from the prototype planning heuristic (not UN doctrine):
               </span>
               {scoredCells.length === 0 ? (
-                <p className="text-xs text-slate-500 italic">No custom cells configured yet in Step 4. Default priority values will apply.</p>
+                <p className="text-xs text-slate-500 italic">No matrix intersections configured yet in Step 5.</p>
               ) : (
                 scoredCells.map(({ key, score, classification }) => (
                   <div key={key} className="p-3 border border-slate-200 rounded-lg text-xs flex flex-col gap-1.5 bg-slate-50/50">
                     <div className="flex justify-between items-start gap-1">
                       <span className="font-extrabold text-slate-800 line-clamp-1">{key}</span>
-                      <Badge variant="blue">{score.toFixed(1)}/5</Badge>
+                      <Badge variant="blue">Indicative: {score.toFixed(1)}/5</Badge>
                     </div>
                     <div className="flex justify-between items-center text-[10px]">
                       <span className="text-slate-500 font-semibold">{classification}</span>

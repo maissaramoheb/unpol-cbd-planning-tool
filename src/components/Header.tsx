@@ -86,7 +86,7 @@ export const Header: React.FC<HeaderProps> = ({ onReset, missionName, analystNam
           </div>
 
           <p>
-            <strong>Data Privacy & Classification:</strong> This application runs entirely client-side in your browser. No data is sent to external servers. Custom configurations are stored locally in your browser storage. Do not enter sensitive, classified, or restricted host-state security or mission details into public web deployments of this tool.
+            <strong>Data Privacy & Classification:</strong> Planning workspace content is processed in the browser and stored in browser storage; export/import operations are local file actions. Public hosting and the existing deployment analytics may process request or usage metadata. Do not enter sensitive, classified, or restricted host-state security or mission details into this tool.
           </p>
           <p>
             <strong>Current version:</strong> {APP_VERSION_LABEL}. Developed by <strong>Lt.Col Maissara Selim</strong> to visualize capacity-building prioritization.
