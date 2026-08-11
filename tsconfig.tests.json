@@ -13,6 +13,8 @@
     "src/lib/scoring.ts",
     "src/lib/workflow.ts",
     "src/data/caranaDemo.ts",
+    "src/lib/reportModel.ts",
+    "src/lib/exportDocx.ts",
     "src/types/index.ts",
     "src/types/explorer.ts"
   ]
