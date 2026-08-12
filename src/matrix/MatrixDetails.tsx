@@ -73,7 +73,13 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
       stakeholderSupport: 3,
       mandateRelevance: 3,
       result: `More coherent CBD action at the intersection of ${rowId} and ${colId}.`,
-      engagement: "Start with the most influential and feasible entry points, then connect technical support to workflow and policy follow-through."
+      engagement: "Start with the most influential and feasible entry points, then connect technical support to workflow and policy follow-through.",
+      capacityProblem: '',
+      planningObjective: '',
+      leadStakeholderId: null,
+      supportingStakeholderIds: [],
+      implementationPhase: null,
+      milestoneTimeframe: ''
     };
   };
 
@@ -170,6 +176,16 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
     handleCellChange(field, nextList);
   };
 
+  const handleSupportingStakeholderToggle = (stakeholderId: string) => {
+    const current = activeCell.supportingStakeholderIds || [];
+    handleCellChange(
+      'supportingStakeholderIds',
+      current.includes(stakeholderId)
+        ? current.filter(id => id !== stakeholderId)
+        : [...current, stakeholderId]
+    );
+  };
+
   const handleAddIndicator = () => {
     if (!newIndicator.trim()) return;
     const current = activeCell.indicators || [];
@@ -200,7 +216,25 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
         </div>
       </CardHeader>
       <CardBody className="flex flex-col gap-4">
-        {/* Why matters */}
+        <div className="grid grid-cols-1 gap-4">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900">Planning Logic</h4>
+          <TextArea
+            label="Capacity Problem / Gap"
+            value={activeCell.capacityProblem || ''}
+            onChange={(e) => handleCellChange('capacityProblem', e.target.value)}
+            placeholder="What institutional or individual capacity problem needs to change?"
+            rows={3}
+          />
+          <TextArea
+            label="Planning Objective"
+            value={activeCell.planningObjective || ''}
+            onChange={(e) => handleCellChange('planningObjective', e.target.value)}
+            placeholder="State the intended, context-specific change."
+            rows={2}
+          />
+        </div>
+
+        <h4 className="border-t border-slate-100 pt-4 text-xs font-bold uppercase tracking-wider text-slate-900">Intervention Package</h4>
         <TextArea
           label="Why this intersection matters for SSR / CBD"
           value={activeCell.why}
@@ -236,8 +270,61 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
           </div>
         </div>
 
+        <div className="border-t border-slate-100 pt-4">
+          <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-900">Implementation</h4>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <label className="flex flex-col gap-1.5 text-xs font-bold text-slate-700">
+              Lead Stakeholder / Actor
+              <select
+                value={activeCell.leadStakeholderId || ''}
+                onChange={(e) => onUpdateCell(`${rowId}|${colId}`, {
+                  ...activeCell,
+                  leadStakeholderId: e.target.value || null,
+                  supportingStakeholderIds: (activeCell.supportingStakeholderIds || []).filter(id => id !== e.target.value)
+                })}
+                className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-normal focus:outline-none focus:ring-2 focus:ring-blue-200"
+              >
+                <option value="">Not assigned</option>
+                {stakeholders.map(stakeholder => <option key={stakeholder.id} value={stakeholder.id}>{stakeholder.name}</option>)}
+              </select>
+            </label>
+            <label className="flex flex-col gap-1.5 text-xs font-bold text-slate-700">
+              Implementation Phase
+              <select
+                value={activeCell.implementationPhase || ''}
+                onChange={(e) => handleCellChange('implementationPhase', e.target.value)}
+                className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-normal focus:outline-none focus:ring-2 focus:ring-blue-200"
+              >
+                <option value="">Not assigned</option>
+                <option value="NOW">NOW</option><option value="NEXT">NEXT</option><option value="LATER">LATER</option>
+              </select>
+            </label>
+            <label className="flex flex-col gap-1.5 text-xs font-bold text-slate-700">
+              Milestone / Timeframe
+              <input
+                value={activeCell.milestoneTimeframe || ''}
+                onChange={(e) => handleCellChange('milestoneTimeframe', e.target.value)}
+                placeholder="e.g. Pilot review after 90 days"
+                className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-normal focus:outline-none focus:ring-2 focus:ring-blue-200"
+              />
+            </label>
+          </div>
+          <div className="mt-4">
+            <span className="mb-2 block text-xs font-bold text-slate-700">Supporting Stakeholders / Actors</span>
+            <div className="grid max-h-[160px] grid-cols-1 gap-1.5 overflow-y-auto rounded-lg border border-slate-100 bg-slate-50/50 p-2.5 md:grid-cols-2">
+              {stakeholders.filter(stakeholder => stakeholder.id !== activeCell.leadStakeholderId).map(stakeholder => (
+                <label key={stakeholder.id} className="flex cursor-pointer items-center gap-2 text-xs text-slate-600 hover:text-slate-900">
+                  <input type="checkbox" checked={(activeCell.supportingStakeholderIds || []).includes(stakeholder.id)} onChange={() => handleSupportingStakeholderToggle(stakeholder.id)} className="h-3.5 w-3.5 rounded border-slate-300 text-blue-600" />
+                  <span>{stakeholder.name}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </div>
+
         {/* Indicators */}
         <div className="pt-2 border-t border-slate-100">
+          <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-900">Monitoring</h4>
           <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-2">
             CBD Assessment Indicators
           </label>
@@ -274,6 +361,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
           </div>
         </div>
 
+        <h4 className="border-t border-slate-100 pt-4 text-xs font-bold uppercase tracking-wider text-slate-900">Evidence &amp; Assessment</h4>
         {/* Sliders */}
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs leading-relaxed text-amber-950">
           <strong>Prototype planning heuristic — not UN doctrine.</strong> This indicative score supports discussion; it is not objective and does not replace mandate review, evidence, consultation, or professional judgement. Confidence qualifies the assessment but does not increase the score.

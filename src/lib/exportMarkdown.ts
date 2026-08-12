@@ -99,15 +99,20 @@ ${map.quadrants.map((quadrant) => `- **${quadrant.title} (${quadrant.stakeholder
   // Compile individual markdown strings
   const prioritizedCellsMd = prioritizedCells.map(({ key, cell, score, tags }) => {
     const [row, col] = key.split('|');
+    const stakeholderName = (id: string | null | undefined) => stakeholders.find(stakeholder => stakeholder.id === id)?.name;
     return `
 ### ${row} × ${col} (Indicative Priority: ${score.toFixed(1)}/5.0)
 - **Visual Tags**: ${tags.map(t => `\`${t}\``).join(', ') || '*Standard*'}
+- **Capacity Problem / Gap**: ${cell.capacityProblem || 'Not yet defined'}
+- **Planning Objective**: ${cell.planningObjective || 'Not yet defined'}
 - **Why this matters**: ${cell.why}
 - **Action Levels**:
   - *Individual*: ${cell.individual}
   - *Organizational*: ${cell.organizational}
   - *Enabling Environment*: ${cell.environment}
 - **Key Indicators**: ${cell.indicators?.map(i => `\n    - ${i}`).join('') || '*None*'}
+- **Responsibility**: Lead: ${stakeholderName(cell.leadStakeholderId) || 'Not assigned'}; Support: ${(cell.supportingStakeholderIds || []).map(stakeholderName).filter(Boolean).join('; ') || 'None assigned'}
+- **Implementation Phase / Milestone**: ${cell.implementationPhase || 'Not assigned'}${cell.milestoneTimeframe ? ` · ${cell.milestoneTimeframe}` : ''}
 - **Sequencing Note**: ${cell.sequencing}
 - **Identified Risks**: ${cell.risks}
 `;

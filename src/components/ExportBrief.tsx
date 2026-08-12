@@ -42,6 +42,8 @@ const PriorityCard = ({ priority }: { priority: ReportPriority }) => {
         <div><span>Priority {priority.number}</span><h3>{priority.title}</h3></div>
         <p>{priority.row} × {priority.column}</p>
       </header>
+      <div className="priority-rationale"><strong>Capacity problem / gap</strong><p>{priority.cell.capacityProblem || 'Not yet defined'}</p></div>
+      <div className="priority-rationale"><strong>Planning objective</strong><p>{priority.cell.planningObjective || 'Not yet defined'}</p></div>
       <div className="priority-rationale"><strong>Planning need / rationale</strong><p>{priority.cell.why || 'Not recorded.'}</p></div>
       <div className="priority-meta">
         <div><strong>Evidence basis</strong><p>{priority.evidenceIds.join(' · ') || 'No linked evidence recorded'}</p></div>
@@ -55,6 +57,10 @@ const PriorityCard = ({ priority }: { priority: ReportPriority }) => {
       <div className="priority-meta">
         <div><strong>Key stakeholders</strong><p>{priority.stakeholders.map(item => item.name).join('; ') || 'No linked stakeholders recorded'}</p></div>
         <div><strong>Implementation conditions</strong><p>Feasibility {inputs.feasibility}/5 · Support {inputs.stakeholderSupport}/5 · Risk {inputs.risk}/5 · Indicative priority {priority.assessment.score.toFixed(1)}/5</p></div>
+      </div>
+      <div className="priority-meta">
+        <div><strong>Responsibility</strong><p>Lead: {priority.leadStakeholder?.name || 'Not assigned'}<br />Support: {priority.supportingStakeholders.map(item => item.name).join('; ') || 'None assigned'}</p></div>
+        <div><strong>Implementation phase</strong><p>{priority.cell.implementationPhase || 'Not assigned'}{priority.cell.milestoneTimeframe ? ` · ${priority.cell.milestoneTimeframe}` : ''}</p></div>
       </div>
       <div className="priority-footer">
         <div><strong>Indicators</strong><BulletList items={priority.cell.indicators || []} /></div>

@@ -27,6 +27,8 @@ export interface ReportPriority {
   cell: CbdCell;
   assessment: CbdPriorityAssessment;
   stakeholders: Stakeholder[];
+  leadStakeholder: Stakeholder | null;
+  supportingStakeholders: Stakeholder[];
   evidenceIds: string[];
 }
 
@@ -107,6 +109,10 @@ export function buildPlanningBriefModel(data: UnpolProjectData): PlanningBriefMo
         .map(id => data.stakeholders.find(stakeholder => stakeholder.id === id))
         .filter((stakeholder): stakeholder is Stakeholder => Boolean(stakeholder))
         .slice(0, 5),
+      leadStakeholder: data.stakeholders.find(stakeholder => stakeholder.id === priority.cell.leadStakeholderId) || null,
+      supportingStakeholders: (priority.cell.supportingStakeholderIds || [])
+        .map(id => data.stakeholders.find(stakeholder => stakeholder.id === id))
+        .filter((stakeholder): stakeholder is Stakeholder => Boolean(stakeholder)),
       evidenceIds: findEvidenceIds(priority.cell.evidenceNotes, evidence)
     }));
 

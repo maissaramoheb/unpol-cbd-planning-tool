@@ -65,6 +65,10 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
       classification: assessment.classification
     };
   }).sort((a, b) => b.score - a.score);
+  const phaseGroups = (['NOW', 'NEXT', 'LATER', 'UNASSIGNED'] as const).map(phase => ({
+    phase,
+    cells: scoredCells.filter(({ cell }) => (cell.implementationPhase || 'UNASSIGNED') === phase)
+  }));
 
   return (
     <div className="flex flex-col gap-6">
@@ -105,6 +109,20 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
                   </div>
                 ))
               )}
+            </CardBody>
+          </Card>
+          <Card>
+            <CardHeader>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900">Manual Implementation Phases</h4>
+            </CardHeader>
+            <CardBody className="flex flex-col gap-3">
+              <p className="text-[11px] leading-relaxed text-slate-500">Assignments recorded in the CBD Matrix. Phases are not generated from indicative scores.</p>
+              {phaseGroups.map(group => (
+                <div key={group.phase} className="rounded-lg border border-slate-200 p-3">
+                  <div className="mb-1.5 flex items-center justify-between"><strong className="text-xs text-slate-900">{group.phase === 'UNASSIGNED' ? 'NOT ASSIGNED' : group.phase}</strong><Badge variant="slate">{group.cells.length}</Badge></div>
+                  {group.cells.length ? <ul className="space-y-1 text-[11px] text-slate-600">{group.cells.map(item => <li key={item.key}>• {item.key}</li>)}</ul> : <p className="text-[11px] italic text-slate-400">No interventions assigned.</p>}
+                </div>
+              ))}
             </CardBody>
           </Card>
         </div>

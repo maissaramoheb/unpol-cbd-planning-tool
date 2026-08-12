@@ -70,7 +70,7 @@ This planning tool is an unofficial prototype designed to assist human planning 
 - **Styling**: Tailwind CSS 4.0
 - **Icons**: Lucide React
 - **Animations**: Framer Motion
-- **Data Storage**: Browser `localStorage`; JSON backup/restore is available. Availability and security depend on the browser, device, and deployment context.
+- **Data Storage**: Browser `localStorage`; JSON backup/restore is available. Availability and security depend on the browser, device, and deployment context. Older saved workspaces are migrated on load by adding empty traceability fields; the tool does not infer responsibilities or sequencing phases.
 
 ---
 
@@ -109,7 +109,7 @@ In the project directory, you can run the following npm scripts:
 ---
 
 ## 📊 Project Status
-- **Current Version**: v0.3.2
+- **Current Version**: v0.4.0
 - **Phase**: Early-stage prototype (Active development). Feedback from peace operations and policing practitioners is welcome.
 
 ---

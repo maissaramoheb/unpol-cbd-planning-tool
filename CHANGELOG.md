@@ -7,12 +7,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ---
 
 ## [Unreleased]
+### Added
+- Added explicit traceability fields linking each configured CBD intervention to a capacity problem, planning objective, lead and supporting actors, manual implementation phase, milestone, evidence, and indicators.
+- Added manual `NOW` / `NEXT` / `LATER` groupings in Priority & Sequencing and focused quality-control cautions for missing high-priority planning links.
+- Included the traceability chain in professional print, Word, and Markdown outputs, and populated it in the fictional CARANA demonstration.
+
 ### Changed
 - Reframed the 5×6 matrix as **CBD Key Areas × Cross-Cutting Analytical Lenses**, a prototype analytical structure rather than a formal UN taxonomy.
 - Replaced circular priority scoring inputs with independent Impact, Urgency, Mandate Relevance, Feasibility, Stakeholder Support, and Implementation Risk ratings; Evidence Confidence remains a separate caution.
 - Aligned the visible seven-step workflow and prevented the dashboard Continue action from skipping Priority & Sequencing.
 - Replaced the default personal analyst identity with `Participant / Team`.
 - Tightened storage, offline, scoring, and reference-alignment claims across documentation and exports.
+- Legacy browser workspaces and JSON files remain accepted. Missing traceability fields are normalized to empty values, invalid actor references are safely cleared, and no implementation phase is inferred.
 
 ## [0.3.1] - 2026-06-16
 ### Added

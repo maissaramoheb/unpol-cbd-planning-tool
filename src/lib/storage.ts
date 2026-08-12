@@ -110,6 +110,12 @@ export function getInitialProjectData(templateId = 'peacekeeping'): UnpolProject
     if (cell.stakeholderSupport === undefined) cell.stakeholderSupport = 3;
     if (cell.mandateRelevance === undefined) cell.mandateRelevance = 3;
     cell.evidenceNotes = [];
+    cell.capacityProblem = cell.capacityProblem ?? '';
+    cell.planningObjective = cell.planningObjective ?? '';
+    cell.leadStakeholderId = cell.leadStakeholderId ?? null;
+    cell.supportingStakeholderIds = cell.supportingStakeholderIds ?? [];
+    cell.implementationPhase = cell.implementationPhase ?? null;
+    cell.milestoneTimeframe = cell.milestoneTimeframe ?? '';
   });
 
   const finalStakeholders = JSON.parse(JSON.stringify(isBlank ? [] : defaultStakeholders));

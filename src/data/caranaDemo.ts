@@ -127,6 +127,12 @@ export function buildCaranaDemoData(base: UnpolProjectData): UnpolProjectData {
         sequencing: 'Confirm authority and safeguards, test the register in two stations, then review results before expansion.',
         urgency: 5,
         mandateRelevance: 5,
+        capacityProblem: 'Kantara stations lack a consistent, safeguarded process for recording, referring, reviewing, and following up complaints and detention concerns.',
+        planningObjective: 'Establish and test a traceable complaint and detention-review workflow in selected Kantara stations with documented inspectorate follow-up.',
+        leadStakeholderId: 'sh-inspectorate',
+        supportingStakeholderIds: ['sh-police-hq', 'sh-justice', 'sh-human-rights'],
+        implementationPhase: 'NEXT',
+        milestoneTimeframe: 'Two-station pilot reviewed after 90 days',
         evidenceNotes: [fictionalEvidence('carana-ev-matrix-1', 'CARANA accountability design workshop', 'Participants linked complaint workflow gaps to the proposed pilot intervention.')]
       },
       'Stakeholder Engagement|Gender': {
@@ -138,6 +144,12 @@ export function buildCaranaDemoData(base: UnpolProjectData): UnpolProjectData {
         sequencing: 'Complete a do-no-harm consultation and referral mapping before public engagement activities.',
         urgency: 4,
         mandateRelevance: 5,
+        capacityProblem: 'Police liaison arrangements do not provide women and other underserved groups with sufficiently safe, representative, and predictable access or referral channels.',
+        planningObjective: 'Test a protected liaison and referral arrangement that turns representative community feedback into practical service-access improvements.',
+        leadStakeholderId: 'sh-local-command',
+        supportingStakeholderIds: ['sh-civil-society', 'sh-local-admin', 'sh-human-rights'],
+        implementationPhase: 'NEXT',
+        milestoneTimeframe: 'Consultation and referral pilot reviewed after 12 weeks',
         evidenceNotes: [fictionalEvidence('carana-ev-matrix-2', 'CARANA community-access workshop', 'The exercise links reported access barriers to a limited liaison and referral pilot.')]
       },
       'Administrative Systems|Police Practice': {
@@ -150,6 +162,12 @@ export function buildCaranaDemoData(base: UnpolProjectData): UnpolProjectData {
         impact: 4,
         urgency: 4,
         mandateRelevance: 4,
+        capacityProblem: 'Inconsistent station records, handovers, and supervisory checks prevent reliable task follow-up and obscure operational gaps.',
+        planningObjective: 'Introduce one workable minimum record and supervisory-review routine in selected Kantara stations before considering digital tools.',
+        leadStakeholderId: 'sh-local-command',
+        supportingStakeholderIds: ['sh-police-hq', 'sh-unpol-lead', 'sh-academy'],
+        implementationPhase: 'NOW',
+        milestoneTimeframe: 'Baseline and first supervisory review within 30 days',
         evidenceNotes: [fictionalEvidence('carana-ev-matrix-3', 'CARANA station process-mapping notes', 'The proposed register responds to documented exercise gaps in handover and task tracking.')]
       }
     },

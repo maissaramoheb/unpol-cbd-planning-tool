@@ -71,15 +71,19 @@ const bulletList = (items: string[], emptyText = 'None recorded') =>
 function priorityTable(priority: ReportPriority): Table {
   const input = priority.assessment.inputs;
   const linkedStakeholders = priority.stakeholders.map(item => item.name).join('; ') || 'No linked stakeholders recorded';
+  const responsibility = `Lead: ${priority.leadStakeholder?.name || 'Not assigned'}; Support: ${priority.supportingStakeholders.map(item => item.name).join('; ') || 'None assigned'}`;
+  const phase = `${priority.cell.implementationPhase || 'Not assigned'}${priority.cell.milestoneTimeframe ? ` · ${priority.cell.milestoneTimeframe}` : ''}`;
   return new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
     layout: TableLayoutType.FIXED,
     borders: { top: { style: BorderStyle.SINGLE, color: BLUE, size: 8 }, bottom: { style: BorderStyle.SINGLE, color: 'CBD5E1', size: 2 }, left: { style: BorderStyle.SINGLE, color: 'CBD5E1', size: 2 }, right: { style: BorderStyle.SINGLE, color: 'CBD5E1', size: 2 }, insideHorizontal: { style: BorderStyle.SINGLE, color: 'E2E8F0', size: 2 }, insideVertical: { style: BorderStyle.SINGLE, color: 'E2E8F0', size: 2 } },
     rows: [
       new TableRow({ cantSplit: true, children: [new TableCell({ columnSpan: 2, shading: { fill: LIGHT_BLUE, type: ShadingType.CLEAR, color: 'auto' }, margins: { top: 120, bottom: 120, left: 140, right: 140 }, children: [new Paragraph({ children: [text(`PRIORITY ${priority.number} — ${priority.title}`, { bold: true, color: BLUE, size: 24 })], keepNext: true }), paragraph(`${priority.row} × ${priority.column}`, { bold: true, color: SLATE })] })] }),
+      new TableRow({ cantSplit: true, children: [cell('Capacity problem / gap', priority.cell.capacityProblem || 'Not yet defined', WHITE), cell('Planning objective', priority.cell.planningObjective || 'Not yet defined', WHITE)] }),
       new TableRow({ cantSplit: true, children: [cell('Planning need / rationale', priority.cell.why, WHITE), cell('Evidence basis', priority.evidenceIds.join(' · ') || 'No linked evidence recorded', WHITE)] }),
       new TableRow({ cantSplit: true, children: [cell('Individual', priority.cell.individual), cell('Organizational', priority.cell.organizational)] }),
       new TableRow({ cantSplit: true, children: [cell('Enabling environment', priority.cell.environment, WHITE), cell('Key stakeholders', linkedStakeholders, WHITE)] }),
+      new TableRow({ cantSplit: true, children: [cell('Responsibility', responsibility), cell('Implementation phase / milestone', phase)] }),
       new TableRow({ cantSplit: true, children: [cell('Implementation conditions', `Feasibility ${input.feasibility}/5 · Stakeholder support ${input.stakeholderSupport}/5 · Implementation risk ${input.risk}/5 · Indicative priority ${priority.assessment.score.toFixed(1)}/5`, AMBER), cell('Evidence confidence', `${input.confidenceLevel}/5`, AMBER)] }),
       new TableRow({ cantSplit: true, children: [cell('Indicators', priority.cell.indicators.join('; ') || 'None recorded', WHITE), cell('Risks', priority.cell.risks, WHITE)] }),
       new TableRow({ cantSplit: true, children: [new TableCell({ columnSpan: 2, margins: { top: 100, bottom: 100, left: 120, right: 120 }, children: [paragraph(`Recommended sequencing: ${priority.cell.sequencing}`, { bold: true, color: BLUE })] })] })

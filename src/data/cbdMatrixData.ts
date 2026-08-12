@@ -84,7 +84,13 @@ export const customCells: Record<string, CbdCell> = {
     priorityScore: 5,
     feasibility: 4,
     riskRating: 2,
-    stakeholderSupport: 4
+    stakeholderSupport: 4,
+    capacityProblem: '',
+    planningObjective: '',
+    leadStakeholderId: null,
+    supportingStakeholderIds: [],
+    implementationPhase: null,
+    milestoneTimeframe: ''
   },
   "Stakeholder Engagement|Gender": {
     key: "Stakeholder Engagement|Gender",
@@ -108,7 +114,13 @@ export const customCells: Record<string, CbdCell> = {
     priorityScore: 4,
     feasibility: 4,
     riskRating: 2,
-    stakeholderSupport: 3
+    stakeholderSupport: 3,
+    capacityProblem: '',
+    planningObjective: '',
+    leadStakeholderId: null,
+    supportingStakeholderIds: [],
+    implementationPhase: null,
+    milestoneTimeframe: ''
   },
   "Administrative Systems|Police Practice": {
     key: "Administrative Systems|Police Practice",
@@ -132,7 +144,13 @@ export const customCells: Record<string, CbdCell> = {
     priorityScore: 4,
     feasibility: 3,
     riskRating: 3,
-    stakeholderSupport: 4
+    stakeholderSupport: 4,
+    capacityProblem: '',
+    planningObjective: '',
+    leadStakeholderId: null,
+    supportingStakeholderIds: [],
+    implementationPhase: null,
+    milestoneTimeframe: ''
   }
 };
 export interface FallbackCellInputs {
@@ -174,6 +192,12 @@ export function generateFallbackCell(rowId: string, colId: string, driversList: 
     feasibility: 3,
     riskRating: 3,
     stakeholderSupport: 3,
-    result: `More coherent CBD action at the intersection of ${rowId} and ${colId}.`
+    result: `More coherent CBD action at the intersection of ${rowId} and ${colId}.`,
+    capacityProblem: '',
+    planningObjective: '',
+    leadStakeholderId: null,
+    supportingStakeholderIds: [],
+    implementationPhase: null,
+    milestoneTimeframe: ''
   };
 }

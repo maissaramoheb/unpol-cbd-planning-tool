@@ -47,4 +47,9 @@ test('CARANA demonstration is coherent, fictional, and fully populated', () => {
   assert.match(data.priorityBrief.sequencingRecommendation, /Phase 1/);
   assert.ok(Object.values(data.pestels).some(item => (item.evidenceNotes || []).length > 0));
   assert.ok(Object.values(data.customCells).every(cell => (cell.evidenceNotes || []).length > 0));
+  assert.ok(Object.values(data.customCells).every(cell => cell.capacityProblem && cell.planningObjective));
+  assert.ok(Object.values(data.customCells).every(cell => cell.leadStakeholderId && cell.implementationPhase && cell.milestoneTimeframe));
+  const validIds = new Set(data.stakeholders.map(stakeholder => stakeholder.id));
+  assert.ok(Object.values(data.customCells).every(cell => validIds.has(cell.leadStakeholderId)));
+  assert.ok(Object.values(data.customCells).every(cell => cell.supportingStakeholderIds.every(id => validIds.has(id))));
 });

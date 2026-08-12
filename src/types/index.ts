@@ -106,6 +106,12 @@ export interface CbdCell {
   result: string;
   engagement: string;
   evidenceNotes?: EvidenceNote[];
+  capacityProblem: string;
+  planningObjective: string;
+  leadStakeholderId: string | null;
+  supportingStakeholderIds: string[];
+  implementationPhase: 'NOW' | 'NEXT' | 'LATER' | null;
+  milestoneTimeframe: string;
 }
 
 export interface CbdAxis {

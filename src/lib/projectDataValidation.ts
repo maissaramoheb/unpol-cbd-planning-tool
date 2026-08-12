@@ -181,7 +181,13 @@ function isCbdCell(value: unknown): value is CbdCell {
     isOptionalRating(value.riskRating) &&
     isOptionalRating(value.stakeholderSupport) &&
     isOptionalRating(value.mandateRelevance) &&
-    hasValidEvidenceNotes(value.evidenceNotes)
+    hasValidEvidenceNotes(value.evidenceNotes) &&
+    (value.capacityProblem === undefined || isString(value.capacityProblem)) &&
+    (value.planningObjective === undefined || isString(value.planningObjective)) &&
+    (value.leadStakeholderId === undefined || value.leadStakeholderId === null || isString(value.leadStakeholderId)) &&
+    (value.supportingStakeholderIds === undefined || isStringArray(value.supportingStakeholderIds)) &&
+    (value.implementationPhase === undefined || value.implementationPhase === null || ['NOW', 'NEXT', 'LATER'].includes(value.implementationPhase as string)) &&
+    (value.milestoneTimeframe === undefined || isString(value.milestoneTimeframe))
   );
 }
 
@@ -199,6 +205,7 @@ function isPriorityBrief(value: unknown): value is PriorityBrief {
 }
 
 function normalizeProjectData(data: UnpolProjectData): UnpolProjectData {
+  const stakeholderIds = new Set(data.stakeholders.map(stakeholder => stakeholder.id));
   return {
     ...data,
     version: APP_VERSION,
@@ -232,7 +239,13 @@ function normalizeProjectData(data: UnpolProjectData): UnpolProjectData {
           riskRating: cell.riskRating ?? 3,
           stakeholderSupport: cell.stakeholderSupport ?? 3,
           mandateRelevance: cell.mandateRelevance ?? 3,
-          evidenceNotes: cell.evidenceNotes ?? []
+          evidenceNotes: cell.evidenceNotes ?? [],
+          capacityProblem: cell.capacityProblem ?? '',
+          planningObjective: cell.planningObjective ?? '',
+          leadStakeholderId: cell.leadStakeholderId && stakeholderIds.has(cell.leadStakeholderId) ? cell.leadStakeholderId : null,
+          supportingStakeholderIds: (cell.supportingStakeholderIds ?? []).filter(id => stakeholderIds.has(id) && id !== cell.leadStakeholderId),
+          implementationPhase: cell.implementationPhase ?? null,
+          milestoneTimeframe: cell.milestoneTimeframe ?? ''
         }
       ])
     )
