@@ -13,6 +13,7 @@
     "src/lib/scoring.ts",
     "src/lib/workflow.ts",
     "src/data/caranaDemo.ts",
+    "src/lib/storage.ts",
     "src/lib/reportModel.ts",
     "src/lib/exportDocx.ts",
     "src/lib/projectDataValidation.ts",

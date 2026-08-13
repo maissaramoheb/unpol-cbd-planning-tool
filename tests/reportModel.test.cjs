@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 const assert = require('node:assert/strict');
 const test = require('node:test');
+const JSZip = require('jszip');
 
 const { buildPlanningBriefModel, sanitizeReportFilename } = require('../.test-dist/lib/reportModel.js');
 const { createPlanningBriefDocx } = require('../.test-dist/lib/exportDocx.js');
@@ -16,6 +17,11 @@ function fixture() {
     priorityBrief: { topPriorities: ['Strengthen accountability workflow'], quickWins: ['Map the workflow'], sensitiveReforms: ['Clarify review authority'], longerTermReforms: ['Institutionalize the workflow'], risksAssumptions: ['Leadership support remains available'], sequencingRecommendation: 'Validate, pilot, review, then consider expansion.' },
     version: '0.3.2'
   };
+}
+
+async function documentXml(blob) {
+  const zip = await JSZip.loadAsync(await blob.arrayBuffer());
+  return zip.file('word/document.xml').async('string');
 }
 
 test('professional report model preserves traceability and recorded judgement', () => {
@@ -38,6 +44,13 @@ test('Word export is a genuine Office Open XML package', async () => {
   const bytes = new Uint8Array(await blob.slice(0, 2).arrayBuffer());
   assert.deepEqual([...bytes], [0x50, 0x4b]);
   assert.ok(blob.size > 1000);
+});
+
+test('Word export does not create orphan fallback text or pin all priority rows to one page', async () => {
+  const xml = await documentXml(await createPlanningBriefDocx(buildPlanningBriefModel(fixture())));
+  assert.doesNotMatch(xml, />Not recorded</);
+  assert.ok((xml.match(/<w:cantSplit/g) || []).length < 10);
+  assert.doesNotMatch(xml, /<w:br[^>]*w:type="page"/);
 });
 
 test('professional output represents blank planning links accurately', () => {
