@@ -19,12 +19,12 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
 }) => {
   const steps: StepItem[] = [
     { id: 1, label: 'Planning Overview', sub: 'Start page', icon: <LayoutDashboard size={16} /> },
-    { id: 2, label: 'Profile', sub: 'Context setup', icon: <Shield size={16} /> },
-    { id: 3, label: 'PESTEL-S', sub: 'Environment', icon: <Compass size={16} /> },
+    { id: 2, label: 'Profile', sub: 'Context', icon: <Shield size={16} /> },
+    { id: 3, label: 'PESTEL-S', sub: 'Context & Evidence', icon: <Compass size={16} /> },
     { id: 4, label: 'Actors', sub: 'Stakeholders', icon: <Users size={16} /> },
-    { id: 5, label: 'CBD Matrix', sub: 'Analytical lenses', icon: <Grid size={16} /> },
-    { id: 6, label: 'Priority & Sequencing', sub: 'Human review', icon: <ListTodo size={16} /> },
-    { id: 7, label: 'Export', sub: 'Planning brief', icon: <FileText size={16} /> }
+    { id: 5, label: 'CBD Matrix', sub: 'Capacity Priorities', icon: <Grid size={16} /> },
+    { id: 6, label: 'Priority & Sequencing', sub: 'Implementation Path', icon: <ListTodo size={16} /> },
+    { id: 7, label: 'Export', sub: 'Planning Brief', icon: <FileText size={16} /> }
   ];
   const activeStep = steps.find((step) => step.id === currentStep) ?? steps[0];
 

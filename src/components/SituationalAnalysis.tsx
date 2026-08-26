@@ -7,6 +7,8 @@ import { TextArea } from '../ui/TextArea';
 import { Badge } from '../ui/Badge';
 import { EvidenceLogEditor } from './EvidenceLogEditor';
 import { Activity, ShieldAlert, Award, Compass, Eye, AlertCircle } from 'lucide-react';
+import { NextStepCue, StageGuide } from './Guidance';
+import { NEXT_STEP_CUES } from '../lib/guidance';
 
 interface SituationalAnalysisProps {
   pestels: Record<string, PestelsItem>;
@@ -56,6 +58,7 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="lg:col-span-3"><StageGuide stage={3} /></div>
       {/* PESTEL-S List */}
       <div className="lg:col-span-1 flex flex-col gap-3">
         <div>
@@ -215,6 +218,7 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
               </CardBody>
             </Card>
 
+            <NextStepCue {...NEXT_STEP_CUES[3]} />
             <div className="flex justify-between items-center gap-3">
               <Button variant="outline" onClick={onPrev}>
                 Back: Mission Profile
