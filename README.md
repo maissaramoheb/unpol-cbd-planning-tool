@@ -109,7 +109,7 @@ In the project directory, you can run the following npm scripts:
 ---
 
 ## 📊 Project Status
-- **Current Version**: v0.4.0
+- **Current Version**: v0.4.1 — UX Guidance Layer
 - **Phase**: Early-stage prototype (Active development). Feedback from peace operations and policing practitioners is welcome.
 
 ---
