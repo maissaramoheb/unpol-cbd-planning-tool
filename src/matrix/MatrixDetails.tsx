@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 import { CbdCell, CbdAxis, PestelsItem, Stakeholder, EvidenceNote } from '../types';
 import { Card, CardBody, CardHeader } from '../ui/Card';
 import { TextArea } from '../ui/TextArea';
@@ -8,6 +8,8 @@ import { Badge } from '../ui/Badge';
 import { EvidenceLogEditor } from '../components/EvidenceLogEditor';
 import { Plus, Trash2, Link, Users } from 'lucide-react';
 import { evaluateCbdCell } from '../lib/scoring';
+import { FieldGuidance } from '../components/Guidance';
+import { FIELD_GUIDANCE } from '../lib/guidance';
 
 interface MatrixDetailsProps {
   selectedMode: 'cell' | 'dimension' | 'keyArea';
@@ -33,6 +35,10 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
   onSelectCellByKey
 }) => {
   const [newIndicator, setNewIndicator] = useState('');
+  const leadHelpId = useId();
+  const phaseHelpId = useId();
+  const supportingHelpId = useId();
+  const indicatorHelpId = useId();
 
   // Helper to fetch cell content (supporting fallback logic)
   const getCellData = (rowId: string, colId: string): CbdCell => {
@@ -210,9 +216,10 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
           </h3>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant={activeAssessment.score >= 4 ? 'rose' : 'slate'}>
-            Indicative Priority: {activeAssessment.score.toFixed(1)}/5
-          </Badge>
+          <div className="text-right">
+            <Badge variant={activeAssessment.score >= 4 ? 'rose' : 'slate'}>Indicative Priority: {activeAssessment.score.toFixed(1)}/5</Badge>
+            <p className="mt-1 max-w-xs text-[10px] leading-snug text-slate-300">{FIELD_GUIDANCE.indicativeScore.help}</p>
+          </div>
         </div>
       </CardHeader>
       <CardBody className="flex flex-col gap-4">
@@ -225,13 +232,15 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
             placeholder="What institutional or individual capacity problem needs to change?"
             rows={3}
           />
+          <FieldGuidance {...FIELD_GUIDANCE.capacityProblem} />
           <TextArea
-            label="Planning Objective"
+            label="Planning Objective / Intended Result"
             value={activeCell.planningObjective || ''}
             onChange={(e) => handleCellChange('planningObjective', e.target.value)}
             placeholder="State the intended, context-specific change."
             rows={2}
           />
+          <FieldGuidance {...FIELD_GUIDANCE.planningObjective} />
         </div>
 
         <h4 className="border-t border-slate-100 pt-4 text-xs font-bold uppercase tracking-wider text-slate-900">Intervention Package</h4>
@@ -249,24 +258,9 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
             Intervention Examples across the 3 Levels
           </label>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <TextArea
-              label="Individual Level (Skills / Mentoring)"
-              value={activeCell.individual}
-              onChange={(e) => handleCellChange('individual', e.target.value)}
-              rows={3}
-            />
-            <TextArea
-              label="Organizational Level (SOPs / Systems)"
-              value={activeCell.organizational}
-              onChange={(e) => handleCellChange('organizational', e.target.value)}
-              rows={3}
-            />
-            <TextArea
-              label="Enabling Environment (Law / Oversight)"
-              value={activeCell.environment}
-              onChange={(e) => handleCellChange('environment', e.target.value)}
-              rows={3}
-            />
+            <div><TextArea label="Individual Level (Skills / Mentoring)" value={activeCell.individual} onChange={(e) => handleCellChange('individual', e.target.value)} rows={3} /><FieldGuidance {...FIELD_GUIDANCE.individual} /></div>
+            <div><TextArea label="Organizational Level (SOPs / Systems)" value={activeCell.organizational} onChange={(e) => handleCellChange('organizational', e.target.value)} rows={3} /><FieldGuidance {...FIELD_GUIDANCE.organizational} /></div>
+            <div><TextArea label="Enabling Environment (Law / Oversight)" value={activeCell.environment} onChange={(e) => handleCellChange('environment', e.target.value)} rows={3} /><FieldGuidance {...FIELD_GUIDANCE.enablingEnvironment} /></div>
           </div>
         </div>
 
@@ -276,6 +270,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
             <label className="flex flex-col gap-1.5 text-xs font-bold text-slate-700">
               Lead Stakeholder / Actor
               <select
+                aria-describedby={leadHelpId}
                 value={activeCell.leadStakeholderId || ''}
                 onChange={(e) => onUpdateCell(`${rowId}|${colId}`, {
                   ...activeCell,
@@ -287,10 +282,12 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
                 <option value="">Not assigned</option>
                 {stakeholders.map(stakeholder => <option key={stakeholder.id} value={stakeholder.id}>{stakeholder.name}</option>)}
               </select>
+              <span id={leadHelpId} className="font-normal leading-relaxed text-slate-500">{FIELD_GUIDANCE.leadActor.help}</span>
             </label>
             <label className="flex flex-col gap-1.5 text-xs font-bold text-slate-700">
               Implementation Phase
               <select
+                aria-describedby={phaseHelpId}
                 value={activeCell.implementationPhase || ''}
                 onChange={(e) => handleCellChange('implementationPhase', e.target.value)}
                 className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-normal focus:outline-none focus:ring-2 focus:ring-blue-200"
@@ -298,6 +295,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
                 <option value="">Not assigned</option>
                 <option value="NOW">NOW</option><option value="NEXT">NEXT</option><option value="LATER">LATER</option>
               </select>
+              <span id={phaseHelpId} className="font-normal leading-relaxed text-slate-500">{FIELD_GUIDANCE.implementationPhase.help}</span>
             </label>
             <label className="flex flex-col gap-1.5 text-xs font-bold text-slate-700">
               Milestone / Timeframe
@@ -310,8 +308,9 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
             </label>
           </div>
           <div className="mt-4">
-            <span className="mb-2 block text-xs font-bold text-slate-700">Supporting Stakeholders / Actors</span>
-            <div className="grid max-h-[160px] grid-cols-1 gap-1.5 overflow-y-auto rounded-lg border border-slate-100 bg-slate-50/50 p-2.5 md:grid-cols-2">
+            <span className="mb-1 block text-xs font-bold text-slate-700">Supporting Stakeholders / Actors</span>
+            <p id={supportingHelpId} className="mb-2 text-xs leading-relaxed text-slate-500">{FIELD_GUIDANCE.supportingActors.help}</p>
+            <div aria-describedby={supportingHelpId} className="grid max-h-[160px] grid-cols-1 gap-1.5 overflow-y-auto rounded-lg border border-slate-100 bg-slate-50/50 p-2.5 md:grid-cols-2">
               {stakeholders.filter(stakeholder => stakeholder.id !== activeCell.leadStakeholderId).map(stakeholder => (
                 <label key={stakeholder.id} className="flex cursor-pointer items-center gap-2 text-xs text-slate-600 hover:text-slate-900">
                   <input type="checkbox" checked={(activeCell.supportingStakeholderIds || []).includes(stakeholder.id)} onChange={() => handleSupportingStakeholderToggle(stakeholder.id)} className="h-3.5 w-3.5 rounded border-slate-300 text-blue-600" />
@@ -328,6 +327,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
           <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-2">
             CBD Assessment Indicators
           </label>
+          <div id={indicatorHelpId} className="mb-2"><FieldGuidance {...FIELD_GUIDANCE.indicator} /></div>
           <div className="flex gap-2 mb-2">
             <input
               type="text"
@@ -335,6 +335,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
               onChange={(e) => setNewIndicator(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleAddIndicator()}
               placeholder="Add verifiable indicator..."
+              aria-describedby={indicatorHelpId}
               className="flex-1 px-3 py-1.5 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-200"
             />
             <Button variant="outline" size="sm" onClick={handleAddIndicator}>
@@ -398,6 +399,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
             onChange={(v) => handleCellChange('confidence', v)}
             minLabel="Assumption"
             maxLabel="Evidence-Based"
+            helperText={FIELD_GUIDANCE.evidenceConfidence.help}
           />
           <Slider
             label="Feasibility"

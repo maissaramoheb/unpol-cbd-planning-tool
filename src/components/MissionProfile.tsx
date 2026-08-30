@@ -8,6 +8,8 @@ import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { Shield, BookOpen, Layers, Award, FileText, Globe } from 'lucide-react';
 import { APP_RELEASE_NAME, APP_VERSION } from '../lib/version';
+import { NextStepCue, StageGuide } from './Guidance';
+import { NEXT_STEP_CUES } from '../lib/guidance';
 
 interface MissionProfileProps {
   profile: ProfileType;
@@ -50,6 +52,7 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
 
   return (
     <div className="flex flex-col gap-6 w-full">
+      <StageGuide stage={2} />
       {/* Intro Banner */}
       <Card className="border-slate-200 bg-white">
         <CardBody className="p-6 md:p-8 flex flex-col gap-4">
@@ -208,6 +211,7 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
                 />
               </div>
 
+              <NextStepCue {...NEXT_STEP_CUES[2]} />
               <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-slate-100">
                 <Button variant="primary" onClick={onNext} className="w-full sm:w-auto">
                   Next: Situational Analysis

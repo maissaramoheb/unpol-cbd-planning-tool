@@ -7,6 +7,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ---
 
 ## [Unreleased]
+
+## [0.4.1] - 2026-08-30
+### Added
+- Added concise, session-only guidance for the seven-stage planning journey, field help, and read-only CARANA examples without changing project data or export semantics.
+
+### Changed
+- Refined the blank-workspace welcome and made the seven-stage navigation a balanced, responsive single-row journey with intentional mobile scrolling.
+- Replaced build-time Google font downloads with resilient system sans-serif and monospace stacks.
+
+## [0.4.0] - 2026-08-15
 ### Added
 - Added explicit traceability fields linking each configured CBD intervention to a capacity problem, planning objective, lead and supporting actors, manual implementation phase, milestone, evidence, and indicators.
 - Added manual `NOW` / `NEXT` / `LATER` groupings in Priority & Sequencing and focused quality-control cautions for missing high-priority planning links.

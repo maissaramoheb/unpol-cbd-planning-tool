@@ -4,6 +4,8 @@ import { MatrixGrid } from './MatrixGrid';
 import { MatrixListView } from './MatrixListView';
 import { MatrixDetails } from './MatrixDetails';
 import { Button } from '../ui/Button';
+import { NextStepCue, StageGuide } from '../components/Guidance';
+import { NEXT_STEP_CUES } from '../lib/guidance';
 
 interface CBDMatrixProps {
   rows: CbdAxis[];
@@ -51,6 +53,7 @@ export const CBDMatrix: React.FC<CBDMatrixProps> = ({
 
   return (
     <div className="flex flex-col gap-6">
+      <StageGuide stage={5} />
       {/* Introduction */}
       <div>
         <h3 className="text-lg font-bold text-slate-950">5. CBD Key Areas × Cross-Cutting Analytical Lenses</h3>
@@ -105,6 +108,7 @@ export const CBDMatrix: React.FC<CBDMatrixProps> = ({
       </div>
 
       {/* Navigation Buttons */}
+      <NextStepCue {...NEXT_STEP_CUES[5]} />
       <div className="flex justify-between items-center gap-3">
         <Button variant="outline" onClick={onPrev}>
           Back: Stakeholder Analysis

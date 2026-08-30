@@ -6,6 +6,8 @@ import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { evaluateCbdCell } from '../lib/scoring';
 import { Plus, Trash2, Layers } from 'lucide-react';
+import { NextStepCue, StageGuide } from './Guidance';
+import { NEXT_STEP_CUES } from '../lib/guidance';
 
 interface PrioritySequencingProps {
   brief: PriorityBrief;
@@ -72,6 +74,7 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
 
   return (
     <div className="flex flex-col gap-6">
+      <StageGuide stage={6} />
       {/* Introduction */}
       <div>
         <h3 className="text-lg font-bold text-slate-950">6. Priority & Sequencing</h3>
@@ -194,6 +197,7 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
             </CardBody>
           </Card>
 
+          <NextStepCue {...NEXT_STEP_CUES[6]} />
           {/* Navigation */}
           <div className="flex justify-between items-center gap-3">
             <Button variant="outline" onClick={onPrev}>

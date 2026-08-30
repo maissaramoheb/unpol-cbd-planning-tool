@@ -7,6 +7,8 @@ import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { EvidenceLogEditor } from './EvidenceLogEditor';
 import { Plus, Trash2, User } from 'lucide-react';
+import { NextStepCue, StageGuide } from './Guidance';
+import { NEXT_STEP_CUES } from '../lib/guidance';
 
 interface StakeholderMappingProps {
   stakeholders: Stakeholder[];
@@ -137,6 +139,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="lg:col-span-3"><StageGuide stage={4} /></div>
       {/* Stakeholders Listing */}
       <div className="lg:col-span-1 flex flex-col gap-3">
         <div className="flex justify-between items-center">
@@ -349,6 +352,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
               </CardBody>
             </Card>
 
+            <NextStepCue {...NEXT_STEP_CUES[4]} />
             <div className="flex justify-between items-center gap-3">
               <Button variant="outline" onClick={onPrev}>
                 Back: Situational Analysis

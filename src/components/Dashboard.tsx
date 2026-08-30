@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { UnpolProjectData } from '../types';
 import { calculateQualityWarnings } from '../lib/warnings';
 import { Card, CardBody, CardHeader } from '../ui/Card';
@@ -20,8 +20,10 @@ import {
   Globe,
   Compass,
   FileText,
-  BookOpen
+  BookOpen,
+  ChevronDown
 } from 'lucide-react';
+import { HOW_IT_WORKS_DEFAULT_OPEN, ORIENTATION_STEPS, shouldShowBlankWelcome } from '../lib/guidance';
 
 interface DashboardProps {
   data: UnpolProjectData;
@@ -31,6 +33,7 @@ interface DashboardProps {
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, onOpenExplorer, onLoadDemoTemplate }) => {
+  const [showHowItWorks, setShowHowItWorks] = useState(HOW_IT_WORKS_DEFAULT_OPEN);
   const { profile, pestels, stakeholders, customCells, priorityBrief } = data;
 
   const warnings = calculateQualityWarnings(data);
@@ -44,176 +47,54 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
   const isEmptyState = isProfileEmpty && isPestelsEmpty && isStakeholdersEmpty && isCustomCellsEmpty;
   const isDemoTemplate = profile.templateId === 'fictional-carana-demo';
 
-  const workflowSteps = [
-    'Review planning overview',
-    'Define mission context',
-    'Scan PESTEL-S pressures',
-    'Map actors and stakeholders',
-    'Apply CBD analytical lenses',
-    'Sequence interventions',
-    'Export planning brief'
-  ];
-
-  if (isEmptyState) {
+  if (shouldShowBlankWelcome(isEmptyState)) {
     return (
       <div className="flex flex-col gap-6 w-full">
-        <Card className="border-blue-100 bg-white shadow-sm">
+        <Card className="overflow-hidden border-blue-100 bg-white shadow-sm">
           <CardBody className="p-6 sm:p-8 lg:p-10">
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.25fr_0.75fr] lg:items-start">
-              <div className="flex flex-col gap-5">
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="blue">Unofficial prototype</Badge>
-                  <Badge variant="slate">Local browser workspace</Badge>
-                  <Badge variant="amber">Verification required</Badge>
-                </div>
+            <div className="max-w-4xl">
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-700">Professional planning workspace</p>
+              <h1 className="mt-3 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">UNPOL CBD Integrated Planning Tool</h1>
+              <p className="mt-4 max-w-3xl text-sm font-medium leading-relaxed text-slate-600 sm:text-base">Structure the reasoning from evidence and context to capacity-building priorities, responsibilities, sequencing and a professional planning brief.</p>
+              <p className="mt-4 inline-flex rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-bold text-amber-950">Unofficial planning-support prototype · Use fictional or public/unclassified information only</p>
+            </div>
 
-                <div>
-                  <h1 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
-                    Planning Overview
-                  </h1>
-                  <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
-                    This unofficial planning-support workspace helps structure UNPOL/CBD analysis from mission context to an exportable planning brief.
-                  </p>
-                </div>
+            <div className="mt-8 grid gap-3 lg:grid-cols-[1.15fr_1fr_0.85fr]">
+              <button type="button" onClick={() => onNavigateToStep(2)} className="group rounded-xl border border-blue-700 bg-blue-700 p-5 text-left text-white shadow-sm transition-colors hover:bg-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
+                <span className="flex items-center justify-between gap-3"><Compass size={20} /><ArrowRight size={17} className="transition-transform group-hover:translate-x-0.5 motion-reduce:transform-none" /></span>
+                <strong className="mt-5 block text-base">Start a New CBD Plan</strong>
+                <span className="mt-1 block text-xs leading-relaxed text-blue-100">Begin a blank professional planning workspace.</span>
+              </button>
+              <button type="button" onClick={onLoadDemoTemplate} className="rounded-xl border border-slate-200 bg-slate-50 p-5 text-left text-slate-900 transition-colors hover:border-blue-300 hover:bg-blue-50/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+                <BookOpen size={20} className="text-blue-700" />
+                <strong className="mt-5 block text-base">Explore CARANA</strong>
+                <span className="mt-1 block text-xs leading-relaxed text-slate-600">Open the fictional demonstration and see how the planning logic works.</span>
+              </button>
+              <button type="button" onClick={() => setShowHowItWorks(value => !value)} aria-expanded={showHowItWorks} aria-controls="how-it-works-orientation" className="rounded-xl border border-slate-200 bg-white p-5 text-left text-slate-900 transition-colors hover:border-blue-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+                <span className="flex items-center justify-between gap-3"><FileText size={20} className="text-slate-600" /><ChevronDown size={17} className={`transition-transform motion-reduce:transition-none ${showHowItWorks ? 'rotate-180' : ''}`} /></span>
+                <strong className="mt-5 block text-base">How It Works</strong>
+                <span className="mt-1 block text-xs leading-relaxed text-slate-600">See the planning journey before you begin.</span>
+              </button>
+            </div>
 
-                <div className="grid grid-cols-1 gap-3 text-sm leading-relaxed text-slate-700 md:grid-cols-3">
-                  <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
-                    <span className="text-xs font-black uppercase tracking-wider text-slate-500">For</span>
-                    <p className="mt-1 font-semibold">Structured analysis, training, advisory planning, and workshop preparation.</p>
-                  </div>
-                  <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
-                    <span className="text-xs font-black uppercase tracking-wider text-slate-500">Output</span>
-                    <p className="mt-1 font-semibold">Markdown/print planning brief plus JSON workspace backup.</p>
-                  </div>
-                  <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
-                    <span className="text-xs font-black uppercase tracking-wider text-slate-500">Boundary</span>
-                    <p className="mt-1 font-semibold">Not UN doctrine, not an official UN system, and not verified country analysis.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-amber-200 bg-amber-50/70 p-4 text-xs leading-relaxed text-amber-950">
-                <div className="flex items-start gap-2">
-                  <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-700" />
-                  <div>
-                    <h2 className="font-black uppercase tracking-wider">Trust and safety note</h2>
-                    <p className="mt-2">
-                      It is not UN doctrine, not an official UN system, not a complete UN mission database, and not verified country analysis. Mission status, mandate, and facts must be checked against current official sources before professional use.
-                    </p>
-                  </div>
-                </div>
-              </div>
+            <div className="mt-5 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+              <span>Additional starting point:</span>
+              <button type="button" onClick={onOpenExplorer} className="inline-flex items-center gap-1.5 font-bold text-blue-700 hover:text-blue-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"><Globe size={14} />Open Mission Explorer</button>
             </div>
           </CardBody>
         </Card>
 
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-          <Card className="border-blue-200 bg-blue-50/35">
-            <CardBody className="flex h-full flex-col gap-4 p-5">
-              <div className="flex items-start gap-3">
-                <div className="rounded-xl border border-blue-200 bg-white p-2.5 text-blue-700">
-                  <Compass size={20} />
-                </div>
-                <div>
-                  <h2 className="text-base font-black text-slate-950">Start from Scratch</h2>
-                  <p className="mt-1 text-xs font-semibold leading-relaxed text-slate-600">
-                    Use when starting a new mission, workshop, or advisory planning exercise.
-                  </p>
-                </div>
-              </div>
-              <Button
-                variant="primary"
-                onClick={() => onNavigateToStep(2)}
-                className="mt-auto w-full gap-1.5 font-bold"
-              >
-                Open Profile / Context Setup
-                <ArrowRight size={14} />
-              </Button>
+        {showHowItWorks && (
+          <Card id="how-it-works-orientation" className="border-slate-200">
+            <CardHeader className="border-b border-slate-100 pb-3"><h2 className="text-base font-black text-slate-950">How the planning journey works</h2><p className="mt-1 text-xs text-slate-600">Move through the reasoning in order, then revisit earlier steps as evidence improves.</p></CardHeader>
+            <CardBody className="p-5">
+              <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-7">
+                {ORIENTATION_STEPS.map((step, index) => <li key={step.title} className="rounded-xl border border-slate-200 bg-slate-50/70 p-3"><span className="text-[11px] font-black tracking-wider text-blue-700">{String(index + 1).padStart(2, '0')}</span><h3 className="mt-2 text-xs font-black leading-snug text-slate-900">{step.title}</h3><p className="mt-1 text-[11px] leading-relaxed text-slate-600">{step.description}</p></li>)}
+              </ol>
+              <div className="mt-5 flex flex-col gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-between"><p className="text-sm font-bold text-slate-800">The tool structures professional judgement. It does not make the judgement for you.</p><Button variant="primary" onClick={() => onNavigateToStep(2)} className="shrink-0">Start Planning <ArrowRight size={14} /></Button></div>
             </CardBody>
           </Card>
-
-          <Card>
-            <CardBody className="flex h-full flex-col gap-4 p-5">
-              <div className="flex items-start gap-3">
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-blue-700">
-                  <Globe size={20} />
-                </div>
-                <div>
-                  <h2 className="text-base font-black text-slate-950">Browse Mission Explorer</h2>
-                  <p className="mt-1 text-xs font-semibold leading-relaxed text-slate-600">
-                    Review selected starter profiles, fictional training scenarios, and current UN Peacekeeping reference entries.
-                  </p>
-                </div>
-              </div>
-              <Button
-                variant="outline"
-                onClick={onOpenExplorer}
-                className="mt-auto w-full gap-1.5 border-blue-200 bg-white font-bold text-blue-700 hover:bg-blue-50"
-              >
-                Open Mission Explorer
-                <Globe size={14} />
-              </Button>
-            </CardBody>
-          </Card>
-
-          <Card>
-            <CardBody className="flex h-full flex-col gap-4 p-5">
-              <div className="flex items-start gap-3">
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-slate-700">
-                  <BookOpen size={20} />
-                </div>
-                <div>
-                  <h2 className="text-base font-black text-slate-950">Load CARANA Demonstration</h2>
-                  <p className="mt-1 text-xs font-semibold leading-relaxed text-slate-600">
-                    Explore a coherent fictional UN peacekeeping CBD case for demonstration and training. It is not an official UN assessment or recommendation.
-                  </p>
-                </div>
-              </div>
-              <Button
-                variant="outline"
-                onClick={onLoadDemoTemplate}
-                className="mt-auto w-full gap-1.5 bg-white font-bold text-slate-700"
-              >
-                Load CARANA Demo
-                <FileText size={14} />
-              </Button>
-            </CardBody>
-          </Card>
-        </div>
-
-        <Card>
-          <CardHeader className="border-b border-slate-100 pb-3">
-            <h2 className="text-sm font-black text-slate-950">How the workflow works</h2>
-            <p className="mt-1 text-xs leading-relaxed text-slate-600">
-              Move left to right, then revisit earlier steps as evidence improves.
-            </p>
-          </CardHeader>
-          <CardBody className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-6">
-            {workflowSteps.map((step, index) => (
-              <div key={step} className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
-                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-900 text-xs font-black text-white">
-                  {index + 1}
-                </span>
-                <p className="mt-3 text-xs font-bold leading-snug text-slate-800">{step}</p>
-              </div>
-            ))}
-          </CardBody>
-        </Card>
-
-        <Card className="border-slate-200 bg-slate-900 text-white">
-          <CardBody className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h2 className="text-sm font-black">Output preview</h2>
-              <p className="mt-1 text-xs leading-relaxed text-slate-300">
-                The workspace produces an exportable planning brief with mission context, PESTEL-S prompts, stakeholder analysis, CBD priorities, sequencing notes, evidence gaps, and warnings.
-              </p>
-            </div>
-            <div className="flex shrink-0 items-center gap-2 rounded-xl border border-slate-700 bg-slate-800 px-3 py-2 text-xs font-bold text-slate-200">
-              <FileText size={15} />
-              Markdown · Print · JSON
-            </div>
-          </CardBody>
-        </Card>
+        )}
       </div>
     );
   }

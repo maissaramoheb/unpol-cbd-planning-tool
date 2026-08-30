@@ -12,6 +12,7 @@
   "include": [
     "src/lib/scoring.ts",
     "src/lib/workflow.ts",
+    "src/lib/guidance.ts",
     "src/data/caranaDemo.ts",
     "src/lib/storage.ts",
     "src/lib/reportModel.ts",

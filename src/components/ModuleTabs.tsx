@@ -1,5 +1,4 @@
 import React from 'react';
-import { Shield, Compass, Users, Grid, ListTodo, FileText, LayoutDashboard } from 'lucide-react';
 
 interface ModuleTabsProps {
   currentStep: number;
@@ -10,7 +9,6 @@ interface StepItem {
   id: number;
   label: string;
   sub: string;
-  icon: React.ReactNode;
 }
 
 export const ModuleTabs: React.FC<ModuleTabsProps> = ({
@@ -18,13 +16,13 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
   onStepChange
 }) => {
   const steps: StepItem[] = [
-    { id: 1, label: 'Planning Overview', sub: 'Start page', icon: <LayoutDashboard size={16} /> },
-    { id: 2, label: 'Profile', sub: 'Context setup', icon: <Shield size={16} /> },
-    { id: 3, label: 'PESTEL-S', sub: 'Environment', icon: <Compass size={16} /> },
-    { id: 4, label: 'Actors', sub: 'Stakeholders', icon: <Users size={16} /> },
-    { id: 5, label: 'CBD Matrix', sub: 'Analytical lenses', icon: <Grid size={16} /> },
-    { id: 6, label: 'Priority & Sequencing', sub: 'Human review', icon: <ListTodo size={16} /> },
-    { id: 7, label: 'Export', sub: 'Planning brief', icon: <FileText size={16} /> }
+    { id: 1, label: 'Planning Overview', sub: 'Start page' },
+    { id: 2, label: 'Profile', sub: 'Context' },
+    { id: 3, label: 'PESTEL-S', sub: 'Context & Evidence' },
+    { id: 4, label: 'Actors', sub: 'Stakeholders' },
+    { id: 5, label: 'CBD Matrix', sub: 'Capacity Priorities' },
+    { id: 6, label: 'Priority & Sequencing', sub: 'Implementation Path' },
+    { id: 7, label: 'Export', sub: 'Planning Brief' }
   ];
   const activeStep = steps.find((step) => step.id === currentStep) ?? steps[0];
 
@@ -33,18 +31,19 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
       aria-label="Planning workflow"
       className="w-full bg-slate-900 text-white rounded-2xl border border-slate-800 shadow-sm p-3 sm:p-4"
     >
-      <div className="sm:hidden">
-        <div className="mb-3 rounded-xl border border-blue-500/50 bg-blue-600 px-3 py-2.5">
-          <span className="text-[11px] font-bold text-blue-100">Step {activeStep.id} of {steps.length}</span>
-          <div className="mt-0.5 flex items-center gap-2">
-            {activeStep.icon}
-            <span className="text-sm font-extrabold">{activeStep.label}</span>
-            <span className="text-xs text-blue-100">· {activeStep.sub}</span>
-          </div>
-        </div>
-        <div className="grid grid-cols-4 gap-2">
+      <div className="mb-3 flex min-w-0 items-baseline gap-1.5 px-1 text-xs">
+        <span className="shrink-0 font-black text-blue-300">Step {activeStep.id} of {steps.length}</span>
+        <span aria-hidden="true" className="text-slate-600">·</span>
+        <span className="truncate font-bold text-slate-200">{activeStep.sub}</span>
+      </div>
+
+      <div className="overflow-x-auto pb-1 [scrollbar-width:thin]">
+        <div className="relative grid min-w-[910px] grid-cols-7 gap-1.5 lg:min-w-0">
+          <div aria-hidden="true" className="absolute left-[7%] right-[7%] top-[17px] h-px bg-slate-700" />
           {steps.map((step) => {
             const isActive = step.id === currentStep;
+            const isCompleted = step.id < currentStep;
+
             return (
               <button
                 key={step.id}
@@ -52,73 +51,24 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
                 onClick={() => onStepChange(step.id)}
                 aria-current={isActive ? 'step' : undefined}
                 aria-label={`Step ${step.id}: ${step.label}, ${step.sub}`}
-                className={`flex min-w-0 flex-col items-center gap-1 rounded-lg border px-1.5 py-2 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
+                className={`relative z-10 flex min-w-0 flex-col items-center rounded-xl border px-2 pb-2.5 pt-1.5 text-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 ${
                   isActive
-                    ? 'border-blue-400 bg-blue-950 text-white'
-                    : 'border-slate-700 bg-slate-850 text-slate-300 hover:bg-slate-800'
+                    ? 'border-blue-400 bg-blue-600 text-white shadow-sm shadow-blue-950/40'
+                    : isCompleted
+                      ? 'border-slate-700 bg-slate-900 text-slate-100 hover:border-emerald-700 hover:bg-slate-800'
+                      : 'border-transparent bg-slate-900 text-slate-300 hover:border-slate-700 hover:bg-slate-800'
                 }`}
               >
-                <span className="text-xs font-black">{step.id}</span>
-                <span className="w-full truncate text-[10px] font-bold">{step.label}</span>
+                <span className={`flex h-6 w-6 items-center justify-center rounded-full border text-[11px] font-black ${
+                  isActive
+                    ? 'border-blue-200 bg-blue-700 text-white'
+                    : isCompleted
+                      ? 'border-emerald-700 bg-emerald-950 text-emerald-300'
+                      : 'border-slate-600 bg-slate-800 text-slate-300'
+                }`}>{step.id}</span>
+                <span className="mt-2 w-full text-[10px] font-black uppercase leading-tight tracking-[0.04em] lg:text-[11px]">{step.label}</span>
+                <span className={`mt-1 hidden w-full text-[9px] font-semibold leading-tight xl:block ${isActive ? 'text-blue-100' : 'text-slate-500'}`}>{step.sub}</span>
               </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="hidden overflow-x-auto sm:block">
-        <div className="flex min-w-[700px] items-center justify-between gap-2">
-          {steps.map((step, idx) => {
-            const isActive = step.id === currentStep;
-            const isCompleted = step.id < currentStep;
-
-            return (
-              <React.Fragment key={step.id}>
-                {/* Stepper Node */}
-                <button
-                  type="button"
-                  onClick={() => onStepChange(step.id)}
-                  aria-current={isActive ? 'step' : undefined}
-                  aria-label={`Step ${step.id}: ${step.label}, ${step.sub}`}
-                  className={`
-                    flex items-center gap-2.5 text-left transition-colors px-3 py-2 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 shrink-0
-                    ${isActive
-                      ? 'bg-blue-600 border border-blue-500 text-white shadow shadow-blue-500/20'
-                      : isCompleted
-                        ? 'text-emerald-400 hover:bg-slate-800'
-                        : 'text-slate-400 hover:bg-slate-800'
-                    }
-                  `}
-                >
-                  <div
-                    className={`
-                      w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs shadow-inner
-                      ${isActive
-                        ? 'bg-blue-700 text-white border border-blue-400'
-                        : isCompleted
-                          ? 'bg-emerald-950 text-emerald-400 border border-emerald-800'
-                          : 'bg-slate-850 text-slate-400 border border-slate-700'
-                      }
-                    `}
-                  >
-                    {step.id}
-                  </div>
-                  <div>
-                    <h4 className="text-[11px] font-black uppercase tracking-wider">{step.label}</h4>
-                    <p className="text-[9px] text-slate-400 font-semibold leading-none mt-0.5">{step.sub}</p>
-                  </div>
-                </button>
-
-                {/* Stepper Connector Line */}
-                {idx < steps.length - 1 && (
-                  <div
-                    className={`
-                      h-0.5 flex-1 min-w-[20px] rounded-full
-                      ${isCompleted ? 'bg-emerald-600' : 'bg-slate-800'}
-                    `}
-                  />
-                )}
-              </React.Fragment>
             );
           })}
         </div>
