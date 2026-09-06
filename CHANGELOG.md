@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased — Analysis Synthesis Preview
+## [0.5.0] - 2026-09-06
 
 - Added an optional stage-4 Analysis Synthesis bridge from Actors to the CBD Matrix without changing the seven-stage navigation.
 - Added analyst-classified SWOT findings, structural source references, unscored SO/ST/WO/WT Strategic Options, and optional Strategic Synthesis Basis links for CBD priorities.

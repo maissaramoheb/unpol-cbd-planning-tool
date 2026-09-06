@@ -111,7 +111,7 @@ In the project directory, you can run the following npm scripts:
 ---
 
 ## 📊 Project Status
-- **Current Version**: v0.4.1 — UX Guidance Layer
+- **Current Version**: v0.5.0 — Analysis Synthesis
 - **Phase**: Early-stage prototype (Active development). Feedback from peace operations and policing practitioners is welcome.
 
 ---
