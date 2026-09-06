@@ -34,7 +34,7 @@ interface DashboardProps {
 
 export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, onOpenExplorer, onLoadDemoTemplate }) => {
   const [showHowItWorks, setShowHowItWorks] = useState(HOW_IT_WORKS_DEFAULT_OPEN);
-  const { profile, pestels, stakeholders, customCells, priorityBrief } = data;
+  const { profile, pestels, stakeholders, customCells, priorityBrief, analysisSynthesis } = data;
 
   const warnings = calculateQualityWarnings(data);
 
@@ -44,7 +44,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
   const isStakeholdersEmpty = stakeholders.length === 0;
   const isCustomCellsEmpty = Object.keys(customCells).length === 0;
 
-  const isEmptyState = isProfileEmpty && isPestelsEmpty && isStakeholdersEmpty && isCustomCellsEmpty;
+  const isSynthesisEmpty = analysisSynthesis.swotFindings.length === 0 && analysisSynthesis.strategicOptions.length === 0;
+  const isEmptyState = isProfileEmpty && isPestelsEmpty && isStakeholdersEmpty && isCustomCellsEmpty && isSynthesisEmpty;
   const isDemoTemplate = profile.templateId === 'fictional-carana-demo';
 
   if (shouldShowBlankWelcome(isEmptyState)) {

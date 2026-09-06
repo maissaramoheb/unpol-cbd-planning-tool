@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased — Analysis Synthesis Preview
+
+- Added an optional stage-4 Analysis Synthesis bridge from Actors to the CBD Matrix without changing the seven-stage navigation.
+- Added analyst-classified SWOT findings, structural source references, unscored SO/ST/WO/WT Strategic Options, and optional Strategic Synthesis Basis links for CBD priorities.
+- Extended CARANA and professional outputs with concise synthesis examples while preserving existing scenario fundamentals, scoring, sequencing, and intervention content.
+- Added backward-compatible normalization: older workspaces load with empty synthesis data and no inferred conclusions.
+
 All notable changes to the UNPOL Capacity-Building & Development (CBD) Planning Tool will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).

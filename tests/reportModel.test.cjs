@@ -15,6 +15,7 @@ function fixture() {
     stakeholders: [{ id: 'sh-1', name: 'Police leadership', category: 'Host State', role: 'Implementation authority.', authority: 'High', influence: 'High', position: 'Persuadable', legitimacy: 'Medium', relevance: 'High', capacity: 'Medium', risk: 'Ownership may weaken.', entry: 'Leadership dialogue.', engagement: 'Confirm sponsorship.', cbdAreas: [], evidenceNotes: [] }],
     customCells: { 'Accountability|Human Rights': { key: 'Accountability|Human Rights', why: 'Recorded rationale.', capacityProblem: 'Review workflow is inconsistent.', planningObjective: 'Test a consistent review workflow.', individual: 'Coach staff.', organizational: 'Test workflow.', environment: 'Clarify authority.', indicators: ['Workflow used'], drivers: ['security'], stakeholders: ['sh-1'], leadStakeholderId: 'sh-1', supportingStakeholderIds: [], implementationPhase: 'NOW', milestoneTimeframe: 'Review after 90 days', risks: 'Resistance.', sequencing: 'Pilot then review.', confidence: 3, priorityScore: 5, impact: 5, urgency: 5, feasibility: 4, riskRating: 2, stakeholderSupport: 4, mandateRelevance: 5, result: 'Improved review.', engagement: 'Engage leadership.', evidenceNotes: [priorityEvidence] } },
     priorityBrief: { topPriorities: ['Strengthen accountability workflow'], quickWins: ['Map the workflow'], sensitiveReforms: ['Clarify review authority'], longerTermReforms: ['Institutionalize the workflow'], risksAssumptions: ['Leadership support remains available'], sequencingRecommendation: 'Validate, pilot, review, then consider expansion.' },
+    analysisSynthesis: { swotFindings: [], strategicOptions: [] },
     version: '0.3.2'
   };
 }
@@ -62,4 +63,22 @@ test('professional output represents blank planning links accurately', () => {
   const model = buildPlanningBriefModel(data);
   assert.equal(model.priorities[0].cell.capacityProblem || 'Not yet defined', 'Not yet defined');
   assert.equal(model.priorities[0].leadStakeholder, null);
+});
+
+test('professional Word output includes SWOT, Strategic Options and the linked synthesis basis', async () => {
+  const data = fixture();
+  data.analysisSynthesis = {
+    swotFindings: [
+      { id: 'w1', reference: 'W01', category: 'Weakness', finding: 'Supervisory review is inconsistent.', cbdImplication: 'Strengthen review practice.', sourceReferences: [{ type: 'pestels', id: 'security' }], confidence: 3, verificationNote: '' },
+      { id: 'o1', reference: 'O01', category: 'Opportunity', finding: 'Leadership supports modernization.', cbdImplication: 'Use the reform window.', sourceReferences: [{ type: 'stakeholder', id: 'sh-1' }], confidence: 3, verificationNote: '' }
+    ],
+    strategicOptions: [{ id: 'wo1', reference: 'WO-01', type: 'WO', swotFindingIds: ['w1', 'o1'], option: 'Use the reform window to strengthen supervisory review.', planningNote: '' }]
+  };
+  data.customCells['Accountability|Human Rights'].strategicOptionIds = ['wo1'];
+  const model = buildPlanningBriefModel(data);
+  assert.equal(model.priorities[0].strategicOptions[0].reference, 'WO-01');
+  const xml = await documentXml(await createPlanningBriefDocx(model));
+  assert.match(xml, /Analysis Synthesis/);
+  assert.match(xml, /WO-01/);
+  assert.match(xml, /STRATEGIC SYNTHESIS BASIS/);
 });

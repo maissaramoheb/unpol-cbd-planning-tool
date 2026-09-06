@@ -1,15 +1,20 @@
 import {
   CbdCell,
+  AnalysisSourceReference,
+  AnalysisSynthesis,
   EvidenceNote,
   MissionProfile,
   PestelsItem,
   PriorityBrief,
   StakeholderPosition,
+  StrategicOption,
+  SwotFinding,
   UnpolProjectData
 } from '../types';
 import { PESTELS_KEYS } from '../data/pestelsCategories';
 import type { MissionCoverageScope, MissionSourceCategory } from '../types/explorer';
 import { APP_VERSION } from './version';
+import { collectValidSourceKeys, EMPTY_ANALYSIS_SYNTHESIS, sourceReferenceKey } from './analysisSynthesis';
 
 export interface ProjectDataValidationResult {
   data: UnpolProjectData | null;
@@ -40,6 +45,9 @@ const MISSION_COVERAGE_SCOPES = new Set<MissionCoverageScope>([
   'training',
   'custom'
 ]);
+const SWOT_CATEGORIES = new Set(['Strength', 'Weakness', 'Opportunity', 'Threat']);
+const STRATEGIC_OPTION_TYPES = new Set(['SO', 'ST', 'WO', 'WT']);
+const ANALYSIS_SOURCE_TYPES = new Set(['pestels', 'evidence', 'stakeholder', 'profile']);
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -186,6 +194,7 @@ function isCbdCell(value: unknown): value is CbdCell {
     (value.planningObjective === undefined || isString(value.planningObjective)) &&
     (value.leadStakeholderId === undefined || value.leadStakeholderId === null || isString(value.leadStakeholderId)) &&
     (value.supportingStakeholderIds === undefined || isStringArray(value.supportingStakeholderIds)) &&
+    (value.strategicOptionIds === undefined || isStringArray(value.strategicOptionIds)) &&
     (value.implementationPhase === undefined || value.implementationPhase === null || ['NOW', 'NEXT', 'LATER'].includes(value.implementationPhase as string)) &&
     (value.milestoneTimeframe === undefined || isString(value.milestoneTimeframe))
   );
@@ -204,8 +213,40 @@ function isPriorityBrief(value: unknown): value is PriorityBrief {
   );
 }
 
+function isAnalysisSourceReference(value: unknown): value is AnalysisSourceReference {
+  return isRecord(value) &&
+    ANALYSIS_SOURCE_TYPES.has(value.type as string) &&
+    isString(value.id);
+}
+
+function isSwotFinding(value: unknown): value is SwotFinding {
+  return isRecord(value) &&
+    hasStringFields(value, ['id', 'reference', 'category', 'finding', 'cbdImplication', 'verificationNote']) &&
+    SWOT_CATEGORIES.has(value.category as string) &&
+    Array.isArray(value.sourceReferences) &&
+    value.sourceReferences.every(isAnalysisSourceReference) &&
+    (value.confidence === null || isRating(value.confidence));
+}
+
+function isStrategicOption(value: unknown): value is StrategicOption {
+  return isRecord(value) &&
+    hasStringFields(value, ['id', 'reference', 'type', 'option', 'planningNote']) &&
+    STRATEGIC_OPTION_TYPES.has(value.type as string) &&
+    isStringArray(value.swotFindingIds);
+}
+
+function isAnalysisSynthesis(value: unknown): value is AnalysisSynthesis {
+  return isRecord(value) &&
+    Array.isArray(value.swotFindings) && value.swotFindings.every(isSwotFinding) &&
+    Array.isArray(value.strategicOptions) && value.strategicOptions.every(isStrategicOption);
+}
+
 function normalizeProjectData(data: UnpolProjectData): UnpolProjectData {
   const stakeholderIds = new Set(data.stakeholders.map(stakeholder => stakeholder.id));
+  const synthesis = data.analysisSynthesis ?? EMPTY_ANALYSIS_SYNTHESIS;
+  const findingIds = new Set(synthesis.swotFindings.map(item => item.id));
+  const optionIds = new Set(synthesis.strategicOptions.map(item => item.id));
+  const sourceKeys = collectValidSourceKeys(data);
   return {
     ...data,
     version: APP_VERSION,
@@ -228,6 +269,16 @@ function normalizeProjectData(data: UnpolProjectData): UnpolProjectData {
       legitimacy: String(stakeholder.legitimacy) === 'Variable' ? 'Medium' : stakeholder.legitimacy,
       evidenceNotes: stakeholder.evidenceNotes ?? []
     })),
+    analysisSynthesis: {
+      swotFindings: synthesis.swotFindings.map(item => ({
+        ...item,
+        sourceReferences: item.sourceReferences.filter(reference => sourceKeys.has(sourceReferenceKey(reference)))
+      })),
+      strategicOptions: synthesis.strategicOptions.map(item => ({
+        ...item,
+        swotFindingIds: item.swotFindingIds.filter(id => findingIds.has(id))
+      }))
+    },
     customCells: Object.fromEntries(
       Object.entries(data.customCells).map(([key, cell]) => [
         key,
@@ -245,7 +296,8 @@ function normalizeProjectData(data: UnpolProjectData): UnpolProjectData {
           leadStakeholderId: cell.leadStakeholderId && stakeholderIds.has(cell.leadStakeholderId) ? cell.leadStakeholderId : null,
           supportingStakeholderIds: (cell.supportingStakeholderIds ?? []).filter(id => stakeholderIds.has(id) && id !== cell.leadStakeholderId),
           implementationPhase: cell.implementationPhase ?? null,
-          milestoneTimeframe: cell.milestoneTimeframe ?? ''
+          milestoneTimeframe: cell.milestoneTimeframe ?? '',
+          strategicOptionIds: (cell.strategicOptionIds ?? []).filter(id => optionIds.has(id))
         }
       ])
     )
@@ -286,12 +338,19 @@ export function validateAndNormalizeProjectData(value: unknown): ProjectDataVali
     return { data: null, error: 'Project data contains an invalid priority brief.' };
   }
 
+  if (value.analysisSynthesis !== undefined && !isAnalysisSynthesis(value.analysisSynthesis)) {
+    return { data: null, error: 'Project data contains invalid analysis synthesis data.' };
+  }
+
   if (!isString(value.version)) {
     return { data: null, error: 'Project data is missing a valid version label.' };
   }
 
   return {
-    data: normalizeProjectData(value as unknown as UnpolProjectData),
+    data: normalizeProjectData({
+      ...(value as unknown as UnpolProjectData),
+      analysisSynthesis: (value.analysisSynthesis as AnalysisSynthesis | undefined) ?? EMPTY_ANALYSIS_SYNTHESIS
+    }),
     error: null
   };
 }

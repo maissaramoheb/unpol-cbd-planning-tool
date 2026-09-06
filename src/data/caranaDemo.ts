@@ -116,6 +116,26 @@ export function buildCaranaDemoData(base: UnpolProjectData): UnpolProjectData {
       }
     },
     stakeholders,
+    analysisSynthesis: {
+      swotFindings: [
+        { id: 'carana-swot-s1', reference: 'S01', category: 'Strength', finding: 'Police headquarters and Kantara command support a bounded regional pilot when responsibilities and reporting lines are clear.', cbdImplication: 'CBD can build on existing sponsorship through limited, reviewable pilots rather than immediate national rollout.', sourceReferences: [{ type: 'stakeholder', id: 'sh-police-hq' }, { type: 'evidence', id: 'carana-ev-stakeholder-1' }], confidence: 3, verificationNote: 'Fictional workshop finding for demonstration.' },
+        { id: 'carana-swot-s2', reference: 'S02', category: 'Strength', finding: 'The Police Inspectorate has a formal accountability role and can anchor review of complaint and detention workflows.', cbdImplication: 'Existing institutional authority offers a credible counterpart for testing supervisory review.', sourceReferences: [{ type: 'stakeholder', id: 'sh-inspectorate' }, { type: 'pestels', id: 'legal' }], confidence: 3, verificationNote: 'Authority and practical access require validation in the exercise.' },
+        { id: 'carana-swot-w1', reference: 'W01', category: 'Weakness', finding: 'Station records, incident handovers and supervisory checks are inconsistent.', cbdImplication: 'CBD should establish a workable minimum records routine before considering advanced systems.', sourceReferences: [{ type: 'pestels', id: 'technological' }, { type: 'evidence', id: 'carana-ev-technology-1' }], confidence: 4, verificationNote: 'Supported by fictional station process-mapping notes.' },
+        { id: 'carana-swot-w2', reference: 'W02', category: 'Weakness', finding: 'Complaint and detention-review procedures are inconsistently applied and followed up.', cbdImplication: 'Accountability support needs traceable procedures, safeguards and documented inspectorate review.', sourceReferences: [{ type: 'pestels', id: 'legal' }, { type: 'evidence', id: 'carana-ev-legal-1' }], confidence: 3, verificationNote: 'Fictional procedural review; not a definitive legal assessment.' },
+        { id: 'carana-swot-w3', reference: 'W03', category: 'Weakness', finding: 'Police liaison arrangements do not provide sufficiently safe access for women and underserved groups.', cbdImplication: 'Representative consultation and protected referral pathways should precede broader engagement activity.', sourceReferences: [{ type: 'pestels', id: 'social' }, { type: 'stakeholder', id: 'sh-civil-society' }], confidence: 3, verificationNote: 'Fictional consultation synthesis.' },
+        { id: 'carana-swot-o1', reference: 'O01', category: 'Opportunity', finding: 'National reform commitments and partner interest create a time-bound opening for carefully governed police modernization pilots.', cbdImplication: 'A limited pilot can translate broad commitment into testable institutional practice.', sourceReferences: [{ type: 'pestels', id: 'political' }, { type: 'stakeholder', id: 'sh-donors' }], confidence: 3, verificationNote: 'Commitment must be reconfirmed before implementation.' },
+        { id: 'carana-swot-o2', reference: 'O02', category: 'Opportunity', finding: 'Civil society, women’s networks and the mission human rights component can inform safer access and accountability design.', cbdImplication: 'These actors can strengthen safeguards, legitimacy and feedback during pilot design and review.', sourceReferences: [{ type: 'stakeholder', id: 'sh-civil-society' }, { type: 'stakeholder', id: 'sh-human-rights' }], confidence: 3, verificationNote: 'Participation and protection arrangements require agreement.' },
+        { id: 'carana-swot-t1', reference: 'T01', category: 'Threat', finding: 'Contested national-regional command authority may delay implementation or weaken corrective follow-up.', cbdImplication: 'CBD sequencing should confirm sponsorship, authority and escalation routes before launching pilots.', sourceReferences: [{ type: 'pestels', id: 'political' }, { type: 'evidence', id: 'carana-ev-political-1' }], confidence: 3, verificationNote: 'Fictional political-operational constraint.' },
+        { id: 'carana-swot-t2', reference: 'T02', category: 'Threat', finding: 'Armed-group incidents and localized disorder may disrupt civilian-police mentoring and increase pressure for inappropriate roles.', cbdImplication: 'Support requires conflict sensitivity, contingency arrangements and a clear civilian-policing boundary.', sourceReferences: [{ type: 'pestels', id: 'security' }, { type: 'evidence', id: 'carana-ev-security-1' }], confidence: 3, verificationNote: 'Fictional security-context assumption.' },
+        { id: 'carana-swot-t3', reference: 'T03', category: 'Threat', finding: 'Seasonal access constraints and weak mobility may interrupt supervision and referrals outside Kantara town.', cbdImplication: 'Pilots need realistic access windows, remote follow-up and low-resource continuity measures.', sourceReferences: [{ type: 'pestels', id: 'environmental' }, { type: 'pestels', id: 'economic' }], confidence: 3, verificationNote: 'Seasonal and logistics assumptions require local validation.' }
+      ],
+      strategicOptions: [
+        { id: 'carana-option-so1', reference: 'SO-01', type: 'SO', swotFindingIds: ['carana-swot-s1', 'carana-swot-o1'], option: 'Use existing national and regional sponsorship to authorize a small, time-bound Kantara pilot with agreed reporting and review points.', planningNote: 'Confirm ownership and exit criteria before launch.' },
+        { id: 'carana-option-st1', reference: 'ST-01', type: 'ST', swotFindingIds: ['carana-swot-s2', 'carana-swot-t1'], option: 'Use the Inspectorate’s formal role to establish a documented review route that is resilient to contested command relationships.', planningNote: 'Map authority and escalation routes before testing the workflow.' },
+        { id: 'carana-option-wo1', reference: 'WO-01', type: 'WO', swotFindingIds: ['carana-swot-w1', 'carana-swot-o1'], option: 'Use the current reform window to pilot one minimum station register and supervisory-review routine before considering digital tools.', planningNote: 'Review practical use after 30 days.' },
+        { id: 'carana-option-wt1', reference: 'WT-01', type: 'WT', swotFindingIds: ['carana-swot-w3', 'carana-swot-t2'], option: 'Establish protected, low-visibility liaison and referral arrangements that preserve access during insecurity without exposing participants.', planningNote: 'Complete a do-no-harm review with representative actors.' }
+      ]
+    },
     customCells: {
       'Accountability Mechanisms|Human Rights': {
         ...base.customCells['Accountability Mechanisms|Human Rights'],
@@ -133,6 +153,7 @@ export function buildCaranaDemoData(base: UnpolProjectData): UnpolProjectData {
         supportingStakeholderIds: ['sh-police-hq', 'sh-justice', 'sh-human-rights'],
         implementationPhase: 'NEXT',
         milestoneTimeframe: 'Two-station pilot reviewed after 90 days',
+        strategicOptionIds: ['carana-option-st1'],
         evidenceNotes: [fictionalEvidence('carana-ev-matrix-1', 'CARANA accountability design workshop', 'Participants linked complaint workflow gaps to the proposed pilot intervention.')]
       },
       'Stakeholder Engagement|Gender': {
@@ -150,6 +171,7 @@ export function buildCaranaDemoData(base: UnpolProjectData): UnpolProjectData {
         supportingStakeholderIds: ['sh-civil-society', 'sh-local-admin', 'sh-human-rights'],
         implementationPhase: 'NEXT',
         milestoneTimeframe: 'Consultation and referral pilot reviewed after 12 weeks',
+        strategicOptionIds: ['carana-option-wt1'],
         evidenceNotes: [fictionalEvidence('carana-ev-matrix-2', 'CARANA community-access workshop', 'The exercise links reported access barriers to a limited liaison and referral pilot.')]
       },
       'Administrative Systems|Police Practice': {
@@ -168,6 +190,7 @@ export function buildCaranaDemoData(base: UnpolProjectData): UnpolProjectData {
         supportingStakeholderIds: ['sh-police-hq', 'sh-unpol-lead', 'sh-academy'],
         implementationPhase: 'NOW',
         milestoneTimeframe: 'Baseline and first supervisory review within 30 days',
+        strategicOptionIds: ['carana-option-wo1'],
         evidenceNotes: [fictionalEvidence('carana-ev-matrix-3', 'CARANA station process-mapping notes', 'The proposed register responds to documented exercise gaps in handover and task tracking.')]
       }
     },

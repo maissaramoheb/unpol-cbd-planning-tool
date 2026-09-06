@@ -26,6 +26,8 @@ test('legacy workspaces migrate traceability fields to safe empty values', () =>
   assert.deepEqual(cell.supportingStakeholderIds, []);
   assert.equal(cell.implementationPhase, null);
   assert.equal(cell.milestoneTimeframe, '');
+  assert.deepEqual(cell.strategicOptionIds, []);
+  assert.deepEqual(result.data.analysisSynthesis, { swotFindings: [], strategicOptions: [] });
 });
 
 test('traceability fields survive JSON round-trip and invalid actor IDs are removed', () => {

@@ -7,23 +7,26 @@ import { Dashboard } from './Dashboard';
 import { MissionProfile } from './MissionProfile';
 import { SituationalAnalysis } from './SituationalAnalysis';
 import { StakeholderMapping } from './StakeholderMapping';
+import { AnalysisSynthesis } from './AnalysisSynthesis';
 import { CBDMatrix } from '../matrix/CBDMatrix';
 import { PrioritySequencing } from './PrioritySequencing';
 import { ExportBrief } from './ExportBrief';
 import { MissionExplorer } from './MissionExplorer';
 import { applyMissionSeed } from '../lib/applyMissionSeed';
-import { UnpolProjectData, MissionProfile as ProfileType, PestelsItem, Stakeholder, CbdCell, PriorityBrief } from '../types';
+import { UnpolProjectData, MissionProfile as ProfileType, PestelsItem, Stakeholder, CbdCell, PriorityBrief, AnalysisSynthesis as AnalysisSynthesisData } from '../types';
 import { loadProjectData, saveProjectData, getInitialProjectData } from '../lib/storage';
 import { matrixRows, matrixColumns } from '../data/cbdMatrixData';
 import { AlertTriangle, X } from 'lucide-react';
 import { APP_VERSION_LABEL } from '../lib/version';
 import { buildCaranaDemoData } from '../data/caranaDemo';
+import { removeStrategicOption, removeSwotFinding } from '../lib/analysisSynthesis';
 
 export const AppShell: React.FC = () => {
   const [data, setData] = useState<UnpolProjectData | null>(null);
   const [storageRecoveryMessage, setStorageRecoveryMessage] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isExplorerOpen, setIsExplorerOpen] = useState<boolean>(false);
+  const [showAnalysisSynthesis, setShowAnalysisSynthesis] = useState<boolean>(false);
 
   // Initialize data on client mount
   useEffect(() => {
@@ -107,6 +110,18 @@ export const AppShell: React.FC = () => {
     });
   };
 
+  const handleSynthesisChange = (analysisSynthesis: AnalysisSynthesisData) => {
+    setData({ ...data, analysisSynthesis });
+  };
+
+  const handleDeleteSwotFinding = (id: string) => setData(removeSwotFinding(data, id));
+  const handleDeleteStrategicOption = (id: string) => setData(removeStrategicOption(data, id));
+
+  const handleStepChange = (step: number) => {
+    setShowAnalysisSynthesis(false);
+    setCurrentStep(step);
+  };
+
   const handleUpdateCell = (key: string, updatedCell: CbdCell) => {
     setData({
       ...data,
@@ -169,13 +184,28 @@ export const AppShell: React.FC = () => {
           />
         );
       case 4:
+        if (showAnalysisSynthesis) {
+          return (
+            <AnalysisSynthesis
+              data={data}
+              onChange={handleSynthesisChange}
+              onDeleteFinding={handleDeleteSwotFinding}
+              onDeleteOption={handleDeleteStrategicOption}
+              onBack={() => setShowAnalysisSynthesis(false)}
+              onContinue={() => {
+                setShowAnalysisSynthesis(false);
+                setCurrentStep(5);
+              }}
+            />
+          );
+        }
         return (
           <StakeholderMapping
             stakeholders={data.stakeholders}
             onAdd={handleAddStakeholder}
             onUpdate={handleUpdateStakeholder}
             onDelete={handleDeleteStakeholder}
-            onNext={() => setCurrentStep(5)}
+            onNext={() => setShowAnalysisSynthesis(true)}
             onPrev={() => setCurrentStep(3)}
           />
         );
@@ -187,9 +217,13 @@ export const AppShell: React.FC = () => {
             customCells={data.customCells}
             pestels={data.pestels}
             stakeholders={data.stakeholders}
+            strategicOptions={data.analysisSynthesis.strategicOptions}
             onUpdateCell={handleUpdateCell}
             onNext={() => setCurrentStep(6)}
-            onPrev={() => setCurrentStep(4)}
+            onPrev={() => {
+              setCurrentStep(4);
+              setShowAnalysisSynthesis(true);
+            }}
           />
         );
       case 6:
@@ -251,7 +285,7 @@ export const AppShell: React.FC = () => {
 
         {/* Step Tabs Indicator (Hidden in print) */}
         <div className="print:hidden">
-          <ModuleTabs currentStep={currentStep} onStepChange={setCurrentStep} />
+          <ModuleTabs currentStep={currentStep} onStepChange={handleStepChange} />
         </div>
 
         {/* Active Module Panel */}

@@ -3,6 +3,7 @@ import { MissionExplorerEntry } from '../types/explorer';
 import { defaultPestelsData } from '../data/pestelsCategories';
 import { emptyPriorityBrief } from './storage';
 import { APP_VERSION } from './version';
+import { EMPTY_ANALYSIS_SYNTHESIS } from './analysisSynthesis';
 
 export function applyMissionSeed(entry: MissionExplorerEntry): UnpolProjectData {
   const profile: MissionProfile = {
@@ -90,6 +91,7 @@ export function applyMissionSeed(entry: MissionExplorerEntry): UnpolProjectData 
       risksAssumptions: entry.planningThemes.map((theme) => `Verify operational capacity-building indicators for: ${theme}.`),
       sequencingRecommendation: ''
     },
+    analysisSynthesis: JSON.parse(JSON.stringify(EMPTY_ANALYSIS_SYNTHESIS)),
     version: APP_VERSION
   };
 }

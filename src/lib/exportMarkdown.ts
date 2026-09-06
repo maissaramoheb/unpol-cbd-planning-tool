@@ -9,7 +9,7 @@ import {
 import { APP_VERSION_LABEL } from './version';
 
 export function generateMarkdownBrief(data: UnpolProjectData): string {
-  const { profile, pestels, stakeholders, customCells, priorityBrief } = data;
+  const { profile, pestels, stakeholders, customCells, priorityBrief, analysisSynthesis } = data;
 
   const warnings = calculateQualityWarnings(data);
 
@@ -106,6 +106,7 @@ ${map.quadrants.map((quadrant) => `- **${quadrant.title} (${quadrant.stakeholder
 - **Capacity Problem / Gap**: ${cell.capacityProblem || 'Not yet defined'}
 - **Planning Objective**: ${cell.planningObjective || 'Not yet defined'}
 - **Why this matters**: ${cell.why}
+- **Strategic Synthesis Basis**: ${(cell.strategicOptionIds || []).map(id => analysisSynthesis.strategicOptions.find(option => option.id === id)?.reference).filter(Boolean).join(' · ') || 'No Strategic Option linked'}
 - **Action Levels**:
   - *Individual*: ${cell.individual}
   - *Organizational*: ${cell.organizational}
@@ -197,7 +198,21 @@ ${Object.keys(pestels).map(k => {
 
 ---
 
-## 4. CBD Key Areas × Cross-Cutting Analytical Lenses
+## 4. Analysis Synthesis
+
+> SWOT/TOWS synthesis records professional judgement. It supports planning choices and does not determine the CBD response.
+
+### Key SWOT Findings
+${analysisSynthesis.swotFindings.map(item => `- **${item.reference} · ${item.category}**: ${item.finding || '*Finding not yet recorded*'}\n  - **CBD implication**: ${item.cbdImplication || '*Not recorded*'}\n  - **Structural source links**: ${item.sourceReferences.length || 0}`).join('\n') || '*No SWOT findings recorded.*'}
+
+### Strategic Options
+| Ref | Combination | Strategic Implication |
+| :--- | :--- | :--- |
+${analysisSynthesis.strategicOptions.map(option => `| ${option.reference} | ${option.swotFindingIds.map(id => analysisSynthesis.swotFindings.find(item => item.id === id)?.reference).filter(Boolean).join(' + ')} | ${option.option || 'Not yet recorded'} |`).join('\n') || '| — | — | No Strategic Options recorded |'}
+
+---
+
+## 5. CBD Key Areas × Cross-Cutting Analytical Lenses
 
 This 5×6 matrix is a prototype analytical structure, not a formal UN taxonomy.
 
@@ -206,7 +221,7 @@ ${prioritizedCellsMd}
 
 ---
 
-## 5. Strategic Sequencing & Recommendations
+## 6. Strategic Sequencing & Recommendations
 
 ### Top 3 CBD Priorities
 ${priorityBrief.topPriorities?.map(p => `- ${p}`).join('\n') || '*None defined*'}
@@ -225,26 +240,26 @@ ${priorityBrief.sequencingRecommendation || '*No narrative configured*'}
 
 ---
 
-## 6. Planning Quality-Control Cautions
+## 7. Planning Quality-Control Cautions
 ${warnings.map(w => `- **[${w.type.toUpperCase()}]** ${w.message}`).join('\n') || '*Zero planning cautions detected.*'}
 
 ---
 
-## 7. Evidence & Source Verification Index
+## 8. Evidence & Source Verification Index
 ${allEvidenceNotes.map((n, i) => `${i + 1}. **${n.title}** [${n.type}] (Confidence: ${n.confidence}/5, Source reviewed: ${n.date})
    - *Attached to*: ${n.item}
    - *Extract / Analyst Comment*: &ldquo;${n.comment}&rdquo;`).join('\n') || '*No source citations logged.*'}
 
 ---
 
-## 8. Assumptions & Limitations
+## 9. Assumptions & Limitations
 - **Counterpart Buy-In**: Assumes minimum host-state leadership willingness to co-locate and cooperate with advisory inputs.
 - **Data Limits**: The diagnostic findings rely on user-entered assessments and source-review dates logged in the Evidence Index.
 - **Legal Authority Limits**: Mentorship actions assume advisory status and do not authorize executive operations.
 
 ---
 
-## 9. Disclaimer
+## 10. Disclaimer
 > [!WARNING]
 > **Planning Support Disclaimer**
 > This tool is an educational and planning-support prototype. It is not official United Nations doctrine and does not replace mission mandate, official guidance, host-state law, human rights due diligence, command approval, or verified country analysis. Users should verify all context-specific findings through official and current sources before operational or policy use.

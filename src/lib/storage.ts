@@ -5,6 +5,7 @@ import { customCells } from '../data/cbdMatrixData';
 import { defaultMissionTemplates } from '../data/defaultMissionTemplates';
 import { validateAndNormalizeProjectData } from './projectDataValidation';
 import { APP_VERSION } from './version';
+import { EMPTY_ANALYSIS_SYNTHESIS } from './analysisSynthesis';
 
 const STORAGE_KEY = 'unpol_planning_tool_project_data';
 
@@ -116,6 +117,7 @@ export function getInitialProjectData(templateId = 'peacekeeping'): UnpolProject
     cell.supportingStakeholderIds = cell.supportingStakeholderIds ?? [];
     cell.implementationPhase = cell.implementationPhase ?? null;
     cell.milestoneTimeframe = cell.milestoneTimeframe ?? '';
+    cell.strategicOptionIds = cell.strategicOptionIds ?? [];
   });
 
   const finalStakeholders = JSON.parse(JSON.stringify(isBlank ? [] : defaultStakeholders));
@@ -143,6 +145,7 @@ export function getInitialProjectData(templateId = 'peacekeeping'): UnpolProject
           sequencingRecommendation: ''
         }
       : JSON.parse(JSON.stringify(emptyPriorityBrief)),
+    analysisSynthesis: JSON.parse(JSON.stringify(EMPTY_ANALYSIS_SYNTHESIS)),
     version: APP_VERSION
   };
 }

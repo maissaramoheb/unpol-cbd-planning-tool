@@ -358,13 +358,20 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                 Back: Situational Analysis
               </Button>
               <Button variant="primary" onClick={onNext}>
-                Next: CBD Matrix
+                Synthesize the Analysis
               </Button>
             </div>
           </>
         ) : (
-          <div className="text-center py-12 text-slate-500">
-            No active stakeholder. Select or create one.
+          <div className="flex flex-col gap-5">
+            <div className="rounded-xl border border-dashed border-slate-300 bg-white py-12 text-center text-slate-500">
+              No active stakeholder. Add one, or continue to optional Analysis Synthesis.
+            </div>
+            <NextStepCue {...NEXT_STEP_CUES[4]} />
+            <div className="flex justify-between items-center gap-3">
+              <Button variant="outline" onClick={onPrev}>Back: Situational Analysis</Button>
+              <Button variant="primary" onClick={onNext}>Synthesize the Analysis</Button>
+            </div>
           </div>
         )}
       </div>

@@ -98,6 +98,7 @@ function priorityTable(priority: ReportPriority): Table {
       new TableRow({ cantSplit: true, children: [new TableCell({ columnSpan: 2, shading: { fill: LIGHT_BLUE, type: ShadingType.CLEAR, color: 'auto' }, margins: { top: 120, bottom: 120, left: 140, right: 140 }, children: [new Paragraph({ children: [text(`PRIORITY ${priority.number} — ${priority.title}`, { bold: true, color: BLUE, size: 24 })], keepNext: true }), paragraph(`${priority.row} × ${priority.column}`, { bold: true, color: SLATE })] })] }),
       new TableRow({ children: [cell('Capacity problem / gap', priority.cell.capacityProblem || 'Not yet defined', WHITE), cell('Planning objective', priority.cell.planningObjective || 'Not yet defined', WHITE)] }),
       new TableRow({ children: [cell('Planning need / rationale', priority.cell.why || 'Not recorded', WHITE), cell('Evidence basis', priority.evidenceIds.join(' · ') || 'No linked evidence recorded', WHITE)] }),
+      new TableRow({ children: [cell('Strategic Synthesis Basis', priority.strategicOptions.map(option => option.reference).join(' · ') || 'No Strategic Option linked', WHITE), cell('Evidence confidence', `${input.confidenceLevel}/5`, WHITE)] }),
       new TableRow({ children: [cell('Individual', priority.cell.individual || 'Not recorded'), cell('Organizational', priority.cell.organizational || 'Not recorded')] }),
       new TableRow({ children: [cell('Enabling environment', priority.cell.environment || 'Not recorded', WHITE), cell('Key stakeholders', linkedStakeholders, WHITE)] }),
       new TableRow({ children: [cell('Responsibility', responsibility), cell('Implementation phase / milestone', phase)] }),
@@ -188,6 +189,20 @@ export async function createPlanningBriefDocx(model: PlanningBriefModel): Promis
     ...bulletList(model.stakeholderAnalysis.insights.legitimacyConsultation.slice(0, 6).map(item => item.name)),
     heading('Key Engagement Implications', HeadingLevel.HEADING_2),
     ...bulletList(model.stakeholderAnalysis.insights.technicalWorkingGroups.slice(0, 6).map(item => `${item.name}: ${item.engagement}`)),
+
+    sectionHeading('Analysis Synthesis'),
+    paragraph('This SWOT/TOWS synthesis records professional judgement. It supports planning choices and does not determine the CBD response.', { italics: true, color: SLATE }),
+    heading('Key SWOT Findings', HeadingLevel.HEADING_2),
+    ...bulletList(model.keySwotFindings.map(item => `${item.reference} · ${item.category}: ${item.finding}${item.cbdImplication ? ` — CBD implication: ${item.cbdImplication}` : ''}`), 'No SWOT findings recorded.'),
+    heading('Strategic Options', HeadingLevel.HEADING_2),
+    ...(model.strategicOptions.length ? [new Table({
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      layout: TableLayoutType.FIXED,
+      rows: [
+        new TableRow({ tableHeader: true, cantSplit: true, children: [headerCell('Ref / combination'), headerCell('Strategic implication')] }),
+        ...model.strategicOptions.map(option => new TableRow({ cantSplit: true, children: [cell('Basis', `${option.reference} · ${option.swotFindingIds.map(id => data.analysisSynthesis.swotFindings.find(item => item.id === id)?.reference).filter(Boolean).join(' + ')}`, WHITE), cell('Option', option.option, WHITE)] }))
+      ]
+    })] : [paragraph('No Strategic Options recorded.', { italics: true, color: SLATE })]),
 
     sectionHeading('4 · CBD Priorities'),
     ...(model.priorities.length ? model.priorities.slice(0, 2).map(priorityTable) : [paragraph('No customized CBD priorities recorded.', { italics: true, color: SLATE })]),
