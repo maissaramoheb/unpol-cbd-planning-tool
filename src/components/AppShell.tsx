@@ -10,6 +10,7 @@ import { StakeholderMapping } from './StakeholderMapping';
 import { AnalysisSynthesis } from './AnalysisSynthesis';
 import { CBDMatrix } from '../matrix/CBDMatrix';
 import { PrioritySequencing } from './PrioritySequencing';
+import { ResultsImplementation } from './ResultsImplementation';
 import { ExportBrief } from './ExportBrief';
 import { MissionExplorer } from './MissionExplorer';
 import { applyMissionSeed } from '../lib/applyMissionSeed';
@@ -20,13 +21,13 @@ import { AlertTriangle, X } from 'lucide-react';
 import { APP_VERSION_LABEL } from '../lib/version';
 import { buildCaranaDemoData } from '../data/caranaDemo';
 import { removeStrategicOption, removeSwotFinding } from '../lib/analysisSynthesis';
+import { EXPORT_VIEW, HOME_VIEW } from '../lib/workflow';
 
 export const AppShell: React.FC = () => {
   const [data, setData] = useState<UnpolProjectData | null>(null);
   const [storageRecoveryMessage, setStorageRecoveryMessage] = useState<string | null>(null);
-  const [currentStep, setCurrentStep] = useState<number>(1);
+  const [currentView, setCurrentView] = useState<number>(HOME_VIEW);
   const [isExplorerOpen, setIsExplorerOpen] = useState<boolean>(false);
-  const [showAnalysisSynthesis, setShowAnalysisSynthesis] = useState<boolean>(false);
 
   // Initialize data on client mount
   useEffect(() => {
@@ -65,7 +66,7 @@ export const AppShell: React.FC = () => {
     if (confirm('Switching templates will reset all current findings. Would you like to proceed?')) {
       const freshData = getInitialProjectData(templateId);
       setData(freshData);
-      setCurrentStep(1);
+      setCurrentView(1);
     }
   };
 
@@ -76,7 +77,7 @@ export const AppShell: React.FC = () => {
 
     const demoData = getInitialProjectData('peacekeeping');
     setData(buildCaranaDemoData(demoData));
-    setCurrentStep(1);
+    setCurrentView(1);
   };
 
   const handlePestelsChange = (id: string, updatedItem: PestelsItem) => {
@@ -117,11 +118,6 @@ export const AppShell: React.FC = () => {
   const handleDeleteSwotFinding = (id: string) => setData(removeSwotFinding(data, id));
   const handleDeleteStrategicOption = (id: string) => setData(removeStrategicOption(data, id));
 
-  const handleStepChange = (step: number) => {
-    setShowAnalysisSynthesis(false);
-    setCurrentStep(step);
-  };
-
   const handleUpdateCell = (key: string, updatedCell: CbdCell) => {
     setData({
       ...data,
@@ -150,63 +146,59 @@ export const AppShell: React.FC = () => {
 
     const fresh = getInitialProjectData('blank');
     setData(fresh);
-    setCurrentStep(1);
+    setCurrentView(HOME_VIEW);
   };
 
   const renderStepContent = () => {
-    switch (currentStep) {
-      case 1:
+    switch (currentView) {
+      case HOME_VIEW:
         return (
           <Dashboard
             data={data}
-            onNavigateToStep={setCurrentStep}
+            onNavigateToStep={setCurrentView}
             onOpenExplorer={() => setIsExplorerOpen(true)}
             onLoadDemoTemplate={handleLoadDemoTemplate}
           />
         );
-      case 2:
+      case 1:
         return (
           <MissionProfile
             profile={data.profile}
             onChange={handleProfileChange}
             onTemplateChange={handleTemplateChange}
             onOpenExplorer={() => setIsExplorerOpen(true)}
-            onNext={() => setCurrentStep(3)}
+            onNext={() => setCurrentView(2)}
           />
         );
-      case 3:
+      case 2:
         return (
           <SituationalAnalysis
             pestels={data.pestels}
             onChange={handlePestelsChange}
-            onNext={() => setCurrentStep(4)}
-            onPrev={() => setCurrentStep(2)}
+            onNext={() => setCurrentView(3)}
+            onPrev={() => setCurrentView(1)}
           />
         );
-      case 4:
-        if (showAnalysisSynthesis) {
-          return (
-            <AnalysisSynthesis
-              data={data}
-              onChange={handleSynthesisChange}
-              onDeleteFinding={handleDeleteSwotFinding}
-              onDeleteOption={handleDeleteStrategicOption}
-              onBack={() => setShowAnalysisSynthesis(false)}
-              onContinue={() => {
-                setShowAnalysisSynthesis(false);
-                setCurrentStep(5);
-              }}
-            />
-          );
-        }
+      case 3:
         return (
           <StakeholderMapping
             stakeholders={data.stakeholders}
             onAdd={handleAddStakeholder}
             onUpdate={handleUpdateStakeholder}
             onDelete={handleDeleteStakeholder}
-            onNext={() => setShowAnalysisSynthesis(true)}
-            onPrev={() => setCurrentStep(3)}
+            onNext={() => setCurrentView(4)}
+            onPrev={() => setCurrentView(2)}
+          />
+        );
+      case 4:
+        return (
+          <AnalysisSynthesis
+            data={data}
+            onChange={handleSynthesisChange}
+            onDeleteFinding={handleDeleteSwotFinding}
+            onDeleteOption={handleDeleteStrategicOption}
+            onBack={() => setCurrentView(3)}
+            onContinue={() => setCurrentView(5)}
           />
         );
       case 5:
@@ -219,11 +211,8 @@ export const AppShell: React.FC = () => {
             stakeholders={data.stakeholders}
             strategicOptions={data.analysisSynthesis.strategicOptions}
             onUpdateCell={handleUpdateCell}
-            onNext={() => setCurrentStep(6)}
-            onPrev={() => {
-              setCurrentStep(4);
-              setShowAnalysisSynthesis(true);
-            }}
+            onNext={() => setCurrentView(6)}
+            onPrev={() => setCurrentView(4)}
           />
         );
       case 6:
@@ -232,19 +221,21 @@ export const AppShell: React.FC = () => {
             brief={data.priorityBrief}
             customCells={data.customCells}
             onChange={handlePriorityBriefChange}
-            onNext={() => setCurrentStep(7)}
-            onPrev={() => setCurrentStep(5)}
+            onNext={() => setCurrentView(7)}
+            onPrev={() => setCurrentView(5)}
           />
         );
       case 7:
+        return <ResultsImplementation data={data} onPrev={() => setCurrentView(6)} onExport={() => setCurrentView(EXPORT_VIEW)} />;
+      case EXPORT_VIEW:
         return (
           <ExportBrief
             data={data}
             onImportSuccess={(imported) => {
               setData(imported);
-              setCurrentStep(7);
+              setCurrentView(EXPORT_VIEW);
             }}
-            onPrev={() => setCurrentStep(6)}
+            onPrev={() => setCurrentView(7)}
           />
         );
       default:
@@ -285,7 +276,7 @@ export const AppShell: React.FC = () => {
 
         {/* Step Tabs Indicator (Hidden in print) */}
         <div className="print:hidden">
-          <ModuleTabs currentStep={currentStep} onStepChange={handleStepChange} />
+          <ModuleTabs currentView={currentView} onViewChange={setCurrentView} />
         </div>
 
         {/* Active Module Panel */}
@@ -315,7 +306,7 @@ export const AppShell: React.FC = () => {
             const seeded = applyMissionSeed(entry);
             setData(seeded);
             setIsExplorerOpen(false);
-            setCurrentStep(1); // Redirect to Planning Overview
+            setCurrentView(HOME_VIEW);
           }}
           onClose={() => setIsExplorerOpen(false)}
         />

@@ -29,15 +29,17 @@ This tool bridges that gap by providing a structured, interactive playground to:
 
 ## 🚀 Core Features
 
-1. **Context-Adaptable Mission Profiles**: Select from preloaded baseline templates (UN Peacekeeping, Special Political Mission, Post-Conflict SSR, Police Reform Advisory, Capacity Building & Training, Rule of Law/Justice-Chain) or start with a blank canvas.
-2. **PESTEL-S Environmental Diagnosis**: Conduct a systematic assessment of Political, Economic, Social, Technological, Environmental, Legal, and Security factors shaping host-state policing.
-3. **Actor Assessment & Stakeholder Mapping**: Define and analyze enablers, blockers, spoilers, and neutral actors, mapping their reform posture, influence levels, and key UNPOL entry points.
-4. **Decision-Support Quadrants**: Graphically analyze stakeholders based on operational influence and engagement priorities to identify risk caveats.
-5. **Analysis Synthesis**: Optionally classify analyst-written Strengths, Weaknesses, Opportunities, and Threats, preserve links to existing analysis, and develop unscored SO/ST/WO/WT Strategic Options. This stage-4 bridge supports professional judgement; it does not determine priorities.
-6. **CBD Key Areas × Cross-Cutting Analytical Lenses**: Use a prototype 5×6 structure to examine possible interventions. The complete matrix is not presented as a formal UN taxonomy.
-7. **Priority & Sequencing Support**: Compare user-entered ratings through a transparent heuristic, then record human-reviewed Quick Wins, Sensitive Reforms, and Longer-Term Reforms.
-8. **Quality-Control Warnings**: Real-time validation alerts highlighting incomplete sections, unsequenced tasks, or missing stakeholder attributes.
-9. **Exportable Briefs & Backups**: Preview PDF-ready briefs, copy structured Markdown reports, or export the entire planning workspace as a JSON file.
+The Home / Planning Overview is separate from the seven-stage planning journey:
+
+1. **Context & Mandate**: Define the planning context, mandate and purpose using the existing mission-profile workspace.
+2. **Diagnostic Analysis**: Use PESTEL-S to examine political, economic, social, technological, environmental, legal and security conditions and supporting evidence.
+3. **Stakeholders & Ownership**: Map actors, influence, reform posture and engagement assumptions. Formal ownership validation is not yet captured.
+4. **Analysis Synthesis**: Optionally classify analyst-written SWOT findings, preserve links to existing analysis, and develop unscored SO/ST/WO/WT Strategic Options. This synthesis supports professional judgement; it does not determine priorities.
+5. **CBD Priorities**: Use the prototype CBD Key Areas × Cross-Cutting Analytical Lenses matrix to define capacity problems, objectives and intervention packages. The complete matrix is not presented as a formal UN taxonomy.
+6. **Prioritization & Sequencing**: Compare user-entered ratings through a transparent heuristic, then record human-reviewed Quick Wins, Sensitive Reforms and Longer-Term Reforms.
+7. **Results & Implementation**: Consolidate responsibilities, phases, milestones, indicators and risks already recorded for configured CBD priorities. This is not a Theory of Change, Logframe or M&E framework.
+
+Export is a separate, persistent workspace action. It continues to provide Word, print/PDF, Markdown and JSON outputs without forming part of the numbered methodology.
 
 ---
 
@@ -72,7 +74,7 @@ This planning tool is an unofficial prototype designed to assist human planning 
 - **Styling**: Tailwind CSS 4.0
 - **Icons**: Lucide React
 - **Animations**: Framer Motion
-- **Data Storage**: Browser `localStorage`; JSON backup/restore is available. Availability and security depend on the browser, device, and deployment context. Older saved workspaces are migrated on load by adding empty Analysis Synthesis and traceability fields; the tool does not infer SWOT classifications, Strategic Options, responsibilities, or sequencing phases. Missing source and option references are removed safely without altering existing CBD intervention content.
+- **Data Storage**: Browser `localStorage`; JSON backup/restore is available. Availability and security depend on the browser, device, and deployment context. Navigation is not stored in project data. Older saved workspaces are migrated on load by adding empty Analysis Synthesis and traceability fields; the tool does not infer SWOT classifications, Strategic Options, responsibilities, or sequencing phases. Missing source and option references are removed safely without altering existing CBD intervention content.
 
 ---
 
@@ -111,7 +113,7 @@ In the project directory, you can run the following npm scripts:
 ---
 
 ## 📊 Project Status
-- **Current Version**: v0.5.0 — Analysis Synthesis
+- **Current Version**: v0.6.0 — v1 Planning Workflow
 - **Phase**: Early-stage prototype (Active development). Feedback from peace operations and policing practitioners is welcome.
 
 ---

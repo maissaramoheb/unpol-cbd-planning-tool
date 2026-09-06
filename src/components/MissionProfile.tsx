@@ -52,7 +52,7 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
 
   return (
     <div className="flex flex-col gap-6 w-full">
-      <StageGuide stage={2} />
+      <StageGuide stage={1} />
       {/* Intro Banner */}
       <Card className="border-slate-200 bg-white">
         <CardBody className="p-6 md:p-8 flex flex-col gap-4">
@@ -72,13 +72,14 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
           {/* Workflow Stepper */}
           <div className="mt-2 pt-4 border-t border-slate-200">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-2">Recommended Planning Workflow</span>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 text-xs text-slate-600">
-              <div><span className="text-blue-700 font-bold block mb-0.5">1. Profile Setup</span> Select a template or start blank to define the host-state context parameters.</div>
-              <div><span className="text-blue-700 font-bold block mb-0.5">2. PESTEL-S Diagnosis</span> Assess and rate 7 categories of environmental challenges affecting policing.</div>
-              <div><span className="text-blue-700 font-bold block mb-0.5">3. Actor Assessment</span> Define and map enablers, blockers, and spoilers, rating their reform posture.</div>
-              <div><span className="text-blue-700 font-bold block mb-0.5">4. CBD Matrix</span> Use 5 Key Areas and 6 cross-cutting analytical lenses to structure possible actions.</div>
-              <div><span className="text-blue-700 font-bold block mb-0.5">5. Sequencing Priorities</span> Formulate Quick Wins, sensitive reforms, and long-term sequencing pathways.</div>
-              <div><span className="text-blue-700 font-bold block mb-0.5">6. Brief & Export</span> Export clean Markdown reports, print PDF-ready briefs, or backup JSON configs.</div>
+            <div className="grid grid-cols-1 gap-3 text-xs text-slate-600 sm:grid-cols-2 lg:grid-cols-7">
+              <div><span className="text-blue-700 font-bold block mb-0.5">1. Context &amp; Mandate</span>Define the planning context and purpose.</div>
+              <div><span className="text-blue-700 font-bold block mb-0.5">2. Diagnostic Analysis</span>Examine conditions and evidence.</div>
+              <div><span className="text-blue-700 font-bold block mb-0.5">3. Stakeholders &amp; Ownership</span>Map actors and ownership assumptions.</div>
+              <div><span className="text-blue-700 font-bold block mb-0.5">4. Analysis Synthesis</span>Develop optional SWOT findings and options.</div>
+              <div><span className="text-blue-700 font-bold block mb-0.5">5. CBD Priorities</span>Define problems, objectives and responses.</div>
+              <div><span className="text-blue-700 font-bold block mb-0.5">6. Prioritization &amp; Sequencing</span>Set relative priorities and timing.</div>
+              <div><span className="text-blue-700 font-bold block mb-0.5">7. Results &amp; Implementation</span>Review delivery information already recorded.</div>
             </div>
           </div>
         </CardBody>
@@ -88,7 +89,7 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
         {/* Template Selector Card */}
         <div className="lg:col-span-1 flex flex-col gap-4">
           <div>
-            <h3 className="text-lg font-bold text-slate-950">2. Profile / Context Setup</h3>
+            <h3 className="text-lg font-bold text-slate-950">1. Context &amp; Mandate</h3>
             <p className="text-sm text-slate-600 mt-1">
               Choose a baseline configuration template. Selecting a template will preload editable planning prompts, assumptions to verify, and low-confidence PESTEL-S starter questions.
             </p>
@@ -211,10 +212,10 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
                 />
               </div>
 
-              <NextStepCue {...NEXT_STEP_CUES[2]} />
+              <NextStepCue {...NEXT_STEP_CUES[1]} />
               <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-slate-100">
                 <Button variant="primary" onClick={onNext} className="w-full sm:w-auto">
-                  Next: Situational Analysis
+                  Next: Diagnostic Analysis
                 </Button>
               </div>
             </CardBody>

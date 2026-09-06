@@ -1,56 +1,61 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useRef } from 'react';
+import { FileText, Home } from 'lucide-react';
+import { EXPORT_VIEW, HOME_VIEW, isWorkflowStage, WORKFLOW_STAGES } from '../lib/workflow';
 
 interface ModuleTabsProps {
-  currentStep: number;
-  onStepChange: (step: number) => void;
-}
-
-interface StepItem {
-  id: number;
-  label: string;
-  sub: string;
+  currentView: number;
+  onViewChange: (view: number) => void;
 }
 
 export const ModuleTabs: React.FC<ModuleTabsProps> = ({
-  currentStep,
-  onStepChange
+  currentView,
+  onViewChange
 }) => {
-  const steps: StepItem[] = [
-    { id: 1, label: 'Planning Overview', sub: 'Start page' },
-    { id: 2, label: 'Profile', sub: 'Context' },
-    { id: 3, label: 'PESTEL-S', sub: 'Context & Evidence' },
-    { id: 4, label: 'Actors', sub: 'Stakeholders' },
-    { id: 5, label: 'CBD Matrix', sub: 'Capacity Priorities' },
-    { id: 6, label: 'Priority & Sequencing', sub: 'Implementation Path' },
-    { id: 7, label: 'Export', sub: 'Planning Brief' }
-  ];
-  const activeStep = steps.find((step) => step.id === currentStep) ?? steps[0];
+  const stepperRef = useRef<HTMLDivElement>(null);
+  const activeStep = WORKFLOW_STAGES.find((step) => step.id === currentView);
+  const caption = activeStep
+    ? `Stage ${activeStep.id} of ${WORKFLOW_STAGES.length} · ${activeStep.sub}`
+    : currentView === EXPORT_VIEW
+      ? 'Workspace output · Planning Brief'
+      : 'Home · Planning Overview';
+
+  useEffect(() => {
+    if (!activeStep) return;
+    const container = stepperRef.current;
+    const active = container?.querySelector<HTMLElement>('[aria-current="step"]');
+    if (!container || !active) return;
+    container.scrollTo({ left: active.offsetLeft - (container.clientWidth - active.offsetWidth) / 2 });
+  }, [activeStep]);
 
   return (
     <nav
       aria-label="Planning workflow"
       className="w-full bg-slate-900 text-white rounded-2xl border border-slate-800 shadow-sm p-3 sm:p-4"
     >
-      <div className="mb-3 flex min-w-0 items-baseline gap-1.5 px-1 text-xs">
-        <span className="shrink-0 font-black text-blue-300">Step {activeStep.id} of {steps.length}</span>
-        <span aria-hidden="true" className="text-slate-600">·</span>
-        <span className="truncate font-bold text-slate-200">{activeStep.sub}</span>
+      <div className="mb-3 flex flex-col gap-2 px-1 sm:flex-row sm:items-center sm:justify-between">
+        <span className="truncate text-xs font-bold text-slate-200">{caption}</span>
+        <div className="flex gap-2">
+          <button type="button" onClick={() => onViewChange(HOME_VIEW)} aria-current={currentView === HOME_VIEW ? 'page' : undefined} className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-[11px] font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${currentView === HOME_VIEW ? 'border-blue-400 bg-blue-600 text-white' : 'border-slate-700 text-slate-200 hover:bg-slate-800'}`}><Home size={13} />Home</button>
+          <button type="button" onClick={() => onViewChange(EXPORT_VIEW)} aria-current={currentView === EXPORT_VIEW ? 'page' : undefined} className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-[11px] font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${currentView === EXPORT_VIEW ? 'border-blue-400 bg-blue-600 text-white' : 'border-slate-700 text-slate-200 hover:bg-slate-800'}`}><FileText size={13} />Export</button>
+        </div>
       </div>
 
-      <div className="overflow-x-auto pb-1 [scrollbar-width:thin]">
+      <div ref={stepperRef} className="overflow-x-auto pb-1 [scrollbar-width:thin]">
         <div className="relative grid min-w-[910px] grid-cols-7 gap-1.5 lg:min-w-0">
           <div aria-hidden="true" className="absolute left-[7%] right-[7%] top-[17px] h-px bg-slate-700" />
-          {steps.map((step) => {
-            const isActive = step.id === currentStep;
-            const isCompleted = step.id < currentStep;
+          {WORKFLOW_STAGES.map((step) => {
+            const isActive = step.id === currentView;
+            const isCompleted = isWorkflowStage(currentView) && step.id < currentView;
 
             return (
               <button
                 key={step.id}
                 type="button"
-                onClick={() => onStepChange(step.id)}
+                onClick={() => onViewChange(step.id)}
                 aria-current={isActive ? 'step' : undefined}
-                aria-label={`Step ${step.id}: ${step.label}, ${step.sub}`}
+                aria-label={`Stage ${step.id}: ${step.label}, ${step.sub}`}
                 className={`relative z-10 flex min-w-0 flex-col items-center rounded-xl border px-2 pb-2.5 pt-1.5 text-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 ${
                   isActive
                     ? 'border-blue-400 bg-blue-600 text-white shadow-sm shadow-blue-950/40'

@@ -15,6 +15,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-09-06
+
+### Changed
+- Separated Home / Planning Overview and Export from a seven-stage planning journey, promoted the existing Analysis Synthesis workspace to Stage 4, and added a Stage 7 implementation-readiness summary derived only from existing project data.
+- Preserved the v0.5.0 project schema, SWOT/TOWS methodology, scoring, CARANA content and report semantics while updating workflow labels and guidance.
+
 ## [0.4.1] - 2026-08-30
 ### Added
 - Added concise, session-only guidance for the seven-stage planning journey, field help, and read-only CARANA examples without changing project data or export semantics.

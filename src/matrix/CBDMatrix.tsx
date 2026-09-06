@@ -58,9 +58,9 @@ export const CBDMatrix: React.FC<CBDMatrixProps> = ({
       <StageGuide stage={5} />
       {/* Introduction */}
       <div>
-        <h3 className="text-lg font-bold text-slate-950">5. CBD Key Areas × Cross-Cutting Analytical Lenses</h3>
+        <h3 className="text-lg font-bold text-slate-950">5. CBD Priorities</h3>
         <p className="text-sm text-slate-500 mt-1">
-          This prototype structure supports analysis; it is not presented as a formal UN taxonomy. Select a cell to examine a Key Area through an analytical lens.
+          Use the CBD Key Areas × Cross-Cutting Analytical Lenses matrix to define capacity problems and responses. This prototype structure supports analysis; it is not presented as a formal UN taxonomy.
         </p>
       </div>
 
@@ -114,10 +114,10 @@ export const CBDMatrix: React.FC<CBDMatrixProps> = ({
       <NextStepCue {...NEXT_STEP_CUES[5]} />
       <div className="flex justify-between items-center gap-3">
         <Button variant="outline" onClick={onPrev}>
-          Back: Stakeholder Analysis
+          Back: Analysis Synthesis
         </Button>
         <Button variant="primary" onClick={onNext}>
-          Next: Priority & Sequencing
+          Next: Prioritization & Sequencing
         </Button>
       </div>
     </div>

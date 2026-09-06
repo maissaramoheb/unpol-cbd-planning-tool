@@ -77,7 +77,7 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
       <StageGuide stage={6} />
       {/* Introduction */}
       <div>
-        <h3 className="text-lg font-bold text-slate-950">6. Priority & Sequencing</h3>
+        <h3 className="text-lg font-bold text-slate-950">6. Prioritization &amp; Sequencing</h3>
         <p className="text-sm text-slate-500 mt-1">
           Review indicative heuristic scores, apply professional judgement, and record sequencing groups and priorities.
         </p>
@@ -201,10 +201,10 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
           {/* Navigation */}
           <div className="flex justify-between items-center gap-3">
             <Button variant="outline" onClick={onPrev}>
-              Back: CBD Matrix
+              Back: CBD Priorities
             </Button>
             <Button variant="primary" onClick={onNext}>
-              Next: Export Brief
+              Next: Results &amp; Implementation
             </Button>
           </div>
         </div>

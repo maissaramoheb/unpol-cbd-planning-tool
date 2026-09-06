@@ -139,12 +139,12 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className="lg:col-span-3"><StageGuide stage={4} /></div>
+      <div className="lg:col-span-3"><StageGuide stage={3} /></div>
       {/* Stakeholders Listing */}
       <div className="lg:col-span-1 flex flex-col gap-3">
         <div className="flex justify-between items-center">
           <div>
-            <h3 className="text-lg font-bold text-slate-950">4. Actors / Stakeholder Analysis</h3>
+            <h3 className="text-lg font-bold text-slate-950">3. Stakeholders &amp; Ownership</h3>
             <p className="text-xs text-slate-500 mt-0.5">Define key actors and assess their posture toward CBD reform.</p>
           </div>
           <Button variant="outline" size="sm" onClick={handleCreateCustom} className="shrink-0">
@@ -352,10 +352,10 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
               </CardBody>
             </Card>
 
-            <NextStepCue {...NEXT_STEP_CUES[4]} />
+            <NextStepCue {...NEXT_STEP_CUES[3]} />
             <div className="flex justify-between items-center gap-3">
               <Button variant="outline" onClick={onPrev}>
-                Back: Situational Analysis
+                Back: Diagnostic Analysis
               </Button>
               <Button variant="primary" onClick={onNext}>
                 Synthesize the Analysis
@@ -367,9 +367,9 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
             <div className="rounded-xl border border-dashed border-slate-300 bg-white py-12 text-center text-slate-500">
               No active stakeholder. Add one, or continue to optional Analysis Synthesis.
             </div>
-            <NextStepCue {...NEXT_STEP_CUES[4]} />
+            <NextStepCue {...NEXT_STEP_CUES[3]} />
             <div className="flex justify-between items-center gap-3">
-              <Button variant="outline" onClick={onPrev}>Back: Situational Analysis</Button>
+              <Button variant="outline" onClick={onPrev}>Back: Diagnostic Analysis</Button>
               <Button variant="primary" onClick={onNext}>Synthesize the Analysis</Button>
             </div>
           </div>

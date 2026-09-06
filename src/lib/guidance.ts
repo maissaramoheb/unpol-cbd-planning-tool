@@ -11,16 +11,16 @@ export function shouldShowBlankWelcome(isWorkspaceEmpty: boolean): boolean {
 }
 
 export const ORIENTATION_STEPS = [
-  { title: 'Understand the Context', description: 'Define the mission environment, mandate and planning purpose.' },
-  { title: 'Examine Evidence', description: 'Identify relevant political, security, institutional and operating conditions.' },
-  { title: 'Understand the Actors', description: 'Map who has authority, influence, legitimacy, capacity and interest.' },
-  { title: 'Define the Capacity Problem', description: 'Identify what needs to change—not simply what activity should be delivered.' },
-  { title: 'Design the CBD Response', description: 'Set an objective and consider interventions at the individual, organizational and enabling-environment levels.' },
-  { title: 'Prioritize & Sequence', description: 'Decide what matters, who should lead, and what should happen NOW, NEXT or LATER.' },
-  { title: 'Produce the Planning Brief', description: 'Turn the analysis into a structured, reviewable professional document.' }
+  { title: 'Establish Context & Mandate', description: 'Define the planning purpose, scope and operating context.' },
+  { title: 'Diagnose the Environment', description: 'Examine evidence and conditions affecting police capacity and reform.' },
+  { title: 'Understand Stakeholders & Ownership', description: 'Identify actors who influence, enable, own, resist or sustain change.' },
+  { title: 'Synthesize the Analysis', description: 'Turn evidence and stakeholder understanding into SWOT findings and strategic options.' },
+  { title: 'Define CBD Priorities', description: 'Identify capacity problems, objectives and appropriate intervention packages.' },
+  { title: 'Prioritize & Sequence', description: 'Determine what matters most, who should lead, and what should happen first.' },
+  { title: 'Design for Results & Implementation', description: 'Review how selected interventions translate into responsibilities, milestones, indicators and implementation conditions.' }
 ] as const;
 
-export type GuidanceStage = 2 | 3 | 4 | 5 | 6 | 7;
+export type GuidanceStage = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 export interface StageGuidanceContent {
   title: string;
@@ -30,50 +30,57 @@ export interface StageGuidanceContent {
 }
 
 export const STAGE_GUIDANCE: Record<GuidanceStage, StageGuidanceContent> = {
-  2: {
-    title: 'Profile · Context',
+  1: {
+    title: 'Context & Mandate · Planning Context',
     doing: 'Define the planning context, mandate and purpose of the CBD exercise.',
     why: 'Capacity-building priorities should respond to a clearly understood operating and institutional context.',
     next: 'This context will help frame the evidence, actors and priorities that follow.'
   },
-  3: {
-    title: 'PESTEL-S · Context & Evidence',
+  2: {
+    title: 'Diagnostic Analysis · Context & Evidence',
     doing: 'Identify the external and institutional conditions that could enable, constrain or shape CBD.',
     why: 'CBD priorities should be grounded in the environment in which police institutions operate.',
     next: 'These findings will help you identify relevant actors and justify later CBD priorities.'
   },
-  4: {
-    title: 'Actors · Stakeholders',
+  3: {
+    title: 'Stakeholders & Ownership · Actors & Ownership',
     doing: 'Identify the actors who can influence, enable, resist, own or sustain the proposed CBD response.',
     why: 'CBD depends on ownership, authority, legitimacy, capacity and stakeholder support—not only technical solutions.',
-    next: 'These actors can later be linked to priorities as leads, supporters or stakeholders requiring engagement.'
+    next: 'These actors and evidence will support SWOT findings and strategic options in the next stage.'
+  },
+  4: {
+    title: 'Analysis Synthesis · SWOT & Strategic Options',
+    doing: 'Turn recorded evidence and stakeholder understanding into analyst-written SWOT findings and strategic options.',
+    why: 'Synthesis makes the reasoning between diagnosis and proposed CBD priorities visible without determining the response automatically.',
+    next: 'These optional findings and options can be linked to the CBD priorities you define next.'
   },
   5: {
-    title: 'CBD Matrix · Capacity Priorities',
+    title: 'CBD Priorities · Capacity Problems & Responses',
     doing: 'Translate evidence and analysis into specific capacity problems, objectives and intervention packages.',
     why: 'This is where analysis becomes a concrete CBD planning proposition.',
     next: 'These priorities will later be sequenced, assigned and included in the planning brief.'
   },
   6: {
-    title: 'Priority & Sequencing · Implementation Path',
+    title: 'Prioritization & Sequencing · Implementation Path',
     doing: 'Decide which interventions matter most, what should happen first, and who should lead.',
     why: 'Not every valid intervention can or should happen at the same time.',
     next: 'These decisions become the implementation logic presented in the final brief.'
   },
   7: {
-    title: 'Export · Planning Brief',
-    doing: 'Review the complete planning logic and produce a structured planning brief.',
-    why: 'The value of the tool is not only the analysis—it is making the reasoning visible, reviewable and transferable.',
-    next: 'The exported brief can support discussion, review, refinement and further planning.'
+    title: 'Results & Implementation · Results & Delivery',
+    doing: 'Review how selected CBD priorities translate into responsibilities, timing, indicators and implementation conditions.',
+    why: 'A valid CBD priority still requires a credible path toward implementation and measurable change.',
+    next: 'This implementation logic supports the professional planning outputs and provides the foundation for deeper results-based planning.'
   }
 };
 
 export const NEXT_STEP_CUES: Record<Exclude<GuidanceStage, 7>, { title: string; description: string }> = {
-  2: { title: 'Next: Examine the context and evidence', description: 'Use the profile to assess the conditions that could shape or constrain CBD.' },
-  3: { title: 'Next: Understand the actors', description: 'You have identified conditions affecting CBD. Next, examine who can enable, influence, resist or sustain the response.' },
-  4: { title: 'Next: Synthesize the analysis', description: 'Bring together evidence, operating-environment findings and stakeholder analysis before defining CBD priorities.' },
+  1: { title: 'Next: Diagnose the environment', description: 'Use the planning context to assess the evidence and conditions that could shape or constrain CBD.' },
+  2: { title: 'Next: Understand stakeholders and ownership', description: 'Examine who can enable, influence, own, resist or sustain the response.' },
+  3: { title: 'Next: Synthesize the analysis', description: 'Bring together evidence, operating-environment findings and stakeholder analysis before defining CBD priorities.' },
+  4: { title: 'Next: Define CBD priorities', description: 'Use the optional SWOT findings and Strategic Options to inform capacity problems, objectives and responses.' },
   5: { title: 'Next: Prioritize and sequence', description: 'Now decide what matters most, who should lead and what should happen first.' },
-  6: { title: 'Next: Produce the planning brief', description: 'Review how the recorded priorities, responsibilities and sequencing come together in a transferable output.' }
+  6: { title: 'Next: Review results and implementation', description: 'Review how recorded priorities, responsibilities, timing, indicators and conditions come together before producing an output.' }
 };
 
 export const FIELD_GUIDANCE = {
