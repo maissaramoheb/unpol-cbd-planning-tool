@@ -34,7 +34,7 @@ export const Header: React.FC<HeaderProps> = ({ onReset, missionName, analystNam
         {/* Status / Actions */}
         <div className="flex items-center gap-3">
           {missionName && (
-            <div className="hidden md:flex items-center gap-2 bg-slate-800 border border-slate-700 px-3 py-1 rounded-full text-xs text-slate-300">
+            <div className="hidden lg:flex items-center gap-2 bg-slate-800 border border-slate-700 px-3 py-1 rounded-full text-xs text-slate-300">
               <User size={12} className="text-blue-400" />
               <span>{missionName} {analystName ? `(${analystName})` : ''}</span>
             </div>

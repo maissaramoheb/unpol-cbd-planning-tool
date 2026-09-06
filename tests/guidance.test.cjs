@@ -27,18 +27,21 @@ test('blank welcome has three distinct actions and never represents an existing 
 test('How It Works is initially collapsed and contains the seven ordered planning steps', () => {
   assert.equal(HOW_IT_WORKS_DEFAULT_OPEN, false);
   assert.equal(ORIENTATION_STEPS.length, 7);
-  assert.equal(ORIENTATION_STEPS[0].title, 'Understand the Context');
-  assert.equal(ORIENTATION_STEPS[6].title, 'Produce the Planning Brief');
+  assert.equal(ORIENTATION_STEPS[0].title, 'Establish Context & Mandate');
+  assert.equal(ORIENTATION_STEPS[3].title, 'Synthesize the Analysis');
+  assert.equal(ORIENTATION_STEPS[6].title, 'Design for Results & Implementation');
 });
 
-test('stage guidance covers stages 2 through 7 with complete content', () => {
-  assert.deepEqual(Object.keys(STAGE_GUIDANCE), ['2', '3', '4', '5', '6', '7']);
+test('stage guidance covers all seven planning stages with complete content', () => {
+  assert.deepEqual(Object.keys(STAGE_GUIDANCE), ['1', '2', '3', '4', '5', '6', '7']);
   Object.values(STAGE_GUIDANCE).forEach(content => {
     assert.ok(content.doing);
     assert.ok(content.why);
     assert.ok(content.next);
   });
-  assert.match(STAGE_GUIDANCE[3].title, /Context & Evidence/);
+  assert.match(STAGE_GUIDANCE[2].title, /Context & Evidence/);
+  assert.match(STAGE_GUIDANCE[4].title, /SWOT & Strategic Options/);
+  assert.match(STAGE_GUIDANCE[7].title, /Results & Implementation/);
 });
 
 test('collapsed stage state is isolated per stage and fails safely', () => {

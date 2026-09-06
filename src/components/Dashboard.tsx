@@ -5,7 +5,7 @@ import { Card, CardBody, CardHeader } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 import { evaluateCbdCell } from '../lib/scoring';
-import { getDashboardContinueStep } from '../lib/workflow';
+import { EXPORT_VIEW, getDashboardContinueStep } from '../lib/workflow';
 import { StakeholderDecisionSupport } from './StakeholderDecisionSupport';
 import {
   Users,
@@ -43,6 +43,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
   const isPestelsEmpty = Object.values(pestels).every(p => p.finding === '');
   const isStakeholdersEmpty = stakeholders.length === 0;
   const isCustomCellsEmpty = Object.keys(customCells).length === 0;
+  const isSequencingEmpty = ![
+    ...priorityBrief.topPriorities,
+    ...priorityBrief.quickWins,
+    ...priorityBrief.sensitiveReforms,
+    ...priorityBrief.longerTermReforms,
+    ...priorityBrief.risksAssumptions,
+    priorityBrief.sequencingRecommendation
+  ].some(value => value.trim());
 
   const isSynthesisEmpty = analysisSynthesis.swotFindings.length === 0 && analysisSynthesis.strategicOptions.length === 0;
   const isEmptyState = isProfileEmpty && isPestelsEmpty && isStakeholdersEmpty && isCustomCellsEmpty && isSynthesisEmpty;
@@ -61,7 +69,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
             </div>
 
             <div className="mt-8 grid gap-3 lg:grid-cols-[1.15fr_1fr_0.85fr]">
-              <button type="button" onClick={() => onNavigateToStep(2)} className="group rounded-xl border border-blue-700 bg-blue-700 p-5 text-left text-white shadow-sm transition-colors hover:bg-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
+              <button type="button" onClick={() => onNavigateToStep(1)} className="group rounded-xl border border-blue-700 bg-blue-700 p-5 text-left text-white shadow-sm transition-colors hover:bg-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
                 <span className="flex items-center justify-between gap-3"><Compass size={20} /><ArrowRight size={17} className="transition-transform group-hover:translate-x-0.5 motion-reduce:transform-none" /></span>
                 <strong className="mt-5 block text-base">Start a New CBD Plan</strong>
                 <span className="mt-1 block text-xs leading-relaxed text-blue-100">Begin a blank professional planning workspace.</span>
@@ -92,7 +100,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
               <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-7">
                 {ORIENTATION_STEPS.map((step, index) => <li key={step.title} className="rounded-xl border border-slate-200 bg-slate-50/70 p-3"><span className="text-[11px] font-black tracking-wider text-blue-700">{String(index + 1).padStart(2, '0')}</span><h3 className="mt-2 text-xs font-black leading-snug text-slate-900">{step.title}</h3><p className="mt-1 text-[11px] leading-relaxed text-slate-600">{step.description}</p></li>)}
               </ol>
-              <div className="mt-5 flex flex-col gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-between"><p className="text-sm font-bold text-slate-800">The tool structures professional judgement. It does not make the judgement for you.</p><Button variant="primary" onClick={() => onNavigateToStep(2)} className="shrink-0">Start Planning <ArrowRight size={14} /></Button></div>
+              <div className="mt-5 flex flex-col gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-between"><p className="text-sm font-bold text-slate-800">The tool structures professional judgement from diagnosis to implementation planning; it does not make the judgement for you.</p><Button variant="primary" onClick={() => onNavigateToStep(1)} className="shrink-0">Start Planning <ArrowRight size={14} /></Button></div>
             </CardBody>
           </Card>
         )}
@@ -127,7 +135,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
     isProfileEmpty,
     isPestelsEmpty,
     isStakeholdersEmpty,
-    isCustomCellsEmpty
+    isCustomCellsEmpty,
+    isSequencingEmpty
   });
 
   // --- COMPUTE TOP 3 PRESSURES ---
@@ -162,7 +171,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
         <CardBody className="flex flex-col gap-4 p-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-col gap-2">
             <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="blue">Planning Overview</Badge>
+              <Badge variant="blue">Home · Planning Overview</Badge>
               {isDemoTemplate ? (
                 <Badge variant="amber">Fictional demonstration material</Badge>
               ) : null}
@@ -179,7 +188,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
               </p>
             </div>
             <p className="max-w-3xl text-xs leading-relaxed text-slate-600">
-              Continue refining the context, evidence base, stakeholder assumptions, CBD priorities, and export readiness. Ratings and findings remain analytical judgments requiring review.
+              Continue refining the context, evidence base, stakeholder assumptions, synthesis, CBD priorities and implementation readiness. Ratings and findings remain analytical judgements requiring review.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-2 text-xs sm:grid-cols-4 lg:min-w-[420px]">
@@ -239,7 +248,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
                 <Activity size={16} className="text-blue-500" />
                 Critical Contextual Pressures (Top 3)
               </h4>
-              <Button variant="ghost" size="sm" onClick={() => onNavigateToStep(3)} className="text-[11px] font-bold text-blue-600 py-0.5 px-2">
+              <Button variant="ghost" size="sm" onClick={() => onNavigateToStep(2)} className="text-[11px] font-bold text-blue-600 py-0.5 px-2">
                 Edit PESTEL-S
               </Button>
             </CardHeader>
@@ -273,7 +282,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
                 <AlertTriangle size={16} className="text-amber-500" />
                 Key Stakeholder Spoilers / Blockers
               </h4>
-              <Button variant="ghost" size="sm" onClick={() => onNavigateToStep(4)} className="text-[11px] font-bold text-blue-600 py-0.5 px-2">
+              <Button variant="ghost" size="sm" onClick={() => onNavigateToStep(3)} className="text-[11px] font-bold text-blue-600 py-0.5 px-2">
                 Edit Stakeholders
               </Button>
             </CardHeader>
@@ -421,12 +430,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
                   <span className="font-semibold block">{warn.message}</span>
                 </div>
                 {warn.category === 'profile' && (
-                  <Button variant="ghost" size="sm" onClick={() => onNavigateToStep(2)} className="text-[10px] font-bold text-blue-600 p-0 hover:bg-transparent leading-none">
+                  <Button variant="ghost" size="sm" onClick={() => onNavigateToStep(1)} className="text-[10px] font-bold text-blue-600 p-0 hover:bg-transparent leading-none">
                     Fix &rarr;
                   </Button>
                 )}
                 {warn.category === 'pestels' && (
-                  <Button variant="ghost" size="sm" onClick={() => onNavigateToStep(3)} className="text-[10px] font-bold text-blue-600 p-0 hover:bg-transparent leading-none">
+                  <Button variant="ghost" size="sm" onClick={() => onNavigateToStep(2)} className="text-[10px] font-bold text-blue-600 p-0 hover:bg-transparent leading-none">
                     Review &rarr;
                   </Button>
                 )}
@@ -451,12 +460,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
         <CardBody className="p-4 flex flex-wrap gap-2.5 justify-center items-center">
           <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mr-2">Go to Module:</span>
           {[
-            { label: 'Complete Profile', step: 2 },
-            { label: 'Review PESTEL-S', step: 3 },
-            { label: 'Open Stakeholder Map', step: 4 },
-            { label: 'Open CBD Matrix', step: 5 },
-            { label: 'Set Priority & Sequence', step: 6 },
-            { label: 'Review Export Brief', step: 7 }
+            { label: 'Context & Mandate', step: 1 },
+            { label: 'Diagnostic Analysis', step: 2 },
+            { label: 'Stakeholders & Ownership', step: 3 },
+            { label: 'Analysis Synthesis', step: 4 },
+            { label: 'CBD Priorities', step: 5 },
+            { label: 'Prioritize & Sequence', step: 6 },
+            { label: 'Results & Implementation', step: 7 },
+            { label: 'Export Planning Brief', step: EXPORT_VIEW }
           ].map(shortcut => (
             <Button
               key={shortcut.step}

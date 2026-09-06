@@ -58,11 +58,11 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className="lg:col-span-3"><StageGuide stage={3} /></div>
+      <div className="lg:col-span-3"><StageGuide stage={2} /></div>
       {/* PESTEL-S List */}
       <div className="lg:col-span-1 flex flex-col gap-3">
         <div>
-          <h3 className="text-lg font-bold text-slate-950">3. PESTEL-S Situational Analysis</h3>
+          <h3 className="text-lg font-bold text-slate-950">2. Diagnostic Analysis</h3>
           <p className="text-sm text-slate-500 mt-1">
             Assess environmental factors impacting host-state policing. Select a factor to edit findings and ratings.
           </p>
@@ -218,13 +218,13 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
               </CardBody>
             </Card>
 
-            <NextStepCue {...NEXT_STEP_CUES[3]} />
+            <NextStepCue {...NEXT_STEP_CUES[2]} />
             <div className="flex justify-between items-center gap-3">
               <Button variant="outline" onClick={onPrev}>
-                Back: Mission Profile
+                Back: Context &amp; Mandate
               </Button>
               <Button variant="primary" onClick={onNext}>
-                Next: Stakeholder Analysis
+                Next: Stakeholders &amp; Ownership
               </Button>
             </div>
           </>

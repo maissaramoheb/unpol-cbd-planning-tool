@@ -9,7 +9,6 @@ import { buildPlanningBriefModel, ADVISORY_NOTE, type ReportPriority } from '../
 import { downloadPlanningBriefDocx } from '../lib/exportDocx';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
-import { StageGuide } from './Guidance';
 
 interface ExportBriefProps {
   data: UnpolProjectData;
@@ -122,9 +121,8 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess,
 
   return (
     <div className="flex flex-col gap-6">
-      <StageGuide stage={7} />
       <div className="export-toolbar flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between print:hidden">
-        <div><h3 className="text-lg font-bold text-slate-950">7. Export Planning Brief</h3><p className="mt-1 text-sm text-slate-500">Create an editable Word brief, professional print/PDF document, Markdown copy, or JSON workspace backup.</p></div>
+        <div><h3 className="text-lg font-bold text-slate-950">Export · Planning Brief</h3><p className="mt-1 text-sm text-slate-500">Create an editable Word brief, professional print/PDF document, Markdown copy, or JSON workspace backup.</p></div>
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" size="sm" onClick={handleWord} disabled={exportingWord}><FileText size={14} className="mr-1.5 text-blue-700" />{exportingWord ? 'Creating Word…' : 'Download Word'}</Button>
           <Button variant="outline" size="sm" onClick={() => window.print()}><Printer size={14} className="mr-1.5" />Print / PDF</Button>
@@ -175,7 +173,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess,
         </div>
       </Card>
 
-      <div className="flex justify-between print:hidden"><Button variant="outline" onClick={onPrev}>Back: Priority & Sequencing</Button></div>
+      <div className="flex justify-between print:hidden"><Button variant="outline" onClick={onPrev}>Back: Results &amp; Implementation</Button></div>
     </div>
   );
 };

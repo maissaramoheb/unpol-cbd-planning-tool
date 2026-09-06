@@ -4,6 +4,8 @@ import React, { useMemo, useState } from 'react';
 import { ArrowLeft, ArrowRight, Link2, Plus, Trash2 } from 'lucide-react';
 import type { AnalysisSynthesis as AnalysisSynthesisData, StrategicOptionType, SwotCategory, UnpolProjectData } from '../types';
 import { Button } from '../ui/Button';
+import { NextStepCue, StageGuide } from './Guidance';
+import { NEXT_STEP_CUES } from '../lib/guidance';
 import { TextArea } from '../ui/TextArea';
 import { Select } from '../ui/Select';
 import {
@@ -95,10 +97,11 @@ export const AnalysisSynthesis: React.FC<AnalysisSynthesisProps> = ({ data, onCh
 
   return (
     <div className="flex flex-col gap-6">
+      <StageGuide stage={4} />
       <header className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-3xl">
-            <span className="text-[10px] font-black uppercase tracking-[0.16em] text-blue-700">Analysis Synthesis · Stage 4 bridge</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.16em] text-blue-700">Stage 4 · SWOT &amp; Strategic Options</span>
             <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">SWOT Analysis &amp; Strategic Options</h2>
             <p className="mt-2 text-sm leading-relaxed text-slate-600">Bring together evidence, operating-environment findings and stakeholder analysis before defining CBD priorities.</p>
           </div>
@@ -139,9 +142,10 @@ export const AnalysisSynthesis: React.FC<AnalysisSynthesisProps> = ({ data, onCh
         </div>}
       </section>
 
+      <NextStepCue {...NEXT_STEP_CUES[4]} />
       <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <Button variant="outline" onClick={onBack}><ArrowLeft size={15} className="mr-2" />Back to Actors</Button>
-        <div className="flex flex-col gap-2 sm:flex-row"><Button variant="ghost" onClick={onContinue}>Skip synthesis</Button><Button onClick={onContinue}>Continue to CBD Matrix<ArrowRight size={15} className="ml-2" /></Button></div>
+        <Button variant="outline" onClick={onBack}><ArrowLeft size={15} className="mr-2" />Back: Stakeholders &amp; Ownership</Button>
+        <div className="flex flex-col gap-2 sm:flex-row"><Button variant="ghost" onClick={onContinue}>Continue without synthesis</Button><Button onClick={onContinue}>Continue to CBD Priorities<ArrowRight size={15} className="ml-2" /></Button></div>
       </div>
     </div>
   );
