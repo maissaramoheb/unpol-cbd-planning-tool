@@ -71,7 +71,7 @@ export const STAGE_GUIDANCE: Record<GuidanceStage, StageGuidanceContent> = {
 export const NEXT_STEP_CUES: Record<Exclude<GuidanceStage, 7>, { title: string; description: string }> = {
   2: { title: 'Next: Examine the context and evidence', description: 'Use the profile to assess the conditions that could shape or constrain CBD.' },
   3: { title: 'Next: Understand the actors', description: 'You have identified conditions affecting CBD. Next, examine who can enable, influence, resist or sustain the response.' },
-  4: { title: 'Next: Define CBD priorities', description: 'Use the evidence and stakeholder picture to identify specific capacity problems and appropriate responses.' },
+  4: { title: 'Next: Synthesize the analysis', description: 'Bring together evidence, operating-environment findings and stakeholder analysis before defining CBD priorities.' },
   5: { title: 'Next: Prioritize and sequence', description: 'Now decide what matters most, who should lead and what should happen first.' },
   6: { title: 'Next: Produce the planning brief', description: 'Review how the recorded priorities, responsibilities and sequencing come together in a transferable output.' }
 };

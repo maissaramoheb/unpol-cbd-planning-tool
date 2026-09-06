@@ -1,5 +1,5 @@
 import React, { useId, useState } from 'react';
-import { CbdCell, CbdAxis, PestelsItem, Stakeholder, EvidenceNote } from '../types';
+import { CbdCell, CbdAxis, PestelsItem, Stakeholder, EvidenceNote, StrategicOption } from '../types';
 import { Card, CardBody, CardHeader } from '../ui/Card';
 import { TextArea } from '../ui/TextArea';
 import { Slider } from '../ui/Slider';
@@ -19,6 +19,7 @@ interface MatrixDetailsProps {
   customCells: Record<string, CbdCell>;
   pestels: Record<string, PestelsItem>;
   stakeholders: Stakeholder[];
+  strategicOptions: StrategicOption[];
   onUpdateCell: (key: string, cell: CbdCell) => void;
   onSelectCellByKey: (key: string) => void;
 }
@@ -31,6 +32,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
   customCells,
   pestels,
   stakeholders,
+  strategicOptions,
   onUpdateCell,
   onSelectCellByKey
 }) => {
@@ -85,7 +87,8 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
       leadStakeholderId: null,
       supportingStakeholderIds: [],
       implementationPhase: null,
-      milestoneTimeframe: ''
+      milestoneTimeframe: '',
+      strategicOptionIds: []
     };
   };
 
@@ -223,6 +226,25 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
         </div>
       </CardHeader>
       <CardBody className="flex flex-col gap-4">
+        <div className="grid grid-cols-1 gap-3">
+          <div>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900">Planning Basis</h4>
+            <p className="mt-1 text-xs leading-relaxed text-slate-500">Link strategic options that inform this priority. The links do not populate or determine the CBD response.</p>
+          </div>
+          <fieldset className="rounded-xl border border-blue-100 bg-blue-50/40 p-3">
+            <legend className="px-1 text-xs font-bold text-blue-950">Strategic Synthesis Basis</legend>
+            {strategicOptions.length ? <div className="grid gap-2 sm:grid-cols-2">
+              {strategicOptions.map(option => {
+                const checked = (activeCell.strategicOptionIds || []).includes(option.id);
+                return <label key={option.id} className={`flex cursor-pointer items-start gap-2 rounded-lg border p-2.5 text-xs ${checked ? 'border-blue-300 bg-white text-blue-950' : 'border-slate-200 bg-white/70 text-slate-600'}`}>
+                  <input type="checkbox" checked={checked} onChange={() => handleCellChange('strategicOptionIds', checked ? (activeCell.strategicOptionIds ?? []).filter(id => id !== option.id) : [...(activeCell.strategicOptionIds ?? []), option.id])} className="mt-0.5 h-3.5 w-3.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
+                  <span><strong className="block">{option.reference} · {option.type}</strong><span className="mt-0.5 block line-clamp-2">{option.option || 'Strategic option wording not yet recorded.'}</span></span>
+                </label>;
+              })}
+            </div> : <p className="text-xs text-slate-500">No Strategic Options recorded. You may continue without Analysis Synthesis.</p>}
+          </fieldset>
+        </div>
+
         <div className="grid grid-cols-1 gap-4">
           <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900">Planning Logic</h4>
           <TextArea

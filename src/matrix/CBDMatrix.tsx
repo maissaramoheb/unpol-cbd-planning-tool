@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CbdAxis, CbdCell, PestelsItem, Stakeholder } from '../types';
+import { CbdAxis, CbdCell, PestelsItem, Stakeholder, StrategicOption } from '../types';
 import { MatrixGrid } from './MatrixGrid';
 import { MatrixListView } from './MatrixListView';
 import { MatrixDetails } from './MatrixDetails';
@@ -13,6 +13,7 @@ interface CBDMatrixProps {
   customCells: Record<string, CbdCell>;
   pestels: Record<string, PestelsItem>;
   stakeholders: Stakeholder[];
+  strategicOptions: StrategicOption[];
   onUpdateCell: (key: string, cell: CbdCell) => void;
   onNext: () => void;
   onPrev: () => void;
@@ -24,6 +25,7 @@ export const CBDMatrix: React.FC<CBDMatrixProps> = ({
   customCells,
   pestels,
   stakeholders,
+  strategicOptions,
   onUpdateCell,
   onNext,
   onPrev
@@ -102,6 +104,7 @@ export const CBDMatrix: React.FC<CBDMatrixProps> = ({
           customCells={customCells}
           pestels={pestels}
           stakeholders={stakeholders}
+          strategicOptions={strategicOptions}
           onUpdateCell={onUpdateCell}
           onSelectCellByKey={handleSelectCellByKey}
         />

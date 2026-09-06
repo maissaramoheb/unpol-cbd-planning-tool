@@ -1,17 +1,26 @@
 import { UnpolProjectData } from '../types';
 import { evaluateCbdCell } from './scoring';
+import { isValidStrategicOptionCombination } from './analysisSynthesis';
 
 export interface QualityWarning {
   id: string;
   type: 'warning' | 'caution' | 'info';
-  category: 'profile' | 'pestels' | 'stakeholders' | 'matrix' | 'sequencing';
+  category: 'profile' | 'pestels' | 'stakeholders' | 'synthesis' | 'matrix' | 'sequencing';
   message: string;
   itemKey?: string;
 }
 
 export function calculateQualityWarnings(data: UnpolProjectData): QualityWarning[] {
   const warnings: QualityWarning[] = [];
-  const { profile, pestels, stakeholders, customCells, priorityBrief } = data;
+  const { profile, pestels, stakeholders, customCells, priorityBrief, analysisSynthesis } = data;
+
+  analysisSynthesis.swotFindings.forEach(item => {
+    if (!item.sourceReferences.length) warnings.push({ id: `swot-no-source-${item.id}`, type: 'caution', category: 'synthesis', message: `Analytical caution: SWOT finding "${item.reference}" has no linked supporting source. Manual synthesis is valid, but its basis should be recorded where possible.`, itemKey: item.id });
+  });
+  analysisSynthesis.strategicOptions.forEach(option => {
+    if (!isValidStrategicOptionCombination(option, analysisSynthesis.swotFindings)) warnings.push({ id: `option-invalid-basis-${option.id}`, type: 'warning', category: 'synthesis', message: `Analytical caution: Strategic Option "${option.reference}" does not have a complete ${option.type} SWOT basis.`, itemKey: option.id });
+  });
+  const strategicOptionIds = new Set(analysisSynthesis.strategicOptions.map(option => option.id));
 
   // 1. Incomplete mission profile / missing critical fields for export
   const criticalProfileFields: { field: keyof typeof profile; label: string }[] = [
@@ -82,6 +91,9 @@ export function calculateQualityWarnings(data: UnpolProjectData): QualityWarning
 
   Object.entries(customCells).forEach(([key, cell]) => {
     const highPriority = evaluateCbdCell(cell).score >= 4;
+    const missingStrategicLink = (cell.strategicOptionIds || []).find(id => !strategicOptionIds.has(id));
+    if (missingStrategicLink) warnings.push({ id: `matrix-missing-option-${key}`, type: 'warning', category: 'matrix', message: `Analytical caution: CBD action "${key}" links to a missing Strategic Option.`, itemKey: key });
+    if (highPriority && !cell.evidenceNotes?.length && !(cell.strategicOptionIds || []).length) warnings.push({ id: `matrix-no-analysis-basis-${key}`, type: 'caution', category: 'matrix', message: `Analytical caution: High-priority CBD action "${key}" has no linked evidence or Strategic Synthesis Basis.`, itemKey: key });
     if (highPriority && !cell.capacityProblem?.trim()) warnings.push({ id: `matrix-no-problem-${key}`, type: 'warning', category: 'matrix', message: `Analytical caution: High-priority CBD action "${key}" has no defined capacity problem or gap.`, itemKey: key });
     if (highPriority && !cell.planningObjective?.trim()) warnings.push({ id: `matrix-no-objective-${key}`, type: 'warning', category: 'matrix', message: `Analytical caution: High-priority CBD action "${key}" has no planning objective.`, itemKey: key });
     if (cell.implementationPhase && !cell.leadStakeholderId) warnings.push({ id: `matrix-phase-no-lead-${key}`, type: 'warning', category: 'sequencing', message: `Analytical caution: CBD action "${key}" is assigned to ${cell.implementationPhase} but has no lead stakeholder or actor.`, itemKey: key });

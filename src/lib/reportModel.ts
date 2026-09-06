@@ -1,4 +1,4 @@
-import type { CbdCell, EvidenceNote, PestelsItem, Stakeholder, UnpolProjectData } from '../types';
+import type { CbdCell, EvidenceNote, PestelsItem, Stakeholder, StrategicOption, SwotFinding, UnpolProjectData } from '../types';
 import { evaluateCbdCell, type CbdPriorityAssessment } from './scoring';
 import { analyzeStakeholders } from './stakeholderAnalysis';
 import { calculateQualityWarnings, type QualityWarning } from './warnings';
@@ -30,6 +30,7 @@ export interface ReportPriority {
   leadStakeholder: Stakeholder | null;
   supportingStakeholders: Stakeholder[];
   evidenceIds: string[];
+  strategicOptions: StrategicOption[];
 }
 
 export interface PlanningBriefModel {
@@ -39,6 +40,8 @@ export interface PlanningBriefModel {
   status: string;
   evidence: ReportEvidence[];
   selectedPestels: PestelsItem[];
+  keySwotFindings: SwotFinding[];
+  strategicOptions: StrategicOption[];
   priorities: ReportPriority[];
   warnings: QualityWarning[];
   evidenceGaps: string[];
@@ -113,7 +116,10 @@ export function buildPlanningBriefModel(data: UnpolProjectData): PlanningBriefMo
       supportingStakeholders: (priority.cell.supportingStakeholderIds || [])
         .map(id => data.stakeholders.find(stakeholder => stakeholder.id === id))
         .filter((stakeholder): stakeholder is Stakeholder => Boolean(stakeholder)),
-      evidenceIds: findEvidenceIds(priority.cell.evidenceNotes, evidence)
+      evidenceIds: findEvidenceIds(priority.cell.evidenceNotes, evidence),
+      strategicOptions: (priority.cell.strategicOptionIds || [])
+        .map(id => data.analysisSynthesis.strategicOptions.find(option => option.id === id))
+        .filter((option): option is StrategicOption => Boolean(option))
     }));
 
   const selectedPestels = Object.values(data.pestels)
@@ -141,6 +147,8 @@ export function buildPlanningBriefModel(data: UnpolProjectData): PlanningBriefMo
     status: DOCUMENT_STATUS,
     evidence,
     selectedPestels,
+    keySwotFindings: data.analysisSynthesis.swotFindings.filter(item => item.finding.trim()).slice(0, 8),
+    strategicOptions: data.analysisSynthesis.strategicOptions.filter(item => item.option.trim()),
     priorities,
     warnings: calculateQualityWarnings(data),
     evidenceGaps: buildEvidenceGaps(data, priorities),

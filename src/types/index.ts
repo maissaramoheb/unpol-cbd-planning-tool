@@ -47,6 +47,40 @@ export interface EvidenceNote {
   comment: string;
 }
 
+export type SwotCategory = 'Strength' | 'Weakness' | 'Opportunity' | 'Threat';
+export type StrategicOptionType = 'SO' | 'ST' | 'WO' | 'WT';
+export type AnalysisSourceType = 'pestels' | 'evidence' | 'stakeholder' | 'profile';
+
+export interface AnalysisSourceReference {
+  type: AnalysisSourceType;
+  id: string;
+}
+
+export interface SwotFinding {
+  id: string;
+  reference: string;
+  category: SwotCategory;
+  finding: string;
+  cbdImplication: string;
+  sourceReferences: AnalysisSourceReference[];
+  confidence: number | null;
+  verificationNote: string;
+}
+
+export interface StrategicOption {
+  id: string;
+  reference: string;
+  type: StrategicOptionType;
+  swotFindingIds: string[];
+  option: string;
+  planningNote: string;
+}
+
+export interface AnalysisSynthesis {
+  swotFindings: SwotFinding[];
+  strategicOptions: StrategicOption[];
+}
+
 export interface PestelsItem {
   id: string; // political, economic, social, technological, environmental, legal, security
   name: string;
@@ -112,6 +146,7 @@ export interface CbdCell {
   supportingStakeholderIds: string[];
   implementationPhase: 'NOW' | 'NEXT' | 'LATER' | null;
   milestoneTimeframe: string;
+  strategicOptionIds?: string[];
 }
 
 export interface CbdAxis {
@@ -135,5 +170,6 @@ export interface UnpolProjectData {
   stakeholders: Stakeholder[];
   customCells: Record<string, CbdCell>;
   priorityBrief: PriorityBrief;
+  analysisSynthesis: AnalysisSynthesis;
   version: string;
 }

@@ -21,6 +21,7 @@ In peace operations and post-conflict transition contexts, policing capacity-bui
 This tool bridges that gap by providing a structured, interactive playground to:
 - Methodically diagnose environmental drivers and constraints.
 - Categorize and visualize stakeholder influence and reform postures.
+- Synthesize evidence, context, and stakeholder analysis into analyst-classified SWOT findings and optional TOWS Strategic Options.
 - Map advisory interventions across the five core areas of police capacity development.
 - Compare and sequence activities using a transparent prototype planning heuristic alongside professional judgement.
 
@@ -32,10 +33,11 @@ This tool bridges that gap by providing a structured, interactive playground to:
 2. **PESTEL-S Environmental Diagnosis**: Conduct a systematic assessment of Political, Economic, Social, Technological, Environmental, Legal, and Security factors shaping host-state policing.
 3. **Actor Assessment & Stakeholder Mapping**: Define and analyze enablers, blockers, spoilers, and neutral actors, mapping their reform posture, influence levels, and key UNPOL entry points.
 4. **Decision-Support Quadrants**: Graphically analyze stakeholders based on operational influence and engagement priorities to identify risk caveats.
-5. **CBD Key Areas × Cross-Cutting Analytical Lenses**: Use a prototype 5×6 structure to examine possible interventions. The complete matrix is not presented as a formal UN taxonomy.
-6. **Priority & Sequencing Support**: Compare user-entered ratings through a transparent heuristic, then record human-reviewed Quick Wins, Sensitive Reforms, and Longer-Term Reforms.
-7. **Quality-Control Warnings**: Real-time validation alerts highlighting incomplete sections, unsequenced tasks, or missing stakeholder attributes.
-8. **Exportable Briefs & Backups**: Preview PDF-ready briefs, copy structured Markdown reports, or export the entire planning workspace as a JSON file.
+5. **Analysis Synthesis**: Optionally classify analyst-written Strengths, Weaknesses, Opportunities, and Threats, preserve links to existing analysis, and develop unscored SO/ST/WO/WT Strategic Options. This stage-4 bridge supports professional judgement; it does not determine priorities.
+6. **CBD Key Areas × Cross-Cutting Analytical Lenses**: Use a prototype 5×6 structure to examine possible interventions. The complete matrix is not presented as a formal UN taxonomy.
+7. **Priority & Sequencing Support**: Compare user-entered ratings through a transparent heuristic, then record human-reviewed Quick Wins, Sensitive Reforms, and Longer-Term Reforms.
+8. **Quality-Control Warnings**: Real-time validation alerts highlighting incomplete sections, unsequenced tasks, or missing stakeholder attributes.
+9. **Exportable Briefs & Backups**: Preview PDF-ready briefs, copy structured Markdown reports, or export the entire planning workspace as a JSON file.
 
 ---
 
@@ -70,7 +72,7 @@ This planning tool is an unofficial prototype designed to assist human planning 
 - **Styling**: Tailwind CSS 4.0
 - **Icons**: Lucide React
 - **Animations**: Framer Motion
-- **Data Storage**: Browser `localStorage`; JSON backup/restore is available. Availability and security depend on the browser, device, and deployment context. Older saved workspaces are migrated on load by adding empty traceability fields; the tool does not infer responsibilities or sequencing phases.
+- **Data Storage**: Browser `localStorage`; JSON backup/restore is available. Availability and security depend on the browser, device, and deployment context. Older saved workspaces are migrated on load by adding empty Analysis Synthesis and traceability fields; the tool does not infer SWOT classifications, Strategic Options, responsibilities, or sequencing phases. Missing source and option references are removed safely without altering existing CBD intervention content.
 
 ---
 
@@ -109,7 +111,7 @@ In the project directory, you can run the following npm scripts:
 ---
 
 ## 📊 Project Status
-- **Current Version**: v0.4.1 — UX Guidance Layer
+- **Current Version**: v0.5.0 — Analysis Synthesis
 - **Phase**: Early-stage prototype (Active development). Feedback from peace operations and policing practitioners is welcome.
 
 ---
