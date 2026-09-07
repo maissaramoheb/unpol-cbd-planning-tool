@@ -18,7 +18,7 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
   const caption = activeStep
     ? `Stage ${activeStep.id} of ${WORKFLOW_STAGES.length} · ${activeStep.sub}`
     : currentView === EXPORT_VIEW
-      ? 'Workspace output · Planning Brief'
+      ? 'Workspace output · Professional Outputs'
       : 'Home · Planning Overview';
 
   useEffect(() => {
