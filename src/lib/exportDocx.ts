@@ -1,3 +1,4 @@
+import { indicatorTexts } from "./resultsPlanning";
 import {
   AlignmentType,
   BorderStyle,
@@ -103,7 +104,7 @@ function priorityTable(priority: ReportPriority): Table {
       new TableRow({ children: [cell('Enabling environment', priority.cell.environment || 'Not recorded', WHITE), cell('Key stakeholders', linkedStakeholders, WHITE)] }),
       new TableRow({ children: [cell('Responsibility', responsibility), cell('Implementation phase / milestone', phase)] }),
       new TableRow({ children: [cell('Implementation conditions', `Feasibility ${input.feasibility}/5 · Stakeholder support ${input.stakeholderSupport}/5 · Implementation risk ${input.risk}/5 · Indicative priority ${priority.assessment.score.toFixed(1)}/5`, AMBER), cell('Evidence confidence', `${input.confidenceLevel}/5`, AMBER)] }),
-      new TableRow({ children: [cell('Indicators', priority.cell.indicators.join('; ') || 'None recorded', WHITE), cell('Risks', priority.cell.risks || 'Not recorded', WHITE)] }),
+      new TableRow({ children: [cell('Indicators', indicatorTexts(priority.cell).join('; ') || 'None recorded', WHITE), cell('Risks', priority.cell.risks || 'Not recorded', WHITE)] }),
       new TableRow({ cantSplit: true, children: [new TableCell({ columnSpan: 2, margins: { top: 100, bottom: 100, left: 120, right: 120 }, children: [paragraph(`Recommended sequencing: ${priority.cell.sequencing || 'Not recorded'}`, { bold: true, color: BLUE })] })] })
     ]
   });
@@ -221,7 +222,7 @@ export async function createPlanningBriefDocx(model: PlanningBriefModel): Promis
 
     sectionHeading('7 · Monitoring, Evidence Gaps & Planning Controls'),
     heading('Monitoring Indicators', HeadingLevel.HEADING_2),
-    ...bulletList(model.priorities.flatMap(item => item.cell.indicators.map(indicator => `${item.number}: ${indicator}`)).slice(0, 12)),
+    ...bulletList(model.priorities.flatMap(item => indicatorTexts(item.cell).map(indicator => `${item.number}: ${indicator}`)).slice(0, 12)),
     heading('Critical Evidence Gaps', HeadingLevel.HEADING_2), ...bulletList(model.evidenceGaps),
     heading('Planning Assumptions Requiring Validation', HeadingLevel.HEADING_2), ...bulletList(data.priorityBrief.risksAssumptions),
     heading('Quality-Control Flags', HeadingLevel.HEADING_2), ...bulletList(model.warnings.slice(0, 5).map(item => item.message), 'No active quality-control warnings.'),

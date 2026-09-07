@@ -1,5 +1,5 @@
 import React, { useId, useState } from 'react';
-import { CbdCell, CbdAxis, PestelsItem, Stakeholder, EvidenceNote, StrategicOption } from '../types';
+import { CbdCell, CbdAxis, PestelsItem, Stakeholder, EvidenceNote, StrategicOption, PlanningIndicator } from '../types';
 import { Card, CardBody, CardHeader } from '../ui/Card';
 import { TextArea } from '../ui/TextArea';
 import { Slider } from '../ui/Slider';
@@ -10,6 +10,7 @@ import { Plus, Trash2, Link, Users } from 'lucide-react';
 import { evaluateCbdCell } from '../lib/scoring';
 import { FieldGuidance } from '../components/Guidance';
 import { FIELD_GUIDANCE } from '../lib/guidance';
+import { createIndicator, indicatorText, structuredIndicators } from '../lib/resultsPlanning';
 
 interface MatrixDetailsProps {
   selectedMode: 'cell' | 'dimension' | 'keyArea';
@@ -169,7 +170,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
   const activeCell = getCellData(rowId, colId);
   const activeAssessment = evaluateCbdCell(activeCell);
 
-  const handleCellChange = (field: keyof CbdCell, value: string | string[] | number | EvidenceNote[]) => {
+  const handleCellChange = (field: keyof CbdCell, value: string | string[] | number | EvidenceNote[] | PlanningIndicator[]) => {
     onUpdateCell(`${rowId}|${colId}`, {
       ...activeCell,
       [field]: value
@@ -197,13 +198,13 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
 
   const handleAddIndicator = () => {
     if (!newIndicator.trim()) return;
-    const current = activeCell.indicators || [];
-    handleCellChange('indicators', [...current, newIndicator.trim()]);
+    const current = structuredIndicators(activeCell);
+    handleCellChange('indicators', [...current, createIndicator(crypto.randomUUID(), newIndicator.trim())]);
     setNewIndicator('');
   };
 
   const handleRemoveIndicator = (idx: number) => {
-    const current = activeCell.indicators || [];
+    const current = structuredIndicators(activeCell);
     handleCellChange('indicators', current.filter((_, i) => i !== idx));
   };
 
@@ -371,10 +372,11 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
                 variant="slate"
                 className="pl-2.5 pr-1 py-1 flex items-center gap-1.5 text-[11px]"
               >
-                <span>{indicator}</span>
+                <span>{indicatorText(indicator)}</span>
                 <button
                   type="button"
                   onClick={() => handleRemoveIndicator(idx)}
+                  aria-label={`Remove indicator ${idx + 1}`}
                   className="p-0.5 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-600"
                 >
                   <Trash2 size={10} />

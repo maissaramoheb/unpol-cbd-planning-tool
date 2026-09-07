@@ -22,6 +22,7 @@ import { APP_VERSION_LABEL } from '../lib/version';
 import { buildCaranaDemoData } from '../data/caranaDemo';
 import { removeStrategicOption, removeSwotFinding } from '../lib/analysisSynthesis';
 import { EXPORT_VIEW, HOME_VIEW } from '../lib/workflow';
+import { normalizeResultsReferences } from '../lib/resultsPlanning';
 
 export const AppShell: React.FC = () => {
   const [data, setData] = useState<UnpolProjectData | null>(null);
@@ -105,10 +106,10 @@ export const AppShell: React.FC = () => {
   };
 
   const handleDeleteStakeholder = (id: string) => {
-    setData({
+    setData(normalizeResultsReferences({
       ...data,
       stakeholders: data.stakeholders.filter(s => s.id !== id)
-    });
+    }));
   };
 
   const handleSynthesisChange = (analysisSynthesis: AnalysisSynthesisData) => {
@@ -119,13 +120,13 @@ export const AppShell: React.FC = () => {
   const handleDeleteStrategicOption = (id: string) => setData(removeStrategicOption(data, id));
 
   const handleUpdateCell = (key: string, updatedCell: CbdCell) => {
-    setData({
+    setData(normalizeResultsReferences({
       ...data,
       customCells: {
         ...data.customCells,
         [key]: updatedCell
       }
-    });
+    }));
   };
 
   const handlePriorityBriefChange = (newBrief: PriorityBrief) => {
@@ -226,7 +227,7 @@ export const AppShell: React.FC = () => {
           />
         );
       case 7:
-        return <ResultsImplementation data={data} onPrev={() => setCurrentView(6)} onExport={() => setCurrentView(EXPORT_VIEW)} />;
+        return <ResultsImplementation data={data} onUpdateCell={handleUpdateCell} onPrev={() => setCurrentView(6)} onExport={() => setCurrentView(EXPORT_VIEW)} />;
       case EXPORT_VIEW:
         return (
           <ExportBrief
