@@ -124,7 +124,8 @@ export interface CbdCell {
   individual: string;
   organizational: string;
   environment: string;
-  indicators: string[];
+  indicators: Array<string | PlanningIndicator>; // Legacy strings normalize to canonical structured records.
+  resultsPlan?: ResultsPlan;
   drivers: string[];
   stakeholders: string[];
   risks: string;
@@ -147,6 +148,40 @@ export interface CbdCell {
   implementationPhase: 'NOW' | 'NEXT' | 'LATER' | null;
   milestoneTimeframe: string;
   strategicOptionIds?: string[];
+}
+
+export type InterventionLevel = 'individual' | 'organizational' | 'environment';
+export interface ResultOutput { id: string; reference: string; statement: string; interventionLevels: InterventionLevel[]; note: string }
+export interface ResultActivity {
+  id: string; reference: string; statement: string; interventionLevel: InterventionLevel | null;
+  outputIds: string[]; implementingActorId: string | null; supportingActorIds: string[];
+  timeframe: string; milestone: string; dependencyIds: string[]; resourceIds: string[];
+}
+export interface PlanningIndicator {
+  id: string; statement: string;
+  resultLevel: 'Intended Result / Outcome' | 'Output' | 'Activity / Process' | 'Not assigned';
+  linkedRecordId: string | null; baseline: string; target: string; verification: string;
+  frequency: 'One-time' | 'Weekly' | 'Monthly' | 'Quarterly' | 'Semi-annual' | 'Annual' | 'At milestone' | 'Other' | 'Not assigned';
+  responsibleActorId: string | null; disaggregation: string; note: string;
+}
+export interface ResultAssumption { id: string; statement: string; importance: 'Critical' | 'Important' | 'Contextual' | 'Not assessed'; reviewNote: string }
+export interface ResultDependency {
+  id: string; type: 'Activity' | 'CBD priority' | 'Policy approval' | 'Stakeholder action' | 'External condition' | 'Other';
+  statement: string; linkedPriorityKey: string | null; linkedRecordId: string | null;
+  status: 'Required' | 'In progress' | 'Met' | 'Uncertain' | 'Not assessed';
+}
+export interface ResourceRequirement {
+  id: string; category: 'Human Resources' | 'Financial' | 'Logistics / Equipment' | 'Technical' | 'Training / Expertise' | 'Policy / Administrative' | 'Other';
+  statement: string; availability: 'Available' | 'Partially available' | 'Not available' | 'Unknown';
+}
+export interface ResultsPlan {
+  schemaVersion: 1;
+  outputs: ResultOutput[]; activities: ResultActivity[]; assumptions: ResultAssumption[];
+  changeLogic: { interventionLevels: InterventionLevel[]; activityIds: string[]; because: string; assumptionIds: string[] };
+  dependencies: ResultDependency[]; resources: ResourceRequirement[];
+  riskManagement: { mitigation: string; responsibleActorId: string | null; reviewNote: string };
+  ownership: { counterpartActorId: string | null; status: 'Not yet assessed' | 'Not consulted' | 'Consulted' | 'Supports' | 'Supports with conditions' | 'Concerns / resistance identified' | 'Not applicable'; note: string };
+  sustainability: Array<{ id: string; dimension: string; requirement: string }>;
 }
 
 export interface CbdAxis {

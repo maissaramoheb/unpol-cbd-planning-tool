@@ -1,3 +1,4 @@
+import { indicatorTexts } from "./resultsPlanning";
 import { UnpolProjectData } from '../types';
 import { evaluateCbdCell } from './scoring';
 import { calculateQualityWarnings } from './warnings';
@@ -111,7 +112,7 @@ ${map.quadrants.map((quadrant) => `- **${quadrant.title} (${quadrant.stakeholder
   - *Individual*: ${cell.individual}
   - *Organizational*: ${cell.organizational}
   - *Enabling Environment*: ${cell.environment}
-- **Key Indicators**: ${cell.indicators?.map(i => `\n    - ${i}`).join('') || '*None*'}
+- **Key Indicators**: ${indicatorTexts(cell).map(i => `\n    - ${i}`).join('') || '*None*'}
 - **Responsibility**: Lead: ${stakeholderName(cell.leadStakeholderId) || 'Not assigned'}; Support: ${(cell.supportingStakeholderIds || []).map(stakeholderName).filter(Boolean).join('; ') || 'None assigned'}
 - **Implementation Phase / Milestone**: ${cell.implementationPhase || 'Not assigned'}${cell.milestoneTimeframe ? ` · ${cell.milestoneTimeframe}` : ''}
 - **Sequencing Note**: ${cell.sequencing}

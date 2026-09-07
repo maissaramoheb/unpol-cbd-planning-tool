@@ -1,5 +1,6 @@
 'use client';
 
+import { indicatorTexts } from "../lib/resultsPlanning";
 import React, { useMemo, useRef, useState } from 'react';
 import { AlertTriangle, Check, Clipboard, FileDown, FileText, FileUp, Printer } from 'lucide-react';
 import type { UnpolProjectData } from '../types';
@@ -64,7 +65,7 @@ const PriorityCard = ({ priority }: { priority: ReportPriority }) => {
         <div><strong>Implementation phase</strong><p>{priority.cell.implementationPhase || 'Not assigned'}{priority.cell.milestoneTimeframe ? ` · ${priority.cell.milestoneTimeframe}` : ''}</p></div>
       </div>
       <div className="priority-footer">
-        <div><strong>Indicators</strong><BulletList items={priority.cell.indicators || []} /></div>
+        <div><strong>Indicators</strong><BulletList items={indicatorTexts(priority.cell)} /></div>
         <div><strong>Risks</strong><p>{priority.cell.risks || 'Not recorded.'}</p></div>
         <div><strong>Recommended sequencing</strong><p>{priority.cell.sequencing || 'Not recorded.'}</p></div>
       </div>
@@ -164,7 +165,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess,
 
           <ReportPage><SectionTitle number="06">Sequencing & Implementation Pathway</SectionTitle><div className="sequence-path"><div><span>NOW</span><h3>Immediate / enabling actions</h3><BulletList items={data.priorityBrief.quickWins} /></div><div><span>NEXT</span><h3>Follow-on / demanding reforms</h3><BulletList items={data.priorityBrief.sensitiveReforms} /></div><div><span>LATER</span><h3>Longer-term / structural changes</h3><BulletList items={data.priorityBrief.longerTermReforms} /></div></div><div className="planning-judgement"><h3>Recorded Sequencing Recommendation</h3><p>{data.priorityBrief.sequencingRecommendation || 'No sequencing recommendation recorded.'}</p></div></ReportPage>
 
-          <ReportPage><SectionTitle number="07">Monitoring, Evidence Gaps & Planning Controls</SectionTitle><div className="controls-grid"><div><h3>Monitoring indicators</h3><BulletList items={model.priorities.flatMap(item => item.cell.indicators.map(indicator => `${item.number}: ${indicator}`)).slice(0, 12)} /></div><div><h3>Critical evidence gaps</h3><BulletList items={model.evidenceGaps} empty="No critical gap derived from recorded fields." /></div><div><h3>Assumptions requiring validation</h3><BulletList items={data.priorityBrief.risksAssumptions} /></div><div><h3>Quality-control flags</h3><BulletList items={model.warnings.slice(0, 6).map(item => item.message)} empty="No active quality-control warnings." /></div></div><div className="advisory-note"><strong>Limitations / Advisory Note</strong><p>{ADVISORY_NOTE}</p></div></ReportPage>
+          <ReportPage><SectionTitle number="07">Monitoring, Evidence Gaps & Planning Controls</SectionTitle><div className="controls-grid"><div><h3>Monitoring indicators</h3><BulletList items={model.priorities.flatMap(item => indicatorTexts(item.cell).map(indicator => `${item.number}: ${indicator}`)).slice(0, 12)} /></div><div><h3>Critical evidence gaps</h3><BulletList items={model.evidenceGaps} empty="No critical gap derived from recorded fields." /></div><div><h3>Assumptions requiring validation</h3><BulletList items={data.priorityBrief.risksAssumptions} /></div><div><h3>Quality-control flags</h3><BulletList items={model.warnings.slice(0, 6).map(item => item.message)} empty="No active quality-control warnings." /></div></div><div className="advisory-note"><strong>Limitations / Advisory Note</strong><p>{ADVISORY_NOTE}</p></div></ReportPage>
 
           <ReportPage className="report-annex"><SectionTitle>Annex A · Full PESTEL-S Analysis</SectionTitle>{Object.values(data.pestels).map(item => <article key={item.id}><h3>{item.name}</h3><p>{item.finding || 'No finding recorded.'}</p><small><b>Why:</b> {item.why || 'Not recorded.'}</small><small><b>Sequencing:</b> {item.sequencing || 'Not recorded.'}</small></article>)}</ReportPage>
           <ReportPage className="report-annex"><SectionTitle>Annex B · Stakeholder Register</SectionTitle><div className="report-table-wrap"><table><thead><tr><th>Actor</th><th>Category / Role</th><th>Influence</th><th>Position</th><th>Risk / Engagement</th></tr></thead><tbody>{data.stakeholders.map(item => <tr key={item.id}><td>{item.name}</td><td>{item.category}<br /><small>{item.role}</small></td><td>{item.influence}</td><td>{item.position}</td><td>{item.risk}<br /><small><b>Engage:</b> {item.engagement}</small></td></tr>)}</tbody></table></div></ReportPage>

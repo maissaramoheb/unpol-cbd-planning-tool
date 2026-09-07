@@ -1,99 +1,68 @@
-import React from 'react';
-import { ArrowLeft, FileText, Flag, Users } from 'lucide-react';
-import type { CbdCell, UnpolProjectData } from '../types';
+import React, { useState } from 'react';
+import type { CbdCell, UnpolProjectData, ResultsPlan, PlanningIndicator, ResultActivity, ResultOutput, ResultAssumption, ResultDependency, ResourceRequirement } from '../types';
 import { Button } from '../ui/Button';
-import { Card, CardBody, CardHeader } from '../ui/Card';
+import { TextArea } from '../ui/TextArea';
+import { Select } from '../ui/Select';
 import { StageGuide } from './Guidance';
+import { AVAILABILITY, DEPENDENCY_STATUS, DEPENDENCY_TYPES, FREQUENCIES, IMPORTANCE, LEVELS, OWNERSHIP_STATUS, RESOURCE_CATEGORIES, RESULT_LEVELS, SUSTAINABILITY_DIMENSIONS, createIndicator, emptyResultsPlan, nextReference, resultsCautions, resultsCompleteness, structuredIndicators } from '../lib/resultsPlanning';
 
-interface ResultsImplementationProps {
-  data: UnpolProjectData;
-  onPrev: () => void;
-  onExport: () => void;
+type Option = { value: string; label: string };
+const options = (values: readonly string[]): Option[] => values.map(value => ({ value, label: value === 'environment' ? 'Enabling Environment' : value.charAt(0).toUpperCase() + value.slice(1) }));
+const Text = ({ label, value, onChange, help }: { label: string; value: string; onChange: (v: string) => void; help?: string }) => <TextArea rows={2} label={label} value={value} onChange={e => onChange(e.target.value)} helperText={help} />;
+const Choice = ({ label, value, items, onChange, help }: { label: string; value: string | null; items: Option[]; onChange: (v: string) => void; help?: string }) => <Select label={label} value={value ?? ''} options={items} onChange={e => onChange(e.target.value)} helperText={help} />;
+function Multi({ label, values, items, onChange }: { label: string; values: string[]; items: Option[]; onChange: (ids: string[]) => void }) {
+  return <fieldset className="min-w-0 rounded-lg border border-slate-200 p-3"><legend className="px-1 text-xs font-semibold text-slate-700">{label}</legend><div className="flex flex-wrap gap-x-4 gap-y-2">{items.length ? items.map(o => <label key={o.value} className="flex min-w-0 items-start gap-2 text-xs text-slate-700"><input type="checkbox" className="mt-0.5 focus-visible:outline-2 focus-visible:outline-blue-600" checked={values.includes(o.value)} onChange={e => onChange(e.target.checked ? [...values, o.value] : values.filter(v => v !== o.value))} /><span className="break-words">{o.label}</span></label>) : <span className="text-xs text-slate-500">No records available to link.</span>}</div></fieldset>;
 }
-
-function hasRecordedImplementationData(cell: CbdCell): boolean {
-  return Boolean(
-    cell.capacityProblem.trim() ||
-    cell.planningObjective.trim() ||
-    cell.individual.trim() ||
-    cell.organizational.trim() ||
-    cell.environment.trim() ||
-    cell.leadStakeholderId ||
-    cell.supportingStakeholderIds.length ||
-    cell.implementationPhase ||
-    cell.milestoneTimeframe.trim() ||
-    cell.indicators.some(Boolean) ||
-    cell.risks.trim()
-  );
+function Records<T extends { id: string }>({ title, singular, records, onChange, create, summary, children }: { title: string; singular: string; records: T[]; onChange: (records: T[]) => void; create: () => T; summary: (record: T, index: number) => string; children: (record: T, update: (patch: Partial<T>) => void) => React.ReactNode }) {
+  const [opened, setOpened] = useState<string | null>(null);
+  return <section className="space-y-3"><div className="flex flex-wrap items-center justify-between gap-2"><h4 className="font-bold text-slate-900">{title}</h4><Button size="sm" variant="outline" onClick={() => { const record = create(); onChange([...records, record]); setOpened(record.id); }}>Add {singular}</Button></div>{records.length === 0 && <p className="text-xs text-slate-500">None recorded. Add only what is useful for this plan.</p>}{records.map((record, index) => <div key={record.id} className="min-w-0 rounded-xl border border-slate-200 bg-white"><h5><button type="button" aria-expanded={opened === record.id} aria-controls={'record-' + record.id} onClick={() => setOpened(opened === record.id ? null : record.id)} className="w-full break-words rounded-xl p-3 text-start text-sm font-semibold text-slate-800 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-blue-600">{summary(record, index)}</button></h5><div id={'record-' + record.id} hidden={opened !== record.id} className="space-y-4 border-t border-slate-100 p-4">{children(record, patch => onChange(records.map(r => r.id === record.id ? { ...r, ...patch } : r)))}<Button size="sm" variant="outline" aria-label={'Remove ' + summary(record, index)} onClick={() => { if (confirm('Remove this record? Linked references will be cleared; other planning text will be retained.')) onChange(records.filter(r => r.id !== record.id)); }}>Remove record</Button></div></div>)}</section>;
 }
-
-const RecordedValue = ({ label, value }: { label: string; value?: string | null }) => (
-  <div>
-    <dt className="text-[10px] font-black uppercase tracking-wider text-slate-500">{label}</dt>
-    <dd className="mt-1 text-xs leading-relaxed text-slate-700">{value?.trim() || 'Not recorded.'}</dd>
-  </div>
-);
-
-export const ResultsImplementation: React.FC<ResultsImplementationProps> = ({ data, onPrev, onExport }) => {
-  const stakeholderNames = new Map(data.stakeholders.map(stakeholder => [stakeholder.id, stakeholder.name]));
-  const priorities = Object.entries(data.customCells).filter(([, cell]) => hasRecordedImplementationData(cell));
-
-  return (
-    <div className="flex flex-col gap-6">
-      <StageGuide stage={7} />
-
-      <header>
-        <p className="text-[10px] font-black uppercase tracking-[0.16em] text-blue-700">Stage 7 · Results &amp; Delivery</p>
-        <h2 className="mt-1 text-2xl font-black tracking-tight text-slate-950">Results &amp; Implementation</h2>
-        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">Review the implementation information already recorded for each configured CBD priority. This view consolidates existing planning data; it does not add a Theory of Change, Logframe or M&amp;E methodology.</p>
-      </header>
-
-      <Card className="border-blue-100 bg-blue-50/30">
-        <CardHeader className="border-b border-blue-100 pb-3">
-          <h3 className="flex items-center gap-2 text-sm font-black text-slate-950"><Flag size={16} className="text-blue-700" />Currently recorded</h3>
-          <p className="mt-1 text-xs leading-relaxed text-slate-600">Objectives, intervention packages, responsibilities, timing, indicators and implementation conditions entered in the CBD Priorities stage.</p>
-        </CardHeader>
-        <CardBody className="flex flex-col gap-4">
-          {priorities.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-slate-300 bg-white p-8 text-center">
-              <p className="text-sm font-bold text-slate-800">No configured CBD priorities to summarize.</p>
-              <p className="mt-1 text-xs text-slate-500">Record a capacity problem or implementation detail in Stage 5, then return here to review it.</p>
-            </div>
-          ) : priorities.map(([key, cell]) => {
-            const [area, lens] = key.split('|');
-            const lead = cell.leadStakeholderId ? stakeholderNames.get(cell.leadStakeholderId) : null;
-            const supporters = cell.supportingStakeholderIds.map(id => stakeholderNames.get(id)).filter(Boolean).join(', ');
-            const interventionPackage = [cell.individual, cell.organizational, cell.environment].filter(value => value.trim()).join(' · ');
-            return (
-              <article key={key} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-                <div className="flex flex-col gap-2 border-b border-slate-100 pb-3 sm:flex-row sm:items-start sm:justify-between">
-                  <div><h3 className="text-sm font-black text-slate-950">{area}</h3><p className="mt-0.5 text-[11px] font-semibold text-slate-500">Analytical lens: {lens}</p></div>
-                  <span className="w-fit rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-[10px] font-black text-blue-800">{cell.implementationPhase || 'Phase not recorded'}</span>
-                </div>
-                <dl className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  <RecordedValue label="Planning objective" value={cell.planningObjective} />
-                  <RecordedValue label="Intervention package" value={interventionPackage} />
-                  <RecordedValue label="Lead actor" value={lead} />
-                  <RecordedValue label="Supporting actors" value={supporters} />
-                  <RecordedValue label="Milestone / timeframe" value={cell.milestoneTimeframe} />
-                  <RecordedValue label="Indicators" value={cell.indicators.filter(Boolean).join('; ')} />
-                  <RecordedValue label="Risks / implementation conditions" value={cell.risks} />
-                </dl>
-              </article>
-            );
-          })}
-        </CardBody>
-      </Card>
-
-      <aside className="rounded-xl border border-slate-200 bg-white p-4 text-xs leading-relaxed text-slate-600">
-        <p className="flex items-center gap-2 font-black uppercase tracking-wider text-slate-800"><Users size={15} className="text-slate-500" />Future results-planning capability</p>
-        <p className="mt-2">Deeper results chains, baselines and targets, assumptions and dependencies, resources, sustainability, ownership validation and M&amp;E remain future methodology. They are not represented or inferred in this version.</p>
-      </aside>
-
-      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <Button variant="outline" onClick={onPrev}><ArrowLeft size={15} className="mr-2" />Back: Prioritization &amp; Sequencing</Button>
-        <Button onClick={onExport}>Open Planning Brief<FileText size={15} className="ml-2" /></Button>
-      </div>
-    </div>
-  );
-};
+interface Props { data: UnpolProjectData; onUpdateCell: (key: string, cell: CbdCell) => void; onPrev: () => void; onExport: () => void }
+export function ResultsImplementation({ data, onUpdateCell, onPrev, onExport }: Props) {
+  const [selected, setSelected] = useState('');
+  const keys = Object.keys(data.customCells);
+  const key = keys.includes(selected) ? selected : keys[0];
+  return <div className="min-w-0 space-y-6 print:hidden"><StageGuide stage={7} /><header><p className="text-xs font-bold uppercase tracking-wider text-blue-700">Stage 7 · Results &amp; Delivery</p><h2 className="mt-1 text-2xl font-black text-slate-950">Results &amp; Implementation</h2><p className="mt-2 text-sm text-slate-600">Work on one CBD priority at a time. Shared fields stay synchronized with Stage 5. Completeness describes what is recorded, not its quality or approval.</p>{data.profile.missionName.includes('CARANA') && <p className="mt-2 text-xs font-semibold text-amber-800">FICTIONAL EXERCISE MATERIAL — baselines and planning judgements are illustrative, not verified assessments.</p>}</header>{key ? <><Choice label="CBD priority" value={key} items={keys.map(k => ({ value: k, label: k.replace('|', ' × ') }))} onChange={setSelected} /><PriorityPlan key={key} data={data} cell={data.customCells[key]} onChange={cell => onUpdateCell(key, cell)} /></> : <div className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-600">No configured CBD priorities. Record a priority in Stage 5 to begin its Results Plan.</div>}<div className="flex flex-col gap-3 sm:flex-row sm:justify-between"><Button variant="outline" onClick={onPrev}>Back: Prioritization &amp; Sequencing</Button><Button onClick={onExport}>Open Planning Brief</Button></div></div>;
+}
+function PriorityPlan({ data, cell, onChange }: { data: UnpolProjectData; cell: CbdCell; onChange: (cell: CbdCell) => void }) {
+  const [section, setSection] = useState('7A');
+  const p = cell.resultsPlan ?? emptyResultsPlan();
+  const indicators = structuredIndicators(cell);
+  const update = (patch: Partial<CbdCell>) => onChange({ ...cell, ...patch });
+  const plan = (patch: Partial<ResultsPlan>) => update({ resultsPlan: { ...p, ...patch } });
+  const actors = [{ value: '', label: 'Not assigned' }, ...data.stakeholders.map(s => ({ value: s.id, label: s.name }))];
+  const refs = (records: { id: string; reference: string; statement: string }[]) => records.map(r => ({ value: r.id, label: r.reference + ': ' + (r.statement || 'Statement not recorded') }));
+  const noLink = { value: '', label: 'Not linked' };
+  const uid = () => crypto.randomUUID();
+  const cautions = resultsCautions(cell);
+  const sections = ['7A — Results Logic', '7B — Measurement', '7C — Implementation', '7D — Ownership, Risk & Sustainability'];
+  const actorName = (id: string | null) => actors.find(a => a.value === id)?.label || 'Not recorded';
+  return <div className="min-w-0 space-y-4">
+    <dl className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-7">{resultsCompleteness(cell).map(c => <div key={c.label} className="rounded-lg border border-slate-200 bg-white p-2"><dt className="text-xs font-bold text-slate-700">{c.label}</dt><dd className="mt-1 text-xs text-slate-500">{c.status}</dd></div>)}</dl>
+    <details className="rounded-lg border border-amber-200 bg-amber-50/40 p-3"><summary className="cursor-pointer text-xs font-semibold text-slate-700 focus-visible:outline-2 focus-visible:outline-blue-600">Planning cautions ({cautions.length}) — optional review</summary><ul className="mt-2 list-disc space-y-1 ps-5 text-xs text-slate-600">{cautions.map(c => <li key={c}>{c}</li>)}</ul></details>
+    {sections.map(title => { const id = title.slice(0, 2); return <section key={id} className="min-w-0 rounded-xl border border-slate-200 bg-white shadow-sm"><h3><button type="button" className="flex w-full items-center justify-between gap-3 rounded-xl p-4 text-start text-sm font-bold text-slate-900 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-blue-600" aria-expanded={section === id} aria-controls={'results-' + id} onClick={() => setSection(section === id ? '' : id)}>{title}<span aria-hidden="true">{section === id ? '−' : '+'}</span></button></h3><div id={'results-' + id} hidden={section !== id} className="min-w-0 space-y-6 border-t border-slate-100 p-4 sm:p-5">
+    {id === '7A' && <>
+      <div className="rounded-lg bg-slate-50 p-3 text-sm"><strong>Capacity Problem / Gap</strong><p className="mt-1 whitespace-pre-wrap text-slate-600">{cell.capacityProblem || 'Not recorded in Stage 5.'}</p></div>
+      <Text label="Planning Objective / Intended Result" value={cell.planningObjective} onChange={planningObjective => update({ planningObjective })} help="The same Planning Objective used in Stage 5; no separate outcome statement is created." />
+      <p className="text-xs text-slate-600">An output is a concrete product, service, system, process or capability that the intervention is expected to deliver.</p>
+      <Records<ResultOutput> title="Outputs" singular="output" records={p.outputs} onChange={outputs => plan({ outputs })} create={() => ({ id: uid(), reference: nextReference('OUT', p.outputs), statement: '', interventionLevels: [], note: '' })} summary={o => o.reference + ' · ' + (o.statement || 'New output')}>{(o, set) => <><Text label="Output statement" value={o.statement} onChange={statement => set({ statement })} /><Multi label="Linked intervention levels" values={o.interventionLevels} items={options(LEVELS)} onChange={v => set({ interventionLevels: v as ResultOutput['interventionLevels'] })} /><Text label="Output planning note" value={o.note} onChange={note => set({ note })} /></>}</Records>
+      <details className="rounded-lg border border-slate-200 p-3"><summary className="cursor-pointer text-sm font-bold focus-visible:outline-2 focus-visible:outline-blue-600">Change Logic (optional)</summary><div className="mt-4 space-y-4"><p className="text-xs text-slate-500">Analyst-entered reasoning; these structural links do not validate a causal model.</p><Multi label="IF — intervention levels" values={p.changeLogic.interventionLevels} items={options(LEVELS)} onChange={v => plan({ changeLogic: { ...p.changeLogic, interventionLevels: v as ResultsPlan['changeLogic']['interventionLevels'] } })} />{p.changeLogic.interventionLevels.map(l => <p key={l} className="text-xs text-slate-600">{cell[l] || 'Intervention not recorded.'}</p>)}<Multi label="IF — detailed activities" values={p.changeLogic.activityIds} items={refs(p.activities)} onChange={activityIds => plan({ changeLogic: { ...p.changeLogic, activityIds } })} /><p className="text-sm"><strong>THEN — intended result:</strong> {cell.planningObjective || 'Record the shared Planning Objective above.'}</p><Text label="BECAUSE — mechanism / rationale" value={p.changeLogic.because} onChange={because => plan({ changeLogic: { ...p.changeLogic, because } })} /><Multi label="PROVIDED THAT — assumptions" values={p.changeLogic.assumptionIds} items={p.assumptions.map((a, i) => ({ value: a.id, label: 'Assumption ' + (i + 1) + ': ' + a.statement }))} onChange={assumptionIds => plan({ changeLogic: { ...p.changeLogic, assumptionIds } })} /></div></details>
+      <p className="text-xs text-slate-600">An assumption is a condition believed necessary for expected results, but not fully controlled by the intervention. Risks remain in section 7D.</p>
+      <Records<ResultAssumption> title="Assumptions" singular="assumption" records={p.assumptions} onChange={assumptions => plan({ assumptions })} create={() => ({ id: uid(), statement: '', importance: 'Not assessed', reviewNote: '' })} summary={(a, i) => 'Assumption ' + (i + 1) + ' · ' + (a.statement || 'New assumption')}>{(a, set) => <><Text label="Assumption statement" value={a.statement} onChange={statement => set({ statement })} /><Choice label="Importance" value={a.importance} items={options(IMPORTANCE)} onChange={v => set({ importance: v as ResultAssumption['importance'] })} /><Text label="Verification / review note" value={a.reviewNote} onChange={reviewNote => set({ reviewNote })} /></>}</Records>
+    </>}
+    {id === '7B' && <><p className="text-xs text-slate-600">These are the same indicators shown in Stage 5 and the Planning Brief, extended with optional measurement details. Baselines and targets may be qualitative or quantitative.</p><Records<PlanningIndicator> title="Indicators" singular="indicator" records={indicators} onChange={indicators => update({ indicators })} create={() => createIndicator(uid())} summary={(i, n) => 'Indicator ' + (n + 1) + ' · ' + (i.statement || 'New indicator')}>{(i, set) => <><Text label="Indicator statement" value={i.statement} onChange={statement => set({ statement })} /><div className="grid gap-4 md:grid-cols-2"><Choice label="Result level" value={i.resultLevel} items={options(RESULT_LEVELS)} onChange={v => set({ resultLevel: v as PlanningIndicator['resultLevel'], linkedRecordId: v === 'Intended Result / Outcome' ? cell.key : null })} />{(i.resultLevel === 'Output' || i.resultLevel === 'Activity / Process') && <Choice label="Linked result record" value={i.linkedRecordId} items={[noLink, ...refs(i.resultLevel === 'Output' ? p.outputs : p.activities)]} onChange={v => set({ linkedRecordId: v || null })} />}<Text label="Baseline" value={i.baseline} onChange={baseline => set({ baseline })} help="Current value or condition before implementation." /><Text label="Target" value={i.target} onChange={target => set({ target })} help="Value or condition to achieve by a defined point in time." /><Text label="Means / Source of Verification" value={i.verification} onChange={verification => set({ verification })} help="Planner-entered source, such as station records or observation; not a claim of verification." /><Choice label="Frequency" value={i.frequency} items={options(FREQUENCIES)} onChange={v => set({ frequency: v as PlanningIndicator['frequency'] })} /><Choice label="Responsible measurement actor" value={i.responsibleActorId} items={actors} onChange={v => set({ responsibleActorId: v || null })} /><Text label="Disaggregation note" value={i.disaggregation} onChange={disaggregation => set({ disaggregation })} /><Text label="Measurement note" value={i.note} onChange={note => set({ note })} /></div></>}</Records></>}
+    {id === '7C' && <>
+      <dl className="grid gap-3 rounded-lg bg-slate-50 p-3 text-xs sm:grid-cols-2"><div><dt className="font-bold">Accountable / Priority Lead</dt><dd>{actorName(cell.leadStakeholderId)}</dd></div><div><dt className="font-bold">Priority supporting actors</dt><dd>{cell.supportingStakeholderIds.map(actorName).join(', ') || 'Not recorded'}</dd></div><div><dt className="font-bold">Priority phase</dt><dd>{cell.implementationPhase || 'Not assigned'}</dd></div><div><dt className="font-bold">Shared milestone / timeframe</dt><dd>{cell.milestoneTimeframe || 'Not recorded'}</dd></div></dl>
+      <details className="rounded-lg border border-slate-200 p-3"><summary className="cursor-pointer text-sm font-bold focus-visible:outline-2 focus-visible:outline-blue-600">Existing intervention package — activity foundation</summary><dl className="mt-3 space-y-3 text-sm">{LEVELS.map(l => <div key={l}><dt className="font-semibold">{options([l])[0].label}</dt><dd className="mt-1 whitespace-pre-wrap text-slate-600">{cell[l] || 'Not recorded'}</dd></div>)}</dl></details>
+      <Records<ResultActivity> title="Activities" singular="activity" records={p.activities} onChange={activities => plan({ activities })} create={() => ({ id: uid(), reference: nextReference('ACT', p.activities), statement: '', interventionLevel: null, outputIds: [], implementingActorId: null, supportingActorIds: [], timeframe: '', milestone: '', dependencyIds: [], resourceIds: [] })} summary={a => a.reference + ' · ' + (a.statement || (a.interventionLevel ? options([a.interventionLevel])[0].label + ' intervention' : 'New activity'))}>{(a, set) => <><Choice label="Source intervention level" value={a.interventionLevel} items={[noLink, ...options(LEVELS)]} onChange={v => set({ interventionLevel: (v || null) as ResultActivity['interventionLevel'] })} />{a.interventionLevel && <p className="rounded-lg bg-slate-50 p-3 text-xs text-slate-600">Shared intervention: {cell[a.interventionLevel] || 'Not recorded in Stage 5.'}</p>}<Text label="Activity detail" value={a.statement} onChange={statement => set({ statement })} help="Add practical detail or a distinct action only where needed; the linked intervention is reused above." /><Multi label="Contributes to outputs" values={a.outputIds} items={refs(p.outputs)} onChange={outputIds => set({ outputIds })} /><Choice label="Implementing actor" value={a.implementingActorId} items={actors} onChange={v => set({ implementingActorId: v || null })} help="Who carries out this activity; separate from the accountable priority lead." /><Multi label="Activity supporting actors" values={a.supportingActorIds} items={actors.filter(o => o.value && o.value !== a.implementingActorId)} onChange={supportingActorIds => set({ supportingActorIds })} /><div className="grid gap-4 md:grid-cols-2"><Text label="Activity timeframe (optional detail)" value={a.timeframe} onChange={timeframe => set({ timeframe })} help={'Priority timing remains: ' + (cell.milestoneTimeframe || 'Not recorded')} /><Text label="Activity milestone (optional detail)" value={a.milestone} onChange={milestone => set({ milestone })} /></div><Multi label="Activity dependencies" values={a.dependencyIds} items={p.dependencies.map(d => ({ value: d.id, label: d.statement || d.type }))} onChange={dependencyIds => set({ dependencyIds })} /><Multi label="Activity resource requirements" values={a.resourceIds} items={p.resources.map(r => ({ value: r.id, label: r.statement || r.category }))} onChange={resourceIds => set({ resourceIds })} /></>}</Records>
+      <Records<ResultDependency> title="Dependencies" singular="dependency" records={p.dependencies} onChange={dependencies => plan({ dependencies })} create={() => ({ id: uid(), type: 'Other', statement: '', linkedPriorityKey: null, linkedRecordId: null, status: 'Not assessed' })} summary={(d, i) => 'Dependency ' + (i + 1) + ' · ' + (d.statement || d.type)}>{(d, set) => <><Choice label="Dependency type" value={d.type} items={options(DEPENDENCY_TYPES)} onChange={v => set({ type: v as ResultDependency['type'], linkedPriorityKey: null, linkedRecordId: null })} /><Text label="Dependency statement" value={d.statement} onChange={statement => set({ statement })} />{(d.type === 'Activity' || d.type === 'CBD priority') && <Choice label="Linked CBD priority" value={d.linkedPriorityKey} items={[noLink, ...Object.keys(data.customCells).map(k => ({ value: k, label: k.replace('|', ' × ') }))]} onChange={v => set({ linkedPriorityKey: v || null, linkedRecordId: null })} />}{d.type === 'Activity' && <Choice label="Linked activity" value={d.linkedRecordId} items={[noLink, ...refs(data.customCells[d.linkedPriorityKey || '']?.resultsPlan?.activities || [])]} onChange={v => set({ linkedRecordId: v || null })} />}{d.type === 'Stakeholder action' && <Choice label="Linked stakeholder" value={d.linkedRecordId} items={actors} onChange={v => set({ linkedRecordId: v || null })} />}<Choice label="Dependency status" value={d.status} items={options(DEPENDENCY_STATUS)} onChange={v => set({ status: v as ResultDependency['status'] })} help="A planning record only; dependencies do not automatically change sequencing." /></>}</Records>
+      <Records<ResourceRequirement> title="Resources" singular="resource" records={p.resources} onChange={resources => plan({ resources })} create={() => ({ id: uid(), category: 'Other', statement: '', availability: 'Unknown' })} summary={(r, i) => 'Resource ' + (i + 1) + ' · ' + (r.statement || r.category)}>{(r, set) => <><Choice label="Resource category" value={r.category} items={options(RESOURCE_CATEGORIES)} onChange={v => set({ category: v as ResourceRequirement['category'] })} /><Text label="Resource / enabling requirement" value={r.statement} onChange={statement => set({ statement })} /><Choice label="Availability" value={r.availability} items={options(AVAILABILITY)} onChange={v => set({ availability: v as ResourceRequirement['availability'] })} /></>}</Records>
+    </>}
+    {id === '7D' && <>
+      <Text label="Priority risk / implementation conditions" value={cell.risks} onChange={risks => update({ risks })} help="The same priority-level risk text used in Stage 5 and the brief." /><Text label="Mitigation / Management Measure" value={p.riskManagement.mitigation} onChange={mitigation => plan({ riskManagement: { ...p.riskManagement, mitigation } })} /><Choice label="Risk management responsible actor" value={p.riskManagement.responsibleActorId} items={actors} onChange={v => plan({ riskManagement: { ...p.riskManagement, responsibleActorId: v || null } })} /><Text label="Risk review note" value={p.riskManagement.reviewNote} onChange={reviewNote => plan({ riskManagement: { ...p.riskManagement, reviewNote } })} />
+      <h4 className="border-t border-slate-200 pt-4 font-bold text-slate-900">National ownership</h4><Choice label="Counterpart owner" value={p.ownership.counterpartActorId} items={actors} onChange={v => plan({ ownership: { ...p.ownership, counterpartActorId: v || null, status: 'Not yet assessed' } })} help="Select the relevant national counterpart from existing stakeholders. Selection alone does not establish ownership." /><Choice label="Consultation / Ownership Status" value={p.ownership.status} items={options(OWNERSHIP_STATUS)} onChange={v => plan({ ownership: { ...p.ownership, status: v as ResultsPlan['ownership']['status'] } })} help="Consulted does not mean approved; this records the planner’s assessment, not formal endorsement." /><Text label="Ownership note" value={p.ownership.note} onChange={note => plan({ ownership: { ...p.ownership, note } })} help="What demonstrates that the relevant national counterpart owns, supports or is prepared to sustain this change?" />
+      <p className="text-xs text-slate-600">What must remain in place for this capacity to continue after external support reduces?</p><Records<ResultsPlan['sustainability'][number]> title="Sustainability requirements" singular="sustainability requirement" records={p.sustainability} onChange={sustainability => plan({ sustainability })} create={() => ({ id: uid(), dimension: 'Institutional responsibility', requirement: '' })} summary={s => s.dimension + ' · ' + (s.requirement || 'Requirement not recorded')}>{(s, set) => <><Choice label="Sustainability dimension" value={s.dimension} items={options(SUSTAINABILITY_DIMENSIONS)} onChange={dimension => set({ dimension })} /><Text label="Sustainability requirement / note" value={s.requirement} onChange={requirement => set({ requirement })} /></>}</Records>
+    </>}
+    </div></section>; })}
+  </div>;
+}

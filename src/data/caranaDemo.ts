@@ -1,4 +1,5 @@
 import { EvidenceNote, UnpolProjectData } from '../types';
+import { addCaranaResults } from './caranaResults';
 
 const DEMO_DATE = '2026-01-15';
 
@@ -14,6 +15,10 @@ function fictionalEvidence(id: string, sourceTitle: string, comment: string): Ev
 }
 
 export function buildCaranaDemoData(base: UnpolProjectData): UnpolProjectData {
+  return addCaranaResults(buildCaranaCoreData(base));
+}
+
+function buildCaranaCoreData(base: UnpolProjectData): UnpolProjectData {
   const stakeholderNames: Record<string, string> = {
     'sh-unpol-lead': 'UN Mission in Carana / UNPOL Leadership',
     'sh-interior-min': 'Carana Ministry of Interior',

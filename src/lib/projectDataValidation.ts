@@ -14,6 +14,7 @@ import {
 import { PESTELS_KEYS } from '../data/pestelsCategories';
 import type { MissionCoverageScope, MissionSourceCategory } from '../types/explorer';
 import { APP_VERSION } from './version';
+import { normalizeResultsReferences, validIndicators, validResultsPlan } from './resultsPlanning';
 import { collectValidSourceKeys, EMPTY_ANALYSIS_SYNTHESIS, sourceReferenceKey } from './analysisSynthesis';
 
 export interface ProjectDataValidationResult {
@@ -178,7 +179,8 @@ function isCbdCell(value: unknown): value is CbdCell {
       'result',
       'engagement'
     ]) &&
-    isStringArray(value.indicators) &&
+    validIndicators(value.indicators) &&
+    validResultsPlan(value.resultsPlan) &&
     isStringArray(value.drivers) &&
     isStringArray(value.stakeholders) &&
     isRating(value.confidence) &&
@@ -347,10 +349,10 @@ export function validateAndNormalizeProjectData(value: unknown): ProjectDataVali
   }
 
   return {
-    data: normalizeProjectData({
+    data: normalizeResultsReferences(normalizeProjectData({
       ...(value as unknown as UnpolProjectData),
       analysisSynthesis: (value.analysisSynthesis as AnalysisSynthesis | undefined) ?? EMPTY_ANALYSIS_SYNTHESIS
-    }),
+    })),
     error: null
   };
 }

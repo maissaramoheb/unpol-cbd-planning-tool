@@ -55,8 +55,10 @@ test('main shell exposes Stage 4 directly, Stage 7 summary, and non-numbered Exp
   assert.match(tabs, /WORKFLOW_STAGES\.map/);
   assert.match(tabs, /Home<\/button>/);
   assert.match(tabs, /Export<\/button>/);
-  assert.match(results, /Currently recorded/);
-  assert.match(results, /Future results-planning capability/);
+  assert.match(results, /7A — Results Logic/);
+  assert.match(results, /7B — Measurement/);
+  assert.match(results, /7C — Implementation/);
+  assert.match(results, /7D — Ownership, Risk & Sustainability/);
   assert.doesNotMatch(exportBrief, />7\. Export Planning Brief</);
 });
 

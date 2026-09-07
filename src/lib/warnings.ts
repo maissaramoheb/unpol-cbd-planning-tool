@@ -1,3 +1,4 @@
+import { indicatorTexts } from "./resultsPlanning";
 import { UnpolProjectData } from '../types';
 import { evaluateCbdCell } from './scoring';
 import { isValidStrategicOptionCombination } from './analysisSynthesis';
@@ -97,7 +98,7 @@ export function calculateQualityWarnings(data: UnpolProjectData): QualityWarning
     if (highPriority && !cell.capacityProblem?.trim()) warnings.push({ id: `matrix-no-problem-${key}`, type: 'warning', category: 'matrix', message: `Analytical caution: High-priority CBD action "${key}" has no defined capacity problem or gap.`, itemKey: key });
     if (highPriority && !cell.planningObjective?.trim()) warnings.push({ id: `matrix-no-objective-${key}`, type: 'warning', category: 'matrix', message: `Analytical caution: High-priority CBD action "${key}" has no planning objective.`, itemKey: key });
     if (cell.implementationPhase && !cell.leadStakeholderId) warnings.push({ id: `matrix-phase-no-lead-${key}`, type: 'warning', category: 'sequencing', message: `Analytical caution: CBD action "${key}" is assigned to ${cell.implementationPhase} but has no lead stakeholder or actor.`, itemKey: key });
-    if (cell.implementationPhase === 'NOW' && !cell.indicators?.some(indicator => indicator.trim())) warnings.push({ id: `matrix-now-no-indicator-${key}`, type: 'warning', category: 'sequencing', message: `Analytical caution: NOW action "${key}" has no monitoring indicator.`, itemKey: key });
+    if (cell.implementationPhase === 'NOW' && !indicatorTexts(cell).some(indicator => indicator.trim())) warnings.push({ id: `matrix-now-no-indicator-${key}`, type: 'warning', category: 'sequencing', message: `Analytical caution: NOW action "${key}" has no monitoring indicator.`, itemKey: key });
   });
 
   // 4. High priority but low stakeholder support in CBD Matrix cells

@@ -68,9 +68,9 @@ export const STAGE_GUIDANCE: Record<GuidanceStage, StageGuidanceContent> = {
   },
   7: {
     title: 'Results & Implementation · Results & Delivery',
-    doing: 'Review how selected CBD priorities translate into responsibilities, timing, indicators and implementation conditions.',
-    why: 'A valid CBD priority still requires a credible path toward implementation and measurable change.',
-    next: 'This implementation logic supports the professional planning outputs and provides the foundation for deeper results-based planning.'
+    doing: 'Turning selected CBD priorities into measurable and implementable results plans.',
+    why: 'A valid capacity-building priority needs a credible path from intervention to results, implementation, monitoring, ownership and sustainability.',
+    next: 'This structured data will support professional results frameworks, Logframes, M&E matrices and implementation workplans. These are future output types.'
   }
 };
 

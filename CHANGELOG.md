@@ -15,6 +15,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+- Added the Preview-only Stage 7 Results & Implementation workspace with shared objectives/interventions, structured indicators, outputs, activities, assumptions, implementation requirements and ownership/sustainability records.
+- Added legacy indicator migration, reference cleanup, partial fictional CARANA Results Plans and compatibility tests. Existing brief layout and priority scoring are retained.
+
 ## [0.6.0] - 2026-09-06
 
 ### Changed
