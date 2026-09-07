@@ -117,7 +117,7 @@ In the project directory, you can run the following npm scripts:
 On the Results & Implementation feature branch, Stage 7 provides four progressive planning sections for results logic, measurement, implementation, and ownership/risk/sustainability. It shares canonical CBD fields and extends indicators into structured records. Legacy JSON is accepted; new rich JSON requires this Preview or a later compatible release. See [the shared model and migration notes](docs/results-planning-model.md). Dedicated Logframe, M&E and Workplan exports are not implemented.
 
 ## 📊 Project Status
-- **Current Version**: v0.6.0 — v1 Planning Workflow
+- **Current Version**: v0.7.0 — Results Planning & Professional Outputs
 - **Phase**: Early-stage prototype (Active development). Feedback from peace operations and policing practitioners is welcome.
 
 ---
