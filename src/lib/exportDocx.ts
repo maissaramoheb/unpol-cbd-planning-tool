@@ -19,6 +19,7 @@ import {
 } from 'docx';
 import type { PlanningBriefModel, ReportPriority } from './reportModel';
 import { ADVISORY_NOTE, sanitizeReportFilename } from './reportModel';
+import { INTERDEPENDENCY_CAUTION } from './interdependencies';
 
 const BLUE = '244A73';
 const LIGHT_BLUE = 'EAF1F8';
@@ -192,6 +193,7 @@ export async function createPlanningBriefDocx(model: PlanningBriefModel): Promis
     ...bulletList(model.stakeholderAnalysis.insights.technicalWorkingGroups.slice(0, 6).map(item => `${item.name}: ${item.engagement}`)),
 
     sectionHeading('Analysis Synthesis'),
+    ...(model.interdependencyAnalysis.main.length ? [heading('Key Interdependencies', HeadingLevel.HEADING_2), paragraph(INTERDEPENDENCY_CAUTION, { italics: true, color: SLATE }), ...model.interdependencyAnalysis.main.flatMap(item => [heading(`${item.reference} · ${item.direction}`, HeadingLevel.HEADING_3), paragraph(item.relationship), paragraph(`CBD implication: ${item.cbdImplication}`)])] : []),
     paragraph('This SWOT/TOWS synthesis records professional judgement. It supports planning choices and does not determine the CBD response.', { italics: true, color: SLATE }),
     heading('Key SWOT Findings', HeadingLevel.HEADING_2),
     ...bulletList(model.keySwotFindings.map(item => `${item.reference} · ${item.category}: ${item.finding}${item.cbdImplication ? ` — CBD implication: ${item.cbdImplication}` : ''}`), 'No SWOT findings recorded.'),
@@ -239,7 +241,18 @@ export async function createPlanningBriefDocx(model: PlanningBriefModel): Promis
     stakeholderTable(model),
     sectionHeading('Annex C · Evidence & Source Register', false),
     ...(model.evidence.length ? model.evidence.flatMap(evidenceEntry) : [paragraph('No evidence sources recorded.', { italics: true, color: SLATE })]),
-    sectionHeading('Annex D · Full Quality-Control Register', false), ...bulletList(model.warnings.map(item => item.message), 'No active quality-control warnings.')
+    sectionHeading('Annex D · Full Quality-Control Register', false), ...bulletList(model.warnings.map(item => item.message), 'No active quality-control warnings.'),
+    ...(model.interdependencyAnalysis.register.length ? [sectionHeading('Annex E · PESTEL-S Interdependency Register', true), paragraph(INTERDEPENDENCY_CAUTION, { italics: true, color: SLATE }), ...model.interdependencyAnalysis.register.flatMap(item => [
+      heading(`${item.reference} · ${item.direction}`, HeadingLevel.HEADING_2),
+      paragraph(`${item.status} · ${item.isKeyInsight ? 'Key insight' : 'Not key'} · ${item.includeInMainBrief ? 'Included in main brief' : 'Register only'}`, { color: SLATE }),
+      paragraph(`Source finding: ${item.source}`), paragraph(`Target finding: ${item.target}`),
+      paragraph(`Effect on CBD: ${item.effect} · Planning significance: ${item.significance}`),
+      paragraph(`Relationship: ${item.relationship}`), paragraph(`CBD implication: ${item.cbdImplication}`),
+      paragraph(`A · Source finding evidence: ${item.sourceEvidence.join('; ') || 'None recorded'}`),
+      paragraph(`B · Target finding evidence: ${item.targetEvidence.join('; ') || 'None recorded'}`),
+      paragraph(`C · Relationship evidence: ${item.relationshipEvidence.join('; ') || 'None linked — analyst judgement'}`),
+      paragraph(`Analytical / verification note: ${item.note}`)
+    ])] : [])
   ];
 
   const document = new Document({

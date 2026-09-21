@@ -146,6 +146,7 @@ export function getInitialProjectData(templateId = 'peacekeeping'): UnpolProject
         }
       : JSON.parse(JSON.stringify(emptyPriorityBrief)),
     analysisSynthesis: JSON.parse(JSON.stringify(EMPTY_ANALYSIS_SYNTHESIS)),
+    interdependencies: [],
     version: APP_VERSION
   };
 }

@@ -76,6 +76,9 @@ body {
 .report-table-wrap th, .report-table-wrap td { padding: 6px; border: 1px solid #cbd5e1; text-align: left; vertical-align: top; }
 .report-table-wrap th { background: #244a73; color: white; font-weight: 900; }
 .report-annex article { margin-bottom: 7px; }
+.interdependency-report article { margin-bottom: 12px; font-size: 11px; line-height: 1.5; overflow-wrap: anywhere; }
+.interdependency-report article h3 { break-after: avoid; }
+.interdependency-report article p { margin: 5px 0; white-space: pre-wrap; }
 .report-annex article h3 { margin: 0 0 4px; color: #183b61; font-size: 11px; font-weight: 900; }
 .evidence-register { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 
@@ -135,6 +138,7 @@ body {
   .professional-report { background: white !important; }
   .report-page { width: auto; min-height: 0; padding: 0; border: 0; break-after: page; page-break-after: always; }
   .report-page:last-child { break-after: auto; page-break-after: auto; }
+  .report-page.interdependency-report article, .report-page .interdependency-report article { break-inside: auto; page-break-inside: auto; }
   .professional-report header { display: flex !important; }
   .priority-package, .pestels-report-grid article, .report-annex article, table, tr { break-inside: avoid; page-break-inside: avoid; }
   .document-info, .executive-grid, .stakeholder-report-grid, .controls-grid, .context-grid, .pestels-report-grid, .intervention-grid, .priority-meta, .priority-footer, .sequence-path, .evidence-register { display: grid !important; }

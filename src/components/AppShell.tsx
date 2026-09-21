@@ -23,12 +23,14 @@ import { buildCaranaDemoData } from '../data/caranaDemo';
 import { removeStrategicOption, removeSwotFinding } from '../lib/analysisSynthesis';
 import { EXPORT_VIEW, HOME_VIEW } from '../lib/workflow';
 import { normalizeResultsReferences } from '../lib/resultsPlanning';
+import { mainBriefSelectionError, normalizeInterdependencies } from '../lib/interdependencies';
 
 export const AppShell: React.FC = () => {
   const [data, setData] = useState<UnpolProjectData | null>(null);
   const [storageRecoveryMessage, setStorageRecoveryMessage] = useState<string | null>(null);
   const [currentView, setCurrentView] = useState<number>(HOME_VIEW);
   const [isExplorerOpen, setIsExplorerOpen] = useState<boolean>(false);
+  const [interdependencyError, setInterdependencyError] = useState<string | null>(null);
 
   // Initialize data on client mount
   useEffect(() => {
@@ -82,13 +84,16 @@ export const AppShell: React.FC = () => {
   };
 
   const handlePestelsChange = (id: string, updatedItem: PestelsItem) => {
-    setData({
+    const next = {
       ...data,
       pestels: {
         ...data.pestels,
         [id]: updatedItem
       }
-    });
+    };
+    const error = mainBriefSelectionError(next);
+    setInterdependencyError(error);
+    if (!error) setData(normalizeInterdependencies(next));
   };
 
   const handleAddStakeholder = (newStakeholder: Stakeholder) => {
@@ -99,17 +104,17 @@ export const AppShell: React.FC = () => {
   };
 
   const handleUpdateStakeholder = (updatedStakeholder: Stakeholder) => {
-    setData({
+    setData(normalizeInterdependencies({
       ...data,
       stakeholders: data.stakeholders.map(s => s.id === updatedStakeholder.id ? updatedStakeholder : s)
-    });
+    }));
   };
 
   const handleDeleteStakeholder = (id: string) => {
-    setData(normalizeResultsReferences({
+    setData(normalizeInterdependencies(normalizeResultsReferences({
       ...data,
       stakeholders: data.stakeholders.filter(s => s.id !== id)
-    }));
+    })));
   };
 
   const handleSynthesisChange = (analysisSynthesis: AnalysisSynthesisData) => {
@@ -120,13 +125,13 @@ export const AppShell: React.FC = () => {
   const handleDeleteStrategicOption = (id: string) => setData(removeStrategicOption(data, id));
 
   const handleUpdateCell = (key: string, updatedCell: CbdCell) => {
-    setData(normalizeResultsReferences({
+    setData(normalizeInterdependencies(normalizeResultsReferences({
       ...data,
       customCells: {
         ...data.customCells,
         [key]: updatedCell
       }
-    }));
+    })));
   };
 
   const handlePriorityBriefChange = (newBrief: PriorityBrief) => {
@@ -174,6 +179,14 @@ export const AppShell: React.FC = () => {
       case 2:
         return (
           <SituationalAnalysis
+            data={data}
+            interdependencyError={interdependencyError}
+            onInterdependenciesChange={(items) => {
+              const next = { ...data, interdependencies: items };
+              const error = mainBriefSelectionError(next);
+              setInterdependencyError(error);
+              if (!error) setData(normalizeInterdependencies(next));
+            }}
             pestels={data.pestels}
             onChange={handlePestelsChange}
             onNext={() => setCurrentView(3)}

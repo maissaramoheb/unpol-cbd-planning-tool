@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { PestelsItem, PestelsRating } from '../types';
+import { Interdependency, PestelsItem, PestelsRating, UnpolProjectData } from '../types';
+import { InterdependencyAnalysis } from './InterdependencyAnalysis';
+import { newInterdependency } from '../lib/interdependencies';
 import { Card, CardBody, CardHeader } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Slider } from '../ui/Slider';
@@ -11,6 +13,9 @@ import { NextStepCue, StageGuide } from './Guidance';
 import { NEXT_STEP_CUES } from '../lib/guidance';
 
 interface SituationalAnalysisProps {
+  data: UnpolProjectData;
+  interdependencyError: string | null;
+  onInterdependenciesChange: (items: Interdependency[]) => void;
   pestels: Record<string, PestelsItem>;
   onChange: (id: string, item: PestelsItem) => void;
   onNext: () => void;
@@ -18,12 +23,15 @@ interface SituationalAnalysisProps {
 }
 
 export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
+  data, interdependencyError, onInterdependenciesChange,
   pestels,
   onChange,
   onNext,
   onPrev
 }) => {
   const [selectedId, setSelectedId] = useState<string>('political');
+  const [interdependencyOpen, setInterdependencyOpen] = useState(false);
+  const [draft, setDraft] = useState<Interdependency | null>(null);
   const activeItem = pestels[selectedId];
 
   const handleFieldChange = (field: keyof PestelsItem, value: string) => {
@@ -142,6 +150,8 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
                   rows={2}
                 />
 
+                <Button type="button" variant="outline" disabled={!activeItem.finding.trim()} onClick={() => { setDraft(newInterdependency(data.interdependencies, activeItem.id)); setInterdependencyOpen(true); }}>Explore Interdependency from this finding</Button>
+
                 <TextArea
                   label="Suggested sequencing guideline for UNPOL intervention"
                   value={activeItem.sequencing}
@@ -233,6 +243,10 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
             Select a PESTEL-S category to begin.
           </div>
         )}
+      </div>
+      <div className="lg:col-span-3 min-w-0">
+        {interdependencyError && <p role="alert" className="mb-3 text-sm text-rose-700">{interdependencyError}</p>}
+        <InterdependencyAnalysis data={data} open={interdependencyOpen} onOpenChange={setInterdependencyOpen} draft={draft} onDraftChange={setDraft} onChange={onInterdependenciesChange} />
       </div>
     </div>
   );

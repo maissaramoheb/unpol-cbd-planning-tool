@@ -3,6 +3,7 @@ import { evaluateCbdCell, type CbdPriorityAssessment } from './scoring';
 import { analyzeStakeholders } from './stakeholderAnalysis';
 import { calculateQualityWarnings, type QualityWarning } from './warnings';
 import { APP_VERSION_LABEL } from './version';
+import { buildInterdependencyReport } from './interdependencies';
 
 export const DOCUMENT_STATUS = 'UNOFFICIAL — DRAFT FOR REVIEW';
 export const ADVISORY_NOTE = 'This planning-support prototype is unofficial and does not represent an official UN assessment or recommendation. It does not replace mandate review, host-state law, human-rights obligations, due diligence, verified evidence, command approval, consultation, or professional judgement.';
@@ -34,6 +35,7 @@ export interface ReportPriority {
 }
 
 export interface PlanningBriefModel {
+  interdependencyAnalysis: ReturnType<typeof buildInterdependencyReport>;
   data: UnpolProjectData;
   contextSource: string;
   version: string;
@@ -142,6 +144,7 @@ export function buildPlanningBriefModel(data: UnpolProjectData): PlanningBriefMo
 
   return {
     data,
+    interdependencyAnalysis: buildInterdependencyReport(data),
     contextSource: getContextSource(data),
     version: APP_VERSION_LABEL,
     status: DOCUMENT_STATUS,

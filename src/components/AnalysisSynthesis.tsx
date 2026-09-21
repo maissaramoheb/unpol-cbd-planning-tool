@@ -123,6 +123,7 @@ export const AnalysisSynthesis: React.FC<AnalysisSynthesisProps> = ({ data, onCh
             <Select label="Planner classification" value={selectedCategory} onChange={event => setSelectedCategory(event.target.value as SwotCategory)} options={SWOT_CATEGORIES.map(category => ({ value: category, label: category }))} />
             <Button onClick={() => addFinding(selectedCategory, selectedSourceKey)} disabled={!selectedSourceKey}><Plus size={15} className="mr-2" />Add source</Button>
           </div>
+          {candidates.find(item => `${item.reference.type}:${item.reference.id}` === selectedSourceKey)?.reference.type === 'interdependency' && <p className="mt-3 whitespace-pre-wrap break-words text-sm text-slate-700">{candidates.find(item => `${item.reference.type}:${item.reference.id}` === selectedSourceKey)?.text}</p>}
           <p className="mt-3 text-xs text-blue-900">The source remains linked. You may edit the SWOT wording without changing the original analysis.</p>
         </div>}
 
