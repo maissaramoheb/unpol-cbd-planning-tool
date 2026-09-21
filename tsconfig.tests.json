@@ -10,6 +10,7 @@
     "isolatedModules": false
   },
   "include": [
+    "src/lib/executiveBriefDocx.ts",
     "src/lib/planningOutputs.ts",
     "src/lib/planningOutputDocx.ts",
     "src/lib/scoring.ts",

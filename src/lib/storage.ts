@@ -6,6 +6,7 @@ import { defaultMissionTemplates } from '../data/defaultMissionTemplates';
 import { validateAndNormalizeProjectData } from './projectDataValidation';
 import { APP_VERSION } from './version';
 import { EMPTY_ANALYSIS_SYNTHESIS } from './analysisSynthesis';
+import { emptyExecutiveSelection } from './executiveBrief';
 
 const STORAGE_KEY = 'unpol_planning_tool_project_data';
 
@@ -146,6 +147,8 @@ export function getInitialProjectData(templateId = 'peacekeeping'): UnpolProject
         }
       : JSON.parse(JSON.stringify(emptyPriorityBrief)),
     analysisSynthesis: JSON.parse(JSON.stringify(EMPTY_ANALYSIS_SYNTHESIS)),
+    interdependencies: [],
+    executiveBriefSelection: emptyExecutiveSelection(),
     version: APP_VERSION
   };
 }

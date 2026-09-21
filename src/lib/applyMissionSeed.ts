@@ -82,6 +82,7 @@ export function applyMissionSeed(entry: MissionExplorerEntry): UnpolProjectData 
     pestels,
     stakeholders,
     customCells,
+    interdependencies: [],
     priorityBrief: {
       ...JSON.parse(JSON.stringify(emptyPriorityBrief)),
       topPriorities: [],

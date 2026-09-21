@@ -2,6 +2,7 @@ import { indicatorTexts } from "./resultsPlanning";
 import { UnpolProjectData } from '../types';
 import { evaluateCbdCell } from './scoring';
 import { isValidStrategicOptionCombination } from './analysisSynthesis';
+import { isValidInterdependency } from './interdependencies';
 
 export interface QualityWarning {
   id: string;
@@ -14,6 +15,16 @@ export interface QualityWarning {
 export function calculateQualityWarnings(data: UnpolProjectData): QualityWarning[] {
   const warnings: QualityWarning[] = [];
   const { profile, pestels, stakeholders, customCells, priorityBrief, analysisSynthesis } = data;
+  const relationships = data.interdependencies ?? [];
+  const groupedCautions = [
+    { id: 'xi-unresolved', type: 'warning' as const, items: relationships.filter(item => !isValidInterdependency(data, item)), message: 'Unresolved interdependencies: relink missing findings or delete these records. Written analysis is preserved; unresolved records are excluded from the map, Stage 4 sources and main brief.' },
+    { id: 'xi-key-no-implication', type: 'warning' as const, items: relationships.filter(item => item.isKeyInsight && !item.cbdImplication.trim()), message: 'Key interdependencies lack a CBD implication. Record why these selected insights matter for planning before decision use.' },
+    { id: 'xi-no-implication', type: 'caution' as const, items: relationships.filter(item => !item.isKeyInsight && !item.cbdImplication.trim()), message: 'Relationships recorded without a CBD implication. Consider how they affect CBD design, prioritization, sequencing or implementation.' },
+    { id: 'xi-high-no-evidence', type: 'caution' as const, items: relationships.filter(item => item.planningSignificance === 'High' && !item.evidenceIds.length), message: 'High-significance relationships have no relationship-specific supporting evidence linked. Consider whether additional evidence or verification is needed; professional judgement remains valid.' }
+  ];
+  groupedCautions.forEach(({ id, type, items, message }) => {
+    if (items.length) warnings.push({ id, type, category: 'pestels', message: `${message} (${items.map(item => item.reference).join(', ')})` });
+  });
 
   analysisSynthesis.swotFindings.forEach(item => {
     if (!item.sourceReferences.length) warnings.push({ id: `swot-no-source-${item.id}`, type: 'caution', category: 'synthesis', message: `Analytical caution: SWOT finding "${item.reference}" has no linked supporting source. Manual synthesis is valid, but its basis should be recorded where possible.`, itemKey: item.id });

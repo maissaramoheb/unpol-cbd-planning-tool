@@ -76,10 +76,31 @@ body {
 .report-table-wrap th, .report-table-wrap td { padding: 6px; border: 1px solid #cbd5e1; text-align: left; vertical-align: top; }
 .report-table-wrap th { background: #244a73; color: white; font-weight: 900; }
 .report-annex article { margin-bottom: 7px; }
+.interdependency-report article { margin-bottom: 12px; font-size: 11px; line-height: 1.5; overflow-wrap: anywhere; }
+.interdependency-report article h3 { break-after: avoid; }
+.interdependency-report article p { margin: 5px 0; white-space: pre-wrap; }
 .report-annex article h3 { margin: 0 0 4px; color: #183b61; font-size: 11px; font-weight: 900; }
 .evidence-register { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 
 @page { size: A4 portrait; margin: 12mm; }
+
+/* Standalone management projection; never clips or shrinks canonical text. */
+.executive-brief { box-sizing: border-box; width: 210mm; max-width: 100%; margin: 0 auto; padding: 12mm 15mm; background: white; border: 1px solid #cbd5e1; color: #1e293b; font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.25; overflow-wrap: anywhere; }
+.executive-heading h1 { font-size: 20pt; font-weight: 700; color: #183b61; margin: 0 0 3mm; }
+.executive-heading p { margin: 0 0 2mm; }
+.executive-heading .executive-meta { font-size: 9pt; color: #475569; }
+.executive-brief section { margin-top: 3mm; }
+.executive-brief h2 { font-size: 11pt; font-weight: 700; color: #183b61; margin: 0 0 1.5mm; }
+.executive-brief section p { margin: 0 0 1.5mm; white-space: pre-wrap; }
+.executive-brief .executive-problem p { font-weight: 700; }
+.executive-brief .executive-notice { font-size: 9pt; color: #475569; margin-top: 3mm; }
+@media screen and (max-width: 600px) { .executive-brief { padding: 20px; } }
+@page executive-cbd { size: A4 portrait; margin: 12mm 15mm; }
+@media print {
+  html:has(.executive-brief), body:has(.executive-brief) { width: auto !important; }
+  .executive-brief { page: executive-cbd; width: 100%; max-width: none; padding: 0; margin: 0; border: 0; }
+  .executive-brief h2 { break-after: avoid; }
+}
 
 .planning-output { min-width: 0; max-width: 100%; padding: 24px; border: 1px solid #cbd5e1; background: white; color: #0f172a; }
 .planning-output h1 { font-size: 24px; font-weight: 700; margin-bottom: 12px; }
@@ -135,6 +156,7 @@ body {
   .professional-report { background: white !important; }
   .report-page { width: auto; min-height: 0; padding: 0; border: 0; break-after: page; page-break-after: always; }
   .report-page:last-child { break-after: auto; page-break-after: auto; }
+  .report-page.interdependency-report article, .report-page .interdependency-report article { break-inside: auto; page-break-inside: auto; }
   .professional-report header { display: flex !important; }
   .priority-package, .pestels-report-grid article, .report-annex article, table, tr { break-inside: avoid; page-break-inside: avoid; }
   .document-info, .executive-grid, .stakeholder-report-grid, .controls-grid, .context-grid, .pestels-report-grid, .intervention-grid, .priority-meta, .priority-footer, .sequence-path, .evidence-register { display: grid !important; }

@@ -8,11 +8,17 @@ import {
   STAKEHOLDER_RATINGS_CAVEAT
 } from './stakeholderAnalysis';
 import { APP_VERSION_LABEL } from './version';
+import { buildInterdependencyReport, INTERDEPENDENCY_CAUTION } from './interdependencies';
+
+const escapeXiMarkdown = (value: string) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/([\\`*_{}\[\]#|])/g, '\\$1');
 
 export function generateMarkdownBrief(data: UnpolProjectData): string {
   const { profile, pestels, stakeholders, customCells, priorityBrief, analysisSynthesis } = data;
 
   const warnings = calculateQualityWarnings(data);
+  const xi = buildInterdependencyReport(data);
+  const xiMain = xi.main.length ? `\n### Key Interdependencies\n\n${INTERDEPENDENCY_CAUTION}\n\n${xi.main.map(item => `#### ${item.reference} · ${item.direction}\n${escapeXiMarkdown(item.relationship)}\n\n**CBD implication:** ${escapeXiMarkdown(item.cbdImplication)}`).join('\n\n')}\n` : '';
+  const xiRegister = xi.register.length ? `\n## Annex · PESTEL-S Interdependency Register\n\n${INTERDEPENDENCY_CAUTION}\n\n${xi.register.map(item => `### ${item.reference} · ${item.direction}\n${escapeXiMarkdown(item.status)} · ${item.isKeyInsight ? 'Key insight' : 'Not key'} · ${item.includeInMainBrief ? 'Included in main brief' : 'Register only'}\n\n- **Source finding:** ${escapeXiMarkdown(item.source)}\n- **Target finding:** ${escapeXiMarkdown(item.target)}\n- **Effect on CBD:** ${item.effect}\n- **Planning significance:** ${item.significance}\n- **Relationship:** ${escapeXiMarkdown(item.relationship)}\n- **CBD implication:** ${escapeXiMarkdown(item.cbdImplication)}\n- **A · Source finding evidence:** ${escapeXiMarkdown(item.sourceEvidence.join('; ') || 'None recorded')}\n- **B · Target finding evidence:** ${escapeXiMarkdown(item.targetEvidence.join('; ') || 'None recorded')}\n- **C · Relationship evidence:** ${escapeXiMarkdown(item.relationshipEvidence.join('; ') || 'None linked — analyst judgement')}\n- **Analytical / verification note:** ${escapeXiMarkdown(item.note)}`).join('\n\n')}\n` : '';
 
   // 1. Compute PESTEL-S Pressures
   const sortedPressures = Object.values(pestels)
@@ -200,6 +206,7 @@ ${Object.keys(pestels).map(k => {
 ---
 
 ## 4. Analysis Synthesis
+${xiMain}
 
 > SWOT/TOWS synthesis records professional judgement. It supports planning choices and does not determine the CBD response.
 
@@ -264,6 +271,7 @@ ${allEvidenceNotes.map((n, i) => `${i + 1}. **${n.title}** [${n.type}] (Confiden
 > [!WARNING]
 > **Planning Support Disclaimer**
 > This tool is an educational and planning-support prototype. It is not official United Nations doctrine and does not replace mission mandate, official guidance, host-state law, human rights due diligence, command approval, or verified country analysis. Users should verify all context-specific findings through official and current sources before operational or policy use.
+${xiRegister}
 `;
 }
 

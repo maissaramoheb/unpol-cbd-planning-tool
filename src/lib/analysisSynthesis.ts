@@ -7,6 +7,9 @@ import type {
   SwotFinding,
   UnpolProjectData
 } from '../types';
+import { isValidInterdependency, resolveInterdependencyFinding, dimensionName } from './interdependencies';
+
+type SourceData = Pick<UnpolProjectData, 'profile' | 'pestels' | 'stakeholders' | 'customCells'> & Partial<Pick<UnpolProjectData, 'interdependencies'>>;
 
 export const EMPTY_ANALYSIS_SYNTHESIS: AnalysisSynthesis = {
   swotFindings: [],
@@ -46,9 +49,10 @@ export function isValidStrategicOptionCombination(option: StrategicOption, findi
     linkedCategories.every(category => required.includes(category));
 }
 
-export function collectValidSourceKeys(data: Pick<UnpolProjectData, 'profile' | 'pestels' | 'stakeholders' | 'customCells'>): Set<string> {
+export function collectValidSourceKeys(data: SourceData): Set<string> {
   const keys = new Set<string>();
   Object.keys(data.pestels).forEach(id => keys.add(`pestels:${id}`));
+  (data.interdependencies ?? []).filter(item => isValidInterdependency(data, item)).forEach(item => keys.add(`interdependency:${item.id}`));
   data.stakeholders.forEach(item => keys.add(`stakeholder:${item.id}`));
   const profileFields = ['countryName', 'missionName', 'region', 'mandateEnvironment', 'hostStatePolice', 'conflictContext', 'planningPurpose'];
   profileFields.forEach(id => keys.add(`profile:${id}`));
@@ -69,8 +73,15 @@ export interface AnalysisSourceCandidate {
   group: string;
 }
 
-export function getAnalysisSourceCandidates(data: Pick<UnpolProjectData, 'profile' | 'pestels' | 'stakeholders' | 'customCells'>): AnalysisSourceCandidate[] {
+export function getAnalysisSourceCandidates(data: SourceData): AnalysisSourceCandidate[] {
   const candidates: AnalysisSourceCandidate[] = [];
+  [...(data.interdependencies ?? [])].filter(item => isValidInterdependency(data, item)).sort((a, b) => Number(b.isKeyInsight) - Number(a.isKeyInsight)).forEach(item => {
+    const source = resolveInterdependencyFinding(data, item.sourceFindingId)!;
+    const target = resolveInterdependencyFinding(data, item.targetFindingId)!;
+    candidates.push({ reference: { type: 'interdependency', id: item.id }, group: 'Interdependency Insights',
+      label: `${item.reference}${item.isKeyInsight ? ' · Key insight' : ''} · ${dimensionName(source.key)} → ${dimensionName(target.key)}`,
+      text: `${source.finding.finding} → ${target.finding.finding}\nRelationship: ${item.relationship}\nCBD implication: ${item.cbdImplication || 'Not recorded'}\nPlanning significance: ${item.planningSignificance}` });
+  });
   Object.values(data.pestels).forEach(item => {
     if (item.finding.trim()) candidates.push({ reference: { type: 'pestels', id: item.id }, label: `PESTEL-S · ${item.name}`, text: item.finding, group: 'PESTEL-S findings' });
     item.evidenceNotes?.forEach(note => candidates.push({ reference: { type: 'evidence', id: note.id }, label: `Evidence · ${note.sourceTitle}`, text: note.comment || note.sourceTitle, group: 'Evidence notes' }));
@@ -93,7 +104,7 @@ export function getAnalysisSourceCandidates(data: Pick<UnpolProjectData, 'profil
   return candidates.filter((candidate, index, all) => all.findIndex(item => sourceReferenceKey(item.reference) === sourceReferenceKey(candidate.reference)) === index);
 }
 
-export function resolveSourceReference(reference: AnalysisSourceReference, data: Pick<UnpolProjectData, 'profile' | 'pestels' | 'stakeholders' | 'customCells'>): AnalysisSourceCandidate | null {
+export function resolveSourceReference(reference: AnalysisSourceReference, data: SourceData): AnalysisSourceCandidate | null {
   return getAnalysisSourceCandidates(data).find(candidate => sourceReferenceKey(candidate.reference) === sourceReferenceKey(reference)) ?? null;
 }
 

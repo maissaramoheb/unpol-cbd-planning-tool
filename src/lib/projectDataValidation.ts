@@ -16,6 +16,8 @@ import type { MissionCoverageScope, MissionSourceCategory } from '../types/explo
 import { APP_VERSION } from './version';
 import { normalizeResultsReferences, validIndicators, validResultsPlan } from './resultsPlanning';
 import { collectValidSourceKeys, EMPTY_ANALYSIS_SYNTHESIS, sourceReferenceKey } from './analysisSynthesis';
+import { mainBriefSelectionError, normalizeInterdependencies, validateInterdependencies } from './interdependencies';
+import { normalizeExecutiveReferences, validExecutiveSelection } from './executiveBrief';
 
 export interface ProjectDataValidationResult {
   data: UnpolProjectData | null;
@@ -48,7 +50,7 @@ const MISSION_COVERAGE_SCOPES = new Set<MissionCoverageScope>([
 ]);
 const SWOT_CATEGORIES = new Set(['Strength', 'Weakness', 'Opportunity', 'Threat']);
 const STRATEGIC_OPTION_TYPES = new Set(['SO', 'ST', 'WO', 'WT']);
-const ANALYSIS_SOURCE_TYPES = new Set(['pestels', 'evidence', 'stakeholder', 'profile']);
+const ANALYSIS_SOURCE_TYPES = new Set(['pestels', 'evidence', 'stakeholder', 'profile', 'interdependency']);
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -348,11 +350,19 @@ export function validateAndNormalizeProjectData(value: unknown): ProjectDataVali
     return { data: null, error: 'Project data is missing a valid version label.' };
   }
 
+  if (value.interdependencies !== undefined && !validateInterdependencies(value.interdependencies)) {
+    return { data: null, error: 'Project data contains invalid interdependency records. Check unique XI references, different endpoints, relationship text and selection flags.' };
+  }
+  const project = { ...(value as unknown as UnpolProjectData),
+    interdependencies: (value.interdependencies as UnpolProjectData['interdependencies'] | undefined) ?? [],
+    analysisSynthesis: (value.analysisSynthesis as AnalysisSynthesis | undefined) ?? EMPTY_ANALYSIS_SYNTHESIS
+  };
+  const selectionError = mainBriefSelectionError(project);
+  if (selectionError) return { data: null, error: selectionError };
+  if (value.executiveBriefSelection !== undefined && !validExecutiveSelection(value.executiveBriefSelection)) return { data: null, error: 'Invalid Executive Brief selection. Use references only, with at most three unique items per section.' };
+
   return {
-    data: normalizeResultsReferences(normalizeProjectData({
-      ...(value as unknown as UnpolProjectData),
-      analysisSynthesis: (value.analysisSynthesis as AnalysisSynthesis | undefined) ?? EMPTY_ANALYSIS_SYNTHESIS
-    })),
+    data: normalizeExecutiveReferences(normalizeResultsReferences(normalizeProjectData(normalizeInterdependencies(project)))),
     error: null
   };
 }

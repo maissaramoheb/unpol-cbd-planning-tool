@@ -15,7 +15,15 @@ function fictionalEvidence(id: string, sourceTitle: string, comment: string): Ev
 }
 
 export function buildCaranaDemoData(base: UnpolProjectData): UnpolProjectData {
-  return addCaranaResults(buildCaranaCoreData(base));
+  const data = addCaranaResults(buildCaranaCoreData(base));
+  const priorityKey = 'Administrative Systems|Police Practice';
+  return { ...data, executiveBriefSelection: {
+    primaryPriorityKey: priorityKey, capacityGapKeys: [priorityKey],
+    evidenceIds: ['carana-ev-technology-1', 'carana-ev-matrix-3'],
+    interventions: [{ priorityKey, kind: 'individual' }, { priorityKey, kind: 'organizational' }],
+    criticalItems: [{ priorityKey, kind: 'risk' }, { priorityKey, kind: 'assumption', id: 'carana-results-3-ass1' }],
+    immediateNextSteps: [{ priorityKey, kind: 'activity', id: 'carana-results-3-act1' }, { priorityKey, kind: 'dependency', id: 'carana-results-3-dep1' }]
+  } };
 }
 
 function buildCaranaCoreData(base: UnpolProjectData): UnpolProjectData {
@@ -121,6 +129,12 @@ function buildCaranaCoreData(base: UnpolProjectData): UnpolProjectData {
       }
     },
     stakeholders,
+    interdependencies: [
+      { id: 'carana-xi-1', reference: 'XI-01', sourceFindingId: base.pestels.political.id, targetFindingId: base.pestels.security.id, relationship: 'Contested national-regional command authority may constrain a consistent civilian-police response to localized security pressures.', effectOnCbd: 'Constraining', planningSignificance: 'High', cbdImplication: 'Agree sponsorship, reporting lines and escalation routes before expanding command and field mentoring in Kantara.', evidenceIds: [], analyticalNote: 'Fictional training interpretation of the existing political and security findings; verify the interaction with counterparts.', isKeyInsight: true, includeInMainBrief: true },
+      { id: 'carana-xi-2', reference: 'XI-02', sourceFindingId: base.pestels.environmental.id, targetFindingId: base.pestels.economic.id, relationship: 'Seasonal flooding and poor roads may reinforce existing mobility and maintenance constraints on supervision outside Kantara town.', effectOnCbd: 'Constraining', planningSignificance: 'Medium', cbdImplication: 'Plan mentoring around access windows and test low-resource continuity arrangements before extending district coverage.', evidenceIds: [], analyticalNote: 'Fictional training interpretation; access and logistics assumptions require local verification.', isKeyInsight: false, includeInMainBrief: false },
+      { id: 'carana-xi-3', reference: 'XI-03', sourceFindingId: base.pestels.security.id, targetFindingId: base.pestels.social.id, relationship: 'Localized insecurity may further constrain safe police access and complaint reporting for already underserved groups.', effectOnCbd: 'Constraining', planningSignificance: 'Medium', cbdImplication: 'Consult representative groups and review protection risks before piloting liaison and complaint-access arrangements.', evidenceIds: [], analyticalNote: 'Fictional training interpretation, not an established causal assessment of community behaviour.', isKeyInsight: false, includeInMainBrief: false },
+      { id: 'carana-xi-4', reference: 'XI-04', sourceFindingId: base.pestels.legal.id, targetFindingId: base.pestels.technological.id, relationship: 'Inconsistent complaint and detention-review procedures interact with weak station registers and follow-up records, potentially limiting accountable supervisory review.', effectOnCbd: 'Constraining', planningSignificance: 'High', cbdImplication: 'Clarify authority and referral thresholds alongside a minimum paper-register and supervisory-review routine before considering digital systems.', evidenceIds: [], analyticalNote: 'Fictional training interpretation of existing legal and technological findings; validate the proposed workflow with police, inspectorate and justice actors.', isKeyInsight: true, includeInMainBrief: true }
+    ],
     analysisSynthesis: {
       swotFindings: [
         { id: 'carana-swot-s1', reference: 'S01', category: 'Strength', finding: 'Police headquarters and Kantara command support a bounded regional pilot when responsibilities and reporting lines are clear.', cbdImplication: 'CBD can build on existing sponsorship through limited, reviewable pilots rather than immediate national rollout.', sourceReferences: [{ type: 'stakeholder', id: 'sh-police-hq' }, { type: 'evidence', id: 'carana-ev-stakeholder-1' }], confidence: 3, verificationNote: 'Fictional workshop finding for demonstration.' },

@@ -49,7 +49,22 @@ export interface EvidenceNote {
 
 export type SwotCategory = 'Strength' | 'Weakness' | 'Opportunity' | 'Threat';
 export type StrategicOptionType = 'SO' | 'ST' | 'WO' | 'WT';
-export type AnalysisSourceType = 'pestels' | 'evidence' | 'stakeholder' | 'profile';
+export type AnalysisSourceType = 'pestels' | 'evidence' | 'stakeholder' | 'profile' | 'interdependency';
+
+export interface Interdependency {
+  id: string;
+  reference: string;
+  sourceFindingId: string | null;
+  targetFindingId: string | null;
+  relationship: string;
+  effectOnCbd: 'Enabling' | 'Constraining' | 'Mixed' | 'Contextual / Indirect' | 'Not assessed';
+  planningSignificance: 'High' | 'Medium' | 'Low' | 'Not assessed';
+  cbdImplication: string;
+  evidenceIds: string[];
+  analyticalNote: string;
+  isKeyInsight: boolean;
+  includeInMainBrief: boolean;
+}
 
 export interface AnalysisSourceReference {
   type: AnalysisSourceType;
@@ -200,11 +215,27 @@ export interface PriorityBrief {
 }
 
 export interface UnpolProjectData {
+  executiveBriefSelection?: ExecutiveBriefSelection;
   profile: MissionProfile;
   pestels: Record<string, PestelsItem>;
   stakeholders: Stakeholder[];
   customCells: Record<string, CbdCell>;
   priorityBrief: PriorityBrief;
   analysisSynthesis: AnalysisSynthesis;
+  interdependencies: Interdependency[];
   version: string;
+}
+
+export interface ExecutiveReference {
+  priorityKey: string;
+  kind: 'individual' | 'organizational' | 'environment' | 'risk' | 'assumption' | 'activity' | 'activityMilestone' | 'priorityMilestone' | 'dependency';
+  id?: string;
+}
+export interface ExecutiveBriefSelection {
+  primaryPriorityKey: string | null;
+  capacityGapKeys: string[];
+  evidenceIds: string[];
+  interventions: ExecutiveReference[];
+  criticalItems: ExecutiveReference[];
+  immediateNextSteps: ExecutiveReference[];
 }

@@ -13,8 +13,14 @@ import { Card } from '../ui/Card';
 import { buildPlanningOutput, OUTPUT_TITLES, planningOutputMarkdown, type OutputKind } from '../lib/planningOutputs';
 import { downloadPlanningOutputDocx } from '../lib/planningOutputDocx';
 import { PlanningOutputPreview } from './PlanningOutputPreview';
+import { INTERDEPENDENCY_CAUTION } from '../lib/interdependencies';
+import type { ExecutiveBriefSelection } from '../types';
+import { buildExecutiveBriefModel, executiveBriefMarkdown } from '../lib/executiveBrief';
+import { downloadExecutiveBriefDocx } from '../lib/executiveBriefDocx';
+import { ExecutiveBrief } from './ExecutiveBrief';
 
 interface ExportBriefProps {
+  onExecutiveSelectionChange: (selection: ExecutiveBriefSelection) => void;
   data: UnpolProjectData;
   onImportSuccess: (importedData: UnpolProjectData) => void;
   onPrev: () => void;
@@ -76,8 +82,8 @@ const PriorityCard = ({ priority }: { priority: ReportPriority }) => {
   );
 };
 
-export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess, onPrev }) => {
-  const [output, setOutput] = useState<'brief' | OutputKind>('brief');
+export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess, onPrev, onExecutiveSelectionChange }) => {
+  const [output, setOutput] = useState<'executive' | 'brief' | OutputKind>('brief');
   const [scope, setScope] = useState('');
   const [copied, setCopied] = useState(false);
   const [exportingWord, setExportingWord] = useState(false);
@@ -85,11 +91,12 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess,
   const fileInputRef = useRef<HTMLInputElement>(null);
   const model = useMemo(() => buildPlanningBriefModel(data), [data]);
   const effectiveScope = data.customCells[scope] ? scope : '';
-  const outputModel = useMemo(() => output === 'brief' ? null : buildPlanningOutput(data, output, effectiveScope || undefined), [data, output, effectiveScope]);
+  const outputModel = useMemo(() => output === 'brief' || output === 'executive' ? null : buildPlanningOutput(data, output, effectiveScope || undefined), [data, output, effectiveScope]);
+  const executiveModel = useMemo(() => buildExecutiveBriefModel(data), [data]);
   const p = data.profile;
 
   const handleCopyMarkdown = async () => {
-    const success = await copyToClipboard(outputModel ? planningOutputMarkdown(outputModel) : generateMarkdownBrief(data));
+    const success = await copyToClipboard(output === 'executive' ? executiveBriefMarkdown(executiveModel) : outputModel ? planningOutputMarkdown(outputModel) : generateMarkdownBrief(data));
     if (success) { setCopied(true); setTimeout(() => setCopied(false), 2000); }
   };
 
@@ -97,7 +104,8 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess,
     try {
       setErrorMsg(null);
       setExportingWord(true);
-      if (outputModel) await downloadPlanningOutputDocx(outputModel);
+      if (output === 'executive') await downloadExecutiveBriefDocx(executiveModel);
+      else if (outputModel) await downloadPlanningOutputDocx(outputModel);
       else await downloadPlanningBriefDocx(model);
     } catch (error) {
       setErrorMsg(error instanceof Error ? error.message : 'Unable to generate the Word brief.');
@@ -134,12 +142,12 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess,
         <h2 className="text-xl font-bold text-slate-950">Professional Outputs</h2>
         <p className="mt-1 text-sm text-slate-600">One planning workspace, complementary read-only outputs. Edit planning information in the seven stages.</p>
         <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Select professional output">
-          {(['brief', 'logframe', 'monitoring', 'workplan'] as const).map(kind => <Button key={kind} size="sm" variant={output === kind ? 'primary' : 'outline'} aria-pressed={output === kind} onClick={() => { setOutput(kind); setCopied(false); setErrorMsg(null); }}>
-            {{ brief: 'Planning Brief', logframe: 'Logframe', monitoring: 'M&E Matrix', workplan: 'Workplan' }[kind]}
+          {(['executive', 'brief', 'logframe', 'monitoring', 'workplan'] as const).map(kind => <Button key={kind} size="sm" variant={output === kind ? 'primary' : 'outline'} aria-pressed={output === kind} onClick={() => { setOutput(kind); setCopied(false); setErrorMsg(null); }}>
+            {{ executive: 'Executive CBD Brief', brief: 'Planning Brief', logframe: 'Logframe', monitoring: 'M&E Matrix', workplan: 'Workplan' }[kind]}
           </Button>)}
         </div>
         <p className="mt-2 text-xs text-slate-500">Planning Brief: decision narrative · Logframe: results logic · M&E Matrix: measurement · Workplan: delivery</p>
-        {output !== 'brief' ? <div className="mt-4 flex flex-wrap items-center gap-3">
+        {outputModel ? <div className="mt-4 flex flex-wrap items-center gap-3">
           <label className="text-sm font-medium" htmlFor="output-scope">Output scope</label>
           <select id="output-scope" className="min-w-0 max-w-full rounded-md border border-slate-300 bg-white p-2 text-sm focus-visible:outline-2 focus-visible:outline-blue-600" value={effectiveScope} onChange={e => setScope(e.target.value)}>
             <option value="">All CBD Priorities</option>{Object.keys(data.customCells).map(key => <option key={key} value={key}>{key.split('|').join(' × ')}</option>)}
@@ -148,7 +156,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess,
         </div> : null}
       </div>
       <div className="export-toolbar flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between print:hidden">
-        <div><h3 className="text-lg font-bold text-slate-950">Export · {output === 'brief' ? 'Planning Brief' : OUTPUT_TITLES[output]}</h3><p className="mt-1 text-sm text-slate-500">Create an editable Word document, print/PDF document or Markdown copy. JSON backs up the entire workspace, regardless of output scope.</p></div>
+        <div><h3 className="text-lg font-bold text-slate-950">Export · {output === 'executive' ? 'Executive CBD Brief' : output === 'brief' ? 'Planning Brief' : OUTPUT_TITLES[output]}</h3><p className="mt-1 text-sm text-slate-500">Create an editable Word document, print/PDF document or Markdown copy. JSON backs up the entire workspace, regardless of output scope.</p></div>
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" size="sm" onClick={handleWord} disabled={exportingWord}><FileText size={14} className="mr-1.5 text-blue-700" />{exportingWord ? 'Creating Word…' : 'Download Word'}</Button>
           <Button variant="outline" size="sm" onClick={() => window.print()}><Printer size={14} className="mr-1.5" />Print / PDF</Button>
@@ -162,7 +170,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess,
       <p className="print-note rounded-lg border border-blue-200 bg-blue-50 p-3 text-xs leading-relaxed text-blue-950 print:hidden">For PDF, use the browser print dialog with A4 paper, default margins, background graphics enabled, and browser-generated headers/footers disabled. Browser URL/date headers are controlled by the browser, not this application.</p>
       {errorMsg ? <div className="flex items-center gap-2 rounded-lg border border-rose-200 bg-rose-50 p-3 text-xs text-rose-800 print:hidden"><AlertTriangle size={16} />{errorMsg}</div> : null}
 
-      {outputModel ? <PlanningOutputPreview model={outputModel} /> : <Card className="report-shell mx-auto w-full max-w-[210mm] overflow-hidden border-slate-200 bg-white shadow-sm print:border-0 print:shadow-none">
+      {output === 'executive' ? <ExecutiveBrief data={data} onChange={onExecutiveSelectionChange} onDetailed={() => setOutput('brief')} /> : outputModel ? <PlanningOutputPreview model={outputModel} /> : <Card className="report-shell mx-auto w-full max-w-[210mm] overflow-hidden border-slate-200 bg-white shadow-sm print:border-0 print:shadow-none">
         <div className="professional-report">
           <ReportPage className="report-cover">
             <div className="report-kicker">Capacity-Building & Development Planning Support</div>
@@ -183,7 +191,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess,
 
           <ReportPage><SectionTitle number="03">Stakeholder Landscape</SectionTitle><div className="stakeholder-report-grid"><div><h3>Critical institutional actors</h3><BulletList items={model.stakeholderAnalysis.insights.leadershipLevel.slice(0, 6).map(item => `${item.name} — ${item.role}`)} /></div><div><h3>High-influence allies</h3><BulletList items={model.stakeholderAnalysis.engagementQuadrants.find(item => item.id === 'high-influence-allies')?.stakeholders.map(item => item.name) || []} /></div><div><h3>Resistance / sensitive actors</h3><BulletList items={model.stakeholderAnalysis.engagementQuadrants.find(item => item.id === 'high-influence-resistance')?.stakeholders.map(item => `${item.name} — ${item.risk}`) || []} empty="None recorded in this category." /></div><div><h3>Legitimacy / accountability voices</h3><BulletList items={model.stakeholderAnalysis.insights.legitimacyConsultation.slice(0, 6).map(item => item.name)} /></div></div><h3 className="report-subtitle">Key Engagement Implications</h3><BulletList items={model.stakeholderAnalysis.insights.technicalWorkingGroups.slice(0, 6).map(item => `${item.name}: ${item.engagement}`)} /><p className="method-note">Stakeholder ratings are analytical judgements and require current evidence, mandate review, and counterpart consultation.</p></ReportPage>
 
-          <ReportPage><SectionTitle>Analysis Synthesis</SectionTitle><p className="method-note">This SWOT/TOWS synthesis records professional judgement. It supports planning choices and does not determine the CBD response.</p><h3 className="report-subtitle">Key SWOT Findings</h3><div className="pestels-report-grid">{model.keySwotFindings.map(item => <article key={item.id}><header><strong>{item.reference} · {item.category}</strong><span>{item.sourceReferences.length} source link{item.sourceReferences.length === 1 ? '' : 's'}</span></header><p>{item.finding}</p><small><b>CBD implication:</b> {item.cbdImplication || 'Not recorded.'}</small></article>)}</div>{!model.keySwotFindings.length ? <Empty>No SWOT findings recorded.</Empty> : null}<h3 className="report-subtitle">Strategic Options</h3><div className="report-table-wrap"><table><thead><tr><th>Ref</th><th>Combination</th><th>Strategic implication</th></tr></thead><tbody>{model.strategicOptions.map(option => <tr key={option.id}><td>{option.reference}</td><td>{option.swotFindingIds.map(id => data.analysisSynthesis.swotFindings.find(item => item.id === id)?.reference).filter(Boolean).join(' + ')}</td><td>{option.option}</td></tr>)}</tbody></table></div>{!model.strategicOptions.length ? <Empty>No Strategic Options recorded.</Empty> : null}</ReportPage>
+          <ReportPage><SectionTitle>Analysis Synthesis</SectionTitle>{model.interdependencyAnalysis.main.length > 0 && <div className="interdependency-report"><h3 className="report-subtitle">Key Interdependencies</h3><p className="method-note">{INTERDEPENDENCY_CAUTION}</p>{model.interdependencyAnalysis.main.map(item => <article key={item.id}><h3>{item.reference} · {item.direction}</h3><p>{item.relationship}</p><p><b>CBD implication:</b> {item.cbdImplication}</p></article>)}</div>}<p className="method-note">This SWOT/TOWS synthesis records professional judgement. It supports planning choices and does not determine the CBD response.</p><h3 className="report-subtitle">Key SWOT Findings</h3><div className="pestels-report-grid">{model.keySwotFindings.map(item => <article key={item.id}><header><strong>{item.reference} · {item.category}</strong><span>{item.sourceReferences.length} source link{item.sourceReferences.length === 1 ? '' : 's'}</span></header><p>{item.finding}</p><small><b>CBD implication:</b> {item.cbdImplication || 'Not recorded.'}</small></article>)}</div>{!model.keySwotFindings.length ? <Empty>No SWOT findings recorded.</Empty> : null}<h3 className="report-subtitle">Strategic Options</h3><div className="report-table-wrap"><table><thead><tr><th>Ref</th><th>Combination</th><th>Strategic implication</th></tr></thead><tbody>{model.strategicOptions.map(option => <tr key={option.id}><td>{option.reference}</td><td>{option.swotFindingIds.map(id => data.analysisSynthesis.swotFindings.find(item => item.id === id)?.reference).filter(Boolean).join(' + ')}</td><td>{option.option}</td></tr>)}</tbody></table></div>{!model.strategicOptions.length ? <Empty>No Strategic Options recorded.</Empty> : null}</ReportPage>
 
           <ReportPage><SectionTitle number="04">CBD Priorities</SectionTitle>{model.priorities.slice(0, 2).map(priority => <PriorityCard key={priority.key} priority={priority} />)}{!model.priorities.length ? <Empty>No customized CBD priorities recorded.</Empty> : null}</ReportPage>
           <ReportPage><SectionTitle number="05">CBD Priorities — Continued</SectionTitle>{model.priorities.slice(2, 4).map(priority => <PriorityCard key={priority.key} priority={priority} />)}{model.priorities.length <= 2 ? <Empty>No additional priorities recorded.</Empty> : null}<p className="method-note"><b>Prototype planning heuristic — not UN doctrine.</b> Scores support discussion and do not replace evidence, mandate review, consultation, or professional judgement.</p></ReportPage>
@@ -196,6 +204,16 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess,
           <ReportPage className="report-annex"><SectionTitle>Annex B · Stakeholder Register</SectionTitle><div className="report-table-wrap"><table><thead><tr><th>Actor</th><th>Category / Role</th><th>Influence</th><th>Position</th><th>Risk / Engagement</th></tr></thead><tbody>{data.stakeholders.map(item => <tr key={item.id}><td>{item.name}</td><td>{item.category}<br /><small>{item.role}</small></td><td>{item.influence}</td><td>{item.position}</td><td>{item.risk}<br /><small><b>Engage:</b> {item.engagement}</small></td></tr>)}</tbody></table></div></ReportPage>
           <ReportPage className="report-annex"><SectionTitle>Annex C · Evidence & Source Register</SectionTitle>{model.evidence.length ? <div className="evidence-register">{model.evidence.map(item => <article key={item.id}><header><strong>{item.id} · {item.title}</strong><span>{item.type}</span></header><p>{item.comment || 'No note recorded.'}</p><small>Confidence {item.confidence}/5 · Reviewed {item.date || 'not recorded'} · Linked to {item.attachedTo}</small></article>)}</div> : <Empty>No evidence sources recorded.</Empty>}</ReportPage>
           <ReportPage className="report-annex"><SectionTitle>Annex D · Full Quality-Control Register</SectionTitle><BulletList items={model.warnings.map(item => item.message)} empty="No active quality-control warnings." /><div className="advisory-note"><strong>Advisory Note</strong><p>{ADVISORY_NOTE}</p></div></ReportPage>
+          {model.interdependencyAnalysis.register.length > 0 && <ReportPage className="report-annex interdependency-report"><SectionTitle>Annex E · PESTEL-S Interdependency Register</SectionTitle><p className="method-note">{INTERDEPENDENCY_CAUTION}</p>{model.interdependencyAnalysis.register.map(item => <article key={item.id}>
+            <h3>{item.reference} · {item.direction}</h3><p>{item.status} · {item.isKeyInsight ? 'Key insight' : 'Not key'} · {item.includeInMainBrief ? 'Included in main brief' : 'Register only'}</p>
+            <p><b>Source finding:</b> {item.source}</p><p><b>Target finding:</b> {item.target}</p>
+            <p>Effect on CBD: {item.effect} · Planning significance: {item.significance}</p>
+            <p><b>Relationship:</b> {item.relationship}</p><p><b>CBD implication:</b> {item.cbdImplication}</p>
+            <p><b>A · Source finding evidence:</b> {item.sourceEvidence.join('; ') || 'None recorded'}</p>
+            <p><b>B · Target finding evidence:</b> {item.targetEvidence.join('; ') || 'None recorded'}</p>
+            <p><b>C · Relationship evidence:</b> {item.relationshipEvidence.join('; ') || 'None linked — analyst judgement'}</p>
+            <p><b>Analytical / verification note:</b> {item.note}</p>
+          </article>)}</ReportPage>}
         </div>
       </Card>}
 
