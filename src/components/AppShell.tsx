@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { normalizeExecutiveReferences } from '../lib/executiveBrief';
 import { Header } from './Header';
 import { ModuleTabs } from './ModuleTabs';
 import { Dashboard } from './Dashboard';
@@ -26,7 +27,8 @@ import { normalizeResultsReferences } from '../lib/resultsPlanning';
 import { mainBriefSelectionError, normalizeInterdependencies } from '../lib/interdependencies';
 
 export const AppShell: React.FC = () => {
-  const [data, setData] = useState<UnpolProjectData | null>(null);
+  const [data, setProjectData] = useState<UnpolProjectData | null>(null);
+  const setData = useCallback((next: UnpolProjectData) => setProjectData(normalizeExecutiveReferences(next)), []);
   const [storageRecoveryMessage, setStorageRecoveryMessage] = useState<string | null>(null);
   const [currentView, setCurrentView] = useState<number>(HOME_VIEW);
   const [isExplorerOpen, setIsExplorerOpen] = useState<boolean>(false);
@@ -38,7 +40,7 @@ export const AppShell: React.FC = () => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setData(loaded.data);
     setStorageRecoveryMessage(loaded.recoveryMessage);
-  }, []);
+  }, [setData]);
 
   // Sync with localStorage on changes
   useEffect(() => {
@@ -244,6 +246,7 @@ export const AppShell: React.FC = () => {
       case EXPORT_VIEW:
         return (
           <ExportBrief
+            onExecutiveSelectionChange={selection => setData({ ...data, executiveBriefSelection: selection })}
             data={data}
             onImportSuccess={(imported) => {
               setData(imported);

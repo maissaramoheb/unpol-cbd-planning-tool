@@ -15,7 +15,15 @@ function fictionalEvidence(id: string, sourceTitle: string, comment: string): Ev
 }
 
 export function buildCaranaDemoData(base: UnpolProjectData): UnpolProjectData {
-  return addCaranaResults(buildCaranaCoreData(base));
+  const data = addCaranaResults(buildCaranaCoreData(base));
+  const priorityKey = 'Administrative Systems|Police Practice';
+  return { ...data, executiveBriefSelection: {
+    primaryPriorityKey: priorityKey, capacityGapKeys: [priorityKey],
+    evidenceIds: ['carana-ev-technology-1', 'carana-ev-matrix-3'],
+    interventions: [{ priorityKey, kind: 'individual' }, { priorityKey, kind: 'organizational' }],
+    criticalItems: [{ priorityKey, kind: 'risk' }, { priorityKey, kind: 'assumption', id: 'carana-results-3-ass1' }],
+    immediateNextSteps: [{ priorityKey, kind: 'activity', id: 'carana-results-3-act1' }, { priorityKey, kind: 'dependency', id: 'carana-results-3-dep1' }]
+  } };
 }
 
 function buildCaranaCoreData(base: UnpolProjectData): UnpolProjectData {

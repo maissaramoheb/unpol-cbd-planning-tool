@@ -84,6 +84,24 @@ body {
 
 @page { size: A4 portrait; margin: 12mm; }
 
+/* Standalone management projection; never clips or shrinks canonical text. */
+.executive-brief { box-sizing: border-box; width: 210mm; max-width: 100%; margin: 0 auto; padding: 12mm 15mm; background: white; border: 1px solid #cbd5e1; color: #1e293b; font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.25; overflow-wrap: anywhere; }
+.executive-heading h1 { font-size: 20pt; font-weight: 700; color: #183b61; margin: 0 0 3mm; }
+.executive-heading p { margin: 0 0 2mm; }
+.executive-heading .executive-meta { font-size: 9pt; color: #475569; }
+.executive-brief section { margin-top: 3mm; }
+.executive-brief h2 { font-size: 11pt; font-weight: 700; color: #183b61; margin: 0 0 1.5mm; }
+.executive-brief section p { margin: 0 0 1.5mm; white-space: pre-wrap; }
+.executive-brief .executive-problem p { font-weight: 700; }
+.executive-brief .executive-notice { font-size: 9pt; color: #475569; margin-top: 3mm; }
+@media screen and (max-width: 600px) { .executive-brief { padding: 20px; } }
+@page executive-cbd { size: A4 portrait; margin: 12mm 15mm; }
+@media print {
+  html:has(.executive-brief), body:has(.executive-brief) { width: auto !important; }
+  .executive-brief { page: executive-cbd; width: 100%; max-width: none; padding: 0; margin: 0; border: 0; }
+  .executive-brief h2 { break-after: avoid; }
+}
+
 .planning-output { min-width: 0; max-width: 100%; padding: 24px; border: 1px solid #cbd5e1; background: white; color: #0f172a; }
 .planning-output h1 { font-size: 24px; font-weight: 700; margin-bottom: 12px; }
 .planning-output h2 { font-size: 19px; font-weight: 700; margin: 28px 0 12px; }

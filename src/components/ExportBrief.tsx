@@ -14,8 +14,13 @@ import { buildPlanningOutput, OUTPUT_TITLES, planningOutputMarkdown, type Output
 import { downloadPlanningOutputDocx } from '../lib/planningOutputDocx';
 import { PlanningOutputPreview } from './PlanningOutputPreview';
 import { INTERDEPENDENCY_CAUTION } from '../lib/interdependencies';
+import type { ExecutiveBriefSelection } from '../types';
+import { buildExecutiveBriefModel, executiveBriefMarkdown } from '../lib/executiveBrief';
+import { downloadExecutiveBriefDocx } from '../lib/executiveBriefDocx';
+import { ExecutiveBrief } from './ExecutiveBrief';
 
 interface ExportBriefProps {
+  onExecutiveSelectionChange: (selection: ExecutiveBriefSelection) => void;
   data: UnpolProjectData;
   onImportSuccess: (importedData: UnpolProjectData) => void;
   onPrev: () => void;
@@ -77,8 +82,8 @@ const PriorityCard = ({ priority }: { priority: ReportPriority }) => {
   );
 };
 
-export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess, onPrev }) => {
-  const [output, setOutput] = useState<'brief' | OutputKind>('brief');
+export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess, onPrev, onExecutiveSelectionChange }) => {
+  const [output, setOutput] = useState<'executive' | 'brief' | OutputKind>('brief');
   const [scope, setScope] = useState('');
   const [copied, setCopied] = useState(false);
   const [exportingWord, setExportingWord] = useState(false);
@@ -86,11 +91,12 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess,
   const fileInputRef = useRef<HTMLInputElement>(null);
   const model = useMemo(() => buildPlanningBriefModel(data), [data]);
   const effectiveScope = data.customCells[scope] ? scope : '';
-  const outputModel = useMemo(() => output === 'brief' ? null : buildPlanningOutput(data, output, effectiveScope || undefined), [data, output, effectiveScope]);
+  const outputModel = useMemo(() => output === 'brief' || output === 'executive' ? null : buildPlanningOutput(data, output, effectiveScope || undefined), [data, output, effectiveScope]);
+  const executiveModel = useMemo(() => buildExecutiveBriefModel(data), [data]);
   const p = data.profile;
 
   const handleCopyMarkdown = async () => {
-    const success = await copyToClipboard(outputModel ? planningOutputMarkdown(outputModel) : generateMarkdownBrief(data));
+    const success = await copyToClipboard(output === 'executive' ? executiveBriefMarkdown(executiveModel) : outputModel ? planningOutputMarkdown(outputModel) : generateMarkdownBrief(data));
     if (success) { setCopied(true); setTimeout(() => setCopied(false), 2000); }
   };
 
@@ -98,7 +104,8 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess,
     try {
       setErrorMsg(null);
       setExportingWord(true);
-      if (outputModel) await downloadPlanningOutputDocx(outputModel);
+      if (output === 'executive') await downloadExecutiveBriefDocx(executiveModel);
+      else if (outputModel) await downloadPlanningOutputDocx(outputModel);
       else await downloadPlanningBriefDocx(model);
     } catch (error) {
       setErrorMsg(error instanceof Error ? error.message : 'Unable to generate the Word brief.');
@@ -135,12 +142,12 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess,
         <h2 className="text-xl font-bold text-slate-950">Professional Outputs</h2>
         <p className="mt-1 text-sm text-slate-600">One planning workspace, complementary read-only outputs. Edit planning information in the seven stages.</p>
         <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Select professional output">
-          {(['brief', 'logframe', 'monitoring', 'workplan'] as const).map(kind => <Button key={kind} size="sm" variant={output === kind ? 'primary' : 'outline'} aria-pressed={output === kind} onClick={() => { setOutput(kind); setCopied(false); setErrorMsg(null); }}>
-            {{ brief: 'Planning Brief', logframe: 'Logframe', monitoring: 'M&E Matrix', workplan: 'Workplan' }[kind]}
+          {(['executive', 'brief', 'logframe', 'monitoring', 'workplan'] as const).map(kind => <Button key={kind} size="sm" variant={output === kind ? 'primary' : 'outline'} aria-pressed={output === kind} onClick={() => { setOutput(kind); setCopied(false); setErrorMsg(null); }}>
+            {{ executive: 'Executive CBD Brief', brief: 'Planning Brief', logframe: 'Logframe', monitoring: 'M&E Matrix', workplan: 'Workplan' }[kind]}
           </Button>)}
         </div>
         <p className="mt-2 text-xs text-slate-500">Planning Brief: decision narrative · Logframe: results logic · M&E Matrix: measurement · Workplan: delivery</p>
-        {output !== 'brief' ? <div className="mt-4 flex flex-wrap items-center gap-3">
+        {outputModel ? <div className="mt-4 flex flex-wrap items-center gap-3">
           <label className="text-sm font-medium" htmlFor="output-scope">Output scope</label>
           <select id="output-scope" className="min-w-0 max-w-full rounded-md border border-slate-300 bg-white p-2 text-sm focus-visible:outline-2 focus-visible:outline-blue-600" value={effectiveScope} onChange={e => setScope(e.target.value)}>
             <option value="">All CBD Priorities</option>{Object.keys(data.customCells).map(key => <option key={key} value={key}>{key.split('|').join(' × ')}</option>)}
@@ -149,7 +156,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess,
         </div> : null}
       </div>
       <div className="export-toolbar flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between print:hidden">
-        <div><h3 className="text-lg font-bold text-slate-950">Export · {output === 'brief' ? 'Planning Brief' : OUTPUT_TITLES[output]}</h3><p className="mt-1 text-sm text-slate-500">Create an editable Word document, print/PDF document or Markdown copy. JSON backs up the entire workspace, regardless of output scope.</p></div>
+        <div><h3 className="text-lg font-bold text-slate-950">Export · {output === 'executive' ? 'Executive CBD Brief' : output === 'brief' ? 'Planning Brief' : OUTPUT_TITLES[output]}</h3><p className="mt-1 text-sm text-slate-500">Create an editable Word document, print/PDF document or Markdown copy. JSON backs up the entire workspace, regardless of output scope.</p></div>
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" size="sm" onClick={handleWord} disabled={exportingWord}><FileText size={14} className="mr-1.5 text-blue-700" />{exportingWord ? 'Creating Word…' : 'Download Word'}</Button>
           <Button variant="outline" size="sm" onClick={() => window.print()}><Printer size={14} className="mr-1.5" />Print / PDF</Button>
@@ -163,7 +170,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess,
       <p className="print-note rounded-lg border border-blue-200 bg-blue-50 p-3 text-xs leading-relaxed text-blue-950 print:hidden">For PDF, use the browser print dialog with A4 paper, default margins, background graphics enabled, and browser-generated headers/footers disabled. Browser URL/date headers are controlled by the browser, not this application.</p>
       {errorMsg ? <div className="flex items-center gap-2 rounded-lg border border-rose-200 bg-rose-50 p-3 text-xs text-rose-800 print:hidden"><AlertTriangle size={16} />{errorMsg}</div> : null}
 
-      {outputModel ? <PlanningOutputPreview model={outputModel} /> : <Card className="report-shell mx-auto w-full max-w-[210mm] overflow-hidden border-slate-200 bg-white shadow-sm print:border-0 print:shadow-none">
+      {output === 'executive' ? <ExecutiveBrief data={data} onChange={onExecutiveSelectionChange} onDetailed={() => setOutput('brief')} /> : outputModel ? <PlanningOutputPreview model={outputModel} /> : <Card className="report-shell mx-auto w-full max-w-[210mm] overflow-hidden border-slate-200 bg-white shadow-sm print:border-0 print:shadow-none">
         <div className="professional-report">
           <ReportPage className="report-cover">
             <div className="report-kicker">Capacity-Building & Development Planning Support</div>

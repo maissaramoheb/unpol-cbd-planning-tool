@@ -17,6 +17,7 @@ import { APP_VERSION } from './version';
 import { normalizeResultsReferences, validIndicators, validResultsPlan } from './resultsPlanning';
 import { collectValidSourceKeys, EMPTY_ANALYSIS_SYNTHESIS, sourceReferenceKey } from './analysisSynthesis';
 import { mainBriefSelectionError, normalizeInterdependencies, validateInterdependencies } from './interdependencies';
+import { normalizeExecutiveReferences, validExecutiveSelection } from './executiveBrief';
 
 export interface ProjectDataValidationResult {
   data: UnpolProjectData | null;
@@ -358,9 +359,10 @@ export function validateAndNormalizeProjectData(value: unknown): ProjectDataVali
   };
   const selectionError = mainBriefSelectionError(project);
   if (selectionError) return { data: null, error: selectionError };
+  if (value.executiveBriefSelection !== undefined && !validExecutiveSelection(value.executiveBriefSelection)) return { data: null, error: 'Invalid Executive Brief selection. Use references only, with at most three unique items per section.' };
 
   return {
-    data: normalizeResultsReferences(normalizeProjectData(normalizeInterdependencies(project))),
+    data: normalizeExecutiveReferences(normalizeResultsReferences(normalizeProjectData(normalizeInterdependencies(project)))),
     error: null
   };
 }

@@ -215,6 +215,7 @@ export interface PriorityBrief {
 }
 
 export interface UnpolProjectData {
+  executiveBriefSelection?: ExecutiveBriefSelection;
   profile: MissionProfile;
   pestels: Record<string, PestelsItem>;
   stakeholders: Stakeholder[];
@@ -223,4 +224,18 @@ export interface UnpolProjectData {
   analysisSynthesis: AnalysisSynthesis;
   interdependencies: Interdependency[];
   version: string;
+}
+
+export interface ExecutiveReference {
+  priorityKey: string;
+  kind: 'individual' | 'organizational' | 'environment' | 'risk' | 'assumption' | 'activity' | 'activityMilestone' | 'priorityMilestone' | 'dependency';
+  id?: string;
+}
+export interface ExecutiveBriefSelection {
+  primaryPriorityKey: string | null;
+  capacityGapKeys: string[];
+  evidenceIds: string[];
+  interventions: ExecutiveReference[];
+  criticalItems: ExecutiveReference[];
+  immediateNextSteps: ExecutiveReference[];
 }
