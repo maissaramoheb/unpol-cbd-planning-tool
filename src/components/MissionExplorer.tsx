@@ -126,9 +126,9 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
             {/* Tablet toggle; compact mobile remains list-first */}
             <div className="hidden sm:flex justify-between items-center lg:hidden bg-slate-50 border border-slate-200 p-1.5 rounded-xl">
               <span className="text-xs font-bold text-slate-500 pl-2">Display Mode:</span>
-              <div className="flex gap-1">
+              <div className="flex gap-1" role="group" aria-label="Select display mode">
                 <Button
-                  variant={viewMode === 'map' ? 'primary' : 'tertiary'}
+                  variant="tertiary"
                   size="sm"
                   onClick={() => setViewMode('map')}
                   aria-pressed={viewMode === 'map'}
@@ -137,7 +137,7 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
                   World Map
                 </Button>
                 <Button
-                  variant={viewMode === 'list' ? 'primary' : 'tertiary'}
+                  variant="tertiary"
                   size="sm"
                   onClick={() => setViewMode('list')}
                   aria-pressed={viewMode === 'list'}

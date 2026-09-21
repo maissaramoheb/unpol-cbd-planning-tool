@@ -142,9 +142,17 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess,
         <h2 className="text-xl font-bold text-slate-950">Professional Outputs</h2>
         <p className="mt-1 text-sm text-slate-600">One planning workspace, complementary read-only outputs. Edit planning information in the seven stages.</p>
         <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Select professional output">
-          {(['executive', 'brief', 'logframe', 'monitoring', 'workplan'] as const).map(kind => <Button key={kind} size="sm" variant={output === kind ? 'primary' : 'secondary'} aria-pressed={output === kind} onClick={() => { setOutput(kind); setCopied(false); setErrorMsg(null); }}>
-            {{ executive: 'Executive CBD Brief', brief: 'Planning Brief', logframe: 'Logframe', monitoring: 'M&E Matrix', workplan: 'Workplan' }[kind]}
-          </Button>)}
+          {(['executive', 'brief', 'logframe', 'monitoring', 'workplan'] as const).map(kind => (
+            <Button
+              key={kind}
+              size="sm"
+              variant="secondary"
+              aria-pressed={output === kind}
+              onClick={() => { setOutput(kind); setCopied(false); setErrorMsg(null); }}
+            >
+              {{ executive: 'Executive CBD Brief', brief: 'Planning Brief', logframe: 'Logframe', monitoring: 'M&E Matrix', workplan: 'Workplan' }[kind]}
+            </Button>
+          ))}
         </div>
         <p className="mt-2 text-xs text-slate-500">Planning Brief: decision narrative · Logframe: results logic · M&E Matrix: measurement · Workplan: delivery</p>
         {outputModel ? <div className="mt-4 flex flex-wrap items-center gap-3">
