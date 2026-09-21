@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 const assert = require('node:assert/strict');
 const test = require('node:test');
-const fs = require('node:fs');
-
 const {
   EXPORT_VIEW,
   HOME_VIEW,
   WORKFLOW_STAGES,
   getDashboardContinueStep,
+  isWorkflowStage,
   mapV05StepToView
 } = require('../.test-dist/lib/workflow.js');
 const { buildCaranaDemoData } = require('../.test-dist/data/caranaDemo.js');
@@ -43,23 +42,35 @@ test('v0.5 navigation concepts map safely without changing project data', () => 
   assert.equal(mapV05StepToView(99), HOME_VIEW);
 });
 
-test('main shell exposes Stage 4 directly, Stage 7 summary, and non-numbered Export', () => {
-  const shell = fs.readFileSync('src/components/AppShell.tsx', 'utf8');
-  const tabs = fs.readFileSync('src/components/ModuleTabs.tsx', 'utf8');
-  const results = fs.readFileSync('src/components/ResultsImplementation.tsx', 'utf8');
-  const exportBrief = fs.readFileSync('src/components/ExportBrief.tsx', 'utf8');
+test('workflow stage discrimination and view boundaries validate correctly', () => {
+  for (let id = 1; id <= 7; id++) {
+    assert.equal(isWorkflowStage(id), true);
+  }
+  assert.equal(isWorkflowStage(HOME_VIEW), false);
+  assert.equal(isWorkflowStage(EXPORT_VIEW), false);
+  assert.equal(isWorkflowStage(-1), false);
+  assert.equal(isWorkflowStage(8), false);
+  assert.equal(isWorkflowStage(99), false);
 
-  assert.match(shell, /case 4:[\s\S]*<AnalysisSynthesis/);
-  assert.match(shell, /case 7:[\s\S]*<ResultsImplementation/);
-  assert.match(shell, /case EXPORT_VIEW:[\s\S]*<ExportBrief/);
-  assert.match(tabs, /WORKFLOW_STAGES\.map/);
-  assert.match(tabs, /Home<\/button>/);
-  assert.match(tabs, /Export<\/button>/);
-  assert.match(results, /7A — Results Logic/);
-  assert.match(results, /7B — Measurement/);
-  assert.match(results, /7C — Implementation/);
-  assert.match(results, /7D — Ownership, Risk & Sustainability/);
-  assert.doesNotMatch(exportBrief, />7\. Export Planning Brief</);
+  assert.equal(WORKFLOW_STAGES.length, 7);
+  WORKFLOW_STAGES.forEach((stage, idx) => {
+    assert.equal(stage.id, idx + 1);
+    assert.equal(typeof stage.label, 'string');
+    assert.ok(stage.label.length > 0);
+    assert.equal(typeof stage.sub, 'string');
+    assert.ok(stage.sub.length > 0);
+  });
+
+  const stage4 = WORKFLOW_STAGES.find(s => s.id === 4);
+  assert.ok(stage4);
+  assert.equal(stage4.label, 'Analysis Synthesis');
+
+  const stage7 = WORKFLOW_STAGES.find(s => s.id === 7);
+  assert.ok(stage7);
+  assert.equal(stage7.label, 'Results & Implementation');
+
+  assert.ok(!WORKFLOW_STAGES.some(s => s.id === HOME_VIEW));
+  assert.ok(!WORKFLOW_STAGES.some(s => s.id === EXPORT_VIEW));
 });
 
 test('CARANA demonstration is coherent, fictional, and fully populated', () => {

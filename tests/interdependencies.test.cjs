@@ -30,7 +30,7 @@ test('blank workspace invents no interdependencies and optional empty analysis h
   const data = getInitialProjectData('blank');
   assert.deepEqual(data.interdependencies, []);
   assert.deepEqual(xi.buildInterdependencyReport(data), { register: [], main: [] });
-  assert.doesNotMatch(generateMarkdownBrief(data), /Key Interdependencies|Interdependency Register/);
+  assert.doesNotMatch(generateMarkdownBrief(buildPlanningBriefModel(data)), /Key Interdependencies|Interdependency Register/);
 });
 
 test('all directional relationship fields, stable IDs, classifications, evidence and selection flags survive JSON', () => {
@@ -184,7 +184,7 @@ test('QC groups XI cautions into at most four messages without blocking or asser
 test('Markdown and DOCX use shared explicit selections and readable register, including unresolved records', async () => {
   const data = demo(); data.interdependencies[1].sourceFindingId = null;
   data.interdependencies[1].relationship = 'A | B <script> \n *literal*';
-  const model = buildPlanningBriefModel(data), md = generateMarkdownBrief(data);
+  const model = buildPlanningBriefModel(data), md = generateMarkdownBrief(model);
   const main = md.split('### Key Interdependencies')[1].split('### Key SWOT Findings')[0];
   assert.match(main, /XI-01/); assert.match(main, /XI-04/); assert.doesNotMatch(main, /XI-02|XI-03/);
   assert.match(md, /Unresolved/); assert.match(md, /&lt;script&gt;/); assert.doesNotMatch(md, /<script>/);

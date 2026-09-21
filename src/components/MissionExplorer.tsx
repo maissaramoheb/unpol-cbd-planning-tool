@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { MissionExplorerEntry } from '../types/explorer';
 import { defaultExplorerSeeds, PEACEKEEPING_REFERENCE_NOTICE } from '../data/explorerSeeds';
 import { MissionExplorerMap } from './MissionExplorerMap';
@@ -7,6 +7,7 @@ import { MissionExplorerPanel } from './MissionExplorerPanel';
 import { Button } from '../ui/Button';
 import { AlertTriangle, Globe, List, X } from 'lucide-react';
 import { filterMissionExplorerEntries } from '../lib/explorerFilters';
+import { useDialogA11y } from '../ui/useDialogA11y';
 
 interface MissionExplorerProps {
   onUseProfile: (entry: MissionExplorerEntry) => void;
@@ -14,6 +15,16 @@ interface MissionExplorerProps {
 }
 
 export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, onClose }) => {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  useDialogA11y({
+    isOpen: true,
+    onClose,
+    containerRef: dialogRef,
+    initialFocusRef: closeButtonRef
+  });
+
   // UI State
   const [selectedEntryId, setSelectedEntryId] = useState<string | null>(null);
   const [hoveredEntryId, setHoveredEntryId] = useState<string | null>(null);
@@ -51,6 +62,7 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="mission-explorer-title"
@@ -72,6 +84,7 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
             </div>
           </div>
           <button
+            ref={closeButtonRef}
             type="button"
             onClick={onClose}
             aria-label="Close Mission Explorer"

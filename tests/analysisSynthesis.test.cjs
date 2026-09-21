@@ -106,13 +106,13 @@ test('blank report data does not invent SWOT or Strategic Options', () => {
   const model = buildPlanningBriefModel(getInitialProjectData('blank'));
   assert.deepEqual(model.keySwotFindings, []);
   assert.deepEqual(model.strategicOptions, []);
-  const markdown = generateMarkdownBrief(getInitialProjectData('blank'));
+  const markdown = generateMarkdownBrief(model);
   assert.match(markdown, /No SWOT findings recorded/);
   assert.doesNotMatch(markdown, /\*\*S01/);
 });
 
 test('Markdown preserves SWOT, TOWS and CBD Strategic Synthesis Basis links', () => {
-  const markdown = generateMarkdownBrief(synthesisFixture());
+  const markdown = generateMarkdownBrief(buildPlanningBriefModel(synthesisFixture()));
   assert.match(markdown, /## 4\. Analysis Synthesis/);
   assert.match(markdown, /\*\*W01 · Weakness\*\*/);
   assert.match(markdown, /WO-01/);

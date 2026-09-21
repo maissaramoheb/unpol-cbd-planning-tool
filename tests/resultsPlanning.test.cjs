@@ -144,7 +144,7 @@ test('same indicator edits appear in existing report and Markdown without rich-o
   data.customCells[key].indicators[0].baseline = 'PRIVATE WORKSPACE BASELINE SENTINEL';
   const report = buildPlanningBriefModel(data);
   assert.ok(report.priorities.some(p => indicatorTexts(p.cell).includes('Canonical indicator edited once')));
-  const markdown = generateMarkdownBrief(data);
+  const markdown = generateMarkdownBrief(report);
   assert.match(markdown, /Canonical indicator edited once/);
   assert.doesNotMatch(markdown, /PRIVATE WORKSPACE BASELINE SENTINEL/);
   assert.doesNotMatch(markdown, /\[object Object\]/);

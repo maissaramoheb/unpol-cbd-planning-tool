@@ -117,11 +117,11 @@ test('blank and legacy projects remain honest; no inferred outputs, activities, 
 
 test('read-only output generation never mutates project data, scoring, JSON or existing narrative exports; edits regenerate immediately', () => {
   const data = demo(); const before = JSON.stringify(data);
-  const brief = generateMarkdownBrief(data); const report = buildPlanningBriefModel(data);
+  const report = buildPlanningBriefModel(data); const brief = generateMarkdownBrief(report);
   const scores = Object.values(data.customCells).map(evaluateCbdCell);
   for (const kind of ['logframe', 'monitoring', 'workplan']) buildPlanningOutput(data, kind);
   assert.equal(JSON.stringify(data), before);
-  assert.equal(generateMarkdownBrief(data), brief);
+  assert.equal(generateMarkdownBrief(report), brief);
   assert.deepEqual(buildPlanningBriefModel(data), report);
   assert.deepEqual(Object.values(data.customCells).map(evaluateCbdCell), scores);
   const restored = validateAndNormalizeProjectData(JSON.parse(before));

@@ -1,5 +1,6 @@
-import React, { useId } from 'react';
+import React, { useId, useRef } from 'react';
 import { X } from 'lucide-react';
+import { useDialogA11y } from './useDialogA11y';
 
 interface ModalProps {
   isOpen: boolean;
@@ -19,6 +20,15 @@ export const Modal: React.FC<ModalProps> = ({
   size = 'md'
 }) => {
   const titleId = useId();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  useDialogA11y({
+    isOpen,
+    onClose,
+    containerRef: dialogRef,
+    initialFocusRef: closeButtonRef
+  });
 
   if (!isOpen) return null;
 
@@ -32,6 +42,7 @@ export const Modal: React.FC<ModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-slate-900/60 backdrop-blur-sm">
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
@@ -41,6 +52,7 @@ export const Modal: React.FC<ModalProps> = ({
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
           <h3 id={titleId} className="text-lg font-bold text-slate-900">{title}</h3>
           <button
+            ref={closeButtonRef}
             type="button"
             onClick={onClose}
             aria-label={`Close ${title}`}

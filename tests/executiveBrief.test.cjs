@@ -85,7 +85,7 @@ test('page-fit warning is non-blocking and does not truncate substantive content
 });
 for (const kind of ['brief','logframe','monitoring','workplan','interdependencies','scoring']) test(`${kind} output unchanged by executive selection`, () => {
   const d=demo(), other={...d,executiveBriefSelection:ex.emptyExecutiveSelection()};
-  const project=x=>kind==='brief'?{...buildPlanningBriefModel(x),data:undefined,markdown:generateMarkdownBrief(x)}:kind==='interdependencies'?buildInterdependencyReport(x):kind==='scoring'?Object.values(x.customCells).map(evaluateCbdCell):buildPlanningOutput(x,kind);
+  const project=x=>kind==='brief'?{...buildPlanningBriefModel(x),data:undefined,markdown:generateMarkdownBrief(buildPlanningBriefModel(x))}:kind==='interdependencies'?buildInterdependencyReport(x):kind==='scoring'?Object.values(x.customCells).map(evaluateCbdCell):buildPlanningOutput(x,kind);
   assert.deepEqual(project(d),project(other));
 });
 test('Markdown retains the shared model sections content and no technical matrix', () => {

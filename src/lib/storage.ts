@@ -203,16 +203,18 @@ export function clearProjectData(templateId = 'blank'): UnpolProjectData {
 export function exportProjectData(data: UnpolProjectData): void {
   if (typeof window === 'undefined') return;
 
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
   const downloadAnchor = document.createElement('a');
   const dateStr = new Date().toISOString().split('T')[0];
   const filename = `UNPOL_CBD_Plan_${data.profile.countryName.replace(/[^a-z0-9]/gi, '_')}_${dateStr}.json`;
 
-  downloadAnchor.setAttribute("href", dataStr);
-  downloadAnchor.setAttribute("download", filename);
+  downloadAnchor.href = url;
+  downloadAnchor.download = filename;
   document.body.appendChild(downloadAnchor);
   downloadAnchor.click();
   downloadAnchor.remove();
+  URL.revokeObjectURL(url);
 }
 
 export function importProjectData(file: File): Promise<UnpolProjectData> {

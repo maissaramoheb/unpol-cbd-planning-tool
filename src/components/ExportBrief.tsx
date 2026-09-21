@@ -96,7 +96,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess,
   const p = data.profile;
 
   const handleCopyMarkdown = async () => {
-    const success = await copyToClipboard(output === 'executive' ? executiveBriefMarkdown(executiveModel) : outputModel ? planningOutputMarkdown(outputModel) : generateMarkdownBrief(data));
+    const success = await copyToClipboard(output === 'executive' ? executiveBriefMarkdown(executiveModel) : outputModel ? planningOutputMarkdown(outputModel) : generateMarkdownBrief(model));
     if (success) { setCopied(true); setTimeout(() => setCopied(false), 2000); }
   };
 

@@ -5,6 +5,7 @@ const JSZip = require('jszip');
 
 const { buildPlanningBriefModel, sanitizeReportFilename } = require('../.test-dist/lib/reportModel.js');
 const { createPlanningBriefDocx } = require('../.test-dist/lib/exportDocx.js');
+const { generateMarkdownBrief } = require('../.test-dist/lib/exportMarkdown.js');
 
 function fixture() {
   const evidence = { id: 'note-1', sourceTitle: 'Workshop note', sourceType: 'Workshop Input', dateVerified: '2026-01-15', confidenceLevel: 3, comment: 'Exercise evidence.' };
@@ -81,4 +82,32 @@ test('professional Word output includes SWOT, Strategic Options and the linked s
   assert.match(xml, /Analysis Synthesis/);
   assert.match(xml, /WO-01/);
   assert.match(xml, /STRATEGIC SYNTHESIS BASIS/);
+});
+
+test('Markdown output maintains exact parity with canonical PlanningBriefModel', () => {
+  const data = fixture();
+  const model = buildPlanningBriefModel(data);
+  const md = generateMarkdownBrief(model);
+
+  // 1. PESTEL parity: model.selectedPestels are the exact ones in Markdown
+  for (const pestel of model.selectedPestels) {
+    assert.match(md, new RegExp(pestel.name));
+    assert.match(md, new RegExp(pestel.finding));
+  }
+
+  // 2. Priority parity: model.priorities are the exact ones in Markdown
+  for (const priority of model.priorities) {
+    assert.match(md, new RegExp(`${priority.row} × ${priority.column}`));
+    assert.match(md, new RegExp(priority.cell.planningObjective));
+  }
+
+  // 3. Assumptions & Limitations parity: uses canonical priorityBrief.risksAssumptions
+  for (const assumption of data.priorityBrief.risksAssumptions) {
+    assert.match(md, new RegExp(assumption.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
+
+  // 4. Evidence index parity
+  for (const ev of model.evidence) {
+    assert.match(md, new RegExp(ev.title));
+  }
 });
