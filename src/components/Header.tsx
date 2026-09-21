@@ -41,18 +41,18 @@ export const Header: React.FC<HeaderProps> = ({ onReset, missionName, analystNam
           )}
 
           <Button
-            variant="outline"
+            variant="secondary"
             size="sm"
             onClick={() => setIsDisclaimerOpen(true)}
             aria-label="Open disclaimer and rules of use"
-            className="border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800"
+            className="border-slate-700 bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-800"
           >
             <ShieldAlert size={16} className="mr-1.5 text-amber-400" />
             <span className="hidden sm:inline">Disclaimer</span>
           </Button>
 
           <Button
-            variant="ghost"
+            variant="tertiary"
             size="sm"
             onClick={onReset}
             aria-label="Reset entire planning workspace to blank slate"

@@ -175,7 +175,7 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
                 onBlur={() => onHoverEntry(null)}
                 aria-pressed={isSelected}
                 className={`
-                  w-full text-left p-3.5 rounded-xl border transition-colors flex justify-between items-start gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2
+                  w-full text-left p-3.5 rounded-xl border transition-colors duration-150 motion-reduce:transition-none flex justify-between items-start gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2
                   ${isSelected
                     ? 'border-blue-600 bg-blue-50/45 shadow-sm ring-1 ring-blue-500/20'
                     : isHovered

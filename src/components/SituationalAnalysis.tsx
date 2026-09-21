@@ -85,7 +85,7 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
                 type="button"
                 onClick={() => setSelectedId(item.id)}
                 className={`
-                  text-left p-3.5 rounded-xl border-2 transition-all flex flex-col gap-2 w-full focus:outline-none
+                  text-left p-3.5 rounded-xl border-2 transition-colors duration-150 motion-reduce:transition-none flex flex-col gap-2 w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2
                   ${isSelected
                     ? 'border-blue-600 bg-blue-50/50 shadow-sm'
                     : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 bg-white'
@@ -150,7 +150,7 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
                   rows={2}
                 />
 
-                <Button type="button" variant="outline" disabled={!activeItem.finding.trim()} onClick={() => { setDraft(newInterdependency(data.interdependencies, activeItem.id)); setInterdependencyOpen(true); }}>Explore Interdependency from this finding</Button>
+                <Button type="button" variant="secondary" disabled={!activeItem.finding.trim()} onClick={() => { setDraft(newInterdependency(data.interdependencies, activeItem.id)); setInterdependencyOpen(true); }}>Explore Interdependency from this finding</Button>
 
                 <TextArea
                   label="Suggested sequencing guideline for UNPOL intervention"
@@ -230,7 +230,7 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
 
             <NextStepCue {...NEXT_STEP_CUES[2]} />
             <div className="flex justify-between items-center gap-3">
-              <Button variant="outline" onClick={onPrev}>
+              <Button variant="secondary" onClick={onPrev}>
                 Back: Context &amp; Mandate
               </Button>
               <Button variant="primary" onClick={onNext}>

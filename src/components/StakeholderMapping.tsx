@@ -147,7 +147,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
             <h3 className="text-lg font-bold text-slate-950">3. Stakeholders &amp; Ownership</h3>
             <p className="text-xs text-slate-500 mt-0.5">Define key actors and assess their posture toward CBD reform.</p>
           </div>
-          <Button variant="outline" size="sm" onClick={handleCreateCustom} className="shrink-0">
+          <Button variant="secondary" size="sm" onClick={handleCreateCustom} className="shrink-0">
             <Plus size={16} className="mr-1" />
             Add Custom
           </Button>
@@ -162,7 +162,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                 type="button"
                 onClick={() => setSelectedId(sh.id)}
                 className={`
-                  text-left p-3.5 rounded-xl border transition-colors flex flex-col gap-1.5 w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2
+                  text-left p-3.5 rounded-xl border transition-colors flex flex-col gap-1.5 w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2
                   ${isSelected
                     ? 'border-blue-600 bg-blue-50/50 shadow-sm'
                     : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 bg-white'
@@ -212,11 +212,11 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                 <div className="shrink-0 flex items-center gap-2">
                   {activeStakeholder.isCustom && (
                     <Button
-                      variant="ghost"
+                      variant="destructive"
                       size="sm"
                       onClick={handleDelete}
-                      className="text-rose-400 hover:text-rose-200 hover:bg-rose-950 p-1.5"
                       title="Delete Custom Stakeholder"
+                      aria-label="Delete Custom Stakeholder"
                     >
                       <Trash2 size={16} />
                     </Button>
@@ -354,7 +354,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
 
             <NextStepCue {...NEXT_STEP_CUES[3]} />
             <div className="flex justify-between items-center gap-3">
-              <Button variant="outline" onClick={onPrev}>
+              <Button variant="secondary" onClick={onPrev}>
                 Back: Diagnostic Analysis
               </Button>
               <Button variant="primary" onClick={onNext}>
@@ -369,7 +369,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
             </div>
             <NextStepCue {...NEXT_STEP_CUES[3]} />
             <div className="flex justify-between items-center gap-3">
-              <Button variant="outline" onClick={onPrev}>Back: Diagnostic Analysis</Button>
+              <Button variant="secondary" onClick={onPrev}>Back: Diagnostic Analysis</Button>
               <Button variant="primary" onClick={onNext}>Synthesize the Analysis</Button>
             </div>
           </div>

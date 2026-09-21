@@ -37,8 +37,30 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
       <div className="mb-3 flex flex-col gap-2 px-1 sm:flex-row sm:items-center sm:justify-between">
         <span className="truncate text-xs font-bold text-slate-200">{caption}</span>
         <div className="flex gap-2">
-          <button type="button" onClick={() => onViewChange(HOME_VIEW)} aria-current={currentView === HOME_VIEW ? 'page' : undefined} className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-[11px] font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${currentView === HOME_VIEW ? 'border-blue-400 bg-blue-600 text-white' : 'border-slate-700 text-slate-200 hover:bg-slate-800'}`}><Home size={13} />Home</button>
-          <button type="button" onClick={() => onViewChange(EXPORT_VIEW)} aria-current={currentView === EXPORT_VIEW ? 'page' : undefined} className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-[11px] font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${currentView === EXPORT_VIEW ? 'border-blue-400 bg-blue-600 text-white' : 'border-slate-700 text-slate-200 hover:bg-slate-800'}`}><FileText size={13} />Export</button>
+          <button
+            type="button"
+            onClick={() => onViewChange(HOME_VIEW)}
+            aria-current={currentView === HOME_VIEW ? 'page' : undefined}
+            className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-[11px] font-bold transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 ${
+              currentView === HOME_VIEW
+                ? 'border-blue-400 bg-action-primary text-text-inverse shadow-subtle'
+                : 'border-slate-700 text-slate-200 hover:bg-slate-800'
+            }`}
+          >
+            <Home size={13} />Home
+          </button>
+          <button
+            type="button"
+            onClick={() => onViewChange(EXPORT_VIEW)}
+            aria-current={currentView === EXPORT_VIEW ? 'page' : undefined}
+            className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-[11px] font-bold transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 ${
+              currentView === EXPORT_VIEW
+                ? 'border-blue-400 bg-action-primary text-text-inverse shadow-subtle'
+                : 'border-slate-700 text-slate-200 hover:bg-slate-800'
+            }`}
+          >
+            <FileText size={13} />Export
+          </button>
         </div>
       </div>
 
@@ -56,9 +78,9 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
                 onClick={() => onViewChange(step.id)}
                 aria-current={isActive ? 'step' : undefined}
                 aria-label={`Stage ${step.id}: ${step.label}, ${step.sub}`}
-                className={`relative z-10 flex min-w-0 flex-col items-center rounded-xl border px-2 pb-2.5 pt-1.5 text-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 ${
+                className={`relative z-10 flex min-w-0 flex-col items-center rounded-lg border px-2 pb-2.5 pt-1.5 text-center transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 ${
                   isActive
-                    ? 'border-blue-400 bg-blue-600 text-white shadow-sm shadow-blue-950/40'
+                    ? 'border-blue-400 bg-action-primary text-text-inverse shadow-subtle'
                     : isCompleted
                       ? 'border-slate-700 bg-slate-900 text-slate-100 hover:border-emerald-700 hover:bg-slate-800'
                       : 'border-transparent bg-slate-900 text-slate-300 hover:border-slate-700 hover:bg-slate-800'

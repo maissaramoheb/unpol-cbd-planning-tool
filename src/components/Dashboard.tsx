@@ -88,7 +88,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
 
             <div className="mt-5 flex flex-wrap items-center gap-2 text-xs text-slate-500">
               <span>Additional starting point:</span>
-              <button type="button" onClick={onOpenExplorer} className="inline-flex items-center gap-1.5 font-bold text-blue-700 hover:text-blue-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"><Globe size={14} />Open Mission Explorer</button>
+              <Button variant="link" onClick={onOpenExplorer}>
+                <Globe size={14} className="mr-1" />Open Mission Explorer
+              </Button>
             </div>
           </CardBody>
         </Card>
@@ -100,7 +102,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
               <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-7">
                 {ORIENTATION_STEPS.map((step, index) => <li key={step.title} className="rounded-xl border border-slate-200 bg-slate-50/70 p-3"><span className="text-[11px] font-black tracking-wider text-blue-700">{String(index + 1).padStart(2, '0')}</span><h3 className="mt-2 text-xs font-black leading-snug text-slate-900">{step.title}</h3><p className="mt-1 text-[11px] leading-relaxed text-slate-600">{step.description}</p></li>)}
               </ol>
-              <div className="mt-5 flex flex-col gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-between"><p className="text-sm font-bold text-slate-800">The tool structures professional judgement from diagnosis to implementation planning; it does not make the judgement for you.</p><Button variant="primary" onClick={() => onNavigateToStep(1)} className="shrink-0">Start Planning <ArrowRight size={14} /></Button></div>
+              <div className="mt-5 flex flex-col gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-between"><p className="text-sm font-bold text-slate-800">The tool structures professional judgement from diagnosis to implementation planning; it does not make the judgement for you.</p><Button variant="primary" onClick={() => onNavigateToStep(1)} className="shrink-0">Start Planning <ArrowRight size={14} className="ml-1" /></Button></div>
             </CardBody>
           </Card>
         )}
@@ -248,7 +250,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
                 <Activity size={16} className="text-blue-500" />
                 Critical Contextual Pressures (Top 3)
               </h4>
-              <Button variant="ghost" size="sm" onClick={() => onNavigateToStep(2)} className="text-[11px] font-bold text-blue-600 py-0.5 px-2">
+              <Button variant="secondary" size="sm" onClick={() => onNavigateToStep(2)}>
                 Edit PESTEL-S
               </Button>
             </CardHeader>
@@ -282,7 +284,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
                 <AlertTriangle size={16} className="text-amber-500" />
                 Key Stakeholder Spoilers / Blockers
               </h4>
-              <Button variant="ghost" size="sm" onClick={() => onNavigateToStep(3)} className="text-[11px] font-bold text-blue-600 py-0.5 px-2">
+              <Button variant="secondary" size="sm" onClick={() => onNavigateToStep(3)}>
                 Edit Stakeholders
               </Button>
             </CardHeader>
@@ -319,7 +321,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
                 <Layers size={16} className="text-indigo-500" />
                 Indicative Matrix Priorities (Top 5)
               </h4>
-              <Button variant="ghost" size="sm" onClick={() => onNavigateToStep(5)} className="text-[11px] font-bold text-blue-600 py-0.5 px-2">
+              <Button variant="secondary" size="sm" onClick={() => onNavigateToStep(5)}>
                 Open Matrix Grid
               </Button>
             </CardHeader>
@@ -350,7 +352,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
                 <ListTodo size={16} className="text-emerald-500" />
                 Strategic Sequencing Targets
               </h4>
-              <Button variant="ghost" size="sm" onClick={() => onNavigateToStep(6)} className="text-[11px] font-bold text-blue-600 py-0.5 px-2">
+              <Button variant="secondary" size="sm" onClick={() => onNavigateToStep(6)}>
                 Review Sequencing
               </Button>
             </CardHeader>
@@ -430,22 +432,22 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
                   <span className="font-semibold block">{warn.message}</span>
                 </div>
                 {warn.category === 'profile' && (
-                  <Button variant="ghost" size="sm" onClick={() => onNavigateToStep(1)} className="text-[10px] font-bold text-blue-600 p-0 hover:bg-transparent leading-none">
+                  <Button variant="link" size="sm" onClick={() => onNavigateToStep(1)}>
                     Fix &rarr;
                   </Button>
                 )}
                 {warn.category === 'pestels' && (
-                  <Button variant="ghost" size="sm" onClick={() => onNavigateToStep(2)} className="text-[10px] font-bold text-blue-600 p-0 hover:bg-transparent leading-none">
+                  <Button variant="link" size="sm" onClick={() => onNavigateToStep(2)}>
                     Review &rarr;
                   </Button>
                 )}
                 {warn.category === 'matrix' && (
-                  <Button variant="ghost" size="sm" onClick={() => onNavigateToStep(5)} className="text-[10px] font-bold text-blue-600 p-0 hover:bg-transparent leading-none">
+                  <Button variant="link" size="sm" onClick={() => onNavigateToStep(5)}>
                     Adjust &rarr;
                   </Button>
                 )}
                 {warn.category === 'sequencing' && (
-                  <Button variant="ghost" size="sm" onClick={() => onNavigateToStep(6)} className="text-[10px] font-bold text-blue-600 p-0 hover:bg-transparent leading-none">
+                  <Button variant="link" size="sm" onClick={() => onNavigateToStep(6)}>
                     Resolve &rarr;
                   </Button>
                 )}
@@ -471,23 +473,21 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
           ].map(shortcut => (
             <Button
               key={shortcut.step}
-              variant="outline"
+              variant="secondary"
               size="sm"
               onClick={() => onNavigateToStep(shortcut.step)}
-              className="text-xs font-bold text-slate-700 border-slate-200 hover:border-slate-350 hover:bg-slate-50/50"
             >
               {shortcut.label}
               <ChevronRight size={12} className="ml-1 text-slate-400" />
             </Button>
           ))}
           <Button
-            variant="outline"
+            variant="secondary"
             size="sm"
             onClick={onOpenExplorer}
-            className="text-xs font-bold text-blue-700 border-blue-200 hover:border-blue-300 hover:bg-blue-50/50"
           >
             Browse Mission Explorer
-            <Globe size={12} className="ml-1 text-blue-500" />
+            <Globe size={12} className="ml-1 text-blue-700" />
           </Button>
         </CardBody>
       </Card>

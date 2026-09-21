@@ -39,7 +39,7 @@ export const StageGuide: React.FC<{ stage: GuidanceStage }> = ({ stage }) => {
         onClick={toggle}
         aria-expanded={!isCollapsed}
         aria-controls={contentId}
-        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm font-bold text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500"
+        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm font-bold text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring transition-colors duration-150 motion-reduce:transition-none"
       >
         <span className="flex min-w-0 items-center gap-2"><CircleHelp size={17} className="shrink-0 text-blue-700" />About this step <span className="hidden font-medium text-slate-500 sm:inline">· {content.title}</span></span>
         {isCollapsed ? <ChevronRight size={17} aria-hidden="true" /> : <ChevronDown size={17} aria-hidden="true" />}
@@ -63,7 +63,7 @@ export const FieldGuidance: React.FC<{ help: string; example?: string }> = ({ he
       <p>{help}</p>
       {example && (
         <>
-          <button type="button" onClick={() => setShowExample(value => !value)} aria-expanded={showExample} aria-controls={contentId} className="mt-1 inline-flex items-center gap-1 font-bold text-blue-700 hover:text-blue-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+          <button type="button" onClick={() => setShowExample(value => !value)} aria-expanded={showExample} aria-controls={contentId} className="mt-1 inline-flex items-center gap-1 font-bold text-blue-700 hover:text-blue-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring">
             <Lightbulb size={13} aria-hidden="true" />CARANA example {showExample ? '−' : '+'}
           </button>
           {showExample && <p id={contentId} className="mt-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-slate-600"><strong className="text-slate-700">Example only:</strong> {example}</p>}

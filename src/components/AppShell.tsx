@@ -284,7 +284,7 @@ export const AppShell: React.FC = () => {
               type="button"
               onClick={() => setStorageRecoveryMessage(null)}
               aria-label="Dismiss storage recovery message"
-              className="rounded p-1 text-amber-700 hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-400"
+              className="rounded p-1 text-amber-700 hover:bg-amber-100 transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
             >
               <X size={14} />
             </button>

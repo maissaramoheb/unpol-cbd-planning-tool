@@ -83,16 +83,17 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
               </p>
             </div>
           </div>
-          <button
+          <Button
             ref={closeButtonRef}
-            type="button"
+            variant="quiet"
+            size="icon"
             onClick={onClose}
             aria-label="Close Mission Explorer"
-            className="p-1.5 rounded-lg hover:bg-slate-800 transition-colors text-slate-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="text-slate-400 hover:text-white hover:bg-slate-800"
             title="Close Explorer"
           >
-            <X size={20} />
-          </button>
+            <X size={18} />
+          </Button>
         </div>
 
         <div className="shrink-0 border-b border-amber-200 bg-amber-50 px-5 py-3 text-xs leading-relaxed text-amber-950">
@@ -127,19 +128,19 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
               <span className="text-xs font-bold text-slate-500 pl-2">Display Mode:</span>
               <div className="flex gap-1">
                 <Button
-                  variant={viewMode === 'map' ? 'primary' : 'ghost'}
+                  variant={viewMode === 'map' ? 'primary' : 'tertiary'}
                   size="sm"
                   onClick={() => setViewMode('map')}
-                  className="text-[10px] py-1 px-3"
+                  aria-pressed={viewMode === 'map'}
                 >
                   <Globe size={12} className="mr-1" />
                   World Map
                 </Button>
                 <Button
-                  variant={viewMode === 'list' ? 'primary' : 'ghost'}
+                  variant={viewMode === 'list' ? 'primary' : 'tertiary'}
                   size="sm"
                   onClick={() => setViewMode('list')}
-                  className="text-[10px] py-1 px-3"
+                  aria-pressed={viewMode === 'list'}
                 >
                   <List size={12} className="mr-1" />
                   Search List

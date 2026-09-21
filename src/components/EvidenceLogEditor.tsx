@@ -77,7 +77,7 @@ export const EvidenceLogEditor: React.FC<EvidenceLogEditorProps> = ({
         </h4>
         {!isAdding && (
           <Button
-            variant="outline"
+            variant="secondary"
             size="sm"
             onClick={() => setIsAdding(true)}
             className="text-xs py-1"
@@ -151,7 +151,7 @@ export const EvidenceLogEditor: React.FC<EvidenceLogEditorProps> = ({
           </div>
 
           <div className="flex justify-end gap-2 mt-1">
-            <Button variant="ghost" size="sm" onClick={() => setIsAdding(false)}>
+            <Button variant="tertiary" size="sm" onClick={() => setIsAdding(false)}>
               Cancel
             </Button>
             <Button variant="primary" size="sm" onClick={handleAdd}>
@@ -175,8 +175,9 @@ export const EvidenceLogEditor: React.FC<EvidenceLogEditorProps> = ({
               <button
                 type="button"
                 onClick={() => handleDelete(note.id)}
-                className="absolute top-3 right-3 text-slate-500 hover:text-rose-600 transition-colors p-1"
+                className="absolute top-3 right-3 text-slate-500 hover:text-rose-600 transition-colors p-1 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
                 title="Remove Evidence Note"
+                aria-label="Remove Evidence Note"
               >
                 <Trash2 size={13} />
               </button>

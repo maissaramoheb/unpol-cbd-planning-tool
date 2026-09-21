@@ -115,7 +115,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
                 <button
                   key={row.id}
                   onClick={() => onSelectCellByKey(`${row.id}|${col.id}`)}
-                  className="text-left p-4 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/10 transition-all flex flex-col gap-2"
+                  className="text-left p-4 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/10 transition-colors duration-150 motion-reduce:transition-none flex flex-col gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2"
                 >
                   <span className="font-extrabold text-xs text-slate-800 uppercase tracking-tight">{row.name}</span>
                   <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">{data.why}</p>
@@ -151,7 +151,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
                 <button
                   key={col.id}
                   onClick={() => onSelectCellByKey(`${row.id}|${col.id}`)}
-                  className="text-left p-4 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/10 transition-all flex flex-col gap-2"
+                  className="text-left p-4 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/10 transition-colors duration-150 motion-reduce:transition-none flex flex-col gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2"
                 >
                   <span className="font-extrabold text-xs text-slate-800 uppercase tracking-tight">{col.name}</span>
                   <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">{data.why}</p>
@@ -361,7 +361,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
               aria-describedby={indicatorHelpId}
               className="flex-1 px-3 py-1.5 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-200"
             />
-            <Button variant="outline" size="sm" onClick={handleAddIndicator}>
+            <Button variant="secondary" size="sm" onClick={handleAddIndicator}>
               <Plus size={14} className="mr-1" /> Add
             </Button>
           </div>
@@ -377,7 +377,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
                   type="button"
                   onClick={() => handleRemoveIndicator(idx)}
                   aria-label={`Remove indicator ${idx + 1}`}
-                  className="p-0.5 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-600"
+                  className="p-0.5 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
                 >
                   <Trash2 size={10} />
                 </button>

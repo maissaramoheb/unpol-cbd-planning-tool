@@ -81,7 +81,7 @@ export const MatrixListView: React.FC<MatrixListViewProps> = ({
                 type="button"
                 onClick={() => toggleRow(row.id)}
                 className={`
-                  w-full px-4 py-3 flex items-center justify-between text-left font-bold text-sm transition-colors
+                  w-full px-4 py-3 flex items-center justify-between text-left font-bold text-sm transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring
                   ${isRowSelected ? 'bg-slate-900 text-white' : 'hover:bg-slate-50 text-slate-900 bg-slate-50/50'}
                 `}
               >
@@ -111,7 +111,7 @@ export const MatrixListView: React.FC<MatrixListViewProps> = ({
                         type="button"
                         onClick={() => onSelectCell(row.id, col.id)}
                         className={`
-                          w-full p-3 rounded-lg text-left text-xs font-semibold border transition-all flex items-center justify-between
+                          w-full p-3 rounded-lg text-left text-xs font-semibold border transition-all duration-150 motion-reduce:transition-none flex items-center justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-1
                           ${selected
                             ? 'border-blue-600 bg-blue-50 text-blue-800 shadow-sm font-bold'
                             : 'border-slate-100 hover:border-slate-200 bg-white text-slate-700'
@@ -148,7 +148,7 @@ export const MatrixListView: React.FC<MatrixListViewProps> = ({
                   <button
                     type="button"
                     onClick={() => onSelectKeyArea(row.id)}
-                    className="w-full text-center py-2 text-[10px] uppercase tracking-wider font-extrabold text-blue-600 hover:text-blue-800 transition-colors border border-dashed border-blue-200 rounded-lg bg-blue-50/10 mt-1"
+                    className="w-full text-center py-2 text-[10px] uppercase tracking-wider font-extrabold text-blue-600 hover:text-blue-800 transition-colors duration-150 motion-reduce:transition-none border border-dashed border-blue-200 rounded-lg bg-blue-50/10 mt-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-1"
                   >
                     Inspect Full Key Area &rarr;
                   </button>

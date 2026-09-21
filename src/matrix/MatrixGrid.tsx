@@ -105,11 +105,12 @@ export const MatrixGrid: React.FC<MatrixGridProps> = ({
             return (
               <button
                 key={col.id}
+                type="button"
                 onClick={() => onSelectDimension(col.id)}
                 className={`
-                  h-24 p-2 text-center rounded-lg text-xs font-extrabold transition-all flex flex-col justify-center items-center border-2
+                  h-24 p-2 text-center rounded-lg text-xs font-extrabold transition-colors duration-150 motion-reduce:transition-none flex flex-col justify-center items-center border-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring
                   ${isActive
-                    ? 'border-blue-600 bg-blue-50 text-blue-800 shadow-sm'
+                    ? 'border-blue-600 bg-blue-50 text-blue-800 shadow-subtle'
                     : 'border-transparent bg-slate-100 hover:bg-slate-200 text-slate-700'
                   }
                 `}
@@ -125,11 +126,13 @@ export const MatrixGrid: React.FC<MatrixGridProps> = ({
             <React.Fragment key={row.id}>
               {/* Row Header */}
               <button
+                key={row.id}
+                type="button"
                 onClick={() => onSelectKeyArea(row.id)}
                 className={`
-                  h-24 p-2 text-left rounded-lg text-xs font-extrabold transition-all flex flex-col justify-center border-2
+                  h-24 p-2 text-left rounded-lg text-xs font-extrabold transition-colors duration-150 motion-reduce:transition-none flex flex-col justify-center border-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring
                   ${selectedMode === 'keyArea' && selectedKey === row.id
-                    ? 'border-slate-800 bg-slate-800 text-white shadow-sm'
+                    ? 'border-slate-800 bg-slate-800 text-white shadow-subtle'
                     : 'border-transparent bg-slate-800 text-slate-100 hover:bg-slate-700'
                   }
                 `}
@@ -148,11 +151,12 @@ export const MatrixGrid: React.FC<MatrixGridProps> = ({
                 return (
                   <button
                     key={`${row.id}|${col.id}`}
+                    type="button"
                     onClick={() => onSelectCell(row.id, col.id)}
                     className={`
-                      h-24 p-2 rounded-lg text-left transition-all border-2 flex flex-col justify-between relative
+                      h-24 p-2 rounded-lg text-left transition-colors duration-150 motion-reduce:transition-none border-2 flex flex-col justify-between relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring
                       ${selected
-                        ? 'border-blue-600 bg-blue-50 text-blue-800 shadow-sm scale-[0.98]'
+                        ? 'border-blue-600 bg-blue-50 text-blue-800 shadow-subtle'
                         : highlighted
                           ? 'border-blue-200 bg-blue-50/20 text-slate-700 hover:bg-blue-50/40'
                           : 'border-slate-100 bg-white hover:bg-slate-50 text-slate-600 hover:border-slate-200'

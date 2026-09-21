@@ -113,7 +113,7 @@ export const CBDMatrix: React.FC<CBDMatrixProps> = ({
       {/* Navigation Buttons */}
       <NextStepCue {...NEXT_STEP_CUES[5]} />
       <div className="flex justify-between items-center gap-3">
-        <Button variant="outline" onClick={onPrev}>
+        <Button variant="secondary" onClick={onPrev}>
           Back: Analysis Synthesis
         </Button>
         <Button variant="primary" onClick={onNext}>

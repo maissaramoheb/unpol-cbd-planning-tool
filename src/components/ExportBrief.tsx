@@ -142,7 +142,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess,
         <h2 className="text-xl font-bold text-slate-950">Professional Outputs</h2>
         <p className="mt-1 text-sm text-slate-600">One planning workspace, complementary read-only outputs. Edit planning information in the seven stages.</p>
         <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Select professional output">
-          {(['executive', 'brief', 'logframe', 'monitoring', 'workplan'] as const).map(kind => <Button key={kind} size="sm" variant={output === kind ? 'primary' : 'outline'} aria-pressed={output === kind} onClick={() => { setOutput(kind); setCopied(false); setErrorMsg(null); }}>
+          {(['executive', 'brief', 'logframe', 'monitoring', 'workplan'] as const).map(kind => <Button key={kind} size="sm" variant={output === kind ? 'primary' : 'secondary'} aria-pressed={output === kind} onClick={() => { setOutput(kind); setCopied(false); setErrorMsg(null); }}>
             {{ executive: 'Executive CBD Brief', brief: 'Planning Brief', logframe: 'Logframe', monitoring: 'M&E Matrix', workplan: 'Workplan' }[kind]}
           </Button>)}
         </div>
@@ -152,17 +152,17 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess,
           <select id="output-scope" className="min-w-0 max-w-full rounded-md border border-slate-300 bg-white p-2 text-sm focus-visible:outline-2 focus-visible:outline-blue-600" value={effectiveScope} onChange={e => setScope(e.target.value)}>
             <option value="">All CBD Priorities</option>{Object.keys(data.customCells).map(key => <option key={key} value={key}>{key.split('|').join(' × ')}</option>)}
           </select>
-          <Button size="sm" variant="outline" onClick={onPrev}>Edit in Results &amp; Implementation</Button>
+          <Button size="sm" variant="secondary" onClick={onPrev}>Edit in Results &amp; Implementation</Button>
         </div> : null}
       </div>
       <div className="export-toolbar flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between print:hidden">
         <div><h3 className="text-lg font-bold text-slate-950">Export · {output === 'executive' ? 'Executive CBD Brief' : output === 'brief' ? 'Planning Brief' : OUTPUT_TITLES[output]}</h3><p className="mt-1 text-sm text-slate-500">Create an editable Word document, print/PDF document or Markdown copy. JSON backs up the entire workspace, regardless of output scope.</p></div>
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" onClick={handleWord} disabled={exportingWord}><FileText size={14} className="mr-1.5 text-blue-700" />{exportingWord ? 'Creating Word…' : 'Download Word'}</Button>
-          <Button variant="outline" size="sm" onClick={() => window.print()}><Printer size={14} className="mr-1.5" />Print / PDF</Button>
-          <Button variant="outline" size="sm" onClick={handleCopyMarkdown}>{copied ? <Check size={14} className="mr-1.5 text-emerald-600" /> : <Clipboard size={14} className="mr-1.5" />}{copied ? 'Copied Markdown' : 'Copy Markdown'}</Button>
-          <Button variant="outline" size="sm" onClick={() => exportProjectData(data)}><FileDown size={14} className="mr-1.5" />Save JSON</Button>
-          <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}><FileUp size={14} className="mr-1.5" />Upload JSON</Button>
+          <Button variant="primary" size="sm" onClick={handleWord} disabled={exportingWord}><FileText size={14} className="mr-1.5" />{exportingWord ? 'Creating Word…' : 'Download Word'}</Button>
+          <Button variant="secondary" size="sm" onClick={() => window.print()}><Printer size={14} className="mr-1.5 text-slate-600" />Print / PDF</Button>
+          <Button variant="secondary" size="sm" onClick={handleCopyMarkdown}>{copied ? <Check size={14} className="mr-1.5 text-emerald-600" /> : <Clipboard size={14} className="mr-1.5 text-slate-600" />}{copied ? 'Copied Markdown' : 'Copy Markdown'}</Button>
+          <Button variant="secondary" size="sm" onClick={() => exportProjectData(data)}><FileDown size={14} className="mr-1.5 text-slate-600" />Save JSON</Button>
+          <Button variant="secondary" size="sm" onClick={() => fileInputRef.current?.click()}><FileUp size={14} className="mr-1.5 text-slate-600" />Upload JSON</Button>
           <input ref={fileInputRef} type="file" accept=".json" className="hidden" onChange={handleFileChange} />
         </div>
       </div>
@@ -217,7 +217,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess,
         </div>
       </Card>}
 
-      <div className="flex justify-between print:hidden"><Button variant="outline" onClick={onPrev}>Back: Results &amp; Implementation</Button></div>
+      <div className="flex justify-between print:hidden"><Button variant="secondary" onClick={onPrev}>Back: Results &amp; Implementation</Button></div>
     </div>
   );
 };

@@ -160,7 +160,7 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
                         placeholder={placeholder}
                         className="flex-1 px-3 py-1.5 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-200"
                       />
-                      <Button variant="outline" size="sm" onClick={() => handleAddListItem(field)}>
+                      <Button variant="secondary" size="icon" onClick={() => handleAddListItem(field)} aria-label={`Add to ${label}`}>
                         <Plus size={14} />
                       </Button>
                     </div>
@@ -172,7 +172,8 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
                             <button
                               type="button"
                               onClick={() => handleRemoveListItem(field, idx)}
-                              className="text-slate-400 hover:text-rose-600 transition-colors p-0.5"
+                              aria-label={`Remove ${item}`}
+                              className="text-slate-400 hover:text-action-danger transition-colors p-0.5 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
                             >
                               <Trash2 size={12} />
                             </button>
@@ -200,7 +201,7 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
           <NextStepCue {...NEXT_STEP_CUES[6]} />
           {/* Navigation */}
           <div className="flex justify-between items-center gap-3">
-            <Button variant="outline" onClick={onPrev}>
+            <Button variant="secondary" onClick={onPrev}>
               Back: CBD Priorities
             </Button>
             <Button variant="primary" onClick={onNext}>

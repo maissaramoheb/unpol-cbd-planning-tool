@@ -44,7 +44,7 @@ export function InterdependencyAnalysis({ data, open, onOpenChange, draft, onDra
     {open && <div id="interdependency-workspace" className="p-4 pt-0 space-y-4 min-w-0">
       <p className="text-sm text-slate-600">{INTERDEPENDENCY_GUIDANCE}</p>
       <p className="text-xs text-slate-500">{INTERDEPENDENCY_CAUTION}</p>
-      <Button type="button" variant="outline" onClick={() => { onDraftChange(newInterdependency(items)); setError(null); }}>Create interdependency</Button>
+      <Button type="button" variant="secondary" onClick={() => { onDraftChange(newInterdependency(items)); setError(null); }}>Create interdependency</Button>
       {draft && <div className="rounded-lg border border-blue-200 bg-blue-50/30 p-4 space-y-4" role="region" aria-label={`${draft.reference} editor`}>
         <h4 className="font-semibold">{draft.reference} · Relationship editor</h4>
         <div className="grid gap-4 md:grid-cols-2">
@@ -84,9 +84,9 @@ export function InterdependencyAnalysis({ data, open, onOpenChange, draft, onDra
         <label className="flex gap-2 text-sm"><input type="checkbox" checked={draft.isKeyInsight} onChange={event => update({ isKeyInsight: event.target.checked, includeInMainBrief: event.target.checked && draft.includeInMainBrief })} />Key Interdependency — explicit professional-judgement selection</label>
         <label className="flex gap-2 text-sm"><input type="checkbox" disabled={!draft.isKeyInsight} checked={draft.includeInMainBrief} onChange={event => update({ includeInMainBrief: event.target.checked })} />Include in main Planning Brief (up to five active valid key insights)</label>
         {error && <p role="alert" className="text-sm text-rose-700">{error}</p>}
-        <div className="flex flex-wrap gap-2"><Button type="button" onClick={save}>Save relationship</Button><Button type="button" variant="outline" onClick={() => { onDraftChange(null); setError(null); }}>Cancel</Button></div>
+        <div className="flex flex-wrap gap-2"><Button type="button" variant="primary" onClick={save}>Save relationship</Button><Button type="button" variant="secondary" onClick={() => { onDraftChange(null); setError(null); }}>Cancel</Button></div>
       </div>}
-      {pair && <div className="flex flex-wrap items-center gap-2 text-sm"><span>Showing {pair.split(':').map(dimensionName).join(' → ')}</span><Button type="button" variant="ghost" onClick={() => setPair(null)}>Clear map filter</Button></div>}
+      {pair && <div className="flex flex-wrap items-center gap-2 text-sm"><span>Showing {pair.split(':').map(dimensionName).join(' → ')}</span><Button type="button" variant="tertiary" onClick={() => setPair(null)}>Clear map filter</Button></div>}
       <div className="space-y-3" aria-label="Recorded interdependencies">
         {filtered.map(item => <article key={item.id} className="min-w-0 break-words rounded-lg border border-slate-200 p-4 space-y-2">
           <h4 className="font-semibold">{item.reference}{item.isKeyInsight ? ' · Key insight' : ''}{item.includeInMainBrief ? ' · Main brief selected' : ''}</h4>
@@ -95,7 +95,7 @@ export function InterdependencyAnalysis({ data, open, onOpenChange, draft, onDra
           <p className="text-xs text-slate-500">Effect on CBD: {item.effectOnCbd} · Planning significance: {item.planningSignificance}</p>
           <p className="text-sm whitespace-pre-wrap"><strong>CBD implication:</strong> {item.cbdImplication || 'Not recorded — consider why this interaction matters for planning.'}</p>
           {interdependencyIssues(data, item).map(issue => <p key={issue} className="text-sm text-amber-800">{issue} Excluded from map, Stage 4 sources and main brief until repaired.</p>)}
-          <div className="flex gap-2"><Button type="button" variant="outline" size="sm" aria-label={`Edit ${item.reference}`} onClick={() => { onDraftChange(item); setError(null); }}>Edit / relink</Button><Button type="button" variant="ghost" size="sm" aria-label={`Delete ${item.reference}`} onClick={() => { if (window.confirm(`Delete ${item.reference}? Its SWOT source links will be removed; written SWOT analysis will be preserved.`)) { onChange(items.filter(other => other.id !== item.id)); if (draft?.id === item.id) onDraftChange(null); } }}>Delete</Button></div>
+          <div className="flex gap-2"><Button type="button" variant="secondary" size="sm" aria-label={`Edit ${item.reference}`} onClick={() => { onDraftChange(item); setError(null); }}>Edit / relink</Button><Button type="button" variant="destructive" size="sm" aria-label={`Delete ${item.reference}`} onClick={() => { if (window.confirm(`Delete ${item.reference}? Its SWOT source links will be removed; written SWOT analysis will be preserved.`)) { onChange(items.filter(other => other.id !== item.id)); if (draft?.id === item.id) onDraftChange(null); } }}>Delete</Button></div>
         </article>)}
         {filtered.length === 0 && <p className="text-sm text-slate-500">No relationships recorded{pair ? ' for this direction' : ''}. This analysis is optional; you can continue without it.</p>}
       </div>
@@ -104,9 +104,9 @@ export function InterdependencyAnalysis({ data, open, onOpenChange, draft, onDra
         <p className="text-xs text-slate-500 my-3">FROM ↓ / TO → · Counts of recorded finding-to-finding relationships, not scores or causal strength. Select a populated direction to filter the cards.</p>
         <table className="hidden md:table w-full table-fixed text-[10px] text-center">
           <thead><tr><th scope="col">FROM / TO</th>{PESTELS_KEYS.map(key => <th key={key} scope="col" className="p-1 break-words">{dimensionName(key)}</th>)}</tr></thead>
-          <tbody>{PESTELS_KEYS.map(from => <tr key={from}><th scope="row" className="p-1 break-words">{dimensionName(from)}</th>{PESTELS_KEYS.map(to => { const count = map.find(item => item.from === from && item.to === to)?.relationships.length ?? 0; return <td key={to} className="border border-slate-200 p-1">{from === to ? <span aria-label="Not applicable">N/A</span> : count ? <button type="button" aria-label={`${dimensionName(from)} to ${dimensionName(to)}: ${count} relationships`} onClick={() => setPair(`${from}:${to}`)} className="w-full rounded bg-blue-50 p-2 font-semibold text-blue-700 focus-visible:outline-2 focus-visible:outline-blue-600">{count}</button> : '0'}</td>; })}</tr>)}</tbody>
+          <tbody>{PESTELS_KEYS.map(from => <tr key={from}><th scope="row" className="p-1 break-words">{dimensionName(from)}</th>{PESTELS_KEYS.map(to => { const count = map.find(item => item.from === from && item.to === to)?.relationships.length ?? 0; return <td key={to} className="border border-slate-200 p-1">{from === to ? <span aria-label="Not applicable">N/A</span> : count ? <button type="button" aria-label={`${dimensionName(from)} to ${dimensionName(to)}: ${count} relationships`} onClick={() => setPair(`${from}:${to}`)} className="w-full rounded bg-blue-50 p-2 font-semibold text-blue-700 hover:bg-blue-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring">{count}</button> : '0'}</td>; })}</tr>)}</tbody>
         </table>
-        <div className="md:hidden space-y-2">{map.filter(item => item.relationships.length).map(item => <Button key={`${item.from}:${item.to}`} type="button" variant="outline" fullWidth onClick={() => setPair(`${item.from}:${item.to}`)}>{dimensionName(item.from)} → {dimensionName(item.to)} · {item.relationships.length} relationships</Button>)}{!map.some(item => item.relationships.length) && <p className="text-sm">No valid recorded relationships.</p>}</div>
+        <div className="md:hidden space-y-2">{map.filter(item => item.relationships.length).map(item => <Button key={`${item.from}:${item.to}`} type="button" variant="secondary" fullWidth onClick={() => setPair(`${item.from}:${item.to}`)}>{dimensionName(item.from)} → {dimensionName(item.to)} · {item.relationships.length} relationships</Button>)}{!map.some(item => item.relationships.length) && <p className="text-sm">No valid recorded relationships.</p>}</div>
       </details>
     </div>}
   </section>;

@@ -96,11 +96,12 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
           </div>
 
           <Button
-            variant="outline"
+            variant="secondary"
             onClick={onOpenExplorer}
-            className="w-full py-2.5 font-bold flex items-center justify-center gap-1.5 text-xs text-blue-600 border-blue-200 bg-blue-50/20 hover:bg-blue-50/40 rounded-xl"
+            fullWidth
+            className="gap-1.5"
           >
-            <Globe size={14} className="text-blue-500" />
+            <Globe size={14} className="text-slate-500" />
             Browse Mission Explorer Map
           </Button>
 
@@ -113,7 +114,7 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
                   type="button"
                   onClick={() => onTemplateChange(template.id)}
                   className={`
-                    text-left p-4 rounded-xl border-2 transition-all flex items-start gap-3 w-full focus:outline-none
+                    text-left p-4 rounded-xl border-2 transition-colors duration-150 motion-reduce:transition-none flex items-start gap-3 w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2
                     ${isSelected
                       ? 'border-blue-600 bg-blue-50/50 shadow-sm'
                       : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 bg-white'

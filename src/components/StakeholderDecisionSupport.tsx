@@ -67,9 +67,9 @@ const StakeholderChip: React.FC<StakeholderChipProps> = ({
     onClick={() => onSelect(stakeholder.id)}
     aria-pressed={selected}
     aria-label={`Select ${stakeholder.name}. Posture ${stakeholder.position}; influence ${stakeholder.influence}; legitimacy ${stakeholder.legitimacy}; operational relevance ${stakeholder.relevance}.`}
-    className={`inline-flex max-w-full items-center gap-2 rounded-lg border px-2.5 py-1.5 text-left text-[11px] font-semibold leading-tight shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 ${
+    className={`inline-flex max-w-full items-center gap-2 rounded-lg border px-2.5 py-1.5 text-left text-[11px] font-semibold leading-tight shadow-sm transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 ${
       POSTURE_STYLES[stakeholder.position]
-    } ${selected ? 'ring-2 ring-blue-600 ring-offset-1' : 'hover:border-slate-500'}`}
+    } ${selected ? 'ring-2 ring-focus-ring ring-offset-1' : 'hover:border-slate-500'}`}
   >
     <span
       aria-hidden="true"

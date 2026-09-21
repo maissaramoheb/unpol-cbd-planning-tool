@@ -63,6 +63,6 @@ export function ExecutiveBrief({ data, onChange, onDetailed }: { data: UnpolProj
       {model.sections.map(section => <section key={section.title} className={section.title === 'Management Problem' ? 'executive-problem' : ''}><h2>{section.title}</h2>{section.lines.map((line, i) => <p key={i}>{line}</p>)}</section>)}
       <p className="executive-notice">{model.notice}</p>
     </article>
-    <div className="print:hidden"><Button variant="outline" onClick={onDetailed}>Open Detailed Planning Brief</Button></div>
+    <div className="print:hidden"><Button variant="secondary" onClick={onDetailed}>Open Detailed Planning Brief</Button></div>
   </>;
 }
