@@ -245,7 +245,7 @@ function PriorityPlan({
 }) {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     '7A': true,
-    '7B': true,
+    '7B': false,
     '7C': false,
     '7D': false
   });
