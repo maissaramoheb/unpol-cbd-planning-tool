@@ -51,10 +51,20 @@ export interface PlanningBriefModel {
   overallJudgement: string;
 }
 
+import { resolvePlanningContext } from './planningContext';
+
 export function getContextSource(data: UnpolProjectData): string {
   const id = data.profile.templateId;
   if (id === 'blank') return 'Started blank';
   if (id === 'fictional-carana-demo') return 'CARANA fictional training demonstration';
+  const resolved = resolvePlanningContext(id);
+  if (resolved) {
+    if (resolved.operationalStatus === 'fictional') {
+      return `Fictional training scenario (${resolved.identity.missionAcronym || resolved.id.replace('fictional-', '').toUpperCase()})`;
+    }
+    return `Mission Explorer (${resolved.identity.missionAcronym || resolved.id.toUpperCase()})`;
+  }
+  if (id?.startsWith('pk-')) return `Mission Explorer (${id.replace('pk-', '').toUpperCase()})`;
   if (id?.startsWith('seed-')) return `Mission Explorer (${id.replace('seed-', '').toUpperCase()})`;
   if (id?.startsWith('fictional-')) return `Fictional training scenario (${id.replace('fictional-', '').toUpperCase()})`;
   return `Template (${id || 'unknown'})`;
@@ -86,8 +96,10 @@ function findEvidenceIds(notes: EvidenceNote[] | undefined, evidence: ReportEvid
 function buildEvidenceGaps(data: UnpolProjectData, priorities: ReportPriority[]): string[] {
   const gaps: string[] = [];
   Object.values(data.pestels).forEach(item => {
-    if (item.rating.impact >= 4 && item.rating.confidence <= 2) gaps.push(`${item.name}: high impact with low confidence (${item.rating.confidence}/5).`);
-    if (item.rating.impact >= 4 && !item.evidenceNotes?.length) gaps.push(`${item.name}: high-impact finding has no evidence reference.`);
+    if (item.finding.trim() !== '') {
+      if (item.rating.impact >= 4 && item.rating.confidence <= 2) gaps.push(`${item.name}: high impact with low confidence (${item.rating.confidence}/5).`);
+      if (item.rating.impact >= 4 && !item.evidenceNotes?.length) gaps.push(`${item.name}: high-impact finding has no evidence reference.`);
+    }
   });
   priorities.forEach(priority => {
     if (priority.cell.confidence <= 2) gaps.push(`${priority.title}: priority evidence confidence is low (${priority.cell.confidence}/5).`);

@@ -25,6 +25,12 @@
     "src/lib/projectDataValidation.ts",
     "src/lib/warnings.ts",
     "src/types/index.ts",
-    "src/types/explorer.ts"
+    "src/types/explorer.ts",
+    "src/data/planningContexts.ts",
+    "src/data/explorerSeeds.ts",
+    "src/lib/explorerFilters.ts",
+    "src/lib/planningContext.ts",
+    "src/lib/applyMissionSeed.ts",
+    "src/lib/contextComparison.ts"
   ]
 }

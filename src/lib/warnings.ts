@@ -75,7 +75,7 @@ export function calculateQualityWarnings(data: UnpolProjectData): QualityWarning
 
   // 2. High impact but low confidence in PESTEL-S drivers
   Object.values(pestels).forEach((item) => {
-    if (item.rating.impact >= 4 && item.rating.confidence <= 2) {
+    if (item.finding.trim() !== '' && item.rating.impact >= 4 && item.rating.confidence <= 2) {
       warnings.push({
         id: `pestels-high-impact-low-conf-${item.id}`,
         type: 'warning',
@@ -130,7 +130,7 @@ export function calculateQualityWarnings(data: UnpolProjectData): QualityWarning
 
   // 5. High priority with no evidence notes (Custom CBD cell or high PESTEL-S)
   Object.values(pestels).forEach((item) => {
-    if (item.rating.impact >= 4 && (!item.evidenceNotes || item.evidenceNotes.length === 0)) {
+    if (item.finding.trim() !== '' && item.rating.impact >= 4 && (!item.evidenceNotes || item.evidenceNotes.length === 0)) {
       warnings.push({
         id: `pestels-no-evidence-${item.id}`,
         type: 'warning',

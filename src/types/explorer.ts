@@ -60,3 +60,118 @@ export interface MissionExplorerEntry {
   }>;
   suggestedStakeholderCategories: string[];
 }
+
+// ============================================================================
+// Canonical PlanningContext v2 Architecture
+// ============================================================================
+
+export type ContextOperationalStatus =
+  | 'active'
+  | 'transition'
+  | 'historical'
+  | 'fictional'
+  | 'custom';
+
+export type ContextVerificationStatus =
+  | 'current-reference'
+  | 'review-required'
+  | 'training-only'
+  | 'custom';
+
+export type ContextSourceType =
+  | 'un-mandate'
+  | 'un-report'
+  | 'official-portal'
+  | 'training-material'
+  | 'academic'
+  | 'other';
+
+export interface ContextSource {
+  id: string;
+  title: string;
+  organization: string;
+  sourceType: ContextSourceType;
+  url: string | null;
+  publicationDate: string | null;
+  reviewedDate: string | null;
+  supports: string[];
+}
+
+export interface ContextGeography {
+  longitude: number;
+  latitude: number;
+  labelOffset: {
+    x: number;
+    y: number;
+  };
+}
+
+export interface ContextIdentity {
+  countryArea: string;
+  iso3: string | null;
+  region: string;
+  missionName: string;
+  missionAcronym: string;
+  missionType: string;
+  sourceCategory: MissionSourceCategory;
+}
+
+export interface ContextProvenance {
+  sources: ContextSource[];
+  profileLastReviewed: string | null;
+  coverageScope: MissionCoverageScope;
+  limitations: string[];
+}
+
+export interface ContextReferenceStatement {
+  text: string;
+  sourceIds: string[];
+}
+
+export interface ContextReferenceInfo {
+  mandateSummary: ContextReferenceStatement;
+  policeRelevance: ContextReferenceStatement;
+  hostStatePolice: ContextReferenceStatement;
+  planningThemes: string[];
+}
+
+export interface ContextPlanningPrompts {
+  stage1Guidance: {
+    mandateEnvironmentPrompt?: string;
+    conflictContextPrompt?: string;
+    planningPurposePrompt?: string;
+  };
+  pestelsPrompts: Record<
+    string,
+    {
+      prompt: string;
+      whyPrompt: string;
+    }
+  >;
+  stakeholderPrompts: Array<{
+    category: string;
+    rolePrompt: string;
+    suggestedStakeholders: string[];
+  }>;
+  suggestedStakeholderCategories: string[];
+}
+
+export interface ContextScenarioNarrative {
+  mandateEnvironment?: string;
+  conflictContext?: string;
+  planningPurpose?: string;
+}
+
+export interface PlanningContext {
+  schemaVersion: 2;
+  id: string;
+  legacyIds: string[];
+  identity: ContextIdentity;
+  operationalStatus: ContextOperationalStatus;
+  verificationStatus: ContextVerificationStatus;
+  geography?: ContextGeography;
+  provenance: ContextProvenance;
+  reference: ContextReferenceInfo;
+  planningPrompts: ContextPlanningPrompts;
+  scenarioNarrative?: ContextScenarioNarrative;
+}
