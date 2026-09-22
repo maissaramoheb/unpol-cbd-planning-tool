@@ -9,6 +9,7 @@ interface MissionExplorerMapProps {
   onSelectEntry: (id: string) => void;
   hoveredEntryId: string | null;
   onHoverEntry: (id: string | null) => void;
+  compareIds?: string[];
 }
 
 const MAP_WIDTH = 1000;
@@ -38,7 +39,8 @@ export const MissionExplorerMap: React.FC<MissionExplorerMapProps> = ({
   selectedEntryId,
   onSelectEntry,
   hoveredEntryId,
-  onHoverEntry
+  onHoverEntry,
+  compareIds = []
 }) => {
   const geographicEntries = entries.filter(
     (entry) => !entry.isFictionalScenario && MISSION_MAP_POSITIONS[entry.id]
@@ -87,6 +89,7 @@ export const MissionExplorerMap: React.FC<MissionExplorerMapProps> = ({
             const { x, y } = projectPosition(position);
             const isSelected = selectedEntryId === entry.id;
             const isHovered = hoveredEntryId === entry.id;
+            const isCompared = compareIds.includes(entry.id);
             const isEmphasized = isSelected || isHovered;
 
             // Reduce default label clutter by showing a compact acronym-only label card by default.
@@ -97,8 +100,8 @@ export const MissionExplorerMap: React.FC<MissionExplorerMapProps> = ({
             const labelX = clampLabelPosition(x + position.labelOffset.x, currentLabelWidth, MAP_WIDTH);
             const labelY = clampLabelPosition(y + position.labelOffset.y, currentLabelHeight, MAP_HEIGHT);
 
-            // Slightly dim non-selected labels/pins when one mission is selected (except the hovered one)
-            const isDimmed = anySelected && !isSelected && !isHovered;
+            // Slightly dim non-selected labels/pins when one mission is selected (except hovered or compared ones)
+            const isDimmed = anySelected && !isSelected && !isHovered && !isCompared;
 
             return (
               <g
@@ -122,17 +125,30 @@ export const MissionExplorerMap: React.FC<MissionExplorerMapProps> = ({
                   }
                 }}
               >
-                <title>{`${entry.missionAcronym}: ${entry.missionName}, ${entry.country}`}</title>
+                <title>{`${entry.missionAcronym}: ${entry.missionName}, ${entry.country}${isCompared ? ' (In comparison set)' : ''}`}</title>
                 <line
                   x1={x}
                   y1={y}
                   x2={labelX}
                   y2={labelY}
-                  stroke={isSelected ? '#93c5fd' : '#94a3b8'}
-                  strokeWidth={isSelected ? 1.8 : 1.15}
-                  strokeOpacity={isEmphasized ? 0.95 : 0.7}
+                  stroke={isSelected ? '#93c5fd' : isCompared ? '#38bdf8' : '#94a3b8'}
+                  strokeWidth={isSelected ? 1.8 : isCompared ? 1.4 : 1.15}
+                  strokeOpacity={isEmphasized || isCompared ? 0.95 : 0.7}
                   className="transition-opacity duration-150 motion-reduce:transition-none"
                 />
+                {/* Secondary Compare Ring (dashed ring with distinct shape/radius) */}
+                {isCompared && !isSelected ? (
+                  <circle
+                    cx={x}
+                    cy={y}
+                    r={12}
+                    fill="none"
+                    stroke="#38bdf8"
+                    strokeWidth="1.5"
+                    strokeDasharray="3 3"
+                    className="transition-all duration-150 motion-reduce:transition-none"
+                  />
+                ) : null}
                 {isEmphasized ? (
                   <circle
                     cx={x}
@@ -160,7 +176,7 @@ export const MissionExplorerMap: React.FC<MissionExplorerMapProps> = ({
                   cx={x}
                   cy={y}
                   r={isSelected ? 8.5 : isHovered ? 7.5 : 6}
-                  fill={isSelected ? '#3b82f6' : '#cbd5e1'}
+                  fill={isSelected ? '#3b82f6' : isCompared ? '#0284c7' : '#cbd5e1'}
                   stroke="#0f172a"
                   strokeWidth="2.5"
                   className="transition-all duration-150 motion-reduce:transition-none"
@@ -171,10 +187,11 @@ export const MissionExplorerMap: React.FC<MissionExplorerMapProps> = ({
                   width={currentLabelWidth}
                   height={currentLabelHeight}
                   rx="4"
-                  fill={isSelected ? '#1e3a8a' : '#172033'}
+                  fill={isSelected ? '#1e3a8a' : isCompared ? '#0c4a6e' : '#172033'}
                   fillOpacity="0.97"
-                  stroke={isSelected ? '#ffffff' : isHovered ? '#cbd5e1' : '#64748b'}
-                  strokeWidth={isSelected ? 2 : 1}
+                  stroke={isSelected ? '#ffffff' : isCompared ? '#38bdf8' : isHovered ? '#cbd5e1' : '#64748b'}
+                  strokeWidth={isSelected ? 2 : isCompared ? 1.5 : 1}
+                  strokeDasharray={isCompared && !isSelected ? '4 2' : undefined}
                   className="transition-colors duration-150 motion-reduce:transition-none"
                 />
                 <text

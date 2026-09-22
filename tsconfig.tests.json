@@ -30,6 +30,7 @@
     "src/data/explorerSeeds.ts",
     "src/lib/explorerFilters.ts",
     "src/lib/planningContext.ts",
-    "src/lib/applyMissionSeed.ts"
+    "src/lib/applyMissionSeed.ts",
+    "src/lib/contextComparison.ts"
   ]
 }

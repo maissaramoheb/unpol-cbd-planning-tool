@@ -1,14 +1,15 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { MissionExplorerEntry } from '../types/explorer';
+import { MissionExplorerEntry, PlanningContext } from '../types/explorer';
 import { UnpolProjectData } from '../types';
 import { defaultExplorerSeeds, PEACEKEEPING_REFERENCE_NOTICE } from '../data/explorerSeeds';
 import { MissionExplorerMap } from './MissionExplorerMap';
 import { MissionExplorerList } from './MissionExplorerList';
 import { MissionExplorerPanel } from './MissionExplorerPanel';
+import { MissionExplorerCompare } from './MissionExplorerCompare';
 import { Button } from '../ui/Button';
 import { AlertTriangle, Globe, List, X } from 'lucide-react';
 import { filterMissionExplorerEntries } from '../lib/explorerFilters';
-import { hasMeaningfulWork } from '../lib/planningContext';
+import { hasMeaningfulWork, resolvePlanningContext } from '../lib/planningContext';
 import { useDialogA11y } from '../ui/useDialogA11y';
 
 interface MissionExplorerProps {
@@ -32,6 +33,11 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
   const [hoveredEntryId, setHoveredEntryId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'map' | 'list'>('list');
   const [pendingEntry, setPendingEntry] = useState<MissionExplorerEntry | null>(null);
+
+  // Comparison State (local React state only; never persisted into project data)
+  const [compareIds, setCompareIds] = useState<string[]>([]);
+  const [isComparing, setIsComparing] = useState(false);
+  const [compareWarning, setCompareWarning] = useState<string | null>(null);
 
   // Outer Explorer dialog trap: suspended while confirmation dialog is open
   useDialogA11y({
@@ -64,6 +70,9 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
   const [selectedType, setSelectedType] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [showFictional, setShowFictional] = useState<'all' | 'real' | 'fictional'>('all');
+  const [selectedVerification, setSelectedVerification] = useState<
+    'all' | 'current-reference' | 'review-required' | 'training-only'
+  >('all');
 
   const filteredEntries = useMemo(
     () =>
@@ -72,9 +81,10 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
         selectedRegion,
         selectedType,
         selectedStatus,
-        showFictional
+        showFictional,
+        selectedVerification
       }),
-    [searchQuery, selectedRegion, selectedType, selectedStatus, showFictional]
+    [searchQuery, selectedRegion, selectedType, selectedStatus, showFictional, selectedVerification]
   );
 
   const selectedEntry = filteredEntries.find((entry) => entry.id === selectedEntryId) || null;
@@ -86,6 +96,44 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
     setSelectedEntryId(null);
     setHoveredEntryId(null);
   };
+
+  // Compare selection handlers
+  const handleToggleCompare = (id: string) => {
+    if (compareIds.includes(id)) {
+      setCompareIds((prev) => prev.filter((item) => item !== id));
+      setCompareWarning(null);
+    } else {
+      if (compareIds.length < 3) {
+        setCompareIds((prev) => [...prev, id]);
+        setCompareWarning(null);
+      } else {
+        setCompareWarning('Compare supports up to 3 contexts.');
+      }
+    }
+  };
+
+  const handleRemoveCompare = (id: string) => {
+    setCompareIds((prev) => prev.filter((item) => item !== id));
+    setCompareWarning(null);
+  };
+
+  const handleClearCompare = () => {
+    setCompareIds([]);
+    setCompareWarning(null);
+  };
+
+  const handleStartCompare = () => {
+    if (compareIds.length >= 2) {
+      setIsComparing(true);
+    }
+  };
+
+  // Resolved canonical contexts for comparison
+  const comparedContexts = useMemo(() => {
+    return compareIds
+      .map((id) => resolvePlanningContext(id))
+      .filter((c): c is PlanningContext => c !== null);
+  }, [compareIds]);
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
@@ -125,104 +173,202 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
           </Button>
         </div>
 
-        <div className="shrink-0 border-b border-amber-200 bg-amber-50 px-5 py-3 text-xs leading-relaxed text-amber-950">
-          <div className="flex items-start gap-2.5">
-            <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-700" />
-            <p>
-              <strong>Coverage notice:</strong> {PEACEKEEPING_REFERENCE_NOTICE} Selected non-peacekeeping starter profiles are not comprehensive DPPA/SPM coverage.
-            </p>
-          </div>
-        </div>
-
-        {/* Content Body Grid */}
-        <div className="flex-1 overflow-y-auto p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left/Middle: Map & List Lookup */}
-          <div className="lg:col-span-2 flex flex-col gap-4">
-            <div className="flex flex-col gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-700 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <span className="font-bold block text-sm text-slate-900">
-                  Showing {shownCount} of {totalCount} contexts
-                </span>
-                <span className="text-slate-500 font-medium mt-0.5 block leading-normal">
-                  11 current UN Peacekeeping references · selected starter profiles · fictional training scenarios
-                </span>
-              </div>
-              <span className="text-slate-600 text-[10px] font-semibold bg-white border border-slate-200 px-2.5 py-1.5 rounded-lg shrink-0">
-                Filters apply to both the map pins and the list.
-              </span>
-            </div>
-
-            {/* Tablet toggle; compact mobile remains list-first */}
-            <div className="hidden sm:flex justify-between items-center lg:hidden bg-slate-50 border border-slate-200 p-1.5 rounded-xl">
-              <span className="text-xs font-bold text-slate-500 pl-2">Display Mode:</span>
-              <div className="flex gap-1" role="group" aria-label="Select display mode">
-                <Button
-                  variant="tertiary"
-                  size="sm"
-                  onClick={() => setViewMode('map')}
-                  aria-pressed={viewMode === 'map'}
-                >
-                  <Globe size={12} className="mr-1" />
-                  World Map
-                </Button>
-                <Button
-                  variant="tertiary"
-                  size="sm"
-                  onClick={() => setViewMode('list')}
-                  aria-pressed={viewMode === 'list'}
-                >
-                  <List size={12} className="mr-1" />
-                  Search List
-                </Button>
-              </div>
-            </div>
-
-            {/* Render Map / List based on viewMode */}
-            <div className="flex-1 flex flex-col gap-4">
-              {/* Map panel: desktop always visible, tablet toggle, compact mobile hidden */}
-              <div className={`${viewMode === 'map' ? 'hidden sm:block' : 'hidden'} lg:block`}>
-                <MissionExplorerMap
-                  entries={filteredEntries}
-                  selectedEntryId={selectedEntryId}
-                  onSelectEntry={setSelectedEntryId}
-                  hoveredEntryId={hoveredEntryId}
-                  onHoverEntry={setHoveredEntryId}
-                />
-              </div>
-
-              {/* List and filters: desktop always visible and compact mobile default */}
-              <div className={`${viewMode === 'list' ? 'block' : 'hidden'} lg:block flex-1`}>
-                <MissionExplorerList
-                  entries={filteredEntries}
-                  filterOptionsEntries={defaultExplorerSeeds}
-                  selectedEntryId={selectedEntryId}
-                  onSelectEntry={setSelectedEntryId}
-                  hoveredEntryId={hoveredEntryId}
-                  onHoverEntry={setHoveredEntryId}
-                  searchQuery={searchQuery}
-                  onSearchChange={(value) => handleFilterChange(() => setSearchQuery(value))}
-                  selectedRegion={selectedRegion}
-                  onRegionChange={(value) => handleFilterChange(() => setSelectedRegion(value))}
-                  selectedType={selectedType}
-                  onTypeChange={(value) => handleFilterChange(() => setSelectedType(value))}
-                  selectedStatus={selectedStatus}
-                  onStatusChange={(value) => handleFilterChange(() => setSelectedStatus(value))}
-                  showFictional={showFictional}
-                  onShowFictionalChange={(value) => handleFilterChange(() => setShowFictional(value))}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Right Area: Selected Detail Pane */}
-          <div className="lg:col-span-1 h-full min-h-[320px]">
-            <MissionExplorerPanel
-              entry={selectedEntry}
-              onUseProfile={(entry) => setPendingEntry(entry)}
-              onClearSelection={() => setSelectedEntryId(null)}
+        {/* View Switcher: Dedicated Comparison View vs Explorer Search/Browse */}
+        {isComparing ? (
+          <div className="flex-1 overflow-hidden flex flex-col">
+            <MissionExplorerCompare
+              contexts={comparedContexts}
+              onBack={() => setIsComparing(false)}
             />
           </div>
-        </div>
+        ) : (
+          <>
+            <div className="shrink-0 border-b border-amber-200 bg-amber-50 px-5 py-3 text-xs leading-relaxed text-amber-950">
+              <div className="flex items-start gap-2.5">
+                <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-700" />
+                <p>
+                  <strong>Coverage notice:</strong> {PEACEKEEPING_REFERENCE_NOTICE} Selected non-peacekeeping starter profiles are not comprehensive DPPA/SPM coverage.
+                </p>
+              </div>
+            </div>
+
+            {/* Content Body Grid */}
+            <div className="flex-1 overflow-y-auto p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Left/Middle: Map & List Lookup */}
+              <div className="lg:col-span-2 flex flex-col gap-4">
+                <div className="flex flex-col gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-700 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <span className="font-bold block text-sm text-slate-900">
+                      Showing {shownCount} of {totalCount} contexts
+                    </span>
+                    <span className="text-slate-500 font-medium mt-0.5 block leading-normal">
+                      11 current UN Peacekeeping references · selected starter profiles · fictional training scenarios
+                    </span>
+                  </div>
+                  <span className="text-slate-600 text-[10px] font-semibold bg-white border border-slate-200 px-2.5 py-1.5 rounded-lg shrink-0">
+                    Filters apply to both the map pins and the list.
+                  </span>
+                </div>
+
+                {/* Tablet toggle; compact mobile remains list-first */}
+                <div className="hidden sm:flex justify-between items-center lg:hidden bg-slate-50 border border-slate-200 p-1.5 rounded-xl">
+                  <span className="text-xs font-bold text-slate-500 pl-2">Display Mode:</span>
+                  <div className="flex gap-1" role="group" aria-label="Select display mode">
+                    <Button
+                      variant="tertiary"
+                      size="sm"
+                      onClick={() => setViewMode('map')}
+                      aria-pressed={viewMode === 'map'}
+                    >
+                      <Globe size={12} className="mr-1" />
+                      World Map
+                    </Button>
+                    <Button
+                      variant="tertiary"
+                      size="sm"
+                      onClick={() => setViewMode('list')}
+                      aria-pressed={viewMode === 'list'}
+                    >
+                      <List size={12} className="mr-1" />
+                      Search List
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Render Map / List based on viewMode */}
+                <div className="flex-1 flex flex-col gap-4">
+                  {/* Map panel: desktop always visible, tablet toggle, compact mobile hidden */}
+                  <div className={`${viewMode === 'map' ? 'hidden sm:block' : 'hidden'} lg:block`}>
+                    <MissionExplorerMap
+                      entries={filteredEntries}
+                      selectedEntryId={selectedEntryId}
+                      onSelectEntry={setSelectedEntryId}
+                      hoveredEntryId={hoveredEntryId}
+                      onHoverEntry={setHoveredEntryId}
+                      compareIds={compareIds}
+                    />
+                  </div>
+
+                  {/* List and filters: desktop always visible and compact mobile default */}
+                  <div className={`${viewMode === 'list' ? 'block' : 'hidden'} lg:block flex-1`}>
+                    <MissionExplorerList
+                      entries={filteredEntries}
+                      filterOptionsEntries={defaultExplorerSeeds}
+                      selectedEntryId={selectedEntryId}
+                      onSelectEntry={setSelectedEntryId}
+                      hoveredEntryId={hoveredEntryId}
+                      onHoverEntry={setHoveredEntryId}
+                      searchQuery={searchQuery}
+                      onSearchChange={(value) => handleFilterChange(() => setSearchQuery(value))}
+                      selectedRegion={selectedRegion}
+                      onRegionChange={(value) => handleFilterChange(() => setSelectedRegion(value))}
+                      selectedType={selectedType}
+                      onTypeChange={(value) => handleFilterChange(() => setSelectedType(value))}
+                      selectedStatus={selectedStatus}
+                      onStatusChange={(value) => handleFilterChange(() => setSelectedStatus(value))}
+                      showFictional={showFictional}
+                      onShowFictionalChange={(value) => handleFilterChange(() => setShowFictional(value))}
+                      selectedVerification={selectedVerification}
+                      onVerificationChange={(value) => handleFilterChange(() => setSelectedVerification(value))}
+                      compareIds={compareIds}
+                      onToggleCompare={handleToggleCompare}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Area: Selected Detail Pane */}
+              <div className="lg:col-span-1 h-full min-h-[320px]">
+                <MissionExplorerPanel
+                  entry={selectedEntry}
+                  onUseProfile={(entry) => setPendingEntry(entry)}
+                  onClearSelection={() => setSelectedEntryId(null)}
+                />
+              </div>
+            </div>
+
+            {/* Docked Compare Tray */}
+            {compareIds.length > 0 && (
+              <div
+                role="region"
+                aria-label="Context comparison selection"
+                className="shrink-0 bg-slate-900 text-white px-5 py-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 shadow-lg"
+              >
+                <div className="flex flex-wrap items-center gap-3">
+                  <div>
+                    <span className="text-xs font-black uppercase tracking-wider text-slate-100 block">
+                      Compare contexts
+                    </span>
+                    <span className="text-[11px] text-blue-300 font-semibold">
+                      {compareIds.length} / 3 selected
+                    </span>
+                  </div>
+
+                  <div className="h-6 w-px bg-slate-700 hidden sm:block" />
+
+                  {/* Selected context acronym chips */}
+                  <div
+                    className="flex flex-wrap items-center gap-1.5"
+                    role="list"
+                    aria-label="Selected contexts for comparison"
+                  >
+                    {compareIds.map((id) => {
+                      const entry = defaultExplorerSeeds.find((e) => e.id === id);
+                      const acronym = entry?.missionAcronym || id;
+                      return (
+                        <span
+                          key={id}
+                          role="listitem"
+                          className="inline-flex items-center gap-1 bg-slate-800 text-white text-xs font-bold px-2.5 py-1 rounded-lg border border-slate-700"
+                        >
+                          <span>{acronym}</span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveCompare(id)}
+                            aria-label={`Remove ${acronym} from comparison`}
+                            className="text-slate-400 hover:text-white rounded p-0.5 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-400"
+                          >
+                            <X size={12} />
+                          </button>
+                        </span>
+                      );
+                    })}
+                  </div>
+
+                  {compareWarning && (
+                    <span
+                      role="status"
+                      aria-live="polite"
+                      className="text-xs text-amber-300 font-medium bg-amber-950/80 border border-amber-800 px-2 py-0.5 rounded-md"
+                    >
+                      {compareWarning}
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="quiet"
+                    size="sm"
+                    onClick={handleClearCompare}
+                    className="text-slate-400 hover:text-white text-xs"
+                  >
+                    Clear
+                  </Button>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    disabled={compareIds.length < 2}
+                    onClick={handleStartCompare}
+                    className={`text-xs font-bold ${compareIds.length < 2 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    Compare ({compareIds.length})
+                  </Button>
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       {/* Safe Initialization Confirmation Modal */}
