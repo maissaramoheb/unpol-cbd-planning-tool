@@ -7,10 +7,20 @@ import { Slider } from '../ui/Slider';
 import { TextArea } from '../ui/TextArea';
 import { Badge } from '../ui/Badge';
 import { EvidenceLogEditor } from './EvidenceLogEditor';
-import { Activity, ShieldAlert, Award, Compass, Eye } from 'lucide-react';
+import { Activity, ShieldAlert, Award, Compass, Eye, Globe, Scale } from 'lucide-react';
 import { StageLead } from './StageLead';
 import { NextStepCue } from './Guidance';
 import { NEXT_STEP_CUES } from '../lib/guidance';
+
+const PESTELS_PALETTE: Record<string, { iconColor: string; dot: string }> = {
+  political: { iconColor: 'text-indigo-600', dot: 'bg-indigo-500' },
+  economic: { iconColor: 'text-teal-600', dot: 'bg-teal-500' },
+  social: { iconColor: 'text-purple-600', dot: 'bg-purple-500' },
+  technological: { iconColor: 'text-cyan-600', dot: 'bg-cyan-500' },
+  environmental: { iconColor: 'text-emerald-600', dot: 'bg-emerald-500' },
+  legal: { iconColor: 'text-amber-600', dot: 'bg-amber-500' },
+  security: { iconColor: 'text-rose-600', dot: 'bg-rose-500' }
+};
 
 interface SituationalAnalysisProps {
   data: UnpolProjectData;
@@ -52,15 +62,16 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
   };
 
   const getPestelsIcon = (id: string) => {
+    const style = PESTELS_PALETTE[id] || { iconColor: 'text-text-muted', dot: 'bg-slate-400' };
     switch (id) {
-      case 'political': return <Compass size={15} className="text-text-muted shrink-0" />;
-      case 'economic': return <Activity size={15} className="text-text-muted shrink-0" />;
-      case 'social': return <Award size={15} className="text-text-muted shrink-0" />;
-      case 'technological': return <Eye size={15} className="text-text-muted shrink-0" />;
-      case 'environmental': return <Compass size={15} className="text-text-muted shrink-0" />;
-      case 'legal': return <ShieldAlert size={15} className="text-text-muted shrink-0" />;
-      case 'security': return <ShieldAlert size={15} className="text-text-muted shrink-0" />;
-      default: return <Compass size={15} className="text-text-muted shrink-0" />;
+      case 'political': return <Compass size={15} className={`${style.iconColor} shrink-0`} />;
+      case 'economic': return <Activity size={15} className={`${style.iconColor} shrink-0`} />;
+      case 'social': return <Award size={15} className={`${style.iconColor} shrink-0`} />;
+      case 'technological': return <Eye size={15} className={`${style.iconColor} shrink-0`} />;
+      case 'environmental': return <Globe size={15} className={`${style.iconColor} shrink-0`} />;
+      case 'legal': return <Scale size={15} className={`${style.iconColor} shrink-0`} />;
+      case 'security': return <ShieldAlert size={15} className={`${style.iconColor} shrink-0`} />;
+      default: return <Compass size={15} className={`${style.iconColor} shrink-0`} />;
     }
   };
 
@@ -78,7 +89,7 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
             </span>
           </div>
 
-          <div className="divide-y divide-border-default/60 flex flex-col">
+          <div className="divide-y divide-border-default flex flex-col">
             {Object.values(pestels).map((item) => {
               const isSelected = item.id === selectedId;
               const hasFinding = item.finding.trim().length > 0;
@@ -88,10 +99,10 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
                   type="button"
                   onClick={() => setSelectedId(item.id)}
                   className={`
-                    text-left px-4 py-3 transition-colors duration-150 motion-reduce:transition-none flex flex-col gap-1 w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring
+                    text-left px-4 py-3.5 transition-colors duration-150 motion-reduce:transition-none flex flex-col gap-1 w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring
                     ${isSelected
-                      ? 'bg-blue-50/70 border-l-2 border-action-primary text-action-primary'
-                      : 'border-l-2 border-transparent hover:bg-surface-subtle text-text-primary'
+                      ? 'bg-blue-50/80 border-l-2 border-action-primary'
+                      : 'border-l-2 border-transparent hover:bg-surface-subtle/80'
                     }
                   `}
                 >

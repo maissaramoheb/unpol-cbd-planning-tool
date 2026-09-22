@@ -135,7 +135,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
       <div className="bg-surface-raised border border-border-strong rounded-lg overflow-hidden flex flex-col lg:flex-row min-h-[640px]">
         {/* Master List Column */}
         <div className="w-full lg:w-80 border-b lg:border-b-0 lg:border-r border-border-default flex flex-col shrink-0 bg-surface-subtle">
-          <div className="p-3 border-b border-border-default flex items-center justify-between gap-2 bg-surface-raised">
+          <div className="p-3.5 border-b border-border-default flex items-center justify-between gap-2 bg-surface-raised">
             <div>
               <h2 className="text-xs font-semibold uppercase tracking-wider text-text-muted">
                 Actors Directory ({stakeholders.length})
@@ -152,7 +152,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
             </Button>
           </div>
 
-          <div className="flex-1 overflow-y-auto divide-y divide-border-default/50 max-h-[600px] lg:max-h-none">
+          <div className="flex-1 overflow-y-auto divide-y divide-border-default max-h-[600px] lg:max-h-none">
             {stakeholders.map((sh) => {
               const isSelected = sh.id === selectedId;
               return (
@@ -160,30 +160,30 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                   key={sh.id}
                   type="button"
                   onClick={() => setSelectedId(sh.id)}
-                  className={`w-full text-left p-3.5 transition-colors flex flex-col gap-1.5 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-focus-ring ${
+                  className={`w-full text-left px-4 py-3.5 transition-colors duration-150 motion-reduce:transition-none flex flex-col gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring ${
                     isSelected
-                      ? 'bg-institutional-subtle border-l-2 border-l-institutional'
-                      : 'hover:bg-surface-hover'
+                      ? 'bg-blue-50/80 border-l-2 border-action-primary'
+                      : 'border-l-2 border-transparent hover:bg-surface-subtle/80'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-1.5 w-full">
-                    <span className="font-semibold text-xs text-text-default line-clamp-1">
+                    <span className={`text-xs line-clamp-1 ${isSelected ? 'font-bold text-action-primary' : 'font-semibold text-text-primary'}`}>
                       {sh.name}
                     </span>
                     {sh.isCustom && (
-                      <span className="text-[9px] font-bold uppercase tracking-wider bg-surface-raised border border-border-default text-text-muted px-1 py-0.5 rounded shrink-0">
+                      <span className="text-[9px] font-bold uppercase tracking-wider bg-surface-raised border border-border-default text-text-muted px-1.5 py-0.5 rounded shrink-0">
                         Custom
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center justify-between gap-1 text-[11px] text-text-muted">
-                    <span className="truncate">{sh.category}</span>
-                    {getPositionBadge(sh.position)}
+                  <div className="flex items-center justify-between gap-2 text-[11px]">
+                    <span className="truncate text-text-muted font-normal">{sh.category}</span>
+                    <div className="shrink-0">{getPositionBadge(sh.position)}</div>
                   </div>
                   <div className="text-[10px] font-mono text-text-muted flex items-center gap-1.5 pt-0.5">
-                    <span>Auth: <span className="font-semibold text-text-default">{sh.authority || 'N/A'}</span></span>
-                    <span>·</span>
-                    <span>Infl: <span className="font-semibold text-text-default">{sh.influence || 'N/A'}</span></span>
+                    <span>Auth: <span className="font-semibold text-text-secondary">{sh.authority || 'N/A'}</span></span>
+                    <span className="text-border-strong">·</span>
+                    <span>Infl: <span className="font-semibold text-text-secondary">{sh.influence || 'N/A'}</span></span>
                   </div>
                 </button>
               );
