@@ -15,6 +15,31 @@ interface PrioritySequencingProps {
   onPrev: () => void;
 }
 
+const getClassificationStyle = (classification: string) => {
+  switch (classification) {
+    case 'Quick Win':
+      return {
+        text: 'text-emerald-700 font-medium',
+        dot: 'bg-emerald-600'
+      };
+    case 'Sensitive Reform':
+      return {
+        text: 'text-rose-700 font-medium',
+        dot: 'bg-rose-600'
+      };
+    case 'Long-Term Reform':
+      return {
+        text: 'text-indigo-700 font-medium',
+        dot: 'bg-indigo-600'
+      };
+    default:
+      return {
+        text: 'text-text-muted',
+        dot: 'bg-border-strong'
+      };
+  }
+};
+
 export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
   brief,
   customCells,
@@ -122,9 +147,15 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
                           <div className="font-medium text-text-default truncate" title={key}>
                             {key}
                           </div>
-                          <div className="text-[11px] text-text-muted truncate mt-0.5">
-                            {classification}
-                          </div>
+                          {(() => {
+                            const classStyle = getClassificationStyle(classification);
+                            return (
+                              <div className={`text-[11px] truncate mt-0.5 inline-flex items-center gap-1.5 ${classStyle.text}`}>
+                                <span className={`h-1.5 w-1.5 rounded-full ${classStyle.dot} shrink-0`} />
+                                <span>{classification}</span>
+                              </div>
+                            );
+                          })()}
                         </div>
                         <div className="w-16 flex justify-center shrink-0">
                           <span

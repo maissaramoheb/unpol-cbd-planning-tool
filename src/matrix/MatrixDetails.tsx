@@ -232,8 +232,21 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
           </h3>
         </div>
         <div className="flex items-center gap-2">
-          <div className="text-right">
-            <Badge variant={activeAssessment.score >= 4 ? 'rose' : 'slate'}>Indicative Priority: {activeAssessment.score.toFixed(1)}/5</Badge>
+          <div className="text-right flex flex-col items-end">
+            <div className="flex items-center gap-1.5">
+              <Badge variant={activeAssessment.score >= 4 ? 'rose' : activeAssessment.score >= 3 ? 'amber' : 'slate'}>
+                Indicative Priority: {activeAssessment.score.toFixed(1)}/5
+              </Badge>
+              {activeAssessment.classification && activeAssessment.classification !== 'Standard Priority' && (
+                <Badge variant={
+                  activeAssessment.classification === 'Quick Win' ? 'green' :
+                  activeAssessment.classification === 'Sensitive Reform' ? 'rose' :
+                  'blue'
+                }>
+                  {activeAssessment.classification}
+                </Badge>
+              )}
+            </div>
             <p className="mt-1 max-w-xs text-[11px] leading-snug text-text-muted">{FIELD_GUIDANCE.indicativeScore.help}</p>
           </div>
         </div>

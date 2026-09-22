@@ -25,21 +25,21 @@ interface StakeholderDecisionSupportProps {
 type QuadrantId = EngagementQuadrantId | CredibilityQuadrantId;
 
 const QUADRANT_TONES: Record<QuadrantId, string> = {
-  'high-influence-resistance': 'bg-rose-50/20',
-  'high-influence-allies': 'bg-emerald-50/20',
-  monitor: 'bg-surface-subtle/30',
+  'high-influence-resistance': 'bg-rose-50/25',
+  'high-influence-allies': 'bg-emerald-50/25',
+  monitor: 'bg-amber-50/20',
   'support-base': 'bg-blue-50/20',
-  'legitimacy-voices': 'bg-violet-50/20',
-  'core-partners': 'bg-blue-50/20',
+  'legitimacy-voices': 'bg-indigo-50/20',
+  'core-partners': 'bg-blue-50/25',
   'lower-priority-monitoring': 'bg-surface-subtle/30',
-  'operationally-sensitive': 'bg-amber-50/20'
+  'operationally-sensitive': 'bg-amber-50/25'
 };
 
 const POSTURE_STYLES: Record<StakeholderPosition, string> = {
-  Enabler: 'border-emerald-300 bg-emerald-50/60 text-emerald-900',
-  Persuadable: 'border-blue-300 bg-blue-50/60 text-blue-900',
-  Blocker: 'border-amber-300 bg-amber-50/60 text-amber-950',
-  'Spoiler risk': 'border-rose-300 bg-rose-50/60 text-rose-950',
+  Enabler: 'border-emerald-300 bg-emerald-50/70 text-emerald-900',
+  Persuadable: 'border-blue-300 bg-blue-50/70 text-blue-900',
+  Blocker: 'border-amber-300 bg-amber-50/70 text-amber-950',
+  'Spoiler risk': 'border-rose-300 bg-rose-50/70 text-rose-950',
   'Neutral / unknown': 'border-border-default bg-surface-raised text-text-default'
 };
 
@@ -49,6 +49,12 @@ const POSTURE_DOTS: Record<StakeholderPosition, string> = {
   Blocker: 'bg-amber-600',
   'Spoiler risk': 'bg-rose-600',
   'Neutral / unknown': 'bg-text-muted'
+};
+
+const getRatingBadgeVariant = (val?: string): 'blue' | 'amber' | 'slate' => {
+  if (val === 'High') return 'blue';
+  if (val === 'Medium') return 'amber';
+  return 'slate';
 };
 
 interface StakeholderChipProps {
@@ -159,95 +165,108 @@ const QuadrantMatrix = <TId extends QuadrantId>({
   quadrants,
   selectedId,
   onSelect
-}: QuadrantMatrixProps<TId>) => (
-  <section aria-labelledby={`${title.replaceAll(' ', '-').toLowerCase()}-title`} className="flex flex-col gap-3">
-    <div>
-      <h5
-        id={`${title.replaceAll(' ', '-').toLowerCase()}-title`}
-        className="text-sm font-semibold uppercase tracking-wider text-text-default"
-      >
-        {title}
-      </h5>
-      <p className="mt-0.5 text-xs leading-relaxed text-text-muted">{description}</p>
-      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-muted">
-        <span><strong>Horizontal Axis:</strong> {xAxis}</span>
-        <span><strong>Vertical Axis:</strong> {yAxis}</span>
+}: QuadrantMatrixProps<TId>) => {
+  const getQuadrant = (idx: number) => quadrants[idx] ?? {
+    id: `q-${idx}` as TId,
+    title: 'Unassigned',
+    meaning: '',
+    recommendation: '',
+    caveat: '',
+    stakeholders: []
+  };
+
+  const topLeft = getQuadrant(0);
+  const topRight = getQuadrant(1);
+  const bottomLeft = getQuadrant(2);
+  const bottomRight = getQuadrant(3);
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div>
+        <h5 className="text-xs font-semibold uppercase tracking-wider text-text-default">
+          {title}
+        </h5>
+        <p className="mt-0.5 text-xs text-text-muted">{description}</p>
+      </div>
+
+      {/* Outer Shell: Shared Boundary with 1px Hairline Grid */}
+      <div className="rounded-lg border border-border-default bg-surface-card overflow-hidden shadow-subtle flex flex-col">
+        {/* Horizontal Axis Header Bar */}
+        <div className="border-b border-border-default bg-surface-subtle px-4 py-2 flex items-center justify-between text-[11px] font-mono font-medium text-text-muted">
+          <span>&larr; {xLabels[0]}</span>
+          <span className="text-[10px] uppercase font-semibold text-text-secondary tracking-wider">
+            {xAxis}
+          </span>
+          <span>{xLabels[1]} &rarr;</span>
+        </div>
+
+        {/* 2x2 Analytical Grid with hairline dividers */}
+        <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-border-default">
+          {/* Top Row: Left vs Right */}
+          <div className="divide-y divide-border-default flex flex-col">
+            <QuadrantCard
+              quadrant={topLeft}
+              yLabel={`${yLabels[0]} \u2191`}
+              selectedId={selectedId}
+              onSelect={onSelect}
+            />
+            <QuadrantCard
+              quadrant={bottomLeft}
+              yLabel={`${yLabels[1]} \u2193`}
+              selectedId={selectedId}
+              onSelect={onSelect}
+            />
+          </div>
+
+          <div className="divide-y divide-border-default flex flex-col">
+            <QuadrantCard
+              quadrant={topRight}
+              yLabel={`${yLabels[0]} \u2191`}
+              selectedId={selectedId}
+              onSelect={onSelect}
+            />
+            <QuadrantCard
+              quadrant={bottomRight}
+              yLabel={`${yLabels[1]} \u2193`}
+              selectedId={selectedId}
+              onSelect={onSelect}
+            />
+          </div>
+        </div>
+
+        {/* Vertical Axis Footer Note */}
+        <div className="border-t border-border-default bg-surface-subtle px-4 py-1.5 text-[10px] font-mono text-text-muted text-center uppercase tracking-wider">
+          Vertical Axis: {yAxis}
+        </div>
       </div>
     </div>
-
-    {/* Unified 2x2 Matrix Container */}
-    <div className="rounded-lg border border-border-default bg-surface-card overflow-hidden shadow-subtle">
-      {/* Horizontal Axis Header Bar */}
-      <div className="grid grid-cols-2 border-b border-border-default bg-surface-subtle text-xs font-semibold text-text-muted">
-        <div className="px-4 py-2 border-r border-border-default text-left flex items-center gap-1.5">
-          <span>&larr;</span>
-          <span>{xLabels[0]}</span>
-        </div>
-        <div className="px-4 py-2 text-right flex items-center justify-end gap-1.5">
-          <span>{xLabels[1]}</span>
-          <span>&rarr;</span>
-        </div>
-      </div>
-
-      {/* 2x2 Grid with Internal Hairlines */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-border-default">
-        {/* Quadrant 0: Top-Left */}
-        {quadrants[0] && (
-          <QuadrantCard
-            quadrant={quadrants[0]}
-            yLabel={`${yLabels[0]} ↑`}
-            selectedId={selectedId}
-            onSelect={onSelect}
-          />
-        )}
-        {/* Quadrant 1: Top-Right */}
-        {quadrants[1] && (
-          <QuadrantCard
-            quadrant={quadrants[1]}
-            yLabel={`${yLabels[0]} ↑`}
-            selectedId={selectedId}
-            onSelect={onSelect}
-          />
-        )}
-      </div>
-
-      <div className="border-t border-border-default" />
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-border-default">
-        {/* Quadrant 2: Bottom-Left */}
-        {quadrants[2] && (
-          <QuadrantCard
-            quadrant={quadrants[2]}
-            yLabel={`${yLabels[1]} ↓`}
-            selectedId={selectedId}
-            onSelect={onSelect}
-          />
-        )}
-        {/* Quadrant 3: Bottom-Right */}
-        {quadrants[3] && (
-          <QuadrantCard
-            quadrant={quadrants[3]}
-            yLabel={`${yLabels[1]} ↓`}
-            selectedId={selectedId}
-            onSelect={onSelect}
-          />
-        )}
-      </div>
-    </div>
-  </section>
-);
+  );
+};
 
 const InsightList: React.FC<{
   title: string;
   stakeholders: Stakeholder[];
   icon: React.ReactNode;
+  iconColor?: string;
+  badgeVariant?: 'rose' | 'blue' | 'green' | 'amber' | 'slate';
   emptyText: string;
-}> = ({ title, stakeholders, icon, emptyText }) => (
+}> = ({
+  title,
+  stakeholders,
+  icon,
+  iconColor = 'text-institutional',
+  badgeVariant = 'slate',
+  emptyText
+}) => (
   <div className="rounded-lg bg-surface-card p-3.5 border border-border-default shadow-subtle">
     <div className="flex items-center gap-2 text-xs font-semibold text-text-default">
-      <span className="text-institutional">{icon}</span>
-      {title}
-      <span className="ml-auto font-mono text-xs font-semibold text-text-muted">{stakeholders.length}</span>
+      <span className={iconColor}>{icon}</span>
+      <span>{title}</span>
+      <span className="ml-auto">
+        <Badge variant={stakeholders.length > 0 ? badgeVariant : 'slate'}>
+          {stakeholders.length}
+        </Badge>
+      </span>
     </div>
     <p className="mt-2 text-xs leading-relaxed text-text-muted">
       {stakeholders.length > 0
@@ -347,10 +366,10 @@ export const StakeholderDecisionSupport: React.FC<StakeholderDecisionSupportProp
                 </p>
               </div>
               <div className="flex flex-wrap gap-1.5">
-                <Badge variant="slate">Influence: {selectedStakeholder.influence}</Badge>
-                <Badge variant="slate">Legitimacy: {selectedStakeholder.legitimacy}</Badge>
-                <Badge variant="slate">Relevance: {selectedStakeholder.relevance}</Badge>
-                <Badge variant="slate">Capacity: {selectedStakeholder.capacity}</Badge>
+                <Badge variant={getRatingBadgeVariant(selectedStakeholder.influence)}>Influence: {selectedStakeholder.influence}</Badge>
+                <Badge variant={getRatingBadgeVariant(selectedStakeholder.legitimacy)}>Legitimacy: {selectedStakeholder.legitimacy}</Badge>
+                <Badge variant={getRatingBadgeVariant(selectedStakeholder.relevance)}>Relevance: {selectedStakeholder.relevance}</Badge>
+                <Badge variant={getRatingBadgeVariant(selectedStakeholder.capacity)}>Capacity: {selectedStakeholder.capacity}</Badge>
               </div>
             </div>
             <div className="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-3">
@@ -387,30 +406,40 @@ export const StakeholderDecisionSupport: React.FC<StakeholderDecisionSupportProp
             title="Priority engagement risks"
             stakeholders={analysis.insights.priorityRisks}
             icon={<AlertTriangle size={15} />}
+            iconColor="text-rose-600"
+            badgeVariant="rose"
             emptyText="No elevated engagement risks currently derived."
           />
           <InsightList
             title="Leadership-level engagement"
             stakeholders={analysis.insights.leadershipLevel}
             icon={<BriefcaseBusiness size={15} />}
+            iconColor="text-institutional"
+            badgeVariant="blue"
             emptyText="No high-influence actors currently recorded."
           />
           <InsightList
             title="Technical working groups"
             stakeholders={analysis.insights.technicalWorkingGroups}
             icon={<CheckCircle2 size={15} />}
+            iconColor="text-emerald-600"
+            badgeVariant="green"
             emptyText="No actors currently meet the suggested working-group criteria."
           />
           <InsightList
             title="Legitimacy consultation"
             stakeholders={analysis.insights.legitimacyConsultation}
             icon={<Scale size={15} />}
+            iconColor="text-indigo-600"
+            badgeVariant="blue"
             emptyText="No high-legitimacy actors currently recorded."
           />
           <InsightList
             title="Monitoring only"
             stakeholders={analysis.insights.monitoringOnly}
             icon={<Eye size={15} />}
+            iconColor="text-text-muted"
+            badgeVariant="slate"
             emptyText="No actors currently fall into both lower-priority categories."
           />
         </div>

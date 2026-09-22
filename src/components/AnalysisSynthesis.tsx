@@ -58,19 +58,22 @@ export const AnalysisSynthesis: React.FC<AnalysisSynthesisProps> = ({ data, onCh
     const id = `swot-${reference.toLowerCase()}`;
     onChange({
       ...synthesis,
-      swotFindings: [...synthesis.swotFindings, {
-        id,
-        reference,
-        category,
-        finding: source?.text ?? '',
-        cbdImplication: '',
-        sourceReferences: source ? [source.reference] : [],
-        confidence: null,
-        verificationNote: ''
-      }]
+      swotFindings: [
+        ...synthesis.swotFindings,
+        {
+          id,
+          reference,
+          category,
+          finding: source ? source.text : '',
+          cbdImplication: '',
+          sourceReferences: source ? [source.reference] : [],
+          confidence: null,
+          verificationNote: ''
+        }
+      ]
     });
-    setSourcePanelOpen(false);
     setSelectedSourceKey('');
+    setSourcePanelOpen(false);
   };
 
   const updateOption = (id: string, field: 'option' | 'planningNote', value: string) => {
@@ -78,13 +81,14 @@ export const AnalysisSynthesis: React.FC<AnalysisSynthesisProps> = ({ data, onCh
   };
 
   const addOption = (type: StrategicOptionType) => {
-    const selected = optionSelections[type].filter(Boolean);
-    const reference = nextReference(`${type}-`, synthesis.strategicOptions.map(item => item.reference));
+    const [firstId, secondId] = optionSelections[type];
+    if (!firstId || !secondId) return;
+    const reference = nextReference(type, synthesis.strategicOptions.map(item => item.reference));
     const candidate = {
       id: `option-${reference.toLowerCase()}`,
       reference,
       type,
-      swotFindingIds: selected,
+      swotFindingIds: [firstId, secondId],
       option: '',
       planningNote: ''
     };
@@ -125,7 +129,97 @@ export const AnalysisSynthesis: React.FC<AnalysisSynthesisProps> = ({ data, onCh
           </div>
         )}
 
-        {/* 2x2 SWOT Matrix with Shared Boundary */}
+        {/* 1. Four Clean Separate S / W / O / T Summary & Orientation Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+          {SWOT_CATEGORIES.map(category => {
+            const items = data.analysisSynthesis.swotFindings.filter(item => item.category === category);
+            const content = CATEGORY_CONTENT[category];
+            const letter = category[0];
+            const styles: Record<SwotCategory, { border: string; bg: string; badge: string; text: string }> = {
+              Strength: {
+                border: 'border-emerald-200/80',
+                bg: 'bg-emerald-50/40',
+                badge: 'bg-emerald-100 text-emerald-800 border-emerald-300',
+                text: 'text-emerald-950'
+              },
+              Weakness: {
+                border: 'border-amber-200/80',
+                bg: 'bg-amber-50/40',
+                badge: 'bg-amber-100 text-amber-800 border-amber-300',
+                text: 'text-amber-950'
+              },
+              Opportunity: {
+                border: 'border-blue-200/80',
+                bg: 'bg-blue-50/40',
+                badge: 'bg-blue-100 text-blue-800 border-blue-300',
+                text: 'text-blue-950'
+              },
+              Threat: {
+                border: 'border-rose-200/80',
+                bg: 'bg-rose-50/40',
+                badge: 'bg-rose-100 text-rose-800 border-rose-300',
+                text: 'text-rose-950'
+              }
+            };
+            const s = styles[category];
+
+            return (
+              <div
+                key={category}
+                className={`rounded-lg border ${s.border} ${s.bg} p-3.5 flex flex-col justify-between shadow-subtle transition-all`}
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-1.5">
+                    <div className="flex items-center gap-2">
+                      <span className={`flex h-6 w-6 items-center justify-center rounded-md font-mono text-xs font-bold border ${s.badge}`}>
+                        {letter}
+                      </span>
+                      <h4 className={`text-xs font-bold uppercase tracking-wider ${s.text}`}>
+                        {category}
+                      </h4>
+                    </div>
+                    <span className="font-mono text-[11px] font-semibold text-text-muted px-2 py-0.5 rounded bg-surface-card border border-border-default">
+                      {items.length} {items.length === 1 ? 'finding' : 'findings'}
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted block mb-1">
+                    {content.scope}
+                  </span>
+                  <p className="text-xs text-text-muted leading-relaxed line-clamp-2">
+                    {content.prompt}
+                  </p>
+                </div>
+
+                {/* Orientation summary / preview */}
+                <div className="mt-3 pt-2.5 border-t border-border-default/60 flex items-center justify-between text-[11px]">
+                  {items.length > 0 ? (
+                    <div className="flex flex-wrap gap-1 items-center overflow-hidden max-h-6">
+                      {items.slice(0, 3).map(item => (
+                        <span
+                          key={item.id}
+                          className="font-mono text-[10px] font-semibold px-1.5 py-0.5 rounded bg-surface-card border border-border-default text-text-default"
+                        >
+                          {item.reference}
+                        </span>
+                      ))}
+                      {items.length > 3 && (
+                        <span className="text-[10px] text-text-muted">
+                          +{items.length - 3} more
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <span className="text-text-muted italic text-[11px]">
+                      No findings recorded yet
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* 2. Professional Unified 2x2 SWOT Analytical Matrix for Detailed Findings */}
         <div className="rounded-lg border border-border-default bg-surface-card overflow-hidden shadow-subtle">
           {/* Row 1 Header: Internal Conditions */}
           <div className="border-b border-border-default bg-surface-subtle px-4 py-2 flex items-center justify-between text-xs font-semibold text-text-default">
@@ -192,11 +286,11 @@ export const AnalysisSynthesis: React.FC<AnalysisSynthesisProps> = ({ data, onCh
   );
 };
 
-const SWOT_ACCENTS: Record<SwotCategory, { dot: string; border: string }> = {
-  Strength: { dot: 'bg-emerald-600', border: 'border-l-2 border-l-emerald-600' },
-  Weakness: { dot: 'bg-amber-600', border: 'border-l-2 border-l-amber-600' },
-  Opportunity: { dot: 'bg-institutional', border: 'border-l-2 border-l-institutional' },
-  Threat: { dot: 'bg-rose-600', border: 'border-l-2 border-l-rose-600' }
+const SWOT_ACCENTS: Record<SwotCategory, { dot: string; border: string; badge: string }> = {
+  Strength: { dot: 'bg-emerald-600', border: 'border-l-2 border-l-emerald-600', badge: 'bg-emerald-50 text-emerald-800 border-emerald-200' },
+  Weakness: { dot: 'bg-amber-600', border: 'border-l-2 border-l-amber-600', badge: 'bg-amber-50 text-amber-800 border-amber-200' },
+  Opportunity: { dot: 'bg-institutional', border: 'border-l-2 border-l-institutional', badge: 'bg-blue-50 text-blue-800 border-blue-200' },
+  Threat: { dot: 'bg-rose-600', border: 'border-l-2 border-l-rose-600', badge: 'bg-rose-50 text-rose-800 border-rose-200' }
 };
 
 function SwotZone({ category, data, onAdd, onUpdate, onDelete }: { category: SwotCategory; data: UnpolProjectData; onAdd: () => void; onUpdate: (id: string, field: 'finding' | 'cbdImplication' | 'verificationNote' | 'confidence', value: string | number | null) => void; onDelete: (id: string) => void }) {
@@ -237,7 +331,7 @@ function SwotZone({ category, data, onAdd, onUpdate, onDelete }: { category: Swo
             return (
               <article key={item.id} className="p-4 flex flex-col gap-3">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="font-mono text-xs font-bold text-text-default bg-surface-subtle border border-border-default px-2 py-0.5 rounded">
+                  <span className={`font-mono text-xs font-bold px-2 py-0.5 rounded border ${accent.badge}`}>
                     {item.reference}
                   </span>
                   <button
@@ -288,13 +382,14 @@ function SwotZone({ category, data, onAdd, onUpdate, onDelete }: { category: Swo
                       item.sourceReferences.map(reference => {
                         const source = candidates.find(candidate => candidate.reference.type === reference.type && candidate.reference.id === reference.id);
                         return (
-                          <span key={`${reference.type}:${reference.id}`} className="rounded-md border border-border-default bg-surface-subtle px-2 py-0.5 text-[11px] font-medium text-text-secondary">
+                          <span key={`${reference.type}:${reference.id}`} className="rounded-md border border-blue-200 bg-blue-50/70 px-2 py-0.5 text-[11px] font-medium text-blue-800">
                             {source?.label ?? `Missing source · ${reference.id}`}
                           </span>
                         );
                       })
                     ) : (
-                      <span className="text-[11px] text-text-muted italic">
+                      <span className="text-[11px] font-medium text-amber-700 flex items-center gap-1.5">
+                        <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
                         Manual synthesis · no supporting source linked
                       </span>
                     )}
@@ -314,21 +409,30 @@ function OptionZone({ type, data, selections, onSelections, onAdd, onUpdate, onD
   const options = data.analysisSynthesis.strategicOptions.filter(item => item.type === type);
   const choices = required.map(category => data.analysisSynthesis.swotFindings.filter(item => item.category === category));
 
+  const optionBadges: Record<StrategicOptionType, string> = {
+    SO: 'bg-blue-50 text-blue-800 border-blue-200',
+    ST: 'bg-amber-50 text-amber-800 border-amber-200',
+    WO: 'bg-teal-50 text-teal-800 border-teal-200',
+    WT: 'bg-rose-50 text-rose-800 border-rose-200'
+  };
+
   return (
     <section className="flex flex-col">
       <header className="border-b border-border-default bg-surface-subtle/50 px-4 py-3 flex items-start justify-between gap-3">
         <div>
-          <div className="flex items-center gap-1.5">
-            <span className="font-mono text-xs font-bold text-institutional">{type}</span>
-            <h5 className="text-xs font-bold text-text-default">{OPTION_CONTENT[type].title}</h5>
-            <span className="font-mono text-xs font-semibold text-text-muted">({options.length})</span>
+          <div className="flex items-center gap-2">
+            <span className={`font-mono text-xs font-bold px-2 py-0.5 rounded border ${optionBadges[type]}`}>
+              {type}
+            </span>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-text-default">
+              {OPTION_CONTENT[type].title}
+            </h4>
           </div>
-          <p className="mt-0.5 text-xs text-text-muted">{OPTION_CONTENT[type].prompt}</p>
+          <p className="mt-1 text-xs leading-relaxed text-text-muted">{OPTION_CONTENT[type].prompt}</p>
         </div>
       </header>
 
-      {/* Creator Controls */}
-      <div className="p-3.5 bg-surface-subtle/25 border-b border-border-default flex flex-col gap-2.5">
+      <div className="p-4 border-b border-border-default bg-surface-subtle/20">
         <div className="grid gap-2 sm:grid-cols-2">
           {required.map((category, index) => (
             <Select
@@ -340,20 +444,13 @@ function OptionZone({ type, data, selections, onSelections, onAdd, onUpdate, onD
                 next[index] = event.target.value;
                 onSelections(next);
               }}
-              options={[
-                { value: '', label: `Choose ${category.toLowerCase()}…` },
-                ...choices[index].map(item => ({
-                  value: item.id,
-                  label: `${item.reference} — ${item.finding || 'Untitled finding'}`
-                }))
-              ]}
+              options={[{ value: '', label: `Choose ${category.toLowerCase()}…` }, ...choices[index].map(item => ({ value: item.id, label: `${item.reference} — ${item.finding || 'Untitled finding'}` }))]}
             />
           ))}
         </div>
         <Button
           size="sm"
-          variant="secondary"
-          className="self-start"
+          className="mt-3"
           onClick={onAdd}
           disabled={!selections[0] || !selections[1]}
         >
@@ -362,19 +459,18 @@ function OptionZone({ type, data, selections, onSelections, onAdd, onUpdate, onD
         </Button>
       </div>
 
-      {/* Structured Option Records */}
       <div className="divide-y divide-border-default flex-1">
         {options.length === 0 ? (
-          <div className="p-4 text-center text-xs italic text-text-muted">
-            No {type} options formulated.
+          <div className="p-6 text-center text-xs italic text-text-muted">
+            No {type} options formulated yet.
           </div>
         ) : (
           options.map(option => (
-            <article key={option.id} className="p-3.5 flex flex-col gap-2.5">
+            <article key={option.id} className="p-4 flex flex-col gap-3">
               <div className="flex items-center justify-between gap-2">
-                <span className="font-mono text-xs font-semibold text-institutional bg-institutional-subtle border border-institutional/20 px-2 py-0.5 rounded">
+                <strong className={`text-xs font-semibold px-2 py-0.5 rounded border font-mono ${optionBadges[type]}`}>
                   {option.reference} · {option.swotFindingIds.map(id => data.analysisSynthesis.swotFindings.find(item => item.id === id)?.reference).filter(Boolean).join(' + ')}
-                </span>
+                </strong>
                 <button
                   type="button"
                   onClick={() => onDelete(option.id)}
@@ -397,9 +493,10 @@ function OptionZone({ type, data, selections, onSelections, onAdd, onUpdate, onD
                 rows={2}
               />
               {!isValidStrategicOptionCombination(option, data.analysisSynthesis.swotFindings) && (
-                <p className="text-xs font-semibold text-amber-700">
-                  Review required: this option no longer has a complete {type} SWOT basis.
-                </p>
+                <div className="rounded-md border border-amber-300 bg-amber-50/70 p-2 text-xs font-medium text-amber-900 flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-amber-600 shrink-0" />
+                  <span>Review required: this option no longer has a complete {type} SWOT basis.</span>
+                </div>
               )}
             </article>
           ))
