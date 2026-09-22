@@ -119,7 +119,7 @@ export const MatrixListView: React.FC<MatrixListViewProps> = ({
                         className={`
                           w-full p-3 rounded-md text-left text-xs font-medium border transition-colors duration-150 motion-reduce:transition-none flex items-center justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring
                           ${selected
-                            ? 'border-institutional bg-institutional-subtle text-institutional font-semibold ring-1 ring-institutional shadow-subtle'
+                            ? 'border-blue-600 bg-blue-50/70 text-blue-900 font-semibold ring-1 ring-blue-600 shadow-subtle'
                             : 'border-border-default hover:bg-surface-hover bg-surface-card text-text-default'
                           }
                         `}
