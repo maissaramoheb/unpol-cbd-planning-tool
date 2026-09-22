@@ -114,7 +114,7 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
                       </span>
                     </div>
                     <span className="font-mono tabular-nums text-[11px] font-medium text-text-muted shrink-0">
-                      Imp: {item.rating.impact}/5
+                      {hasFinding ? `Imp: ${item.rating.impact}/5` : 'Not assessed'}
                     </span>
                   </div>
                   <p className="text-xs text-text-muted line-clamp-1 leading-snug">
@@ -141,7 +141,9 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
                 </div>
                 <div className="shrink-0 flex items-center gap-2">
                   <span className="font-mono tabular-nums text-xs font-semibold bg-surface-subtle border border-border-default px-2 py-0.5 rounded text-text-secondary">
-                    Pressure: {activeItem.rating.impact * activeItem.rating.urgency}/25
+                    {activeItem.finding.trim() !== ''
+                      ? `Pressure: ${activeItem.rating.impact * activeItem.rating.urgency}/25`
+                      : 'Pressure: Not assessed'}
                   </span>
                 </div>
               </div>
@@ -185,10 +187,22 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
 
               {/* Sliders Grid */}
               <div className="mt-2 pt-4 border-t border-border-default">
-                <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider mb-3">
-                  Analytical Ratings (1-5 Scale)
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider">
+                    Analytical Ratings (1-5 Scale)
+                  </h4>
+                  {activeItem.finding.trim() === '' && (
+                    <span className="text-[11px] font-medium text-text-muted bg-surface-subtle border border-border-default px-2 py-0.5 rounded">
+                      Not assessed
+                    </span>
+                  )}
+                </div>
+                {activeItem.finding.trim() === '' && (
+                  <p className="text-xs text-text-muted mb-3 italic">
+                    Ratings reflect technical baseline values. Record an analyst finding above to activate completed factor analysis.
+                  </p>
+                )}
+                <div className={`grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 ${activeItem.finding.trim() === '' ? 'opacity-60' : ''}`}>
                   <Slider
                     label="Impact on Policing Reforms"
                     value={activeItem.rating.impact}
