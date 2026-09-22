@@ -1,5 +1,6 @@
 import React, { useId } from 'react';
 import { MissionExplorerEntry } from '../types/explorer';
+import { resolvePlanningContext } from '../lib/planningContext';
 import { Badge } from '../ui/Badge';
 
 interface MissionExplorerListProps {
@@ -64,6 +65,22 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
       label: 'Unofficial starter planning profile',
       variant: 'blue' as const
     };
+  };
+
+  const getVerificationBadge = (entry: MissionExplorerEntry) => {
+    const ctx = resolvePlanningContext(entry.id);
+    const vStatus = ctx?.verificationStatus ?? (entry.isFictionalScenario ? 'training-only' : 'review-required');
+    switch (vStatus) {
+      case 'current-reference':
+        return { label: 'Verified reference', variant: 'green' as const };
+      case 'review-required':
+        return { label: 'Review required', variant: 'amber' as const };
+      case 'training-only':
+        return { label: 'Training scenario', variant: 'slate' as const };
+      case 'custom':
+      default:
+        return { label: 'Custom', variant: 'blue' as const };
+    }
   };
 
   return (
@@ -163,7 +180,8 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
           entries.map((entry) => {
             const isSelected = selectedEntryId === entry.id;
             const isHovered = hoveredEntryId === entry.id;
-            const badge = getCoverageBadge(entry);
+            const coverageBadge = getCoverageBadge(entry);
+            const verificationBadge = getVerificationBadge(entry);
             return (
               <button
                 key={entry.id}
@@ -185,14 +203,17 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
                 `}
               >
                 <div className="flex-1 flex flex-col gap-1">
-                  <div className="flex flex-wrap items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-1.5">
                     <span className="text-xs font-black text-slate-900 uppercase tracking-wide">
                       {entry.missionAcronym}
                     </span>
                     <span className="text-[9px] text-slate-500 font-extrabold uppercase">|</span>
                     <span className="text-xs font-semibold text-slate-700">{entry.country}</span>
-                    <Badge variant={badge.variant} className="text-[10px] py-0.5 leading-none">
-                      {badge.label}
+                    <Badge variant={coverageBadge.variant} className="text-[10px] py-0.5 leading-none">
+                      {coverageBadge.label}
+                    </Badge>
+                    <Badge variant={verificationBadge.variant} className="text-[10px] py-0.5 leading-none">
+                      {verificationBadge.label}
                     </Badge>
                   </div>
                   <h4 className="text-xs text-slate-600 leading-tight font-medium">

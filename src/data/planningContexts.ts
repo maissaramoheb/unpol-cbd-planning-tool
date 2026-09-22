@@ -94,9 +94,18 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
       ]
     },
     reference: {
-      mandateSummary: 'United Nations Mission for the Referendum in Western Sahara.',
-      policeRelevance: 'Limited civilian police component; mandate focuses on monitoring the ceasefire and organizing a referendum if agreed.',
-      hostStatePolice: 'Host-state police or relevant security-sector institution to verify',
+      mandateSummary: {
+        text: 'United Nations Mission for the Referendum in Western Sahara.',
+        sourceIds: ['src-un-dpko-minurso']
+      },
+      policeRelevance: {
+        text: 'Limited civilian police component; mandate focuses on monitoring the ceasefire and organizing a referendum if agreed.',
+        sourceIds: []
+      },
+      hostStatePolice: {
+        text: 'Host-state police or relevant security-sector institution to verify',
+        sourceIds: []
+      },
       planningThemes: ['Mandate verification', 'Police component relevance', 'Stakeholder mapping', 'Evidence gaps']
     },
     planningPrompts: {
@@ -152,9 +161,18 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
       ]
     },
     reference: {
-      mandateSummary: 'United Nations Multidimensional Integrated Stabilization Mission in the Central African Republic.',
-      policeRelevance: 'Protection of civilians, support to extension of state authority, and capacity development of national police and gendarmerie.',
-      hostStatePolice: 'Police Nationale Centrafricaine / Gendarmerie Nationale (verify current structure)',
+      mandateSummary: {
+        text: 'United Nations Multidimensional Integrated Stabilization Mission in the Central African Republic.',
+        sourceIds: ['src-un-dpko-minusca']
+      },
+      policeRelevance: {
+        text: 'Protection of civilians, support to extension of state authority, and capacity development of national police and gendarmerie.',
+        sourceIds: []
+      },
+      hostStatePolice: {
+        text: 'Police Nationale Centrafricaine / Gendarmerie Nationale (verify current structure)',
+        sourceIds: []
+      },
       planningThemes: ['Mandate verification', 'Police component relevance', 'Stakeholder mapping', 'Evidence gaps']
     },
     planningPrompts: {
@@ -200,7 +218,7 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
           url: PEACEKEEPING_SOURCE_URL,
           publicationDate: '2023',
           reviewedDate: null,
-          supports: ['mandateSummary', 'planningThemes']
+          supports: ['mandateSummary', 'planningThemes', 'hostStatePolice']
         }
       ],
       profileLastReviewed: null,
@@ -210,9 +228,18 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
       ]
     },
     reference: {
-      mandateSummary: 'Protection of civilians, support to security sector reform, and transition/disengagement arrangements.',
-      policeRelevance: 'Support to Police Nationale Congolaise (PNC) in public order management, human rights compliance, and progressive capacity handover.',
-      hostStatePolice: 'Police Nationale Congolaise (PNC)',
+      mandateSummary: {
+        text: 'Protection of civilians, support to security sector reform, and transition/disengagement arrangements.',
+        sourceIds: ['src-unscr-2717']
+      },
+      policeRelevance: {
+        text: 'Support to Police Nationale Congolaise (PNC) in public order management, human rights compliance, and progressive capacity handover.',
+        sourceIds: ['src-unscr-2717']
+      },
+      hostStatePolice: {
+        text: 'Police Nationale Congolaise (PNC)',
+        sourceIds: ['src-unscr-2717']
+      },
       planningThemes: ['Transition Strategy', 'Crowd Control Standards', 'Provincial Police Advisors']
     },
     planningPrompts: {
@@ -308,9 +335,18 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
       ]
     },
     reference: {
-      mandateSummary: 'United Nations Disengagement Observer Force in the Golan.',
-      policeRelevance: 'Military observer force; verify if any civilian police or rule-of-law liaison roles exist.',
-      hostStatePolice: 'Host-state police or relevant security-sector institution to verify',
+      mandateSummary: {
+        text: 'United Nations Disengagement Observer Force in the Golan.',
+        sourceIds: ['src-un-dpko-undof']
+      },
+      policeRelevance: {
+        text: 'Military observer force; verify if any civilian police or rule-of-law liaison roles exist.',
+        sourceIds: []
+      },
+      hostStatePolice: {
+        text: 'Host-state police or relevant security-sector institution to verify',
+        sourceIds: []
+      },
       planningThemes: ['Mandate verification', 'Police component relevance', 'Stakeholder mapping', 'Evidence gaps']
     },
     planningPrompts: {
@@ -366,9 +402,18 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
       ]
     },
     reference: {
-      mandateSummary: 'United Nations Peacekeeping Force in Cyprus.',
-      policeRelevance: 'UNPOL component maintains liaison and fosters cooperation between Greek Cypriot and Turkish Cypriot police forces in the buffer zone.',
-      hostStatePolice: 'Cyprus Police / Turkish Cypriot police elements (verify liaison status)',
+      mandateSummary: {
+        text: 'United Nations Peacekeeping Force in Cyprus.',
+        sourceIds: ['src-un-dpko-unficyp']
+      },
+      policeRelevance: {
+        text: 'UNPOL component maintains liaison and fosters cooperation between Greek Cypriot and Turkish Cypriot police forces in the buffer zone.',
+        sourceIds: ['src-un-dpko-unficyp']
+      },
+      hostStatePolice: {
+        text: 'Cyprus Police / Turkish Cypriot police elements (verify liaison status)',
+        sourceIds: []
+      },
       planningThemes: ['Mandate verification', 'Police component relevance', 'Stakeholder mapping', 'Evidence gaps']
     },
     planningPrompts: {
@@ -424,9 +469,18 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
       ]
     },
     reference: {
-      mandateSummary: 'United Nations Interim Force in Lebanon.',
-      policeRelevance: 'Primary focus is military cessation of hostilities and support to Lebanese Armed Forces (LAF); civilian police relevance to verify.',
-      hostStatePolice: 'Internal Security Forces (ISF) / LAF liaison (verify relevance)',
+      mandateSummary: {
+        text: 'United Nations Interim Force in Lebanon.',
+        sourceIds: ['src-un-dpko-unifil']
+      },
+      policeRelevance: {
+        text: 'Primary focus is military cessation of hostilities and support to Lebanese Armed Forces (LAF); civilian police relevance to verify.',
+        sourceIds: []
+      },
+      hostStatePolice: {
+        text: 'Internal Security Forces (ISF) / LAF liaison (verify relevance)',
+        sourceIds: []
+      },
       planningThemes: ['Mandate verification', 'Police component relevance', 'Stakeholder mapping', 'Evidence gaps']
     },
     planningPrompts: {
@@ -472,7 +526,7 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
           url: PEACEKEEPING_SOURCE_URL,
           publicationDate: '2011',
           reviewedDate: null,
-          supports: ['mandateSummary', 'planningThemes']
+          supports: ['mandateSummary', 'planningThemes', 'policeRelevance', 'hostStatePolice']
         }
       ],
       profileLastReviewed: null,
@@ -482,9 +536,18 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
       ]
     },
     reference: {
-      mandateSummary: 'Demilitarization of Abyei Area, protection of civilians, and support to the establishment of the Abyei Joint Police Service.',
-      policeRelevance: 'Facilitating local dispute resolution, community policing, and technical support for joint police arrangements.',
-      hostStatePolice: 'Abyei Joint Police Service (proposed) / Local police elements',
+      mandateSummary: {
+        text: 'Demilitarization of Abyei Area, protection of civilians, and support to the establishment of the Abyei Joint Police Service.',
+        sourceIds: ['src-unscr-1990']
+      },
+      policeRelevance: {
+        text: 'Facilitating local dispute resolution, community policing, and technical support for joint police arrangements.',
+        sourceIds: ['src-unscr-1990']
+      },
+      hostStatePolice: {
+        text: 'Abyei Joint Police Service (proposed) / Local police elements',
+        sourceIds: ['src-unscr-1990']
+      },
       planningThemes: ['Disputed Border Policing', 'Community Peace Liaison Panels', 'Inter-communal Disputes']
     },
     planningPrompts: {
@@ -580,9 +643,18 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
       ]
     },
     reference: {
-      mandateSummary: 'United Nations Interim Administration Mission in Kosovo (UNSCR 1244).',
-      policeRelevance: 'Rule-of-law monitoring, human rights reporting, and INTERPOL liaison coordination.',
-      hostStatePolice: 'Kosovo Police (KP) / Rule-of-law counterparts',
+      mandateSummary: {
+        text: 'United Nations Interim Administration Mission in Kosovo (UNSCR 1244).',
+        sourceIds: ['src-un-dpko-unmik']
+      },
+      policeRelevance: {
+        text: 'Rule-of-law monitoring, human rights reporting, and INTERPOL liaison coordination.',
+        sourceIds: ['src-un-dpko-unmik']
+      },
+      hostStatePolice: {
+        text: 'Kosovo Police (KP) / Rule-of-law counterparts',
+        sourceIds: []
+      },
       planningThemes: ['Mandate verification', 'Police component relevance', 'Stakeholder mapping', 'Evidence gaps']
     },
     planningPrompts: {
@@ -628,7 +700,7 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
           url: PEACEKEEPING_SOURCE_URL,
           publicationDate: '2024',
           reviewedDate: null,
-          supports: ['mandateSummary', 'planningThemes']
+          supports: ['mandateSummary', 'planningThemes', 'policeRelevance', 'hostStatePolice']
         }
       ],
       profileLastReviewed: null,
@@ -638,9 +710,18 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
       ]
     },
     reference: {
-      mandateSummary: 'Protection of civilians, human rights monitoring, and support for the implementation of the Revitalized Peace Agreement.',
-      policeRelevance: 'Technical assistance and advisory support to South Sudan National Police Service (SSNPS) in human rights, detention monitoring, and community-oriented policing.',
-      hostStatePolice: 'South Sudan National Police Service (SSNPS)',
+      mandateSummary: {
+        text: 'Protection of civilians, human rights monitoring, and support for the implementation of the Revitalized Peace Agreement.',
+        sourceIds: ['src-unscr-2729']
+      },
+      policeRelevance: {
+        text: 'Technical assistance and advisory support to South Sudan National Police Service (SSNPS) in human rights, detention monitoring, and community-oriented policing.',
+        sourceIds: ['src-unscr-2729']
+      },
+      hostStatePolice: {
+        text: 'South Sudan National Police Service (SSNPS)',
+        sourceIds: ['src-unscr-2729']
+      },
       planningThemes: ['National Police Reform', 'Human Rights Due Diligence', 'Detention Accountability']
     },
     planningPrompts: {
@@ -736,9 +817,18 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
       ]
     },
     reference: {
-      mandateSummary: 'United Nations Military Observer Group in India and Pakistan.',
-      policeRelevance: 'Military observer mission; no active civilian police development mandate.',
-      hostStatePolice: 'Host-state police or relevant security-sector institution to verify',
+      mandateSummary: {
+        text: 'United Nations Military Observer Group in India and Pakistan.',
+        sourceIds: ['src-un-dpko-unmogip']
+      },
+      policeRelevance: {
+        text: 'Military observer mission; no active civilian police development mandate.',
+        sourceIds: []
+      },
+      hostStatePolice: {
+        text: 'Host-state police or relevant security-sector institution to verify',
+        sourceIds: []
+      },
       planningThemes: ['Mandate verification', 'Police component relevance', 'Stakeholder mapping', 'Evidence gaps']
     },
     planningPrompts: {
@@ -794,9 +884,18 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
       ]
     },
     reference: {
-      mandateSummary: 'United Nations Truce Supervision Organization.',
-      policeRelevance: 'Military observer mission assisting UN operations across the Middle East; no civilian police advisory component.',
-      hostStatePolice: 'Host-state police or relevant security-sector institution to verify',
+      mandateSummary: {
+        text: 'United Nations Truce Supervision Organization.',
+        sourceIds: ['src-un-dpko-untso']
+      },
+      policeRelevance: {
+        text: 'Military observer mission assisting UN operations across the Middle East; no civilian police advisory component.',
+        sourceIds: []
+      },
+      hostStatePolice: {
+        text: 'Host-state police or relevant security-sector institution to verify',
+        sourceIds: []
+      },
       planningThemes: ['Mandate verification', 'Police component relevance', 'Stakeholder mapping', 'Evidence gaps']
     },
     planningPrompts: {
@@ -842,7 +941,7 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
           url: 'https://dppa.un.org/en/factsheet/untmis-somalia',
           publicationDate: '2024-10-30',
           reviewedDate: '2026-06-15',
-          supports: ['mandateSummary', 'planningThemes']
+          supports: ['mandateSummary', 'planningThemes', 'policeRelevance']
         }
       ],
       profileLastReviewed: '2026-06-15',
@@ -852,9 +951,18 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
       ]
     },
     reference: {
-      mandateSummary: 'Support state-building, federal policing architecture, and transition coordination succeeding UNSOM.',
-      policeRelevance: 'Strategic police advisory support to the Federal Government of Somalia and Federal Member States on federal-state policing models.',
-      hostStatePolice: 'Federal and member-state police counterparts (verify current names and mandates)',
+      mandateSummary: {
+        text: 'Support state-building, federal policing architecture, and transition coordination succeeding UNSOM.',
+        sourceIds: ['src-un-dppa-untmis']
+      },
+      policeRelevance: {
+        text: 'Strategic police advisory support to the Federal Government of Somalia and Federal Member States on federal-state policing models.',
+        sourceIds: ['src-un-dppa-untmis']
+      },
+      hostStatePolice: {
+        text: 'Federal and member-state police counterparts (verify current names and mandates)',
+        sourceIds: []
+      },
       planningThemes: ['Federal-State Police Coordination', 'Transition Mandate Verification', 'Institutional Security Reform']
     },
     planningPrompts: {
@@ -940,7 +1048,7 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
           url: 'https://dppa.un.org/en/factsheet/binuh-haiti',
           publicationDate: '2023',
           reviewedDate: null,
-          supports: ['mandateSummary', 'planningThemes']
+          supports: ['mandateSummary', 'planningThemes', 'policeRelevance', 'hostStatePolice']
         }
       ],
       profileLastReviewed: null,
@@ -950,9 +1058,18 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
       ]
     },
     reference: {
-      mandateSummary: 'Advisory support to Haitian authorities on political dialogue, governance, police reform, and human rights.',
-      policeRelevance: 'Strategic advice and mentoring to Police Nationale d’Haïti (PNH) on anti-gang operations, vetting, and internal affairs.',
-      hostStatePolice: 'Police Nationale d’Haïti (PNH)',
+      mandateSummary: {
+        text: 'Advisory support to Haitian authorities on political dialogue, governance, police reform, and human rights.',
+        sourceIds: ['src-un-dppa-binuh']
+      },
+      policeRelevance: {
+        text: 'Strategic advice and mentoring to Police Nationale d’Haïti (PNH) on anti-gang operations, vetting, and internal affairs.',
+        sourceIds: ['src-un-dppa-binuh']
+      },
+      hostStatePolice: {
+        text: 'Police Nationale d’Haïti (PNH)',
+        sourceIds: ['src-un-dppa-binuh']
+      },
       planningThemes: ['Anti-Gang Operational Advice', 'Urban Security Stabilization', 'Internal Police Oversight']
     },
     planningPrompts: {
@@ -1032,9 +1149,18 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
       ]
     },
     reference: {
-      mandateSummary: 'This fictional scenario is designed to train officers on post-conflict security sector reform (SSR), focusing on the integration of former combatants and institutional restructuring.',
-      policeRelevance: 'Designing demobilization integration, vetting frameworks, and new regional police commands.',
-      hostStatePolice: 'Solaria Federal Police (SFP)',
+      mandateSummary: {
+        text: 'This fictional scenario is designed to train officers on post-conflict security sector reform (SSR), focusing on the integration of former combatants and institutional restructuring.',
+        sourceIds: []
+      },
+      policeRelevance: {
+        text: 'Designing demobilization integration, vetting frameworks, and new regional police commands.',
+        sourceIds: []
+      },
+      hostStatePolice: {
+        text: 'Solaria Federal Police (SFP)',
+        sourceIds: []
+      },
       planningThemes: ['Vetting & Integrity', 'Demobilization Integration', 'Institutional Capacity Transfer']
     },
     planningPrompts: {
@@ -1119,9 +1245,18 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
       ]
     },
     reference: {
-      mandateSummary: 'This fictional scenario focuses on building community policing capacity and internal accountability within a police force suffering from systemic corruption.',
-      policeRelevance: 'Formulating localized community safety panels to address systemic corruption and low public trust.',
-      hostStatePolice: 'Altera Provincial Police Force (APPF)',
+      mandateSummary: {
+        text: 'This fictional scenario focuses on building community policing capacity and internal accountability within a police force suffering from systemic corruption.',
+        sourceIds: []
+      },
+      policeRelevance: {
+        text: 'Formulating localized community safety panels to address systemic corruption and low public trust.',
+        sourceIds: []
+      },
+      hostStatePolice: {
+        text: 'Altera Provincial Police Force (APPF)',
+        sourceIds: []
+      },
       planningThemes: ['Community-Oriented Policing', 'Internal Anti-Corruption', 'Civilian Oversight']
     },
     planningPrompts: {
@@ -1206,9 +1341,18 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
       ]
     },
     reference: {
-      mandateSummary: 'This fictional scenario focuses on structural detention oversight, prevention of torture, and coordination with local magistrate courts to reduce pre-trial delays.',
-      policeRelevance: 'Overhauling police custody registries, detention center oversight, and magistrate review procedures.',
-      hostStatePolice: 'Maris Gendarmerie and Prison Service',
+      mandateSummary: {
+        text: 'This fictional scenario focuses on structural detention oversight, prevention of torture, and coordination with local magistrate courts to reduce pre-trial delays.',
+        sourceIds: []
+      },
+      policeRelevance: {
+        text: 'Overhauling police custody registries, detention center oversight, and magistrate review procedures.',
+        sourceIds: []
+      },
+      hostStatePolice: {
+        text: 'Maris Gendarmerie and Prison Service',
+        sourceIds: []
+      },
       planningThemes: ['Nelson Mandela Rules', 'Custody Registry Oversight', 'Magistrate Court Liaison']
     },
     planningPrompts: {
@@ -1293,9 +1437,18 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
       ]
     },
     reference: {
-      mandateSummary: 'This fictional training scenario addresses structural barriers to reporting sexual and gender-based violence (SGBV) and advocates for gender diversity within the host-state police.',
-      policeRelevance: 'Operationalizing Gender Desk units, SGBV referral chains, and improving female recruitment.',
-      hostStatePolice: 'Vespera National Police (VNP) / Gender Protection Units',
+      mandateSummary: {
+        text: 'This fictional training scenario addresses structural barriers to reporting sexual and gender-based violence (SGBV) and advocates for gender diversity within the host-state police.',
+        sourceIds: []
+      },
+      policeRelevance: {
+        text: 'Operationalizing Gender Desk units, SGBV referral chains, and improving female recruitment.',
+        sourceIds: []
+      },
+      hostStatePolice: {
+        text: 'Vespera National Police (VNP) / Gender Protection Units',
+        sourceIds: []
+      },
       planningThemes: ['Gender Protection Desks', 'SGBV Referral Chain', 'Recruitment Diversity']
     },
     planningPrompts: {
@@ -1380,9 +1533,18 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
       ]
     },
     reference: {
-      mandateSummary: 'This fictional scenario focuses on building early-warning systems, community indicators, and defensive de-escalation protocols to prevent local political tensions from escalating into violence.',
-      policeRelevance: 'Establishing early-warning liaison channels, community monitoring networks, and crisis response SOPs.',
-      hostStatePolice: 'Meridia State Constabulary',
+      mandateSummary: {
+        text: 'This fictional scenario focuses on building early-warning systems, community indicators, and defensive de-escalation protocols to prevent local political tensions from escalating into violence.',
+        sourceIds: []
+      },
+      policeRelevance: {
+        text: 'Establishing early-warning liaison channels, community monitoring networks, and crisis response SOPs.',
+        sourceIds: []
+      },
+      hostStatePolice: {
+        text: 'Meridia State Constabulary',
+        sourceIds: []
+      },
       planningThemes: ['Conflict Early Warning', 'Community Liaison Networks', 'Crisis De-escalation SOPs']
     },
     planningPrompts: {

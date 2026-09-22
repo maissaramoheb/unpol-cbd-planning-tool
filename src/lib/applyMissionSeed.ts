@@ -31,8 +31,8 @@ export function initializeFromContext(context: PlanningContext): UnpolProjectDat
     region: context.identity.region,
     mandateEnvironment: isFictional
       ? (context.scenarioNarrative?.mandateEnvironment ?? '')
-      : context.reference.mandateSummary,
-    hostStatePolice: context.reference.hostStatePolice,
+      : context.reference.mandateSummary.text,
+    hostStatePolice: context.reference.hostStatePolice.text,
     conflictContext: isFictional
       ? (context.scenarioNarrative?.conflictContext ?? '')
       : '',
@@ -137,9 +137,18 @@ export function applyMissionSeed(entry: MissionExplorerEntry): UnpolProjectData 
       limitations: entry.sourceNote ? [entry.sourceNote] : []
     },
     reference: {
-      mandateSummary: entry.starterProfile?.mandateEnvironment || '',
-      policeRelevance: '',
-      hostStatePolice: entry.hostStatePoliceInstitution || '',
+      mandateSummary: {
+        text: entry.starterProfile?.mandateEnvironment || '',
+        sourceIds: entry.sourceUrl ? [`src-${entry.id}`] : []
+      },
+      policeRelevance: {
+        text: '',
+        sourceIds: []
+      },
+      hostStatePolice: {
+        text: entry.hostStatePoliceInstitution || '',
+        sourceIds: []
+      },
       planningThemes: entry.planningThemes || []
     },
     planningPrompts: {

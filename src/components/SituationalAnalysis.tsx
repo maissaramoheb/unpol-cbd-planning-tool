@@ -8,6 +8,7 @@ import { TextArea } from '../ui/TextArea';
 import { Badge } from '../ui/Badge';
 import { EvidenceLogEditor } from './EvidenceLogEditor';
 import { Activity, ShieldAlert, Award, Compass, Eye, Globe, Scale } from 'lucide-react';
+import { resolvePlanningContext } from '../lib/planningContext';
 import { StageLead } from './StageLead';
 import { NextStepCue } from './Guidance';
 import { NEXT_STEP_CUES } from '../lib/guidance';
@@ -147,6 +148,39 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
                   </span>
                 </div>
               </div>
+
+              {/* Context Verification Cue */}
+              {(() => {
+                const ctx = resolvePlanningContext(data.profile.templateId);
+                const cue = ctx?.planningPrompts?.pestelsPrompts?.[selectedId];
+                if (!cue) return null;
+                return (
+                  <div className="rounded-xl border border-blue-200 bg-blue-50/50 p-3.5 flex flex-col gap-1.5 text-xs">
+                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                      <div className="flex items-center gap-1.5">
+                        <Compass size={14} className="text-blue-700 shrink-0" />
+                        <span className="font-bold text-blue-950 uppercase tracking-wide">
+                          Context Verification Cue — {ctx?.identity.missionAcronym || ctx?.identity.countryArea}
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-semibold text-slate-500 bg-white border border-blue-200 px-1.5 py-0.2 rounded">
+                        Investigation Prompt
+                      </span>
+                    </div>
+                    <p className="text-slate-800 leading-relaxed font-medium">
+                      {cue.prompt}
+                    </p>
+                    {cue.whyPrompt && (
+                      <p className="text-[11px] text-slate-600 italic">
+                        <strong>Why this matters:</strong> {cue.whyPrompt}
+                      </p>
+                    )}
+                    <div className="text-[10px] text-slate-500 pt-1 border-t border-blue-100 flex items-center justify-between">
+                      <span>Context prompt for investigation — not an assessed finding. Record your diagnostic finding below.</span>
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Guided Manual Inputs */}
               <TextArea

@@ -1,5 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { MissionExplorerEntry } from '../types/explorer';
+import { UnpolProjectData } from '../types';
 import { defaultExplorerSeeds, PEACEKEEPING_REFERENCE_NOTICE } from '../data/explorerSeeds';
 import { MissionExplorerMap } from './MissionExplorerMap';
 import { MissionExplorerList } from './MissionExplorerList';
@@ -7,14 +8,20 @@ import { MissionExplorerPanel } from './MissionExplorerPanel';
 import { Button } from '../ui/Button';
 import { AlertTriangle, Globe, List, X } from 'lucide-react';
 import { filterMissionExplorerEntries } from '../lib/explorerFilters';
+import { hasMeaningfulWork } from '../lib/planningContext';
 import { useDialogA11y } from '../ui/useDialogA11y';
 
 interface MissionExplorerProps {
+  currentData?: UnpolProjectData | null;
   onUseProfile: (entry: MissionExplorerEntry) => void;
   onClose: () => void;
 }
 
-export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, onClose }) => {
+export const MissionExplorer: React.FC<MissionExplorerProps> = ({
+  currentData,
+  onUseProfile,
+  onClose
+}) => {
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -29,6 +36,16 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
   const [selectedEntryId, setSelectedEntryId] = useState<string | null>(null);
   const [hoveredEntryId, setHoveredEntryId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'map' | 'list'>('list');
+  const [pendingEntry, setPendingEntry] = useState<MissionExplorerEntry | null>(null);
+
+  const hasExistingWork = hasMeaningfulWork(currentData);
+
+  const handleConfirmStartPlan = () => {
+    if (pendingEntry) {
+      onUseProfile(pendingEntry);
+      setPendingEntry(null);
+    }
+  };
 
   // Filter States
   const [searchQuery, setSearchQuery] = useState('');
@@ -189,12 +206,115 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({ onUseProfile, 
           <div className="lg:col-span-1 h-full min-h-[320px]">
             <MissionExplorerPanel
               entry={selectedEntry}
-              onUseProfile={onUseProfile}
+              onUseProfile={(entry) => setPendingEntry(entry)}
               onClearSelection={() => setSelectedEntryId(null)}
             />
           </div>
         </div>
       </div>
+
+      {/* Safe Initialization Confirmation Modal */}
+      {pendingEntry && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="confirm-plan-dialog-title"
+          aria-describedby="confirm-plan-dialog-desc"
+          className="fixed inset-0 z-60 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4"
+        >
+          <div className="w-full max-w-md bg-white rounded-2xl border border-slate-200 shadow-2xl p-6 flex flex-col gap-4">
+            {hasExistingWork ? (
+              <>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-700 shrink-0">
+                    <AlertTriangle size={20} />
+                  </div>
+                  <div>
+                    <h3 id="confirm-plan-dialog-title" className="text-sm font-black text-slate-900">
+                      Existing Plan Detected
+                    </h3>
+                    <span className="text-xs text-amber-800 font-semibold">
+                      Current analytical work will be replaced
+                    </span>
+                  </div>
+                </div>
+
+                <div id="confirm-plan-dialog-desc" className="text-xs text-slate-700 leading-relaxed bg-amber-50/70 border border-amber-200 rounded-xl p-3 space-y-2">
+                  <p>
+                    Your current workspace contains recorded analyst findings, stakeholder assessments, or CBD planning data.
+                  </p>
+                  <p className="font-semibold text-amber-950">
+                    Starting a new plan from <strong>{pendingEntry.missionAcronym || pendingEntry.missionName}</strong> will initialize a fresh workspace and replace your current data.
+                  </p>
+                  <p className="text-[11px] text-amber-900 italic">
+                    Export or save your current plan first if you need to retain it.
+                  </p>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                  <Button
+                    variant="tertiary"
+                    size="sm"
+                    onClick={() => setPendingEntry(null)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    className="bg-amber-600 hover:bg-amber-700 text-white font-bold"
+                    onClick={handleConfirmStartPlan}
+                  >
+                    Replace Workspace & Start Plan
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center text-blue-700 shrink-0">
+                    <Globe size={20} />
+                  </div>
+                  <div>
+                    <h3 id="confirm-plan-dialog-title" className="text-sm font-black text-slate-900">
+                      Start Plan from {pendingEntry.missionAcronym || pendingEntry.missionName}?
+                    </h3>
+                    <span className="text-xs text-slate-500 font-medium">
+                      {pendingEntry.country} · {pendingEntry.missionType}
+                    </span>
+                  </div>
+                </div>
+
+                <div id="confirm-plan-dialog-desc" className="text-xs text-slate-600 leading-relaxed bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2">
+                  <p>
+                    This will set up your workspace profile with reference metadata from <strong>{pendingEntry.missionName}</strong> and provide planning prompts for your investigation.
+                  </p>
+                  <p className="font-medium text-slate-800">
+                    Stage findings, ratings, stakeholders, and CBD matrices will remain blank for your analysis.
+                  </p>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                  <Button
+                    variant="tertiary"
+                    size="sm"
+                    onClick={() => setPendingEntry(null)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={handleConfirmStartPlan}
+                  >
+                    Start New Plan
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

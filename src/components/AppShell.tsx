@@ -199,6 +199,7 @@ export const AppShell: React.FC = () => {
         return (
           <StakeholderMapping
             stakeholders={data.stakeholders}
+            templateId={data.profile.templateId}
             onAdd={handleAddStakeholder}
             onUpdate={handleUpdateStakeholder}
             onDelete={handleDeleteStakeholder}
@@ -319,6 +320,7 @@ export const AppShell: React.FC = () => {
 
       {isExplorerOpen && (
         <MissionExplorer
+          currentData={data}
           onUseProfile={(entry) => {
             const seeded = applyMissionSeed(entry);
             setData(seeded);

@@ -5,13 +5,15 @@ import { TextArea } from '../ui/TextArea';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { EvidenceLogEditor } from './EvidenceLogEditor';
-import { Plus, Trash2, User } from 'lucide-react';
+import { Plus, Trash2, User, Compass, Check, ChevronDown, ChevronUp } from 'lucide-react';
+import { resolvePlanningContext } from '../lib/planningContext';
 import { NextStepCue } from './Guidance';
 import { StageLead } from './StageLead';
 import { NEXT_STEP_CUES } from '../lib/guidance';
 
 interface StakeholderMappingProps {
   stakeholders: Stakeholder[];
+  templateId?: string;
   onAdd: (stakeholder: Stakeholder) => void;
   onUpdate: (stakeholder: Stakeholder) => void;
   onDelete: (id: string) => void;
@@ -58,6 +60,7 @@ const DEFAULT_CBD_AREAS = [
 
 export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
   stakeholders,
+  templateId,
   onAdd,
   onUpdate,
   onDelete,
@@ -65,7 +68,12 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
   onPrev
 }) => {
   const [selectedId, setSelectedId] = useState<string>(stakeholders[0]?.id || '');
+  const [isContextDrawerOpen, setIsContextDrawerOpen] = useState(false);
   const activeStakeholder = stakeholders.find(s => s.id === selectedId);
+
+  const context = resolvePlanningContext(templateId);
+  const candidatePrompts = context?.planningPrompts?.stakeholderPrompts ?? [];
+  const candidateCategories = context?.planningPrompts?.suggestedStakeholderCategories ?? [];
 
   const getPositionBadge = (pos: StakeholderPosition) => {
     switch (pos) {
@@ -151,6 +159,98 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
               Add Actor
             </Button>
           </div>
+
+          {/* Contextual Actors to Verify Drawer */}
+          {context && (candidatePrompts.length > 0 || candidateCategories.length > 0) && (
+            <div className="border-b border-blue-200 bg-blue-50/50">
+              <button
+                type="button"
+                onClick={() => setIsContextDrawerOpen((prev) => !prev)}
+                className="w-full px-3.5 py-2.5 flex items-center justify-between text-left hover:bg-blue-100/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              >
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <Compass size={14} className="text-blue-700 shrink-0" />
+                  <span className="text-xs font-bold text-blue-950 truncate">
+                    Contextual Actors to Verify
+                  </span>
+                  <span className="text-[10px] font-semibold bg-white border border-blue-200 px-1.5 py-0.2 rounded text-blue-800">
+                    {context.identity.missionAcronym || context.identity.countryArea}
+                  </span>
+                </div>
+                {isContextDrawerOpen ? (
+                  <ChevronUp size={14} className="text-blue-700 shrink-0" />
+                ) : (
+                  <ChevronDown size={14} className="text-blue-700 shrink-0" />
+                )}
+              </button>
+
+              {isContextDrawerOpen && (
+                <div className="p-3 bg-white/95 border-t border-blue-200/80 flex flex-col gap-2.5 text-xs max-h-64 overflow-y-auto">
+                  <p className="text-[11px] text-slate-600 leading-relaxed italic">
+                    Candidate actors to verify in the field. Adding an actor pre-fills name and category only; ratings and posture start unassessed.
+                  </p>
+
+                  {candidatePrompts.map((promptGroup, gIdx) => (
+                    <div key={gIdx} className="flex flex-col gap-1.5 border-t border-slate-100 pt-1.5 first:border-t-0 first:pt-0">
+                      <span className="font-bold text-slate-800 text-[11px]">{promptGroup.category}</span>
+                      {promptGroup.suggestedStakeholders && promptGroup.suggestedStakeholders.length > 0 ? (
+                        <div className="flex flex-col gap-1">
+                          {promptGroup.suggestedStakeholders.map((actorName, aIdx) => {
+                            const isAlreadyAdded = stakeholders.some(
+                              (s) => s.name.trim().toLowerCase() === actorName.trim().toLowerCase()
+                            );
+                            return (
+                              <div key={aIdx} className="flex items-center justify-between gap-1.5 py-1 px-2 rounded bg-slate-50 border border-slate-200">
+                                <span className="text-xs text-slate-800 font-medium truncate">{actorName}</span>
+                                {isAlreadyAdded ? (
+                                  <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                                    <Check size={10} />
+                                    Added
+                                  </span>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const newId = `sh-ctx-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
+                                      const newStakeholder: Stakeholder = {
+                                        id: newId,
+                                        name: actorName,
+                                        category: promptGroup.category || 'Host State',
+                                        role: promptGroup.rolePrompt || 'Suggested for verification in field operations',
+                                        authority: 'Medium',
+                                        influence: 'Medium',
+                                        position: 'Neutral / unknown',
+                                        legitimacy: 'Medium',
+                                        relevance: 'Medium',
+                                        capacity: 'Medium',
+                                        risk: '',
+                                        entry: '',
+                                        engagement: '',
+                                        cbdAreas: ['Professionalism & Integrity'],
+                                        isCustom: false
+                                      };
+                                      onAdd(newStakeholder);
+                                      setSelectedId(newId);
+                                    }}
+                                    className="inline-flex items-center gap-1 text-[10px] font-bold text-blue-700 bg-white hover:bg-blue-50 px-2 py-0.5 rounded border border-blue-200 transition-colors shrink-0"
+                                  >
+                                    <Plus size={10} />
+                                    Add
+                                  </button>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <p className="text-[11px] text-slate-500 italic">{promptGroup.rolePrompt}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="flex-1 overflow-y-auto divide-y divide-border-default max-h-[600px] lg:max-h-none">
             {stakeholders.map((sh) => {

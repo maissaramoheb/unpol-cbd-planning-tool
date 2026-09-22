@@ -5,7 +5,8 @@ import { Card, CardBody, CardHeader } from '../ui/Card';
 import { TextInput } from '../ui/Select';
 import { TextArea } from '../ui/TextArea';
 import { Button } from '../ui/Button';
-import { Shield, BookOpen, Layers, Award, FileText, Globe } from 'lucide-react';
+import { Shield, BookOpen, Layers, Award, FileText, Globe, Compass } from 'lucide-react';
+import { resolvePlanningContext } from '../lib/planningContext';
 import { StageLead } from './StageLead';
 import { NextStepCue } from './Guidance';
 import { NEXT_STEP_CUES } from '../lib/guidance';
@@ -116,6 +117,45 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
               })}
             </div>
           </div>
+
+          {/* Planning Context Guidance Card */}
+          {resolvePlanningContext(profile.templateId) && (() => {
+            const ctx = resolvePlanningContext(profile.templateId)!;
+            const guidance = ctx.planningPrompts.stage1Guidance;
+            return (
+              <div className="rounded-xl border border-blue-200 bg-blue-50/50 p-3.5 flex flex-col gap-2">
+                <div className="flex items-center justify-between gap-1 flex-wrap">
+                  <div className="flex items-center gap-1.5">
+                    <Compass size={14} className="text-blue-700 shrink-0" />
+                    <span className="text-xs font-black uppercase tracking-wider text-blue-950">
+                      Context Guidance
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-bold text-blue-700 bg-white border border-blue-200 px-1.5 py-0.5 rounded">
+                    {ctx.identity.missionAcronym || ctx.identity.countryArea}
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-700 leading-relaxed">
+                  Active planning context for <strong>{ctx.identity.countryArea}</strong> ({ctx.identity.missionType}).
+                </p>
+                {guidance.mandateEnvironmentPrompt && (
+                  <div className="text-[11px] text-slate-600 bg-white/85 p-2 rounded-lg border border-blue-100 italic">
+                    <strong>Investigation cue:</strong> &ldquo;{guidance.mandateEnvironmentPrompt}&rdquo;
+                  </div>
+                )}
+                <div className="flex items-center justify-between pt-1 border-t border-blue-100 text-[10px] text-slate-500">
+                  <span>{ctx.provenance.sources.length} document source(s)</span>
+                  <button
+                    type="button"
+                    onClick={onOpenExplorer}
+                    className="font-bold text-blue-700 hover:text-blue-900 underline cursor-pointer"
+                  >
+                    View in Explorer
+                  </button>
+                </div>
+              </div>
+            );
+          })()}
         </div>
 
         {/* Form Fields Card */}

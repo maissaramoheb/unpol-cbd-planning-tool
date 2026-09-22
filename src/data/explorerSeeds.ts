@@ -38,14 +38,14 @@ export function planningContextToExplorerEntry(ctx: PlanningContext): MissionExp
     sourceUrl: primarySource?.url ?? null,
     sourceNote: ctx.provenance.limitations.join(' ') || (primarySource ? `${primarySource.title}.` : ''),
     disclaimer: EXPLORER_DISCLAIMER,
-    hostStatePoliceInstitution: ctx.reference.hostStatePolice,
+    hostStatePoliceInstitution: ctx.reference.hostStatePolice.text,
     planningPurpose: ctx.scenarioNarrative?.planningPurpose ?? '[PROMPT] Define a verified planning purpose...',
     planningThemes: ctx.reference.planningThemes,
     starterProfile: {
       mandateEnvironment:
         ctx.scenarioNarrative?.mandateEnvironment ??
         ctx.planningPrompts.stage1Guidance.mandateEnvironmentPrompt ??
-        ctx.reference.mandateSummary,
+        ctx.reference.mandateSummary.text,
       conflictContext:
         ctx.scenarioNarrative?.conflictContext ??
         ctx.planningPrompts.stage1Guidance.conflictContextPrompt ??

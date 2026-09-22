@@ -123,10 +123,15 @@ export interface ContextProvenance {
   limitations: string[];
 }
 
+export interface ContextReferenceStatement {
+  text: string;
+  sourceIds: string[];
+}
+
 export interface ContextReferenceInfo {
-  mandateSummary: string;
-  policeRelevance: string;
-  hostStatePolice: string;
+  mandateSummary: ContextReferenceStatement;
+  policeRelevance: ContextReferenceStatement;
+  hostStatePolice: ContextReferenceStatement;
   planningThemes: string[];
 }
 

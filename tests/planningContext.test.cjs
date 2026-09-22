@@ -3,11 +3,13 @@ const assert = require('node:assert/strict');
 const test = require('node:test');
 
 const { CANONICAL_PLANNING_CONTEXTS } = require('../.test-dist/data/planningContexts.js');
-const { resolvePlanningContext, getAllPlanningContexts, getPlanningContextGuidance } = require('../.test-dist/lib/planningContext.js');
+const { resolvePlanningContext, getAllPlanningContexts, getPlanningContextGuidance, hasMeaningfulWork } = require('../.test-dist/lib/planningContext.js');
 const { initializeFromContext, applyMissionSeed } = require('../.test-dist/lib/applyMissionSeed.js');
 const { validateAndNormalizeProjectData } = require('../.test-dist/lib/projectDataValidation.js');
 const { calculateQualityWarnings } = require('../.test-dist/lib/warnings.js');
 const { getContextSource } = require('../.test-dist/lib/reportModel.js');
+const { filterMissionExplorerEntries } = require('../.test-dist/lib/explorerFilters.js');
+const { defaultExplorerSeeds } = require('../.test-dist/data/explorerSeeds.js');
 
 // ============================================================================
 // 1. CATALOGUE TESTS
@@ -124,8 +126,8 @@ test('real-world contexts initialize cleanly with empty analyst fields and techn
     assert.equal(data.profile.countryName, ctx.identity.countryArea);
     assert.equal(data.profile.region, ctx.identity.region);
     assert.equal(data.profile.templateId, ctx.id);
-    assert.equal(data.profile.hostStatePolice, ctx.reference.hostStatePolice);
-    assert.equal(data.profile.mandateEnvironment, ctx.reference.mandateSummary);
+    assert.equal(data.profile.hostStatePolice, ctx.reference.hostStatePolice.text);
+    assert.equal(data.profile.mandateEnvironment, ctx.reference.mandateSummary.text);
     assert.equal(data.profile.conflictContext, '', `${ctx.id}: conflictContext must be blank for real context`);
     assert.equal(data.profile.planningPurpose, '', `${ctx.id}: planningPurpose must be blank for real context`);
     assert.equal(data.profile.analystName, '');
@@ -213,7 +215,7 @@ test('applyMissionSeed compatibility wrapper delegates cleanly to initializeFrom
     sourceUrl: null,
     sourceNote: '',
     disclaimer: '',
-    hostStatePoliceInstitution: ctx.reference.hostStatePolice,
+    hostStatePoliceInstitution: ctx.reference.hostStatePolice.text,
     planningPurpose: '',
     planningThemes: [],
     starterProfile: { mandateEnvironment: '', conflictContext: '', planningPurpose: '' },
@@ -337,4 +339,251 @@ test('report model getContextSource resolves canonical IDs, legacy aliases, and 
 
   const caranaData = { ...data1, profile: { ...data1.profile, templateId: 'fictional-carana-demo' } };
   assert.equal(getContextSource(caranaData), 'CARANA fictional training demonstration');
+});
+
+// ============================================================================
+// 7. REFERENCE STATEMENT TRACEABILITY TESTS
+// ============================================================================
+
+test('all 18 canonical contexts have valid statement structures and resolvable source IDs', () => {
+  const allContexts = getAllPlanningContexts();
+  assert.equal(allContexts.length, 18);
+
+  allContexts.forEach((ctx) => {
+    const { mandateSummary, policeRelevance, hostStatePolice } = ctx.reference;
+
+    // Check statements exist with text and sourceIds array
+    assert.ok(mandateSummary && typeof mandateSummary.text === 'string', `${ctx.id}: mandateSummary must have string text`);
+    assert.ok(Array.isArray(mandateSummary.sourceIds), `${ctx.id}: mandateSummary.sourceIds must be array`);
+    assert.ok(policeRelevance && typeof policeRelevance.text === 'string', `${ctx.id}: policeRelevance must have string text`);
+    assert.ok(Array.isArray(policeRelevance.sourceIds), `${ctx.id}: policeRelevance.sourceIds must be array`);
+    assert.ok(hostStatePolice && typeof hostStatePolice.text === 'string', `${ctx.id}: hostStatePolice must have string text`);
+    assert.ok(Array.isArray(hostStatePolice.sourceIds), `${ctx.id}: hostStatePolice.sourceIds must be array`);
+
+    const knownSourceIds = new Set(ctx.provenance.sources.map((s) => s.id));
+
+    // Every referenced source ID must resolve to a known source in ctx.provenance.sources
+    [...mandateSummary.sourceIds, ...policeRelevance.sourceIds, ...hostStatePolice.sourceIds].forEach((srcId) => {
+      assert.ok(knownSourceIds.has(srcId), `${ctx.id}: sourceId "${srcId}" must exist in provenance.sources`);
+    });
+
+    // Fictional contexts must have empty sourceIds across all statements
+    if (ctx.operationalStatus === 'fictional') {
+      assert.equal(mandateSummary.sourceIds.length, 0, `${ctx.id}: fictional mandateSummary must have empty sourceIds`);
+      assert.equal(policeRelevance.sourceIds.length, 0, `${ctx.id}: fictional policeRelevance must have empty sourceIds`);
+      assert.equal(hostStatePolice.sourceIds.length, 0, `${ctx.id}: fictional hostStatePolice must have empty sourceIds`);
+    }
+  });
+});
+
+test('source-backed statements vs unverified statements correctly reflect sourceIds', () => {
+  // UNMISS has verified UNSCR 2729 backing mandate, police, and counterpart
+  const unmiss = resolvePlanningContext('pk-unmiss');
+  assert.ok(unmiss);
+  assert.deepEqual(unmiss.reference.mandateSummary.sourceIds, ['src-unscr-2729']);
+  assert.deepEqual(unmiss.reference.policeRelevance.sourceIds, ['src-unscr-2729']);
+  assert.deepEqual(unmiss.reference.hostStatePolice.sourceIds, ['src-unscr-2729']);
+
+  // MINURSO has DPKO source backing mandate, but empty sourceIds on police relevance and counterpart
+  const minurso = resolvePlanningContext('pk-minurso');
+  assert.ok(minurso);
+  assert.deepEqual(minurso.reference.mandateSummary.sourceIds, ['src-un-dpko-minurso']);
+  assert.deepEqual(minurso.reference.policeRelevance.sourceIds, [], 'MINURSO police relevance has no direct external source');
+  assert.deepEqual(minurso.reference.hostStatePolice.sourceIds, [], 'MINURSO counterpart has no direct external source');
+});
+
+// ============================================================================
+// 8. EXTENDED EXPLORER SEARCH FILTER TESTS
+// ============================================================================
+
+test('search matches across planningThemes, hostStatePoliceInstitution, and region', () => {
+  const baseFilters = {
+    searchQuery: '',
+    selectedRegion: 'all',
+    selectedType: 'all',
+    selectedStatus: 'all',
+    showFictional: 'all'
+  };
+
+  // Search by theme
+  const transitionResults = filterMissionExplorerEntries(defaultExplorerSeeds, {
+    ...baseFilters,
+    searchQuery: 'Transition Strategy'
+  });
+  assert.ok(transitionResults.length > 0, 'Should find entries with Transition Strategy theme');
+  assert.ok(transitionResults.some((e) => e.missionAcronym === 'MONUSCO'));
+
+  // Search by police institution acronym / name
+  const pnhResults = filterMissionExplorerEntries(defaultExplorerSeeds, {
+    ...baseFilters,
+    searchQuery: 'PNH'
+  });
+  assert.ok(pnhResults.length > 0, 'Should find BINUH by police institution name');
+  assert.ok(pnhResults.some((e) => e.missionAcronym === 'BINUH'));
+
+  // Search by region
+  const middleEastResults = filterMissionExplorerEntries(defaultExplorerSeeds, {
+    ...baseFilters,
+    searchQuery: 'Middle East'
+  });
+  assert.ok(middleEastResults.length >= 3, 'Should find Middle East missions via search query');
+  assert.ok(middleEastResults.some((e) => e.missionAcronym === 'UNIFIL'));
+  assert.ok(middleEastResults.some((e) => e.missionAcronym === 'UNDOF'));
+});
+
+// ============================================================================
+// 9. MEANINGFUL WORK DETECTION TESTS
+// ============================================================================
+
+test('hasMeaningfulWork returns false for empty or freshly initialized workspaces', () => {
+  assert.equal(hasMeaningfulWork(null), false);
+  assert.equal(hasMeaningfulWork(undefined), false);
+
+  // Freshly initialized real mission workspace
+  const unmiss = resolvePlanningContext('pk-unmiss');
+  assert.ok(unmiss);
+  const unmissData = initializeFromContext(unmiss);
+  assert.equal(hasMeaningfulWork(unmissData), false, 'Fresh real context workspace must not be flagged as meaningful work');
+
+  // Freshly initialized fictional scenario workspace
+  const fictional = resolvePlanningContext('fictional-post-conflict');
+  assert.ok(fictional);
+  const fictionalData = initializeFromContext(fictional);
+  assert.equal(hasMeaningfulWork(fictionalData), false, 'Fresh fictional scenario workspace must not be flagged as meaningful work');
+});
+
+test('hasMeaningfulWork returns true when analyst records substantive planning work', () => {
+  const ctx = resolvePlanningContext('pk-unmiss');
+  assert.ok(ctx);
+
+  // 1. Non-empty PESTEL finding
+  const dataWithFinding = initializeFromContext(ctx);
+  dataWithFinding.pestels.political.finding = 'Political interference in operational command.';
+  assert.equal(hasMeaningfulWork(dataWithFinding), true);
+
+  // Whitespace-only finding does NOT count
+  const dataWithWhitespaceFinding = initializeFromContext(ctx);
+  dataWithWhitespaceFinding.pestels.political.finding = '   \n  ';
+  assert.equal(hasMeaningfulWork(dataWithWhitespaceFinding), false);
+
+  // 2. Added stakeholder
+  const dataWithStakeholder = initializeFromContext(ctx);
+  dataWithStakeholder.stakeholders.push({
+    id: 'sh-1',
+    name: 'Inspector General',
+    category: 'Host State',
+    role: 'Lead commander',
+    authority: 'High',
+    influence: 'High',
+    position: 'Enabler',
+    legitimacy: 'Medium',
+    relevance: 'High',
+    capacity: 'Medium',
+    risk: '',
+    entry: '',
+    engagement: '',
+    cbdAreas: ['Professionalism & Integrity']
+  });
+  assert.equal(hasMeaningfulWork(dataWithStakeholder), true);
+
+  // 3. Custom CBD cell
+  const dataWithCell = initializeFromContext(ctx);
+  dataWithCell.customCells['1|1'] = {
+    key: '1|1',
+    why: 'Leadership deficit',
+    individual: 'Train executives',
+    organizational: 'SOPs',
+    environment: 'Legal oversight',
+    indicators: [],
+    drivers: [],
+    stakeholders: [],
+    risks: '',
+    sequencing: '',
+    confidence: 3,
+    priorityScore: 3,
+    result: '',
+    engagement: '',
+    capacityProblem: '',
+    planningObjective: '',
+    leadStakeholderId: null,
+    supportingStakeholderIds: [],
+    implementationPhase: null,
+    milestoneTimeframe: ''
+  };
+  assert.equal(hasMeaningfulWork(dataWithCell), true);
+
+  // 4. SWOT finding
+  const dataWithSwot = initializeFromContext(ctx);
+  dataWithSwot.analysisSynthesis.swotFindings.push({
+    id: 'swot-1',
+    reference: 'S1',
+    category: 'Strength',
+    finding: 'Cohesive mid-level officer cohort',
+    cbdImplication: '',
+    sourceReferences: [],
+    confidence: 4,
+    verificationNote: ''
+  });
+  assert.equal(hasMeaningfulWork(dataWithSwot), true);
+
+  // 5. Interdependency
+  const dataWithInterdep = initializeFromContext(ctx);
+  dataWithInterdep.interdependencies.push({
+    id: 'xi-1',
+    reference: 'XI-01',
+    sourceFindingId: 'political',
+    targetFindingId: 'legal',
+    relationship: 'Legal void amplifies political capture',
+    effectOnCbd: 'Constraining',
+    planningSignificance: 'High',
+    cbdImplication: '',
+    evidenceIds: [],
+    analyticalNote: '',
+    isKeyInsight: true,
+    includeInMainBrief: true
+  });
+  assert.equal(hasMeaningfulWork(dataWithInterdep), true);
+
+  // 6. Priority brief top priority
+  const dataWithPriority = initializeFromContext(ctx);
+  dataWithPriority.priorityBrief.topPriorities.push('Executive command reform');
+  assert.equal(hasMeaningfulWork(dataWithPriority), true);
+
+  // 7. Priority brief sequencing recommendation
+  const dataWithSeq = initializeFromContext(ctx);
+  dataWithSeq.priorityBrief.sequencingRecommendation = 'Phase 1: Legal mandate review before equipment transfer.';
+  assert.equal(hasMeaningfulWork(dataWithSeq), true);
+});
+
+// ============================================================================
+// 10. METHODOLOGICAL INTEGRITY & PROMPT SEPARATION TESTS
+// ============================================================================
+
+test('context guidance prompts are strictly questions/prompts and never pre-assessed findings', () => {
+  const allContexts = getAllPlanningContexts();
+
+  allContexts.forEach((ctx) => {
+    const prompts = getPlanningContextGuidance(ctx);
+    assert.ok(prompts.pestelsPrompts);
+    assert.ok(prompts.stage1Guidance);
+
+    // Each PESTEL prompt must have a prompt question and whyPrompt explanation
+    Object.entries(prompts.pestelsPrompts).forEach(([factor, item]) => {
+      assert.ok(typeof item.prompt === 'string' && item.prompt.length > 10, `${ctx.id} ${factor}: prompt must be descriptive question`);
+      assert.ok(typeof item.whyPrompt === 'string' && item.whyPrompt.length > 5, `${ctx.id} ${factor}: whyPrompt must provide rationale`);
+    });
+
+    // Suggested stakeholders must only be strings or categories, never scored
+    if (prompts.suggestedStakeholderCategories) {
+      assert.ok(Array.isArray(prompts.suggestedStakeholderCategories));
+    }
+    if (prompts.stakeholderPrompts) {
+      assert.ok(Array.isArray(prompts.stakeholderPrompts));
+      prompts.stakeholderPrompts.forEach((sp) => {
+        assert.ok(typeof sp.category === 'string');
+        assert.ok(typeof sp.rolePrompt === 'string');
+        assert.ok(Array.isArray(sp.suggestedStakeholders));
+      });
+    }
+  });
 });

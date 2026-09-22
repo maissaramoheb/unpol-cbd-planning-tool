@@ -19,7 +19,12 @@ export function filterMissionExplorerEntries(
       normalizedQuery === '' ||
       entry.country.toLowerCase().includes(normalizedQuery) ||
       entry.missionName.toLowerCase().includes(normalizedQuery) ||
-      entry.missionAcronym.toLowerCase().includes(normalizedQuery);
+      entry.missionAcronym.toLowerCase().includes(normalizedQuery) ||
+      entry.region.toLowerCase().includes(normalizedQuery) ||
+      (Boolean(entry.hostStatePoliceInstitution) &&
+        entry.hostStatePoliceInstitution.toLowerCase().includes(normalizedQuery)) ||
+      (Array.isArray(entry.planningThemes) &&
+        entry.planningThemes.some((theme) => theme.toLowerCase().includes(normalizedQuery)));
 
     const matchesRegion =
       filters.selectedRegion === 'all' || entry.region === filters.selectedRegion;
