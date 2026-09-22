@@ -48,24 +48,24 @@ export const MatrixListView: React.FC<MatrixListViewProps> = ({
   const getTagPresentation = (tag: CbdHeatmapTag) => {
     switch (tag) {
       case 'Quick Win':
-        return { text: tag, bg: 'bg-emerald-50 border-emerald-200', textCol: 'text-emerald-700' };
+        return { text: tag, bg: 'bg-emerald-50 border-emerald-200', textCol: 'text-emerald-800', dotCol: 'bg-emerald-600' };
       case 'Sensitive Reform':
-        return { text: 'Sensitive', bg: 'bg-rose-50 border-rose-200', textCol: 'text-rose-700' };
+        return { text: 'Sensitive', bg: 'bg-rose-50 border-rose-200', textCol: 'text-rose-800', dotCol: 'bg-rose-600' };
       case 'Long-Term Reform':
-        return { text: 'Long-term', bg: 'bg-indigo-50 border-indigo-200', textCol: 'text-indigo-700' };
+        return { text: 'Long-term', bg: 'bg-indigo-50 border-indigo-200', textCol: 'text-indigo-800', dotCol: 'bg-indigo-600' };
       case 'Low Confidence':
-        return { text: 'Low Conf', bg: 'bg-slate-50 border-slate-200', textCol: 'text-slate-500' };
+        return { text: 'Low Conf', bg: 'bg-slate-50 border-slate-200', textCol: 'text-slate-700', dotCol: 'bg-slate-500' };
       default:
-        return { text: tag, bg: 'bg-amber-50 border-amber-200', textCol: 'text-amber-700' };
+        return { text: tag, bg: 'bg-amber-50 border-amber-200', textCol: 'text-amber-800', dotCol: 'bg-amber-600' };
     }
   };
 
   return (
     <div className="flex flex-col gap-3 w-full">
-      <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg text-blue-900 text-xs flex items-start gap-2">
-        <Layers size={16} className="shrink-0 mt-0.5" />
+      <div className="bg-institutional-subtle border border-institutional/20 p-3 rounded-md text-text-default text-xs flex items-start gap-2">
+        <Layers size={16} className="shrink-0 mt-0.5 text-institutional" />
         <p>
-          <strong>Mobile Matrix View:</strong> Tap any Key Area to expand, and select an intersection dimension to customize actions.
+          <strong className="font-semibold text-institutional">Mobile Matrix View:</strong> Tap any Key Area to expand, and select an intersection dimension to customize actions.
         </p>
       </div>
 
@@ -75,31 +75,35 @@ export const MatrixListView: React.FC<MatrixListViewProps> = ({
           const isRowSelected = selectedMode === 'keyArea' && selectedKey === row.id;
 
           return (
-            <div key={row.id} className="border border-slate-200 rounded-xl bg-white overflow-hidden shadow-sm">
+            <div key={row.id} className="border border-border-default rounded-md bg-surface-card overflow-hidden shadow-subtle">
               {/* Row Header Accordion Trigger */}
               <button
                 type="button"
                 onClick={() => toggleRow(row.id)}
+                aria-expanded={isExpanded}
                 className={`
-                  w-full px-4 py-3 flex items-center justify-between text-left font-bold text-sm transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring
-                  ${isRowSelected ? 'bg-slate-900 text-white' : 'hover:bg-slate-50 text-slate-900 bg-slate-50/50'}
+                  w-full px-4 py-3 flex items-center justify-between text-left font-semibold text-xs transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring
+                  ${isRowSelected
+                    ? 'bg-institutional-subtle text-institutional border-l-4 border-l-institutional font-bold'
+                    : 'hover:bg-surface-hover text-text-default bg-surface-card border-l-2 border-l-institutional/60'
+                  }
                 `}
               >
                 <div>
-                  <span className="text-[9px] uppercase tracking-wider block text-slate-500 font-extrabold">Key Area</span>
-                  <span className="line-clamp-1">{row.name}</span>
+                  <span className="text-[10px] uppercase tracking-wider block text-text-muted font-mono">Key Area</span>
+                  <span className="line-clamp-1 text-xs">{row.name}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-slate-500 bg-white border border-slate-200 px-2 py-0.5 rounded font-bold">
-                    6 Dim
+                  <span className="text-[11px] font-mono text-text-muted bg-surface-subtle border border-border-default px-2 py-0.5 rounded-md font-semibold">
+                    6 Lenses
                   </span>
-                  {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  {isExpanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
                 </div>
               </button>
 
               {/* Dimension Intersections List */}
               {isExpanded && (
-                <div className="border-t border-slate-100 p-2 bg-slate-50/20 flex flex-col gap-1.5">
+                <div className="border-t border-border-default p-2 bg-surface-subtle/40 flex flex-col gap-1.5">
                   {columns.map((col) => {
                     const selected = isCellSelected(row.id, col.id);
                     const custom = hasBespokeContent(row.id, col.id);
@@ -110,22 +114,28 @@ export const MatrixListView: React.FC<MatrixListViewProps> = ({
                         key={`${row.id}|${col.id}`}
                         type="button"
                         onClick={() => onSelectCell(row.id, col.id)}
+                        aria-pressed={selected}
+                        aria-label={`${row.name} × ${col.name}. ${custom ? 'Customized. ' : ''}${tags.map(t => t.text).join(', ')}`}
                         className={`
-                          w-full p-3 rounded-lg text-left text-xs font-semibold border transition-all duration-150 motion-reduce:transition-none flex items-center justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-1
+                          w-full p-3 rounded-md text-left text-xs font-medium border transition-colors duration-150 motion-reduce:transition-none flex items-center justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring
                           ${selected
-                            ? 'border-blue-600 bg-blue-50 text-blue-800 shadow-sm font-bold'
-                            : 'border-slate-100 hover:border-slate-200 bg-white text-slate-700'
+                            ? 'border-institutional bg-institutional-subtle text-institutional font-semibold ring-1 ring-institutional shadow-subtle'
+                            : 'border-border-default hover:bg-surface-hover bg-surface-card text-text-default'
                           }
                         `}
                       >
-                        <div className="flex flex-col">
-                          <span className="text-[9px] uppercase tracking-wider text-slate-500">Cross-Cutting Analytical Lens</span>
-                          <span className="font-bold text-slate-900 mt-0.5">{col.name}</span>
+                        <div className="flex flex-col gap-1">
+                          <span className="text-[10px] uppercase font-mono tracking-wider text-text-muted">Analytical Lens</span>
+                          <span className="font-semibold text-text-default text-xs">{col.name}</span>
                           {tags.length > 0 && (
-                            <div className="flex flex-wrap gap-1 mt-1.5">
+                            <div className="flex flex-wrap gap-1 mt-1">
                               {tags.map((tag, idx) => (
-                                <span key={idx} className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase border tracking-wider leading-none ${tag.bg} ${tag.textCol}`}>
-                                  {tag.text}
+                                <span
+                                  key={idx}
+                                  className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold border tracking-wide leading-none shrink-0 ${tag.bg} ${tag.textCol}`}
+                                >
+                                  <span className={`h-1.5 w-1.5 rounded-full ${tag.dotCol}`} />
+                                  <span>{tag.text}</span>
                                 </span>
                               ))}
                             </div>
@@ -134,8 +144,8 @@ export const MatrixListView: React.FC<MatrixListViewProps> = ({
 
                         <div className="flex items-center gap-2 shrink-0">
                           {custom && (
-                            <span className="inline-flex items-center gap-1 text-[9px] font-extrabold uppercase bg-blue-50 border border-blue-200 text-blue-700 px-1.5 py-0.5 rounded">
-                              <CheckCircle2 size={10} />
+                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-institutional bg-institutional-subtle border border-institutional/20 px-2 py-0.5 rounded-md">
+                              <CheckCircle2 size={11} />
                               Custom
                             </span>
                           )}
@@ -148,7 +158,7 @@ export const MatrixListView: React.FC<MatrixListViewProps> = ({
                   <button
                     type="button"
                     onClick={() => onSelectKeyArea(row.id)}
-                    className="w-full text-center py-2 text-[10px] uppercase tracking-wider font-extrabold text-blue-600 hover:text-blue-800 transition-colors duration-150 motion-reduce:transition-none border border-dashed border-blue-200 rounded-lg bg-blue-50/10 mt-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-1"
+                    className="w-full text-center py-2 text-xs font-semibold text-institutional hover:bg-institutional-subtle/50 transition-colors duration-150 motion-reduce:transition-none border border-dashed border-institutional/30 rounded-md bg-institutional-subtle/20 mt-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
                   >
                     Inspect Full Key Area &rarr;
                   </button>
