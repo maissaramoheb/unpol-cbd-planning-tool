@@ -14,52 +14,57 @@ export const Header: React.FC<HeaderProps> = ({ onReset, missionName, analystNam
   const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-slate-900 border-b border-slate-800 text-white shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <header className="sticky top-0 z-40 w-full bg-slate-900 border-b border-slate-800 text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
         {/* Title / Logo */}
-        <div className="flex items-center gap-3">
-          <div className="bg-blue-600 p-2 rounded-lg text-white font-bold flex items-center justify-center">
-            <BookOpen size={20} />
+        <div className="flex items-center gap-2.5">
+          <div className="bg-action-primary p-1.5 rounded-md text-white flex items-center justify-center shrink-0">
+            <BookOpen size={18} />
           </div>
           <div>
-            <h1 className="text-md sm:text-lg font-extrabold tracking-tight">
-              UNPOL CBD <span className="text-blue-400">Planning Prototype</span>
-            </h1>
-            <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider hidden sm:block">
-              Unofficial Educational & Planning-Support Framework
+            <div className="flex items-center gap-2">
+              <h1 className="text-sm sm:text-base font-bold tracking-tight text-white">
+                UNPOL CBD <span className="text-blue-400 font-semibold">Planning Tool</span>
+              </h1>
+              <span className="hidden md:inline-flex items-center rounded border border-slate-700 bg-slate-800 px-1.5 py-0.2 text-[11px] font-medium text-slate-400">
+                Prototype
+              </span>
+            </div>
+            <p className="text-xs text-slate-400 hidden sm:block">
+              Integrated Capacity-Building & Development Planning Framework
             </p>
           </div>
         </div>
 
         {/* Status / Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           {missionName && (
-            <div className="hidden lg:flex items-center gap-2 bg-slate-800 border border-slate-700 px-3 py-1 rounded-full text-xs text-slate-300">
-              <User size={12} className="text-blue-400" />
-              <span>{missionName} {analystName ? `(${analystName})` : ''}</span>
+            <div className="hidden lg:flex items-center gap-1.5 bg-slate-800/90 border border-slate-700/80 px-2.5 py-1 rounded-md text-xs text-slate-300">
+              <User size={13} className="text-blue-400 shrink-0" />
+              <span className="truncate max-w-[200px]">{missionName} {analystName ? `(${analystName})` : ''}</span>
             </div>
           )}
 
           <Button
-            variant="outline"
+            variant="secondary"
             size="sm"
             onClick={() => setIsDisclaimerOpen(true)}
             aria-label="Open disclaimer and rules of use"
-            className="border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800"
+            className="border-slate-700 bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-800 h-8 text-xs"
           >
-            <ShieldAlert size={16} className="mr-1.5 text-amber-400" />
+            <ShieldAlert size={14} className="mr-1.5 text-amber-400" />
             <span className="hidden sm:inline">Disclaimer</span>
           </Button>
 
           <Button
-            variant="ghost"
+            variant="tertiary"
             size="sm"
             onClick={onReset}
             aria-label="Reset entire planning workspace to blank slate"
-            className="text-slate-400 hover:text-white hover:bg-slate-800"
+            className="text-slate-400 hover:text-white hover:bg-slate-800 h-8 text-xs"
             title="Reset entire planning workspace to blank slate"
           >
-            <RefreshCw size={16} className="mr-1.5" />
+            <RefreshCw size={14} className="mr-1.5" />
             <span className="hidden sm:inline">Reset Workspace</span>
           </Button>
         </div>

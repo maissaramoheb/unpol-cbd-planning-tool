@@ -99,27 +99,29 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
 
     return (
       <Card>
-        <CardHeader className="bg-blue-600 text-white rounded-t-xl">
-          <span className="text-[10px] uppercase font-extrabold tracking-wider block text-blue-200">Analytical Lens</span>
-          <h3 className="text-base font-extrabold">{col.name}</h3>
-          <p className="text-xs text-blue-100 mt-1">{col.definition}</p>
+        <CardHeader className="border-b border-border-default bg-surface-subtle p-4 rounded-t-lg">
+          <span className="text-[11px] uppercase font-mono tracking-wider font-semibold text-institutional bg-institutional-subtle border border-institutional/20 px-2 py-0.5 rounded-md inline-block mb-1">
+            Analytical Lens
+          </span>
+          <h3 className="text-base font-bold text-text-default">{col.name}</h3>
+          <p className="text-xs text-text-muted mt-1">{col.definition}</p>
         </CardHeader>
         <CardBody className="flex flex-col gap-4">
-          <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+          <h4 className="text-xs font-semibold text-text-default uppercase tracking-wider">
             How this dimension manifests across Key Areas
           </h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {rows.map((row) => {
               const data = getCellData(row.id, col.id);
               return (
                 <button
                   key={row.id}
                   onClick={() => onSelectCellByKey(`${row.id}|${col.id}`)}
-                  className="text-left p-4 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/10 transition-all flex flex-col gap-2"
+                  className="text-left p-3.5 rounded-md border border-border-default bg-surface-card hover:bg-surface-subtle transition-colors duration-150 motion-reduce:transition-none flex flex-col gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
                 >
-                  <span className="font-extrabold text-xs text-slate-800 uppercase tracking-tight">{row.name}</span>
-                  <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">{data.why}</p>
-                  <span className="text-[10px] text-blue-600 font-bold self-end mt-1">Configure &rarr;</span>
+                  <span className="font-semibold text-xs text-text-default uppercase tracking-tight">{row.name}</span>
+                  <p className="text-xs text-text-muted line-clamp-3 leading-relaxed">{data.why}</p>
+                  <span className="text-[11px] text-institutional font-semibold self-end mt-1">Configure &rarr;</span>
                 </button>
               );
             })}
@@ -135,27 +137,29 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
 
     return (
       <Card>
-        <CardHeader className="bg-slate-900 text-white rounded-t-xl">
-          <span className="text-[10px] uppercase font-extrabold tracking-wider block text-slate-400">Key Area Analysis</span>
-          <h3 className="text-base font-extrabold">{row.name}</h3>
-          <p className="text-xs text-slate-400 mt-1">{row.definition}</p>
+        <CardHeader className="border-b border-border-default bg-surface-subtle p-4 rounded-t-lg">
+          <span className="text-[11px] uppercase font-mono tracking-wider font-semibold text-institutional bg-institutional-subtle border border-institutional/20 px-2 py-0.5 rounded-md inline-block mb-1">
+            Key Area Analysis
+          </span>
+          <h3 className="text-base font-bold text-text-default">{row.name}</h3>
+          <p className="text-xs text-text-muted mt-1">{row.definition}</p>
         </CardHeader>
         <CardBody className="flex flex-col gap-4">
-          <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+          <h4 className="text-xs font-semibold text-text-default uppercase tracking-wider">
             How this Key Area is examined through each analytical lens
           </h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {columns.map((col) => {
               const data = getCellData(row.id, col.id);
               return (
                 <button
                   key={col.id}
                   onClick={() => onSelectCellByKey(`${row.id}|${col.id}`)}
-                  className="text-left p-4 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/10 transition-all flex flex-col gap-2"
+                  className="text-left p-3.5 rounded-md border border-border-default bg-surface-card hover:bg-surface-subtle transition-colors duration-150 motion-reduce:transition-none flex flex-col gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
                 >
-                  <span className="font-extrabold text-xs text-slate-800 uppercase tracking-tight">{col.name}</span>
-                  <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">{data.why}</p>
-                  <span className="text-[10px] text-blue-600 font-bold self-end mt-1">Configure &rarr;</span>
+                  <span className="font-semibold text-xs text-text-default uppercase tracking-tight">{col.name}</span>
+                  <p className="text-xs text-text-muted line-clamp-3 leading-relaxed">{data.why}</p>
+                  <span className="text-[11px] text-institutional font-semibold self-end mt-1">Configure &rarr;</span>
                 </button>
               );
             })}
@@ -210,44 +214,75 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
 
   return (
     <Card>
-      <CardHeader className="bg-slate-900 text-white rounded-t-xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <CardHeader className="border-b border-border-default bg-surface-subtle px-5 py-4 rounded-t-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <span className="text-[9px] uppercase font-extrabold tracking-wider bg-blue-600 text-white px-2 py-0.5 rounded mr-2">
-            Viewing Intersection Cell
-          </span>
-          <h3 className="text-base font-extrabold mt-1">
-            {rowId} <span className="text-blue-400">&times;</span> {colId}
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] uppercase font-mono tracking-wider font-semibold text-institutional bg-institutional-subtle border border-institutional/20 px-2 py-0.5 rounded-md">
+              Active Intersection Inspector
+            </span>
+            {customCells[`${rowId}|${colId}`] && (
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
+                Customized
+              </span>
+            )}
+          </div>
+          <h3 className="text-sm font-bold text-text-default mt-1.5">
+            {rowId} <span className="text-text-muted font-normal mx-1">&times;</span> {colId}
           </h3>
         </div>
         <div className="flex items-center gap-2">
-          <div className="text-right">
-            <Badge variant={activeAssessment.score >= 4 ? 'rose' : 'slate'}>Indicative Priority: {activeAssessment.score.toFixed(1)}/5</Badge>
-            <p className="mt-1 max-w-xs text-[10px] leading-snug text-slate-300">{FIELD_GUIDANCE.indicativeScore.help}</p>
+          <div className="text-right flex flex-col items-end">
+            <div className="flex items-center gap-1.5">
+              <Badge variant={activeAssessment.score >= 4 ? 'rose' : activeAssessment.score >= 3 ? 'amber' : 'slate'}>
+                Indicative Priority: {activeAssessment.score.toFixed(1)}/5
+              </Badge>
+              {activeAssessment.classification && activeAssessment.classification !== 'Standard Priority' && (
+                <Badge variant={
+                  activeAssessment.classification === 'Quick Win' ? 'green' :
+                  activeAssessment.classification === 'Sensitive Reform' ? 'rose' :
+                  'blue'
+                }>
+                  {activeAssessment.classification}
+                </Badge>
+              )}
+            </div>
+            <p className="mt-1 max-w-xs text-[11px] leading-snug text-text-muted">{FIELD_GUIDANCE.indicativeScore.help}</p>
           </div>
         </div>
       </CardHeader>
-      <CardBody className="flex flex-col gap-4">
-        <div className="grid grid-cols-1 gap-3">
-          <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900">Planning Basis</h4>
-            <p className="mt-1 text-xs leading-relaxed text-slate-500">Link strategic options that inform this priority. The links do not populate or determine the CBD response.</p>
+      <CardBody className="flex flex-col gap-5">
+        {/* Section 1: Planning Basis */}
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-primary bg-blue-50/80 border border-blue-200/60 px-1.5 py-0.5 rounded">
+              01
+            </span>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">Planning Basis</h4>
           </div>
-          <fieldset className="rounded-xl border border-blue-100 bg-blue-50/40 p-3">
-            <legend className="px-1 text-xs font-bold text-blue-950">Strategic Synthesis Basis</legend>
+          <p className="text-xs leading-relaxed text-text-muted">Link strategic options that inform this priority. The links do not populate or determine the CBD response.</p>
+          <fieldset className="rounded-lg border border-border-default bg-surface-subtle/50 p-3.5">
+            <legend className="px-1 text-xs font-semibold text-text-default">Strategic Synthesis Basis</legend>
             {strategicOptions.length ? <div className="grid gap-2 sm:grid-cols-2">
               {strategicOptions.map(option => {
                 const checked = (activeCell.strategicOptionIds || []).includes(option.id);
-                return <label key={option.id} className={`flex cursor-pointer items-start gap-2 rounded-lg border p-2.5 text-xs ${checked ? 'border-blue-300 bg-white text-blue-950' : 'border-slate-200 bg-white/70 text-slate-600'}`}>
-                  <input type="checkbox" checked={checked} onChange={() => handleCellChange('strategicOptionIds', checked ? (activeCell.strategicOptionIds ?? []).filter(id => id !== option.id) : [...(activeCell.strategicOptionIds ?? []), option.id])} className="mt-0.5 h-3.5 w-3.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
-                  <span><strong className="block">{option.reference} · {option.type}</strong><span className="mt-0.5 block line-clamp-2">{option.option || 'Strategic option wording not yet recorded.'}</span></span>
+                return <label key={option.id} className={`flex cursor-pointer items-start gap-2 rounded-md border p-2.5 text-xs ${checked ? 'border-institutional bg-institutional-subtle text-text-default font-medium' : 'border-border-default bg-surface-card text-text-muted hover:text-text-default'}`}>
+                  <input type="checkbox" checked={checked} onChange={() => handleCellChange('strategicOptionIds', checked ? (activeCell.strategicOptionIds ?? []).filter(id => id !== option.id) : [...(activeCell.strategicOptionIds ?? []), option.id])} className="mt-0.5 h-3.5 w-3.5 rounded border-border-default text-institutional focus:ring-focus-ring" />
+                  <span><strong className="block text-text-default">{option.reference} · {option.type}</strong><span className="mt-0.5 block line-clamp-2">{option.option || 'Strategic option wording not yet recorded.'}</span></span>
                 </label>;
               })}
-            </div> : <p className="text-xs text-slate-500">No Strategic Options recorded. You may continue without Analysis Synthesis.</p>}
+            </div> : <p className="text-xs text-text-muted">No Strategic Options recorded. You may continue without Analysis Synthesis.</p>}
           </fieldset>
         </div>
 
-        <div className="grid grid-cols-1 gap-4">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900">Planning Logic</h4>
+        {/* Section 2: Planning Logic */}
+        <div className="border-t border-border-default pt-5 flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-primary bg-blue-50/80 border border-blue-200/60 px-1.5 py-0.5 rounded">
+              02
+            </span>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">Planning Logic</h4>
+          </div>
           <TextArea
             label="Capacity Problem / Gap"
             value={activeCell.capacityProblem || ''}
@@ -266,31 +301,45 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
           <FieldGuidance {...FIELD_GUIDANCE.planningObjective} />
         </div>
 
-        <h4 className="border-t border-slate-100 pt-4 text-xs font-bold uppercase tracking-wider text-slate-900">Intervention Package</h4>
-        <TextArea
-          label="Why this intersection matters for SSR / CBD"
-          value={activeCell.why}
-          onChange={(e) => handleCellChange('why', e.target.value)}
-          placeholder="Explain the theoretical and operational importance..."
-          rows={2}
-        />
+        {/* Section 3: Intervention Package */}
+        <div className="border-t border-border-default pt-5 flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-primary bg-blue-50/80 border border-blue-200/60 px-1.5 py-0.5 rounded">
+              03
+            </span>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">Intervention Package</h4>
+          </div>
+          <TextArea
+            label="Why this intersection matters for SSR / CBD"
+            value={activeCell.why}
+            onChange={(e) => handleCellChange('why', e.target.value)}
+            placeholder="Explain the theoretical and operational importance..."
+            rows={2}
+          />
 
-        {/* 3 Action Levels */}
-        <div>
-          <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-2">
-            Intervention Examples across the 3 Levels
-          </label>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div><TextArea label="Individual Level (Skills / Mentoring)" value={activeCell.individual} onChange={(e) => handleCellChange('individual', e.target.value)} rows={3} /><FieldGuidance {...FIELD_GUIDANCE.individual} /></div>
-            <div><TextArea label="Organizational Level (SOPs / Systems)" value={activeCell.organizational} onChange={(e) => handleCellChange('organizational', e.target.value)} rows={3} /><FieldGuidance {...FIELD_GUIDANCE.organizational} /></div>
-            <div><TextArea label="Enabling Environment (Law / Oversight)" value={activeCell.environment} onChange={(e) => handleCellChange('environment', e.target.value)} rows={3} /><FieldGuidance {...FIELD_GUIDANCE.enablingEnvironment} /></div>
+          {/* 3 Action Levels */}
+          <div>
+            <label className="text-xs font-semibold text-text-secondary uppercase tracking-wider block mb-2">
+              Intervention Examples across the 3 Levels
+            </label>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div><TextArea label="Individual Level (Skills / Mentoring)" value={activeCell.individual} onChange={(e) => handleCellChange('individual', e.target.value)} rows={3} /><FieldGuidance {...FIELD_GUIDANCE.individual} /></div>
+              <div><TextArea label="Organizational Level (SOPs / Systems)" value={activeCell.organizational} onChange={(e) => handleCellChange('organizational', e.target.value)} rows={3} /><FieldGuidance {...FIELD_GUIDANCE.organizational} /></div>
+              <div><TextArea label="Enabling Environment (Law / Oversight)" value={activeCell.environment} onChange={(e) => handleCellChange('environment', e.target.value)} rows={3} /><FieldGuidance {...FIELD_GUIDANCE.enablingEnvironment} /></div>
+            </div>
           </div>
         </div>
 
-        <div className="border-t border-slate-100 pt-4">
-          <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-900">Implementation</h4>
+        {/* Section 4: Implementation */}
+        <div className="border-t border-border-default pt-5 flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-primary bg-blue-50/80 border border-blue-200/60 px-1.5 py-0.5 rounded">
+              04
+            </span>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">Implementation</h4>
+          </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <label className="flex flex-col gap-1.5 text-xs font-bold text-slate-700">
+            <label className="flex flex-col gap-1.5 text-xs font-semibold text-text-secondary">
               Lead Stakeholder / Actor
               <select
                 aria-describedby={leadHelpId}
@@ -300,43 +349,43 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
                   leadStakeholderId: e.target.value || null,
                   supportingStakeholderIds: (activeCell.supportingStakeholderIds || []).filter(id => id !== e.target.value)
                 })}
-                className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-normal focus:outline-none focus:ring-2 focus:ring-blue-200"
+                className="rounded-md border border-border-default bg-surface-raised px-3 py-2 text-xs font-normal text-text-default focus:outline-none focus:ring-2 focus:ring-focus-ring"
               >
                 <option value="">Not assigned</option>
                 {stakeholders.map(stakeholder => <option key={stakeholder.id} value={stakeholder.id}>{stakeholder.name}</option>)}
               </select>
-              <span id={leadHelpId} className="font-normal leading-relaxed text-slate-500">{FIELD_GUIDANCE.leadActor.help}</span>
+              <span id={leadHelpId} className="font-normal leading-relaxed text-text-muted">{FIELD_GUIDANCE.leadActor.help}</span>
             </label>
-            <label className="flex flex-col gap-1.5 text-xs font-bold text-slate-700">
+            <label className="flex flex-col gap-1.5 text-xs font-semibold text-text-secondary">
               Implementation Phase
               <select
                 aria-describedby={phaseHelpId}
                 value={activeCell.implementationPhase || ''}
                 onChange={(e) => handleCellChange('implementationPhase', e.target.value)}
-                className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-normal focus:outline-none focus:ring-2 focus:ring-blue-200"
+                className="rounded-md border border-border-default bg-surface-raised px-3 py-2 text-xs font-normal text-text-default focus:outline-none focus:ring-2 focus:ring-focus-ring"
               >
                 <option value="">Not assigned</option>
                 <option value="NOW">NOW</option><option value="NEXT">NEXT</option><option value="LATER">LATER</option>
               </select>
-              <span id={phaseHelpId} className="font-normal leading-relaxed text-slate-500">{FIELD_GUIDANCE.implementationPhase.help}</span>
+              <span id={phaseHelpId} className="font-normal leading-relaxed text-text-muted">{FIELD_GUIDANCE.implementationPhase.help}</span>
             </label>
-            <label className="flex flex-col gap-1.5 text-xs font-bold text-slate-700">
+            <label className="flex flex-col gap-1.5 text-xs font-semibold text-text-secondary">
               Milestone / Timeframe
               <input
                 value={activeCell.milestoneTimeframe || ''}
                 onChange={(e) => handleCellChange('milestoneTimeframe', e.target.value)}
                 placeholder="e.g. Pilot review after 90 days"
-                className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-normal focus:outline-none focus:ring-2 focus:ring-blue-200"
+                className="rounded-md border border-border-default bg-surface-raised px-3 py-2 text-xs font-normal text-text-default focus:outline-none focus:ring-2 focus:ring-focus-ring"
               />
             </label>
           </div>
-          <div className="mt-4">
-            <span className="mb-1 block text-xs font-bold text-slate-700">Supporting Stakeholders / Actors</span>
-            <p id={supportingHelpId} className="mb-2 text-xs leading-relaxed text-slate-500">{FIELD_GUIDANCE.supportingActors.help}</p>
-            <div aria-describedby={supportingHelpId} className="grid max-h-[160px] grid-cols-1 gap-1.5 overflow-y-auto rounded-lg border border-slate-100 bg-slate-50/50 p-2.5 md:grid-cols-2">
+          <div>
+            <span className="mb-1 block text-xs font-semibold text-text-secondary">Supporting Stakeholders / Actors</span>
+            <p id={supportingHelpId} className="mb-2 text-xs leading-relaxed text-text-muted">{FIELD_GUIDANCE.supportingActors.help}</p>
+            <div aria-describedby={supportingHelpId} className="grid max-h-[160px] grid-cols-1 gap-1.5 overflow-y-auto rounded-md border border-border-default bg-surface-subtle p-2.5 md:grid-cols-2">
               {stakeholders.filter(stakeholder => stakeholder.id !== activeCell.leadStakeholderId).map(stakeholder => (
-                <label key={stakeholder.id} className="flex cursor-pointer items-center gap-2 text-xs text-slate-600 hover:text-slate-900">
-                  <input type="checkbox" checked={(activeCell.supportingStakeholderIds || []).includes(stakeholder.id)} onChange={() => handleSupportingStakeholderToggle(stakeholder.id)} className="h-3.5 w-3.5 rounded border-slate-300 text-blue-600" />
+                <label key={stakeholder.id} className="flex cursor-pointer items-center gap-2 text-xs text-text-secondary hover:text-text-default">
+                  <input type="checkbox" checked={(activeCell.supportingStakeholderIds || []).includes(stakeholder.id)} onChange={() => handleSupportingStakeholderToggle(stakeholder.id)} className="h-3.5 w-3.5 rounded border-border-default text-institutional focus:ring-focus-ring" />
                   <span>{stakeholder.name}</span>
                 </label>
               ))}
@@ -344,55 +393,69 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
           </div>
         </div>
 
-        {/* Indicators */}
-        <div className="pt-2 border-t border-slate-100">
-          <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-900">Monitoring</h4>
-          <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-2">
-            CBD Assessment Indicators
-          </label>
-          <div id={indicatorHelpId} className="mb-2"><FieldGuidance {...FIELD_GUIDANCE.indicator} /></div>
-          <div className="flex gap-2 mb-2">
-            <input
-              type="text"
-              value={newIndicator}
-              onChange={(e) => setNewIndicator(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleAddIndicator()}
-              placeholder="Add verifiable indicator..."
-              aria-describedby={indicatorHelpId}
-              className="flex-1 px-3 py-1.5 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-200"
-            />
-            <Button variant="outline" size="sm" onClick={handleAddIndicator}>
-              <Plus size={14} className="mr-1" /> Add
-            </Button>
+        {/* Section 5: Monitoring */}
+        <div className="border-t border-border-default pt-5 flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-primary bg-blue-50/80 border border-blue-200/60 px-1.5 py-0.5 rounded">
+              05
+            </span>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">Monitoring</h4>
           </div>
-          <div className="flex flex-wrap gap-1.5">
-            {activeCell.indicators?.map((indicator, idx) => (
-              <Badge
-                key={idx}
-                variant="slate"
-                className="pl-2.5 pr-1 py-1 flex items-center gap-1.5 text-[11px]"
-              >
-                <span>{indicatorText(indicator)}</span>
-                <button
-                  type="button"
-                  onClick={() => handleRemoveIndicator(idx)}
-                  aria-label={`Remove indicator ${idx + 1}`}
-                  className="p-0.5 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-600"
+          <div>
+            <label className="text-xs font-semibold text-text-secondary uppercase tracking-wider block mb-2">
+              CBD Assessment Indicators
+            </label>
+            <div id={indicatorHelpId} className="mb-2"><FieldGuidance {...FIELD_GUIDANCE.indicator} /></div>
+            <div className="flex gap-2 mb-2">
+              <input
+                type="text"
+                value={newIndicator}
+                onChange={(e) => setNewIndicator(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleAddIndicator()}
+                placeholder="Add verifiable indicator..."
+                aria-describedby={indicatorHelpId}
+                className="flex-1 px-3 py-1.5 border border-border-default rounded-md text-xs bg-surface-raised text-text-default focus:outline-none focus:ring-2 focus:ring-focus-ring"
+              />
+              <Button variant="secondary" size="sm" onClick={handleAddIndicator}>
+                <Plus size={14} className="mr-1" /> Add
+              </Button>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {activeCell.indicators?.map((indicator, idx) => (
+                <Badge
+                  key={idx}
+                  variant="slate"
+                  className="pl-2.5 pr-1 py-1 flex items-center gap-1.5 text-[11px]"
                 >
-                  <Trash2 size={10} />
-                </button>
-              </Badge>
-            ))}
+                  <span>{indicatorText(indicator)}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveIndicator(idx)}
+                    aria-label={`Remove indicator ${idx + 1}`}
+                    className="p-0.5 rounded-full hover:bg-surface-hover text-text-muted hover:text-action-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+                  >
+                    <Trash2 size={11} />
+                  </button>
+                </Badge>
+              ))}
+            </div>
           </div>
         </div>
 
-        <h4 className="border-t border-slate-100 pt-4 text-xs font-bold uppercase tracking-wider text-slate-900">Evidence &amp; Assessment</h4>
-        {/* Sliders */}
-        <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs leading-relaxed text-amber-950">
-          <strong>Prototype planning heuristic — not UN doctrine.</strong> This indicative score supports discussion; it is not objective and does not replace mandate review, evidence, consultation, or professional judgement. Confidence qualifies the assessment but does not increase the score.
-        </div>
+        {/* Section 6: Evidence & Assessment */}
+        <div className="border-t border-border-default pt-5 flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-primary bg-blue-50/80 border border-blue-200/60 px-1.5 py-0.5 rounded">
+              06
+            </span>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">Evidence &amp; Assessment</h4>
+          </div>
+          {/* Sliders */}
+          <div className="rounded-md border border-amber-200 bg-amber-50/60 p-3 text-xs leading-relaxed text-amber-950">
+            <strong>Prototype planning heuristic — not UN doctrine.</strong> This indicative score supports discussion; it is not objective and does not replace mandate review, evidence, consultation, or professional judgement. Confidence qualifies the assessment but does not increase the score.
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-slate-100">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-border-default">
           <Slider
             label="Impact"
             value={activeCell.impact ?? activeCell.priorityScore}
@@ -416,7 +479,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 pt-4 border-t border-slate-100">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 pt-4 border-t border-border-default">
           <Slider
             label="Confidence Level"
             value={activeCell.confidence}
@@ -449,7 +512,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
         </div>
 
         {/* Risks & Sequencing */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-slate-100">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-border-default">
           <TextArea
             label="Risks & Blockages"
             value={activeCell.risks}
@@ -467,24 +530,24 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
         </div>
 
         {/* Checkbox Groups: Drivers & Stakeholders */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-100 text-xs">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-border-default text-xs">
           {/* Linked PESTEL-S Drivers */}
           <div>
-            <span className="font-extrabold text-slate-700 block mb-2 uppercase tracking-wider flex items-center gap-1.5">
-              <Link size={14} className="text-blue-500" />
+            <span className="font-semibold text-text-secondary block mb-2 uppercase tracking-wider flex items-center gap-1.5">
+              <Link size={14} className="text-institutional" />
               Link PESTEL-S Contextual Drivers
             </span>
-            <div className="flex flex-col gap-1.5 max-h-[160px] overflow-y-auto border border-slate-100 p-2.5 rounded-lg bg-slate-50/50">
+            <div className="flex flex-col gap-1.5 max-h-[160px] overflow-y-auto border border-border-default p-2.5 rounded-md bg-surface-subtle">
               {Object.keys(pestels).map(key => {
                 const p = pestels[key];
                 const checked = activeCell.drivers?.includes(key);
                 return (
-                  <label key={key} className="flex items-center gap-2 cursor-pointer text-slate-600 hover:text-slate-900">
+                  <label key={key} className="flex items-center gap-2 cursor-pointer text-text-secondary hover:text-text-default">
                     <input
                       type="checkbox"
                       checked={checked}
                       onChange={() => handleCheckboxToggle('drivers', key)}
-                      className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-3.5 h-3.5"
+                      className="rounded border-border-default text-institutional focus:ring-focus-ring w-3.5 h-3.5"
                     />
                     <span className="line-clamp-1">{p.name}</span>
                   </label>
@@ -495,20 +558,20 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
 
           {/* Linked Stakeholders */}
           <div>
-            <span className="font-extrabold text-slate-700 block mb-2 uppercase tracking-wider flex items-center gap-1.5">
-              <Users size={14} className="text-teal-500" />
+            <span className="font-semibold text-text-secondary block mb-2 uppercase tracking-wider flex items-center gap-1.5">
+              <Users size={14} className="text-institutional" />
               Link Advisory Stakeholders
             </span>
-            <div className="flex flex-col gap-1.5 max-h-[160px] overflow-y-auto border border-slate-100 p-2.5 rounded-lg bg-slate-50/50">
+            <div className="flex flex-col gap-1.5 max-h-[160px] overflow-y-auto border border-border-default p-2.5 rounded-md bg-surface-subtle">
               {stakeholders.map(s => {
                 const checked = activeCell.stakeholders?.includes(s.id);
                 return (
-                  <label key={s.id} className="flex items-center gap-2 cursor-pointer text-slate-600 hover:text-slate-900">
+                  <label key={s.id} className="flex items-center gap-2 cursor-pointer text-text-secondary hover:text-text-default">
                     <input
                       type="checkbox"
                       checked={checked}
                       onChange={() => handleCheckboxToggle('stakeholders', s.id)}
-                      className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-3.5 h-3.5"
+                      className="rounded border-border-default text-institutional focus:ring-focus-ring w-3.5 h-3.5"
                     />
                     <span className="line-clamp-1">{s.name}</span>
                   </label>
@@ -516,6 +579,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
               })}
             </div>
           </div>
+        </div>
         </div>
 
         <EvidenceLogEditor

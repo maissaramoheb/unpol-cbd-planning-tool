@@ -15,11 +15,6 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
 }) => {
   const stepperRef = useRef<HTMLDivElement>(null);
   const activeStep = WORKFLOW_STAGES.find((step) => step.id === currentView);
-  const caption = activeStep
-    ? `Stage ${activeStep.id} of ${WORKFLOW_STAGES.length} · ${activeStep.sub}`
-    : currentView === EXPORT_VIEW
-      ? 'Workspace output · Professional Outputs'
-      : 'Home · Planning Overview';
 
   useEffect(() => {
     if (!activeStep) return;
@@ -32,19 +27,34 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
   return (
     <nav
       aria-label="Planning workflow"
-      className="w-full bg-slate-900 text-white rounded-2xl border border-slate-800 shadow-sm p-3 sm:p-4"
+      className="w-full bg-surface-raised border-b border-border-default px-2 sm:px-3"
     >
-      <div className="mb-3 flex flex-col gap-2 px-1 sm:flex-row sm:items-center sm:justify-between">
-        <span className="truncate text-xs font-bold text-slate-200">{caption}</span>
-        <div className="flex gap-2">
-          <button type="button" onClick={() => onViewChange(HOME_VIEW)} aria-current={currentView === HOME_VIEW ? 'page' : undefined} className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-[11px] font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${currentView === HOME_VIEW ? 'border-blue-400 bg-blue-600 text-white' : 'border-slate-700 text-slate-200 hover:bg-slate-800'}`}><Home size={13} />Home</button>
-          <button type="button" onClick={() => onViewChange(EXPORT_VIEW)} aria-current={currentView === EXPORT_VIEW ? 'page' : undefined} className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-[11px] font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${currentView === EXPORT_VIEW ? 'border-blue-400 bg-blue-600 text-white' : 'border-slate-700 text-slate-200 hover:bg-slate-800'}`}><FileText size={13} />Export</button>
+      <div className="flex items-center justify-between gap-1.5 sm:gap-2 h-11 sm:h-12">
+        {/* Home Utility */}
+        <div className="shrink-0 flex items-center">
+          <button
+            type="button"
+            onClick={() => onViewChange(HOME_VIEW)}
+            aria-current={currentView === HOME_VIEW ? 'page' : undefined}
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring ${
+              currentView === HOME_VIEW
+                ? 'text-action-primary bg-blue-50/80 font-bold'
+                : 'text-text-muted hover:text-text-primary hover:bg-surface-subtle'
+            }`}
+          >
+            <Home size={14} className="shrink-0" />
+            <span>Home</span>
+          </button>
         </div>
-      </div>
 
-      <div ref={stepperRef} className="overflow-x-auto pb-1 [scrollbar-width:thin]">
-        <div className="relative grid min-w-[910px] grid-cols-7 gap-1.5 lg:min-w-0">
-          <div aria-hidden="true" className="absolute left-[7%] right-[7%] top-[17px] h-px bg-slate-700" />
+        {/* Divider between Utilities and Workflow Stages */}
+        <div className="h-5 w-px bg-border-default shrink-0 mx-1" aria-hidden="true" />
+
+        {/* Continuous Workflow Stages Track */}
+        <div
+          ref={stepperRef}
+          className="flex-1 flex items-center gap-1 sm:gap-1.5 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden py-1"
+        >
           {WORKFLOW_STAGES.map((step) => {
             const isActive = step.id === currentView;
             const isCompleted = isWorkflowStage(currentView) && step.id < currentView;
@@ -56,26 +66,62 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
                 onClick={() => onViewChange(step.id)}
                 aria-current={isActive ? 'step' : undefined}
                 aria-label={`Stage ${step.id}: ${step.label}, ${step.sub}`}
-                className={`relative z-10 flex min-w-0 flex-col items-center rounded-xl border px-2 pb-2.5 pt-1.5 text-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 ${
+                className={`relative px-2 sm:px-2.5 py-1.5 flex items-center gap-1.5 shrink-0 rounded transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring ${
                   isActive
-                    ? 'border-blue-400 bg-blue-600 text-white shadow-sm shadow-blue-950/40'
+                    ? 'text-action-primary font-bold'
                     : isCompleted
-                      ? 'border-slate-700 bg-slate-900 text-slate-100 hover:border-emerald-700 hover:bg-slate-800'
-                      : 'border-transparent bg-slate-900 text-slate-300 hover:border-slate-700 hover:bg-slate-800'
+                      ? 'text-text-secondary hover:text-text-primary hover:bg-surface-subtle/70'
+                      : 'text-text-muted hover:text-text-secondary hover:bg-surface-subtle/50'
                 }`}
               >
-                <span className={`flex h-6 w-6 items-center justify-center rounded-full border text-[11px] font-black ${
+                <span className={`font-mono tabular-nums text-xs ${
                   isActive
-                    ? 'border-blue-200 bg-blue-700 text-white'
+                    ? 'text-action-primary font-bold'
                     : isCompleted
-                      ? 'border-emerald-700 bg-emerald-950 text-emerald-300'
-                      : 'border-slate-600 bg-slate-800 text-slate-300'
-                }`}>{step.id}</span>
-                <span className="mt-2 w-full text-[10px] font-black uppercase leading-tight tracking-[0.04em] lg:text-[11px]">{step.label}</span>
-                <span className={`mt-1 hidden w-full text-[9px] font-semibold leading-tight xl:block ${isActive ? 'text-blue-100' : 'text-slate-500'}`}>{step.sub}</span>
+                      ? 'text-text-primary font-semibold'
+                      : 'text-text-muted'
+                }`}>
+                  0{step.id}
+                </span>
+
+                <span className="text-xs whitespace-nowrap">
+                  {step.label}
+                </span>
+
+                {isCompleted && (
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-600/80 shrink-0" aria-hidden="true" />
+                )}
+
+                {/* Active indicator line at bottom */}
+                {isActive && (
+                  <span
+                    className="absolute bottom-0 left-2 right-2 h-0.5 bg-action-primary rounded-full"
+                    aria-hidden="true"
+                  />
+                )}
               </button>
             );
           })}
+        </div>
+
+        {/* Divider between Workflow Stages and Export */}
+        <div className="h-5 w-px bg-border-default shrink-0 mx-1" aria-hidden="true" />
+
+        {/* Export Utility */}
+        <div className="shrink-0 flex items-center">
+          <button
+            type="button"
+            onClick={() => onViewChange(EXPORT_VIEW)}
+            aria-current={currentView === EXPORT_VIEW ? 'page' : undefined}
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring ${
+              currentView === EXPORT_VIEW
+                ? 'text-action-primary bg-blue-50/80 font-bold'
+                : 'text-text-muted hover:text-text-primary hover:bg-surface-subtle'
+            }`}
+          >
+            <FileText size={14} className="shrink-0" />
+            <span>Export</span>
+          </button>
         </div>
       </div>
     </nav>

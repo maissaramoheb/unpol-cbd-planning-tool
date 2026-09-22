@@ -70,14 +70,14 @@ export const MissionExplorerPanel: React.FC<MissionExplorerPanelProps> = ({
               {entry.missionName}
             </h4>
           </div>
-          <button
-            type="button"
+          <Button
+            variant="tertiary"
+            size="sm"
             onClick={onClearSelection}
             aria-label={`Clear selected profile ${entry.missionAcronym}`}
-            className="rounded px-2 py-1 text-xs font-bold text-slate-500 hover:bg-slate-100 hover:text-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
           >
             Clear
-          </button>
+          </Button>
         </div>
 
         <div className="flex flex-wrap gap-1.5 mt-1">
@@ -188,10 +188,10 @@ export const MissionExplorerPanel: React.FC<MissionExplorerPanelProps> = ({
         <div className="border-t border-slate-100 pt-4 mt-2">
           <Button
             variant="primary"
+            fullWidth
             onClick={() => onUseProfile(entry)}
-            className="w-full py-2.5 font-bold flex items-center justify-center gap-1.5 text-xs rounded-xl shadow-md shadow-blue-500/10"
           >
-            <ArrowRight size={14} />
+            <ArrowRight size={14} className="mr-1.5" />
             Use This Planning Context
           </Button>
         </div>

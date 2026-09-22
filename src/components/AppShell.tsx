@@ -51,7 +51,7 @@ export const AppShell: React.FC = () => {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center font-sans">
+      <div className="min-h-screen bg-canvas-bg flex items-center justify-center font-sans">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin motion-reduce:animate-none" />
           <span className="text-sm font-bold text-slate-600">Initializing unofficial UNPOL CBD planning prototype...</span>
@@ -261,7 +261,7 @@ export const AppShell: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800 print:bg-white print:text-black">
+    <div className="min-h-screen bg-canvas-bg flex flex-col font-sans text-slate-800 print:bg-white print:text-black">
       {/* Top Header */}
       <Header
         onReset={handleResetWorkspace}
@@ -284,7 +284,7 @@ export const AppShell: React.FC = () => {
               type="button"
               onClick={() => setStorageRecoveryMessage(null)}
               aria-label="Dismiss storage recovery message"
-              className="rounded p-1 text-amber-700 hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-400"
+              className="rounded p-1 text-amber-700 hover:bg-amber-100 transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
             >
               <X size={14} />
             </button>

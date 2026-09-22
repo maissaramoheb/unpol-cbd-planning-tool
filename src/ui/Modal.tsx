@@ -1,5 +1,6 @@
 import React, { useId, useRef } from 'react';
 import { X } from 'lucide-react';
+import { Button } from './Button';
 import { useDialogA11y } from './useDialogA11y';
 
 interface ModalProps {
@@ -51,15 +52,16 @@ export const Modal: React.FC<ModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
           <h3 id={titleId} className="text-lg font-bold text-slate-900">{title}</h3>
-          <button
+          <Button
             ref={closeButtonRef}
-            type="button"
+            variant="quiet"
+            size="icon"
             onClick={onClose}
             aria-label={`Close ${title}`}
-            className="p-1 rounded-lg hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="text-slate-400 hover:text-slate-700"
           >
-            <X size={20} />
-          </button>
+            <X size={18} />
+          </Button>
         </div>
 
         {/* Content */}
