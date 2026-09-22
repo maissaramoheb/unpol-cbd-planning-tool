@@ -1,4 +1,5 @@
 import { CANONICAL_PLANNING_CONTEXTS } from '../data/planningContexts';
+import { defaultMissionTemplates } from '../data/defaultMissionTemplates';
 import { PlanningContext } from '../types/explorer';
 import { UnpolProjectData } from '../types';
 
@@ -42,9 +43,79 @@ export function getPlanningContextGuidance(context: PlanningContext) {
 /**
  * Pure helper to check whether a project workspace contains meaningful analyst work.
  * Does NOT flag freshly initialized workspaces (where findings are empty, stakeholders are empty, etc.).
+ * Compares Stage 1 profile fields against baseline prompts/narratives.
  */
 export function hasMeaningfulWork(data: UnpolProjectData | null | undefined): boolean {
   if (!data) return false;
+
+  // 0. Check Stage 1 Mission Profile edits
+  if (data.profile) {
+    const profile = data.profile;
+
+    // Analyst name entered
+    if (typeof profile.analystName === 'string' && profile.analystName.trim() !== '' && profile.analystName.trim() !== 'Participant / Team') {
+      return true;
+    }
+
+    const context = resolvePlanningContext(profile.templateId);
+    if (context) {
+      const isFictional = context.operationalStatus === 'fictional' || Boolean(context.scenarioNarrative);
+      const baselineMandate = isFictional
+        ? (context.scenarioNarrative?.mandateEnvironment ?? '')
+        : context.reference.mandateSummary.text;
+      const baselineHostPolice = context.reference.hostStatePolice.text;
+      const baselineConflict = isFictional
+        ? (context.scenarioNarrative?.conflictContext ?? '')
+        : '';
+      const baselinePurpose = isFictional
+        ? (context.scenarioNarrative?.planningPurpose ?? '')
+        : '';
+
+      if ((profile.mandateEnvironment ?? '').trim() !== baselineMandate.trim()) {
+        return true;
+      }
+      if ((profile.hostStatePolice ?? '').trim() !== baselineHostPolice.trim()) {
+        return true;
+      }
+      if ((profile.conflictContext ?? '').trim() !== baselineConflict.trim()) {
+        return true;
+      }
+      if ((profile.planningPurpose ?? '').trim() !== baselinePurpose.trim()) {
+        return true;
+      }
+    } else {
+      // For blank or legacy/unknown templates, check against default template baselines or placeholder prefixes
+      const defaultTemplate = defaultMissionTemplates.find((t) => t.id === profile.templateId);
+      if (defaultTemplate) {
+        if ((profile.mandateEnvironment ?? '').trim() !== defaultTemplate.profileDefaults.mandateEnvironment.trim()) {
+          return true;
+        }
+        if ((profile.hostStatePolice ?? '').trim() !== defaultTemplate.profileDefaults.hostStatePolice.trim()) {
+          return true;
+        }
+        if ((profile.conflictContext ?? '').trim() !== defaultTemplate.profileDefaults.conflictContext.trim()) {
+          return true;
+        }
+        if ((profile.planningPurpose ?? '').trim() !== defaultTemplate.profileDefaults.planningPurpose.trim()) {
+          return true;
+        }
+      } else {
+        // Unknown / unmapped context: conservative detection
+        if (profile.planningPurpose && profile.planningPurpose.trim() !== '' && !profile.planningPurpose.startsWith('[PROMPT]')) {
+          return true;
+        }
+        if (profile.conflictContext && profile.conflictContext.trim() !== '' && !profile.conflictContext.startsWith('[ASSUMPTION TO TEST]')) {
+          return true;
+        }
+        if (profile.mandateEnvironment && profile.mandateEnvironment.trim() !== '' && !profile.mandateEnvironment.startsWith('[PROMPT]') && profile.mandateEnvironment !== '...') {
+          return true;
+        }
+        if (profile.hostStatePolice && profile.hostStatePolice.trim() !== '' && !profile.hostStatePolice.includes('to verify')) {
+          return true;
+        }
+      }
+    }
+  }
 
   // 1. Check PESTEL-S findings
   if (data.pestels) {

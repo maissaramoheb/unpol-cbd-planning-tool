@@ -215,7 +215,7 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
           title: 'UN Security Council Resolution 2717 (2023)',
           organization: 'United Nations Security Council',
           sourceType: 'un-mandate',
-          url: PEACEKEEPING_SOURCE_URL,
+          url: null,
           publicationDate: '2023',
           reviewedDate: null,
           supports: ['mandateSummary', 'planningThemes', 'hostStatePolice']
@@ -523,7 +523,7 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
           title: 'UN Security Council Resolution 1990 (2011)',
           organization: 'United Nations Security Council',
           sourceType: 'un-mandate',
-          url: PEACEKEEPING_SOURCE_URL,
+          url: null,
           publicationDate: '2011',
           reviewedDate: null,
           supports: ['mandateSummary', 'planningThemes', 'policeRelevance', 'hostStatePolice']
@@ -697,7 +697,7 @@ export const CANONICAL_PLANNING_CONTEXTS: PlanningContext[] = [
           title: 'UN Security Council Resolution 2729 (2024)',
           organization: 'United Nations Security Council',
           sourceType: 'un-mandate',
-          url: PEACEKEEPING_SOURCE_URL,
+          url: null,
           publicationDate: '2024',
           reviewedDate: null,
           supports: ['mandateSummary', 'planningThemes', 'policeRelevance', 'hostStatePolice']

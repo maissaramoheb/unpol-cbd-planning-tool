@@ -607,18 +607,18 @@ export const MissionExplorerPanel: React.FC<MissionExplorerPanelProps> = ({
                 </ul>
               </div>
 
-              {/* Will remain blank */}
+              {/* Analyst assessment required */}
               <div className="p-3 rounded-xl border border-slate-200 bg-white flex flex-col gap-1.5">
                 <div className="flex items-center gap-1.5 text-amber-700 font-bold text-xs">
                   <AlertTriangle size={14} />
-                  <span>Will Remain Blank for Analyst Judgement</span>
+                  <span>Analyst Assessment Required (No Default Data Created)</span>
                 </div>
                 <ul className="text-xs text-slate-600 space-y-1 pl-5 list-disc">
-                  <li>All PESTEL-S findings and ratings (impact, urgency, relevance, confidence)</li>
-                  <li>All stakeholder records, positions, influence ratings, and engagement strategies</li>
-                  <li>All SWOT findings and TOWS strategic options</li>
-                  <li>All CBD matrix capacity cells and prioritized interventions</li>
-                  <li>All sequencing recommendations and results implementation activities</li>
+                  <li>No analyst PESTEL-S findings or assessed ratings are created.</li>
+                  <li>No stakeholder records, positions, influence ratings, or engagement strategies</li>
+                  <li>No SWOT findings or TOWS strategic options</li>
+                  <li>No CBD matrix capacity cells or prioritized interventions</li>
+                  <li>No sequencing recommendations or results implementation activities</li>
                 </ul>
               </div>
             </div>

@@ -290,7 +290,7 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
                     This will set up your workspace profile with reference metadata from <strong>{pendingEntry.missionName}</strong> and provide planning prompts for your investigation.
                   </p>
                   <p className="font-medium text-slate-800">
-                    Stage findings, ratings, stakeholders, and CBD matrices will remain blank for your analysis.
+                    No analyst PESTEL-S findings or assessed ratings are created. Stage findings, stakeholders, and CBD matrices will remain unassessed for your analysis.
                   </p>
                 </div>
 

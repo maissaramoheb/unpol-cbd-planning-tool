@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Stakeholder, StakeholderPosition, EvidenceNote } from '../types';
+import { Stakeholder, StakeholderPosition, EvidenceNote, RatingLevel, CapacityLevel } from '../types';
 import { TextInput, Select } from '../ui/Select';
 import { TextArea } from '../ui/TextArea';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { EvidenceLogEditor } from './EvidenceLogEditor';
-import { Plus, Trash2, User, Compass, Check, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, Trash2, User, Compass, Check, ChevronDown, ChevronUp, X, AlertCircle } from 'lucide-react';
 import { resolvePlanningContext } from '../lib/planningContext';
 import { NextStepCue } from './Guidance';
 import { StageLead } from './StageLead';
@@ -21,12 +21,29 @@ interface StakeholderMappingProps {
   onPrev: () => void;
 }
 
+interface DraftContextualActor {
+  name: string;
+  category: string;
+  role: string;
+  authority: string;
+  position: StakeholderPosition | '';
+  influence: RatingLevel | '';
+  legitimacy: RatingLevel | '';
+  relevance: RatingLevel | '';
+  capacity: CapacityLevel | '';
+}
+
 const POSITION_OPTIONS = [
   { value: 'Enabler', label: 'Enabler' },
   { value: 'Persuadable', label: 'Persuadable' },
   { value: 'Blocker', label: 'Blocker' },
   { value: 'Spoiler risk', label: 'Spoiler Risk' },
   { value: 'Neutral / unknown', label: 'Neutral / Unknown' }
+];
+
+const DRAFT_POSITION_OPTIONS = [
+  { value: '', label: 'Select posture (required)...' },
+  ...POSITION_OPTIONS
 ];
 
 const POSTURE_DESCRIPTIONS: Record<StakeholderPosition, string> = {
@@ -41,6 +58,19 @@ const HML_OPTIONS = [
   { value: 'High', label: 'High' },
   { value: 'Medium', label: 'Medium' },
   { value: 'Low', label: 'Low' }
+];
+
+const DRAFT_HML_OPTIONS = [
+  { value: '', label: 'Select rating (required)...' },
+  ...HML_OPTIONS
+];
+
+const DRAFT_CAPACITY_OPTIONS = [
+  { value: '', label: 'Select capacity (required)...' },
+  { value: 'High', label: 'High' },
+  { value: 'Medium', label: 'Medium' },
+  { value: 'Low', label: 'Low' },
+  { value: 'Variable', label: 'Variable' }
 ];
 
 const CATEGORY_OPTIONS = [
@@ -69,7 +99,43 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
 }) => {
   const [selectedId, setSelectedId] = useState<string>(stakeholders[0]?.id || '');
   const [isContextDrawerOpen, setIsContextDrawerOpen] = useState(false);
+  const [draftActor, setDraftActor] = useState<DraftContextualActor | null>(null);
   const activeStakeholder = stakeholders.find(s => s.id === selectedId);
+
+  const isDraftValid = Boolean(
+    draftActor &&
+    draftActor.name.trim() !== '' &&
+    draftActor.position !== '' &&
+    draftActor.influence !== '' &&
+    draftActor.legitimacy !== '' &&
+    draftActor.relevance !== '' &&
+    draftActor.capacity !== ''
+  );
+
+  const handleConfirmDraftActor = () => {
+    if (!draftActor || !isDraftValid) return;
+    const newId = `sh-ctx-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
+    const newStakeholder: Stakeholder = {
+      id: newId,
+      name: draftActor.name.trim(),
+      category: draftActor.category,
+      role: draftActor.role.trim() || 'Suggested for verification in field operations',
+      authority: draftActor.authority.trim() || 'Unspecified',
+      influence: draftActor.influence as RatingLevel,
+      position: draftActor.position as StakeholderPosition,
+      legitimacy: draftActor.legitimacy as RatingLevel,
+      relevance: draftActor.relevance as RatingLevel,
+      capacity: draftActor.capacity as CapacityLevel,
+      risk: '',
+      entry: '',
+      engagement: '',
+      cbdAreas: ['Professionalism & Integrity'],
+      isCustom: false
+    };
+    onAdd(newStakeholder);
+    setSelectedId(newId);
+    setDraftActor(null);
+  };
 
   const context = resolvePlanningContext(templateId);
   const candidatePrompts = context?.planningPrompts?.stakeholderPrompts ?? [];
@@ -187,7 +253,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
               {isContextDrawerOpen && (
                 <div className="p-3 bg-white/95 border-t border-blue-200/80 flex flex-col gap-2.5 text-xs max-h-64 overflow-y-auto">
                   <p className="text-[11px] text-slate-600 leading-relaxed italic">
-                    Candidate actors to verify in the field. Adding an actor pre-fills name and category only; ratings and posture start unassessed.
+                    Candidate actors to verify in the field. Adding an actor opens an initial assessment dialog; no default ratings are assigned from context data.
                   </p>
 
                   {candidatePrompts.map((promptGroup, gIdx) => (
@@ -211,26 +277,17 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                                   <button
                                     type="button"
                                     onClick={() => {
-                                      const newId = `sh-ctx-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
-                                      const newStakeholder: Stakeholder = {
-                                        id: newId,
+                                      setDraftActor({
                                         name: actorName,
                                         category: promptGroup.category || 'Host State',
                                         role: promptGroup.rolePrompt || 'Suggested for verification in field operations',
-                                        authority: 'Medium',
-                                        influence: 'Medium',
-                                        position: 'Neutral / unknown',
-                                        legitimacy: 'Medium',
-                                        relevance: 'Medium',
-                                        capacity: 'Medium',
-                                        risk: '',
-                                        entry: '',
-                                        engagement: '',
-                                        cbdAreas: ['Professionalism & Integrity'],
-                                        isCustom: false
-                                      };
-                                      onAdd(newStakeholder);
-                                      setSelectedId(newId);
+                                        authority: '',
+                                        position: '',
+                                        influence: '',
+                                        legitimacy: '',
+                                        relevance: '',
+                                        capacity: ''
+                                      });
                                     }}
                                     className="inline-flex items-center gap-1 text-[10px] font-bold text-blue-700 bg-white hover:bg-blue-50 px-2 py-0.5 rounded border border-blue-200 transition-colors shrink-0"
                                   >
@@ -495,6 +552,168 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
           Synthesize the Analysis
         </Button>
       </div>
+      {/* Draft Contextual Actor Assessment Modal */}
+      {draftActor && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="draft-actor-modal-title"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs"
+        >
+          <div className="bg-white rounded-xl shadow-2xl max-w-xl w-full border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+              <div className="flex items-center gap-2">
+                <Compass size={18} className="text-blue-700" />
+                <h3 id="draft-actor-modal-title" className="text-sm font-bold text-slate-900">
+                  Verify &amp; Assess Contextual Actor
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setDraftActor(null)}
+                className="p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 transition-colors"
+                aria-label="Close dialog"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="p-5 overflow-y-auto space-y-4 text-xs">
+              <div className="p-3 bg-blue-50/70 border border-blue-200 rounded-lg text-slate-700 flex items-start gap-2.5">
+                <AlertCircle size={16} className="text-blue-700 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <p className="font-semibold text-blue-950">Analyst Assessment Required</p>
+                  <p className="text-[11px] text-slate-600 leading-relaxed">
+                    Planning context guidance suggests candidate actors for field verification, not assessed analytical findings. You must assign initial institutional assessments before adding this stakeholder.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <TextInput
+                  label="Actor Name"
+                  value={draftActor.name}
+                  onChange={(e) => setDraftActor({ ...draftActor, name: e.target.value })}
+                  placeholder="Counterpart name..."
+                />
+                <Select
+                  label="Stakeholder Category"
+                  value={draftActor.category}
+                  onChange={(e) => setDraftActor({ ...draftActor, category: e.target.value })}
+                  options={CATEGORY_OPTIONS}
+                />
+              </div>
+
+              <TextArea
+                label="Strategic Role / Suggested Focus"
+                value={draftActor.role}
+                onChange={(e) => setDraftActor({ ...draftActor, role: e.target.value })}
+                rows={2}
+                placeholder="Operational role, mandate, or focus area..."
+              />
+
+              <TextInput
+                label="Formal Legal Authority (Optional)"
+                value={draftActor.authority}
+                onChange={(e) => setDraftActor({ ...draftActor, authority: e.target.value })}
+                placeholder="e.g. Constitutional, Statutory, Executive, Traditional..."
+              />
+
+              <div className="pt-3 border-t border-slate-200 space-y-3">
+                <span className="font-bold uppercase tracking-wider text-slate-800 text-[11px] block">
+                  Required Initial Assessment (No Default Ratings)
+                </span>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <Select
+                      label="Posture toward reform objectives *"
+                      value={draftActor.position}
+                      onChange={(e) => setDraftActor({ ...draftActor, position: e.target.value as StakeholderPosition })}
+                      options={DRAFT_POSITION_OPTIONS}
+                    />
+                    {draftActor.position ? (
+                      <p className="text-[10px] text-slate-500 mt-1">
+                        {POSTURE_DESCRIPTIONS[draftActor.position as StakeholderPosition]}
+                      </p>
+                    ) : (
+                      <p className="text-[10px] text-amber-700 mt-1">Required: select posture</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Select
+                      label="Real Influence Level *"
+                      value={draftActor.influence}
+                      onChange={(e) => setDraftActor({ ...draftActor, influence: e.target.value as RatingLevel })}
+                      options={DRAFT_HML_OPTIONS}
+                    />
+                    {!draftActor.influence && (
+                      <p className="text-[10px] text-amber-700 mt-1">Required: select influence</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                  <div>
+                    <Select
+                      label="Legitimacy *"
+                      value={draftActor.legitimacy}
+                      onChange={(e) => setDraftActor({ ...draftActor, legitimacy: e.target.value as RatingLevel })}
+                      options={DRAFT_HML_OPTIONS}
+                    />
+                    {!draftActor.legitimacy && (
+                      <p className="text-[10px] text-amber-700 mt-0.5">Required</p>
+                    )}
+                  </div>
+                  <div>
+                    <Select
+                      label="Relevance *"
+                      value={draftActor.relevance}
+                      onChange={(e) => setDraftActor({ ...draftActor, relevance: e.target.value as RatingLevel })}
+                      options={DRAFT_HML_OPTIONS}
+                    />
+                    {!draftActor.relevance && (
+                      <p className="text-[10px] text-amber-700 mt-0.5">Required</p>
+                    )}
+                  </div>
+                  <div>
+                    <Select
+                      label="Capacity *"
+                      value={draftActor.capacity}
+                      onChange={(e) => setDraftActor({ ...draftActor, capacity: e.target.value as CapacityLevel })}
+                      options={DRAFT_CAPACITY_OPTIONS}
+                    />
+                    {!draftActor.capacity && (
+                      <p className="text-[10px] text-amber-700 mt-0.5">Required</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 border-t border-slate-100 flex items-center justify-end gap-2 bg-slate-50">
+              <Button
+                variant="tertiary"
+                size="sm"
+                onClick={() => setDraftActor(null)}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="primary"
+                size="sm"
+                disabled={!isDraftValid}
+                onClick={handleConfirmDraftActor}
+                className={!isDraftValid ? 'opacity-50 cursor-not-allowed' : ''}
+              >
+                <Plus size={14} className="mr-1" />
+                Confirm &amp; Add Stakeholder
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

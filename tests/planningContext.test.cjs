@@ -392,6 +392,42 @@ test('source-backed statements vs unverified statements correctly reflect source
   assert.deepEqual(minurso.reference.hostStatePolice.sourceIds, [], 'MINURSO counterpart has no direct external source');
 });
 
+test('specific resolution-titled sources have url: null rather than generic peacekeeping portal url', () => {
+  const monusco = resolvePlanningContext('pk-monusco');
+  assert.ok(monusco);
+  const monuscoSrc = monusco.provenance.sources.find((s) => s.id === 'src-unscr-2717');
+  assert.ok(monuscoSrc);
+  assert.equal(monuscoSrc.url, null, 'MONUSCO UNSCR 2717 must have url: null');
+
+  const unisfa = resolvePlanningContext('pk-unisfa');
+  assert.ok(unisfa);
+  const unisfaSrc = unisfa.provenance.sources.find((s) => s.id === 'src-unscr-1990');
+  assert.ok(unisfaSrc);
+  assert.equal(unisfaSrc.url, null, 'UNISFA UNSCR 1990 must have url: null');
+
+  const unmiss = resolvePlanningContext('pk-unmiss');
+  assert.ok(unmiss);
+  const unmissSrc = unmiss.provenance.sources.find((s) => s.id === 'src-unscr-2729');
+  assert.ok(unmissSrc);
+  assert.equal(unmissSrc.url, null, 'UNMISS UNSCR 2729 must have url: null');
+
+  // Generic peacekeeping portal sources retain valid URL
+  const minurso = resolvePlanningContext('pk-minurso');
+  assert.ok(minurso);
+  const minursoSrc = minurso.provenance.sources.find((s) => s.id === 'src-un-dpko-minurso');
+  assert.ok(minursoSrc);
+  assert.equal(minursoSrc.url, 'https://peacekeeping.un.org/en/where-we-operate');
+
+  // No specific resolution-titled source should point to generic peacekeeping portal
+  getAllPlanningContexts().forEach((ctx) => {
+    ctx.provenance.sources.forEach((src) => {
+      if (src.title.toLowerCase().includes('resolution') || src.title.toLowerCase().includes('unscr')) {
+        assert.notEqual(src.url, 'https://peacekeeping.un.org/en/where-we-operate', `${ctx.id} resolution source ${src.id} must not point to generic peacekeeping portal`);
+      }
+    });
+  });
+});
+
 // ============================================================================
 // 8. EXTENDED EXPLORER SEARCH FILTER TESTS
 // ============================================================================
@@ -553,6 +589,67 @@ test('hasMeaningfulWork returns true when analyst records substantive planning w
   const dataWithSeq = initializeFromContext(ctx);
   dataWithSeq.priorityBrief.sequencingRecommendation = 'Phase 1: Legal mandate review before equipment transfer.';
   assert.equal(hasMeaningfulWork(dataWithSeq), true);
+});
+
+test('hasMeaningfulWork detects Stage 1 profile edits against baselines and ignores unchanged identity', () => {
+  const ctx = resolvePlanningContext('pk-unmiss');
+  assert.ok(ctx);
+
+  // Unchanged baseline returns false
+  const cleanData = initializeFromContext(ctx);
+  assert.equal(hasMeaningfulWork(cleanData), false);
+
+  // Unchanged prefilled identity fields (countryName, missionName, region) do not trigger meaningful work
+  const cleanDataWithIdentity = initializeFromContext(ctx);
+  assert.ok(cleanDataWithIdentity.profile.countryName.length > 0);
+  assert.ok(cleanDataWithIdentity.profile.missionName.length > 0);
+  assert.equal(hasMeaningfulWork(cleanDataWithIdentity), false);
+
+  // 1. analystName entered
+  const dataWithAnalyst = initializeFromContext(ctx);
+  dataWithAnalyst.profile.analystName = 'Col. Sarah Jenkins';
+  assert.equal(hasMeaningfulWork(dataWithAnalyst), true, 'analystName triggers meaningful work');
+
+  // Whitespace-only analystName does NOT count
+  const dataWithWsAnalyst = initializeFromContext(ctx);
+  dataWithWsAnalyst.profile.analystName = '   \t  ';
+  assert.equal(hasMeaningfulWork(dataWithWsAnalyst), false, 'whitespace analystName does not trigger work');
+
+  // 'Participant / Team' placeholder does NOT count
+  const dataWithTeam = initializeFromContext(ctx);
+  dataWithTeam.profile.analystName = 'Participant / Team';
+  assert.equal(hasMeaningfulWork(dataWithTeam), false);
+
+  // 2. planningPurpose modified
+  const dataWithPurpose = initializeFromContext(ctx);
+  dataWithPurpose.profile.planningPurpose = 'Strengthen community policing oversight and station administration.';
+  assert.equal(hasMeaningfulWork(dataWithPurpose), true, 'planningPurpose triggers meaningful work');
+
+  // 3. conflictContext modified
+  const dataWithConflict = initializeFromContext(ctx);
+  dataWithConflict.profile.conflictContext = 'Escalating inter-communal cattle-raiding and local militia activity.';
+  assert.equal(hasMeaningfulWork(dataWithConflict), true, 'conflictContext triggers meaningful work');
+
+  // 4. mandateEnvironment edited from baseline
+  const dataWithMandate = initializeFromContext(ctx);
+  dataWithMandate.profile.mandateEnvironment = 'Amended mandate focusing solely on executive policing assistance.';
+  assert.equal(hasMeaningfulWork(dataWithMandate), true, 'edited mandateEnvironment triggers meaningful work');
+
+  // 5. hostStatePolice edited from baseline
+  const dataWithHostPolice = initializeFromContext(ctx);
+  dataWithHostPolice.profile.hostStatePolice = 'National Police Service - Anti-Corruption Directorate';
+  assert.equal(hasMeaningfulWork(dataWithHostPolice), true, 'edited hostStatePolice triggers meaningful work');
+
+  // Fictional context: prefilled scenario facts do not trigger meaningful work
+  const fCtx = resolvePlanningContext('fictional-post-conflict');
+  assert.ok(fCtx);
+  const fData = initializeFromContext(fCtx);
+  assert.equal(hasMeaningfulWork(fData), false, 'fictional scenario narrative facts do not trigger false positive');
+
+  // Fictional context: analyst modifying scenario purpose triggers meaningful work
+  const fDataEdited = initializeFromContext(fCtx);
+  fDataEdited.profile.planningPurpose = 'Analyst bespoke purpose overriding scenario.';
+  assert.equal(hasMeaningfulWork(fDataEdited), true, 'modified fictional purpose triggers meaningful work');
 });
 
 // ============================================================================
