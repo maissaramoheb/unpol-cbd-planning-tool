@@ -76,36 +76,45 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
             Browse Mission Explorer Map
           </Button>
 
-          <div className="flex flex-col gap-2">
-            {defaultMissionTemplates.map((template) => {
-              const isSelected = profile.templateId === template.id;
-              return (
-                <button
-                  key={template.id}
-                  type="button"
-                  onClick={() => onTemplateChange(template.id)}
-                  className={`
-                    text-left p-3 rounded-lg border transition-colors duration-150 motion-reduce:transition-none flex items-start gap-3 w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-1
-                    ${isSelected
-                      ? 'border-action-primary/50 bg-blue-50/70 text-action-primary shadow-none'
-                      : 'border-border-default hover:border-border-strong hover:bg-surface-subtle bg-surface-raised'
-                    }
-                  `}
-                >
-                  <div className={`p-1.5 rounded-md bg-surface-subtle border border-border-default shrink-0 mt-0.5`}>
-                    {getTemplateIcon(template.id)}
-                  </div>
-                  <div>
-                    <h4 className={`font-semibold text-xs leading-tight ${isSelected ? 'text-action-primary font-bold' : 'text-text-primary'}`}>
-                      {template.name}
-                    </h4>
-                    <p className="text-xs text-text-muted mt-0.5 leading-relaxed">
-                      {template.description}
-                    </p>
-                  </div>
-                </button>
-              );
-            })}
+          <div className="rounded-lg border border-border-default bg-surface-raised overflow-hidden">
+            <div className="divide-y divide-border-default">
+              {defaultMissionTemplates.map((template) => {
+                const isSelected = profile.templateId === template.id;
+                return (
+                  <button
+                    key={template.id}
+                    type="button"
+                    onClick={() => onTemplateChange(template.id)}
+                    className={`
+                      text-left p-3.5 transition-colors duration-150 motion-reduce:transition-none flex items-start gap-3 w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-inset
+                      ${isSelected
+                        ? 'bg-blue-50/70 border-l-2 border-l-action-primary'
+                        : 'hover:bg-surface-subtle bg-surface-raised'
+                      }
+                    `}
+                  >
+                    <div className="shrink-0 mt-0.5 text-action-primary">
+                      {getTemplateIcon(template.id)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-1.5">
+                        <h4 className={`text-xs font-semibold leading-tight ${isSelected ? 'text-action-primary font-bold' : 'text-text-primary'}`}>
+                          {template.name}
+                        </h4>
+                        {isSelected && (
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-action-primary bg-blue-100/70 px-1.5 py-0.5 rounded shrink-0">
+                            Active
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-text-muted mt-0.5 leading-relaxed">
+                        {template.description}
+                      </p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 

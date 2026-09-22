@@ -4,7 +4,6 @@ import React, { useId, useState } from 'react';
 import { ChevronDown, CircleHelp } from 'lucide-react';
 import {
   getStageGuidanceSessionKey,
-  isStageGuidanceCollapsed,
   STAGE_GUIDANCE,
   type GuidanceStage
 } from '../lib/guidance';
@@ -17,16 +16,6 @@ interface StageLeadProps {
   className?: string;
 }
 
-const STAGE_PURPOSES: Record<GuidanceStage, string> = {
-  1: 'Define the operational context, mandate parameters, counterpart institutions, and planning timeframe for the capacity-building exercise.',
-  2: 'Assess environmental factors impacting host-state policing. Examine conditions and evidence to shape CBD priorities.',
-  3: 'Map critical host-state, mission, civil society, and international actors by authority, influence, legitimacy, and reform posture to assess institutional ownership.',
-  4: 'Synthesize diagnostic findings and stakeholder dynamics into structured SWOT findings and actionable TOWS strategic options.',
-  5: 'Define capacity problems, intended results, and institutional intervention packages across the CBD Matrix Key Areas and Cross-Cutting Analytical Lenses.',
-  6: 'Review indicative heuristic rankings, apply professional judgement, and record sequencing groups and priorities into implementation phases.',
-  7: 'Structure delivery logic, operational indicators, detailed activities, dependencies, resource requirements, and national ownership conditions for configured priorities.'
-};
-
 export const StageLead: React.FC<StageLeadProps> = ({
   stage,
   purpose,
@@ -36,27 +25,31 @@ export const StageLead: React.FC<StageLeadProps> = ({
   const contentId = useId();
   const content = STAGE_GUIDANCE[stage];
   const workflowStep = WORKFLOW_STAGES.find((s) => s.id === stage);
-  const [isCollapsed, setIsCollapsed] = useState(() => {
+  const [isOpen, setIsOpen] = useState(() => {
     if (typeof window === 'undefined') return false;
     try {
-      return isStageGuidanceCollapsed(window.sessionStorage.getItem(getStageGuidanceSessionKey(stage)));
+      const stored = window.sessionStorage.getItem(getStageGuidanceSessionKey(stage));
+      return stored === 'false' || stored === 'expanded';
     } catch {
       return false;
     }
   });
 
   const toggle = () => {
-    const next = !isCollapsed;
-    setIsCollapsed(next);
+    const next = !isOpen;
+    setIsOpen(next);
     try {
-      if (next) window.sessionStorage.setItem(getStageGuidanceSessionKey(stage), 'true');
-      else window.sessionStorage.removeItem(getStageGuidanceSessionKey(stage));
+      if (next) {
+        window.sessionStorage.setItem(getStageGuidanceSessionKey(stage), 'false');
+      } else {
+        window.sessionStorage.setItem(getStageGuidanceSessionKey(stage), 'true');
+      }
     } catch {
       // Guidance remains usable when session storage is unavailable.
     }
   };
 
-  const displayPurpose = purpose || STAGE_PURPOSES[stage] || content.doing;
+  const displayPurpose = purpose || content.doing;
 
   return (
     <header className={`print:hidden pb-3.5 border-b border-border-default ${className}`}>
@@ -82,7 +75,7 @@ export const StageLead: React.FC<StageLeadProps> = ({
         <button
           type="button"
           onClick={toggle}
-          aria-expanded={!isCollapsed}
+          aria-expanded={isOpen}
           aria-controls={contentId}
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-action-primary hover:text-action-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-1 rounded py-0.5 transition-colors"
         >
@@ -91,13 +84,13 @@ export const StageLead: React.FC<StageLeadProps> = ({
           <ChevronDown
             size={14}
             className={`transition-transform duration-150 motion-reduce:transition-none ${
-              !isCollapsed ? 'rotate-180' : ''
+              isOpen ? 'rotate-180' : ''
             }`}
             aria-hidden="true"
           />
         </button>
 
-        {!isCollapsed && (
+        {isOpen && (
           <div
             id={contentId}
             className="mt-2.5 grid gap-3 rounded-md border border-border-default bg-surface-subtle p-3.5 md:grid-cols-3 text-xs leading-relaxed"

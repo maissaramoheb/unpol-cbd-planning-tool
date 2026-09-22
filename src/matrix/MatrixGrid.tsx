@@ -91,12 +91,12 @@ export const MatrixGrid: React.FC<MatrixGridProps> = ({
 
   return (
     <div className="w-full flex flex-col gap-4">
-      <div className="w-full overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm p-4">
+      <div className="w-full overflow-x-auto rounded-xl border border-border-default bg-surface-card shadow-subtle p-4">
         <div className="min-w-[980px] grid grid-cols-7 gap-2">
           {/* Corner Cell */}
-          <div className="bg-slate-900 rounded-lg p-3 text-center flex flex-col justify-center items-center text-white text-[10px] font-extrabold uppercase tracking-wider h-24">
+          <div className="bg-surface-subtle border border-border-default rounded-lg p-3 text-center flex flex-col justify-center items-center text-text-muted text-[10px] font-semibold uppercase tracking-wider h-24">
             <span>Analytical Lenses &rarr;</span>
-            <span className="mt-1 border-t border-slate-700 pt-1 w-full">Key Areas &darr;</span>
+            <span className="mt-1 border-t border-border-default pt-1 w-full text-text-muted">Key Areas &darr;</span>
           </div>
 
           {/* Column Headers */}
@@ -108,14 +108,14 @@ export const MatrixGrid: React.FC<MatrixGridProps> = ({
                 type="button"
                 onClick={() => onSelectDimension(col.id)}
                 className={`
-                  h-24 p-2 text-center rounded-lg text-xs font-extrabold transition-colors duration-150 motion-reduce:transition-none flex flex-col justify-center items-center border-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring
+                  h-24 p-2 text-center rounded-lg text-xs font-semibold transition-colors duration-150 motion-reduce:transition-none flex flex-col justify-center items-center border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring
                   ${isActive
-                    ? 'border-blue-600 bg-blue-50 text-blue-800 shadow-subtle'
-                    : 'border-transparent bg-slate-100 hover:bg-slate-200 text-slate-700'
+                    ? 'border-institutional bg-institutional-subtle text-institutional font-bold border-t-2 shadow-subtle'
+                    : 'border-border-default bg-surface-subtle hover:bg-surface-hover text-text-default'
                   }
                 `}
               >
-                <span className="uppercase tracking-wider text-[9px] text-slate-500 block mb-1">Analytical Lens</span>
+                <span className="uppercase tracking-wider text-[9px] text-text-muted block mb-1">Analytical Lens</span>
                 <span className="line-clamp-2 leading-tight">{shortColName(col.name)}</span>
               </button>
             );
@@ -130,14 +130,14 @@ export const MatrixGrid: React.FC<MatrixGridProps> = ({
                 type="button"
                 onClick={() => onSelectKeyArea(row.id)}
                 className={`
-                  h-24 p-2 text-left rounded-lg text-xs font-extrabold transition-colors duration-150 motion-reduce:transition-none flex flex-col justify-center border-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring
+                  h-24 p-2.5 text-left rounded-lg text-xs font-semibold transition-colors duration-150 motion-reduce:transition-none flex flex-col justify-center border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring
                   ${selectedMode === 'keyArea' && selectedKey === row.id
-                    ? 'border-slate-800 bg-slate-800 text-white shadow-subtle'
-                    : 'border-transparent bg-slate-800 text-slate-100 hover:bg-slate-700'
+                    ? 'border-institutional bg-institutional-subtle text-institutional font-bold shadow-subtle border-l-4'
+                    : 'border-border-default border-l-2 border-l-institutional bg-surface-subtle hover:bg-surface-hover text-text-default'
                   }
                 `}
               >
-                <span className="uppercase tracking-wider text-[8px] text-slate-400 block mb-1">Key Area</span>
+                <span className="uppercase tracking-wider text-[8px] text-text-muted block mb-1">Key Area</span>
                 <span className="line-clamp-2 leading-tight">{shortRowName(row.name)}</span>
               </button>
 
@@ -154,25 +154,25 @@ export const MatrixGrid: React.FC<MatrixGridProps> = ({
                     type="button"
                     onClick={() => onSelectCell(row.id, col.id)}
                     className={`
-                      h-24 p-2 rounded-lg text-left transition-colors duration-150 motion-reduce:transition-none border-2 flex flex-col justify-between relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring
+                      h-24 p-2 rounded-lg text-left transition-colors duration-150 motion-reduce:transition-none border flex flex-col justify-between relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring
                       ${selected
-                        ? 'border-blue-600 bg-blue-50 text-blue-800 shadow-subtle'
+                        ? 'border-institutional bg-institutional-subtle text-institutional shadow-subtle ring-1 ring-institutional'
                         : highlighted
-                          ? 'border-blue-200 bg-blue-50/20 text-slate-700 hover:bg-blue-50/40'
-                          : 'border-slate-100 bg-white hover:bg-slate-50 text-slate-600 hover:border-slate-200'
+                          ? 'border-institutional/30 bg-institutional-subtle/30 text-text-default hover:bg-institutional-subtle/50'
+                          : 'border-border-default bg-surface-card hover:bg-surface-subtle text-text-default hover:border-border-muted'
                       }
                     `}
                   >
                     <div className="flex justify-between items-start w-full">
-                      <span className="text-[8px] font-extrabold text-slate-500 uppercase tracking-tight line-clamp-1">
+                      <span className="text-[8px] font-semibold text-text-muted uppercase tracking-tight line-clamp-1">
                         {shortColName(col.name)}
                       </span>
                       {custom && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-600" title="Customized analysis available" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-institutional" title="Customized analysis available" />
                       )}
                     </div>
                     
-                    <span className="text-[10px] font-black text-slate-900 line-clamp-2 leading-tight flex-1 flex items-center">
+                    <span className="text-[10px] font-semibold text-text-default line-clamp-2 leading-tight flex-1 flex items-center">
                       {shortRowName(row.name)}
                     </span>
 
@@ -195,25 +195,25 @@ export const MatrixGrid: React.FC<MatrixGridProps> = ({
       </div>
 
       {/* Heatmap Legend */}
-      <div className="p-3 bg-slate-50 border border-slate-200/60 rounded-xl text-[9px] flex flex-wrap gap-4 items-center justify-center font-extrabold text-slate-500 uppercase tracking-wider">
+      <div className="p-3 bg-surface-subtle border border-border-default rounded-xl text-[9px] flex flex-wrap gap-4 items-center justify-center font-medium text-text-muted uppercase tracking-wider">
         <span>Heatmap Legend:</span>
-        <div className="flex items-center gap-1.5 text-slate-600">
+        <div className="flex items-center gap-1.5 text-text-secondary">
           <span className="w-3 h-3 rounded bg-amber-50 border border-amber-200 flex" />
           <span>High Priority</span>
         </div>
-        <div className="flex items-center gap-1.5 text-slate-600">
+        <div className="flex items-center gap-1.5 text-text-secondary">
           <span className="w-3 h-3 rounded bg-emerald-50 border border-emerald-200 flex" />
           <span>Quick Win</span>
         </div>
-        <div className="flex items-center gap-1.5 text-slate-600">
+        <div className="flex items-center gap-1.5 text-text-secondary">
           <span className="w-3 h-3 rounded bg-rose-50 border border-rose-200 flex" />
           <span>Leadership-Sensitive</span>
         </div>
-        <div className="flex items-center gap-1.5 text-slate-600">
+        <div className="flex items-center gap-1.5 text-text-secondary">
           <span className="w-3 h-3 rounded bg-indigo-50 border border-indigo-200 flex" />
           <span>Long-term Reform</span>
         </div>
-        <div className="flex items-center gap-1.5 text-slate-650">
+        <div className="flex items-center gap-1.5 text-text-secondary">
           <span className="w-3 h-3 rounded bg-slate-50 border border-slate-200 flex" />
           <span>Low Confidence</span>
         </div>

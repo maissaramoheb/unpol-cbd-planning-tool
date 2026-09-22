@@ -87,26 +87,28 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
                 Intervention Diagnostic
               </h4>
             </CardHeader>
-            <CardBody className="flex flex-col gap-3 max-h-[500px] overflow-y-auto">
-              <span className="text-[11px] text-text-muted">
+            <CardBody className="flex flex-col max-h-[500px] overflow-y-auto">
+              <span className="text-[11px] text-text-muted pb-1">
                 Indicative ranking from prototype planning heuristic (not UN doctrine):
               </span>
               {scoredCells.length === 0 ? (
-                <p className="text-xs text-text-muted italic">No matrix intersections configured yet in Step 5.</p>
+                <p className="text-xs text-text-muted italic py-2">No matrix intersections configured yet in Step 5.</p>
               ) : (
-                scoredCells.map(({ key, score, classification }) => (
-                  <div key={key} className="p-2.5 border border-border-default rounded-md text-xs flex flex-col gap-1 bg-surface-subtle">
-                    <div className="flex justify-between items-start gap-2">
-                      <span className="font-semibold text-text-default line-clamp-1">{key}</span>
-                      <span className="font-mono text-[11px] font-semibold text-institutional tabular-nums shrink-0">
-                        {score.toFixed(1)}/5
-                      </span>
+                <div className="divide-y divide-border-default">
+                  {scoredCells.map(({ key, score, classification }) => (
+                    <div key={key} className="py-2 px-1 text-xs flex flex-col gap-1">
+                      <div className="flex justify-between items-start gap-2">
+                        <span className="font-semibold text-text-default line-clamp-1">{key}</span>
+                        <span className="font-mono text-[11px] font-semibold text-institutional tabular-nums shrink-0">
+                          {score.toFixed(1)}/5
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center text-[10px]">
+                        <span className="text-text-muted">{classification}</span>
+                      </div>
                     </div>
-                    <div className="flex justify-between items-center text-[10px]">
-                      <span className="text-text-muted">{classification}</span>
-                    </div>
-                  </div>
-                ))
+                  ))}
+                </div>
               )}
             </CardBody>
           </Card>
@@ -114,14 +116,25 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
             <CardHeader className="bg-surface-subtle border-b border-border-default py-3 px-4">
               <h4 className="text-xs font-semibold uppercase tracking-wider text-text-muted">Manual Implementation Phases</h4>
             </CardHeader>
-            <CardBody className="flex flex-col gap-3">
-              <p className="text-[11px] leading-relaxed text-text-muted">Assignments recorded in the CBD Matrix. Phases are not generated from indicative scores.</p>
-              {phaseGroups.map(group => (
-                <div key={group.phase} className="rounded-md border border-border-default p-2.5 bg-surface-subtle">
-                  <div className="mb-1.5 flex items-center justify-between"><strong className="text-xs font-semibold text-text-default">{group.phase === 'UNASSIGNED' ? 'NOT ASSIGNED' : group.phase}</strong><Badge variant="slate">{group.cells.length}</Badge></div>
-                  {group.cells.length ? <ul className="space-y-1 text-[11px] text-text-muted">{group.cells.map(item => <li key={item.key}>• {item.key}</li>)}</ul> : <p className="text-[11px] italic text-text-muted">No interventions assigned.</p>}
-                </div>
-              ))}
+            <CardBody className="flex flex-col">
+              <p className="text-[11px] leading-relaxed text-text-muted pb-2">Assignments recorded in the CBD Matrix. Phases are not generated from indicative scores.</p>
+              <div className="divide-y divide-border-default">
+                {phaseGroups.map(group => (
+                  <div key={group.phase} className="py-2.5 px-1">
+                    <div className="mb-1.5 flex items-center justify-between">
+                      <strong className="text-xs font-semibold text-text-default">{group.phase === 'UNASSIGNED' ? 'NOT ASSIGNED' : group.phase}</strong>
+                      <Badge variant="slate">{group.cells.length}</Badge>
+                    </div>
+                    {group.cells.length ? (
+                      <ul className="space-y-1 text-[11px] text-text-muted">
+                        {group.cells.map(item => <li key={item.key}>• {item.key}</li>)}
+                      </ul>
+                    ) : (
+                      <p className="text-[11px] italic text-text-muted">No interventions assigned.</p>
+                    )}
+                  </div>
+                ))}
+              </div>
             </CardBody>
           </Card>
         </div>
@@ -161,15 +174,15 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
                       </Button>
                     </div>
                     {list.length > 0 && (
-                      <ul className="flex flex-col gap-1 border border-border-default p-2.5 rounded-md bg-surface-subtle">
+                      <ul className="flex flex-col divide-y divide-border-default pt-1">
                         {list.map((item, idx) => (
-                          <li key={idx} className="flex items-start justify-between gap-3 text-xs text-text-default leading-relaxed py-0.5">
+                          <li key={idx} className="flex items-start justify-between gap-3 text-xs text-text-default leading-relaxed py-1.5 px-1">
                             <span>• {item}</span>
                             <button
                               type="button"
                               onClick={() => handleRemoveListItem(field, idx)}
                               aria-label={`Remove ${item}`}
-                              className="text-text-muted hover:text-action-danger transition-colors p-0.5 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+                              className="text-text-muted hover:text-action-danger transition-colors p-0.5 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring shrink-0"
                             >
                               <Trash2 size={12} />
                             </button>
@@ -182,7 +195,7 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
               })}
 
               {/* Sequencing Guidelines Textarea */}
-              <div className="flex flex-col gap-1.5 pt-4 border-t border-slate-100">
+              <div className="flex flex-col gap-1.5 pt-4 border-t border-border-default">
                 <TextArea
                   label="Recommended Sequencing Narrative"
                   value={brief.sequencingRecommendation}
