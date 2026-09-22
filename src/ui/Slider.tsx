@@ -29,8 +29,8 @@ export const Slider: React.FC<SliderProps> = ({
   return (
     <div className="w-full flex flex-col gap-1.5">
       <div className="flex justify-between items-center">
-        <label htmlFor={inputId} className="text-sm font-semibold text-slate-700">{label}</label>
-        <span className="text-sm font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+        <label htmlFor={inputId} className="text-xs font-semibold text-text-secondary">{label}</label>
+        <span className="font-mono tabular-nums text-xs font-bold text-action-primary bg-blue-50/80 px-2 py-0.5 rounded border border-blue-200/80">
           {value}
         </span>
       </div>
@@ -44,15 +44,15 @@ export const Slider: React.FC<SliderProps> = ({
         value={value}
         aria-describedby={helperText ? helperId : undefined}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
+        className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-action-primary focus:outline-none focus:ring-1 focus:ring-focus-ring"
       />
 
-      <div className="flex justify-between text-[11px] font-semibold text-slate-400">
+      <div className="flex justify-between text-xs text-text-muted">
         <span>{min} ({minLabel})</span>
         <span>{max} ({maxLabel})</span>
       </div>
 
-      {helperText && <span id={helperId} className="text-xs text-slate-400 mt-0.5">{helperText}</span>}
+      {helperText && <span id={helperId} className="text-xs text-text-muted">{helperText}</span>}
     </div>
   );
 };

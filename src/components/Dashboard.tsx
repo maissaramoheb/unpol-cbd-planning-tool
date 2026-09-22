@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { UnpolProjectData } from '../types';
 import { calculateQualityWarnings } from '../lib/warnings';
-import { Card, CardBody, CardHeader } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 import { evaluateCbdCell } from '../lib/scoring';
@@ -59,52 +58,99 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
   if (shouldShowBlankWelcome(isEmptyState)) {
     return (
       <div className="flex flex-col gap-6 w-full">
-        <Card className="overflow-hidden border-blue-100 bg-white shadow-sm">
-          <CardBody className="p-6 sm:p-8 lg:p-10">
-            <div className="max-w-4xl">
-              <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-700">Professional planning workspace</p>
-              <h1 className="mt-3 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">UNPOL CBD Integrated Planning Tool</h1>
-              <p className="mt-4 max-w-3xl text-sm font-medium leading-relaxed text-slate-600 sm:text-base">Structure the reasoning from evidence and context to capacity-building priorities, responsibilities, sequencing and a professional planning brief.</p>
-              <p className="mt-4 inline-flex rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-bold text-amber-950">Unofficial planning-support prototype · Use fictional or public/unclassified information only</p>
+        <div className="rounded-lg border border-border-default bg-surface-raised p-6 sm:p-8 lg:p-10">
+          <div className="max-w-4xl">
+            <span className="font-mono text-xs font-bold uppercase tracking-wider text-action-primary">
+              Institutional Planning Workbench
+            </span>
+            <h1 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-text-primary">
+              UNPOL CBD Integrated Planning Tool
+            </h1>
+            <p className="mt-3 max-w-3xl text-sm sm:text-base leading-relaxed text-text-secondary">
+              Structure the reasoning from evidence and context to capacity-building priorities, responsibilities, sequencing and a professional planning brief.
+            </p>
+            <div className="mt-4 inline-flex items-center gap-2 rounded-md border border-amber-200/80 bg-amber-50/80 px-3 py-1.5 text-xs font-medium text-amber-900">
+              <span className="h-1.5 w-1.5 rounded-full bg-amber-600 shrink-0" />
+              <span>Unofficial planning-support prototype · Use fictional or public/unclassified information only</span>
             </div>
+          </div>
 
-            <div className="mt-8 grid gap-3 lg:grid-cols-[1.15fr_1fr_0.85fr]">
-              <button type="button" onClick={() => onNavigateToStep(1)} className="group rounded-xl border border-blue-700 bg-blue-700 p-5 text-left text-white shadow-sm transition-colors hover:bg-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
-                <span className="flex items-center justify-between gap-3"><Compass size={20} /><ArrowRight size={17} className="transition-transform group-hover:translate-x-0.5 motion-reduce:transform-none" /></span>
-                <strong className="mt-5 block text-base">Start a New CBD Plan</strong>
-                <span className="mt-1 block text-xs leading-relaxed text-blue-100">Begin a blank professional planning workspace.</span>
-              </button>
-              <button type="button" onClick={onLoadDemoTemplate} className="rounded-xl border border-slate-200 bg-slate-50 p-5 text-left text-slate-900 transition-colors hover:border-blue-300 hover:bg-blue-50/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
-                <BookOpen size={20} className="text-blue-700" />
-                <strong className="mt-5 block text-base">Explore CARANA</strong>
-                <span className="mt-1 block text-xs leading-relaxed text-slate-600">Open the fictional demonstration and see how the planning logic works.</span>
-              </button>
-              <button type="button" onClick={() => setShowHowItWorks(value => !value)} aria-expanded={showHowItWorks} aria-controls="how-it-works-orientation" className="rounded-xl border border-slate-200 bg-white p-5 text-left text-slate-900 transition-colors hover:border-blue-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
-                <span className="flex items-center justify-between gap-3"><FileText size={20} className="text-slate-600" /><ChevronDown size={17} className={`transition-transform motion-reduce:transition-none ${showHowItWorks ? 'rotate-180' : ''}`} /></span>
-                <strong className="mt-5 block text-base">How It Works</strong>
-                <span className="mt-1 block text-xs leading-relaxed text-slate-600">See the planning journey before you begin.</span>
-              </button>
-            </div>
+          <div className="mt-8 grid gap-3 lg:grid-cols-[1.15fr_1fr_0.85fr]">
+            <button
+              type="button"
+              onClick={() => onNavigateToStep(1)}
+              className="group rounded-lg border border-action-primary bg-action-primary p-4 sm:p-5 text-left text-text-inverse transition-colors hover:bg-action-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2"
+            >
+              <span className="flex items-center justify-between gap-3">
+                <Compass size={20} />
+                <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5 motion-reduce:transform-none" />
+              </span>
+              <strong className="mt-4 block text-sm sm:text-base font-bold">Start a New CBD Plan</strong>
+              <span className="mt-1 block text-xs leading-relaxed text-blue-100">Begin a blank professional planning workspace.</span>
+            </button>
+            <button
+              type="button"
+              onClick={onLoadDemoTemplate}
+              className="rounded-lg border border-border-default bg-surface-raised p-4 sm:p-5 text-left text-text-primary transition-colors hover:border-border-strong hover:bg-surface-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+            >
+              <BookOpen size={20} className="text-action-primary" />
+              <strong className="mt-4 block text-sm sm:text-base font-bold">Explore CARANA</strong>
+              <span className="mt-1 block text-xs leading-relaxed text-text-muted">Open the fictional demonstration and see how the planning logic works.</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowHowItWorks(value => !value)}
+              aria-expanded={showHowItWorks}
+              aria-controls="how-it-works-orientation"
+              className="rounded-lg border border-border-default bg-surface-raised p-4 sm:p-5 text-left text-text-primary transition-colors hover:border-border-strong hover:bg-surface-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+            >
+              <span className="flex items-center justify-between gap-3">
+                <FileText size={20} className="text-text-muted" />
+                <ChevronDown size={16} className={`transition-transform duration-150 motion-reduce:transition-none ${showHowItWorks ? 'rotate-180' : ''}`} />
+              </span>
+              <strong className="mt-4 block text-sm sm:text-base font-bold">How It Works</strong>
+              <span className="mt-1 block text-xs leading-relaxed text-text-muted">See the planning journey before you begin.</span>
+            </button>
+          </div>
 
-            <div className="mt-5 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-              <span>Additional starting point:</span>
-              <Button variant="link" onClick={onOpenExplorer}>
-                <Globe size={14} className="mr-1" />Open Mission Explorer
-              </Button>
-            </div>
-          </CardBody>
-        </Card>
+          <div className="mt-5 flex flex-wrap items-center gap-2 text-xs text-text-muted">
+            <span>Additional starting point:</span>
+            <Button variant="link" onClick={onOpenExplorer} className="text-xs">
+              <Globe size={13} className="mr-1" />Open Mission Explorer
+            </Button>
+          </div>
+        </div>
 
         {showHowItWorks && (
-          <Card id="how-it-works-orientation" className="border-slate-200">
-            <CardHeader className="border-b border-slate-100 pb-3"><h2 className="text-base font-black text-slate-950">How the planning journey works</h2><p className="mt-1 text-xs text-slate-600">Move through the reasoning in order, then revisit earlier steps as evidence improves.</p></CardHeader>
-            <CardBody className="p-5">
-              <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-7">
-                {ORIENTATION_STEPS.map((step, index) => <li key={step.title} className="rounded-xl border border-slate-200 bg-slate-50/70 p-3"><span className="text-[11px] font-black tracking-wider text-blue-700">{String(index + 1).padStart(2, '0')}</span><h3 className="mt-2 text-xs font-black leading-snug text-slate-900">{step.title}</h3><p className="mt-1 text-[11px] leading-relaxed text-slate-600">{step.description}</p></li>)}
+          <div id="how-it-works-orientation" className="rounded-lg border border-border-default bg-surface-raised p-5 sm:p-6">
+            <div className="border-b border-border-default pb-3">
+              <h2 className="text-base font-bold text-text-primary">How the planning journey works</h2>
+              <p className="mt-0.5 text-xs text-text-muted">Move through the reasoning in order, then revisit earlier steps as evidence improves.</p>
+            </div>
+            <div className="pt-4">
+              <ol className="grid gap-2 sm:grid-cols-2 lg:grid-cols-7">
+                {ORIENTATION_STEPS.map((step, index) => (
+                  <li key={step.title} className="rounded-md border border-border-default bg-surface-subtle p-3 flex flex-col justify-between">
+                    <div>
+                      <span className="font-mono text-xs font-bold text-action-primary">
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                      <h3 className="mt-1.5 text-xs font-bold leading-snug text-text-primary">{step.title}</h3>
+                      <p className="mt-1 text-xs leading-relaxed text-text-muted">{step.description}</p>
+                    </div>
+                  </li>
+                ))}
               </ol>
-              <div className="mt-5 flex flex-col gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-between"><p className="text-sm font-bold text-slate-800">The tool structures professional judgement from diagnosis to implementation planning; it does not make the judgement for you.</p><Button variant="primary" onClick={() => onNavigateToStep(1)} className="shrink-0">Start Planning <ArrowRight size={14} className="ml-1" /></Button></div>
-            </CardBody>
-          </Card>
+              <div className="mt-5 flex flex-col gap-3 border-t border-border-default pt-4 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-xs sm:text-sm font-medium text-text-secondary">
+                  The tool structures professional judgement from diagnosis to implementation planning; it does not make the judgement for you.
+                </p>
+                <Button variant="primary" size="sm" onClick={() => onNavigateToStep(1)} className="shrink-0">
+                  Start Planning <ArrowRight size={13} className="ml-1" />
+                </Button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     );
@@ -168,9 +214,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
   }).sort((a, b) => b.score - a.score).slice(0, 5);
 
   return (
-    <div className="flex flex-col gap-6 w-full">
-      <Card className="border-blue-100 bg-white">
-        <CardBody className="flex flex-col gap-4 p-5 lg:flex-row lg:items-center lg:justify-between">
+    <div className="flex flex-col gap-5 w-full">
+      {/* Executive Briefing Lead Card */}
+      <div className="rounded-lg border border-border-default bg-surface-raised p-5 sm:p-6">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-col gap-2">
             <div className="flex flex-wrap items-center gap-2">
               <Badge variant="blue">Home · Planning Overview</Badge>
@@ -182,189 +229,190 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
               ) : null}
             </div>
             <div>
-              <h1 className="text-xl font-black tracking-tight text-slate-950">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-text-primary">
                 {profile.missionName || 'Planning context in progress'}
               </h1>
-              <p className="mt-1 text-xs font-semibold leading-relaxed text-slate-600">
+              <p className="mt-0.5 text-xs font-medium text-text-muted">
                 {profile.countryName || 'Country / area not set'} · {profile.region || 'Region not set'}
               </p>
             </div>
-            <p className="max-w-3xl text-xs leading-relaxed text-slate-600">
+            <p className="max-w-3xl text-xs leading-relaxed text-text-secondary">
               Continue refining the context, evidence base, stakeholder assumptions, synthesis, CBD priorities and implementation readiness. Ratings and findings remain analytical judgements requiring review.
             </p>
           </div>
+
           <div className="grid grid-cols-2 gap-2 text-xs sm:grid-cols-4 lg:min-w-[420px]">
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-              <span className="font-black text-slate-500">Evidence notes</span>
-              <strong className="mt-1 block text-lg text-slate-950">{evidenceNotesCount}</strong>
+            <div className="rounded-md border border-border-default bg-surface-subtle p-3">
+              <span className="text-xs font-semibold text-text-muted">Evidence notes</span>
+              <strong className="font-mono tabular-nums mt-1 block text-lg font-bold text-text-primary">{evidenceNotesCount}</strong>
             </div>
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-              <span className="font-black text-slate-500">Warnings</span>
-              <strong className="mt-1 block text-lg text-slate-950">{warnings.length}</strong>
+            <div className="rounded-md border border-border-default bg-surface-subtle p-3">
+              <span className="text-xs font-semibold text-text-muted">Warnings</span>
+              <strong className="font-mono tabular-nums mt-1 block text-lg font-bold text-text-primary">{warnings.length}</strong>
             </div>
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-              <span className="font-black text-slate-500">Confidence</span>
-              <strong className="mt-1 block text-lg text-slate-950">{avgConfidence}/5</strong>
+            <div className="rounded-md border border-border-default bg-surface-subtle p-3">
+              <span className="text-xs font-semibold text-text-muted">Confidence</span>
+              <strong className="font-mono tabular-nums mt-1 block text-lg font-bold text-text-primary">{avgConfidence}/5</strong>
             </div>
             <Button
               variant="primary"
               onClick={() => onNavigateToStep(continueStep)}
-              className="min-h-[72px] rounded-xl text-xs font-black"
+              className="min-h-[64px] rounded-md text-xs font-bold flex flex-col justify-center items-center"
             >
-              Continue
-              <ArrowRight size={14} className="ml-1" />
+              <span>Continue</span>
+              <span className="text-[11px] font-normal opacity-90 flex items-center mt-0.5">
+                Stage {continueStep} <ArrowRight size={12} className="ml-1" />
+              </span>
             </Button>
           </div>
-        </CardBody>
-      </Card>
+        </div>
+      </div>
 
-      {/* Header Diagnostic Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Diagnostic KPI Strip */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
-          { label: 'Mapped Actors', val: stakeholders.length, sub: `${stakeholders.filter(s => s.position === 'Spoiler risk').length} Spoiler risks`, icon: <Users className="text-blue-500" /> },
-          { label: 'Priorities Configured', val: customInterventionsCount, sub: `${Object.keys(customCells).length} matrix cells edited`, icon: <Grid className="text-indigo-500" /> },
-          { label: 'Diagnostic Warnings', val: warnings.length, sub: `${criticalWarnings} critical cautions`, icon: <AlertTriangle className={warnings.length > 0 ? "text-amber-500" : "text-slate-400"} /> },
-          { label: 'Verification Confidence', val: `${avgConfidence}/5.0`, sub: 'Based on evidence logs', icon: <TrendingUp className="text-emerald-500" /> }
+          { label: 'Mapped Actors', val: stakeholders.length, sub: `${stakeholders.filter(s => s.position === 'Spoiler risk').length} Spoiler risks`, icon: <Users size={18} className="text-text-muted" /> },
+          { label: 'Priorities Configured', val: customInterventionsCount, sub: `${Object.keys(customCells).length} matrix cells edited`, icon: <Grid size={18} className="text-text-muted" /> },
+          { label: 'Diagnostic Warnings', val: warnings.length, sub: `${criticalWarnings} critical cautions`, icon: <AlertTriangle size={18} className={warnings.length > 0 ? "text-amber-600" : "text-text-muted"} /> },
+          { label: 'Verification Confidence', val: `${avgConfidence}/5.0`, sub: 'Based on evidence logs', icon: <TrendingUp size={18} className="text-text-muted" /> }
         ].map((kpi, idx) => (
-          <Card key={idx} className="bg-white border-slate-200">
-            <CardBody className="p-4 flex items-center justify-between gap-3">
-              <div className="flex flex-col gap-0.5">
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{kpi.label}</span>
-                <span className="text-xl font-extrabold text-slate-900 leading-tight">{kpi.val}</span>
-                <span className="text-[10px] text-slate-600 font-semibold">{kpi.sub}</span>
-              </div>
-              <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">{kpi.icon}</div>
-            </CardBody>
-          </Card>
+          <div key={idx} className="rounded-lg border border-border-default bg-surface-raised p-3.5 flex items-center justify-between gap-3">
+            <div className="flex flex-col gap-0.5">
+              <span className="text-xs font-semibold text-text-muted">{kpi.label}</span>
+              <span className="font-mono tabular-nums text-xl font-bold text-text-primary leading-tight">{kpi.val}</span>
+              <span className="text-xs text-text-secondary">{kpi.sub}</span>
+            </div>
+            <div className="p-2 rounded-md bg-surface-subtle border border-border-default shrink-0">{kpi.icon}</div>
+          </div>
         ))}
       </div>
 
       {/* Main Analysis Column Split */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* Left Side: Pressures and Stakeholder Risks */}
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-5">
           {/* Top 3 PESTEL-S Pressures */}
-          <Card>
-            <CardHeader className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h4 className="text-sm font-bold text-slate-950 flex items-center gap-2">
-                <Activity size={16} className="text-blue-500" />
+          <div className="rounded-lg border border-border-default bg-surface-raised overflow-hidden">
+            <div className="flex items-center justify-between border-b border-border-default bg-surface-subtle px-4 py-3">
+              <h4 className="text-xs sm:text-sm font-bold text-text-primary flex items-center gap-2">
+                <Activity size={15} className="text-action-primary" />
                 Critical Contextual Pressures (Top 3)
               </h4>
               <Button variant="secondary" size="sm" onClick={() => onNavigateToStep(2)}>
                 Edit PESTEL-S
               </Button>
-            </CardHeader>
-            <CardBody className="flex flex-col gap-3">
+            </div>
+            <div className="p-4 flex flex-col gap-2.5">
               {sortedPressures.length === 0 ? (
-                <p className="text-xs text-slate-500 italic">No findings configured in PESTEL-S step.</p>
+                <p className="text-xs text-text-muted italic">No findings configured in PESTEL-S step.</p>
               ) : (
                 sortedPressures.map(p => (
-                  <div key={p.id} className="p-3 bg-slate-50/60 border border-slate-200 rounded-xl flex flex-col gap-1">
+                  <div key={p.id} className="p-3 bg-surface-subtle border border-border-default rounded-md flex flex-col gap-1">
                     <div className="flex justify-between items-center w-full gap-2">
-                      <span className="font-extrabold text-[11px] text-slate-800 uppercase tracking-tight">{p.name}</span>
-                      <div className="flex gap-1">
+                      <span className="font-bold text-xs text-text-primary">{p.name}</span>
+                      <div className="flex gap-1.5 shrink-0">
                         <Badge variant="rose">Pressure: {p.score}/25</Badge>
                         <Badge variant="slate">Confidence: {p.rating.confidence}/5</Badge>
                       </div>
                     </div>
-                    <p className="text-xs text-slate-600 leading-relaxed font-medium mt-1 line-clamp-2">{p.finding}</p>
-                    <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider block mt-1">
+                    <p className="text-xs text-text-secondary leading-relaxed mt-1 line-clamp-2">{p.finding}</p>
+                    <span className="text-xs text-text-muted mt-0.5">
                       Evidence: {p.evidenceNotes?.length || 0} citations
                     </span>
                   </div>
                 ))
               )}
-            </CardBody>
-          </Card>
+            </div>
+          </div>
 
           {/* Top Stakeholder Risks */}
-          <Card>
-            <CardHeader className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h4 className="text-sm font-bold text-slate-950 flex items-center gap-2">
-                <AlertTriangle size={16} className="text-amber-500" />
+          <div className="rounded-lg border border-border-default bg-surface-raised overflow-hidden">
+            <div className="flex items-center justify-between border-b border-border-default bg-surface-subtle px-4 py-3">
+              <h4 className="text-xs sm:text-sm font-bold text-text-primary flex items-center gap-2">
+                <AlertTriangle size={15} className="text-amber-600" />
                 Key Stakeholder Spoilers / Blockers
               </h4>
               <Button variant="secondary" size="sm" onClick={() => onNavigateToStep(3)}>
                 Edit Stakeholders
               </Button>
-            </CardHeader>
-            <CardBody className="flex flex-col gap-3">
+            </div>
+            <div className="p-4 flex flex-col gap-2.5">
               {stakeholderRisks.length === 0 ? (
-                <p className="text-xs text-slate-500 italic">No blockers or spoiler risks identified in the actors database.</p>
+                <p className="text-xs text-text-muted italic">No blockers or spoiler risks identified in the actors database.</p>
               ) : (
                 stakeholderRisks.map(s => (
-                  <div key={s.id} className="p-3 bg-slate-50/60 border border-slate-200 rounded-xl flex flex-col gap-1.5">
+                  <div key={s.id} className="p-3 bg-surface-subtle border border-border-default rounded-md flex flex-col gap-1">
                     <div className="flex justify-between items-start w-full gap-2">
                       <div>
-                        <span className="font-bold text-xs text-slate-900 block leading-tight">{s.name}</span>
-                        <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block mt-0.5">{s.category}</span>
+                        <span className="font-bold text-xs text-text-primary block leading-tight">{s.name}</span>
+                        <span className="text-xs text-text-muted block mt-0.5">{s.category}</span>
                       </div>
-                      <div className="flex gap-1 shrink-0">
+                      <div className="flex gap-1.5 shrink-0">
                         <Badge variant="rose">{s.position}</Badge>
                         <Badge variant="slate">Influence: {s.influence}</Badge>
                       </div>
                     </div>
-                    <p className="text-[11px] text-slate-600 italic leading-relaxed">&ldquo;{s.risk}&rdquo;</p>
+                    <p className="text-xs text-text-secondary italic leading-relaxed mt-0.5">&ldquo;{s.risk}&rdquo;</p>
                   </div>
                 ))
               )}
-            </CardBody>
-          </Card>
+            </div>
+          </div>
         </div>
 
         {/* Right Side: CBD Priorities and Sequencing */}
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-5">
           {/* Top 5 CBD Priorities */}
-          <Card>
-            <CardHeader className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h4 className="text-sm font-bold text-slate-950 flex items-center gap-2">
-                <Layers size={16} className="text-indigo-500" />
+          <div className="rounded-lg border border-border-default bg-surface-raised overflow-hidden">
+            <div className="flex items-center justify-between border-b border-border-default bg-surface-subtle px-4 py-3">
+              <h4 className="text-xs sm:text-sm font-bold text-text-primary flex items-center gap-2">
+                <Layers size={15} className="text-action-primary" />
                 Indicative Matrix Priorities (Top 5)
               </h4>
               <Button variant="secondary" size="sm" onClick={() => onNavigateToStep(5)}>
                 Open Matrix Grid
               </Button>
-            </CardHeader>
-            <CardBody className="flex flex-col gap-3">
+            </div>
+            <div className="p-4 flex flex-col gap-2.5">
               {scoredCells.length === 0 ? (
-                <p className="text-xs text-slate-500 italic">No customized matrix intersections defined.</p>
+                <p className="text-xs text-text-muted italic">No customized matrix intersections defined.</p>
               ) : (
                 scoredCells.map(({ key, cell, score }) => (
-                  <div key={key} className="p-3 bg-slate-50/60 border border-slate-200 rounded-xl flex flex-col gap-1">
+                  <div key={key} className="p-3 bg-surface-subtle border border-border-default rounded-md flex flex-col gap-1">
                     <div className="flex justify-between items-center w-full gap-2">
-                      <span className="font-extrabold text-[10px] text-slate-900 uppercase tracking-tight">{key}</span>
-                      <div className="flex gap-1 shrink-0">
+                      <span className="font-bold text-xs text-text-primary">{key.replace('|', ' × ')}</span>
+                      <div className="flex gap-1.5 shrink-0">
                         <Badge variant="blue">Priority: {score.toFixed(1)}/5</Badge>
                         <Badge variant="slate">Confidence: {cell.confidence}/5</Badge>
                       </div>
                     </div>
-                    <p className="text-xs text-slate-600 leading-relaxed mt-1 line-clamp-1">{cell.why}</p>
+                    <p className="text-xs text-text-secondary leading-relaxed mt-0.5 line-clamp-1">{cell.why}</p>
                   </div>
                 ))
               )}
-            </CardBody>
-          </Card>
+            </div>
+          </div>
 
           {/* Quick Wins & Sensitive Reforms */}
-          <Card>
-            <CardHeader className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h4 className="text-sm font-bold text-slate-950 flex items-center gap-2">
-                <ListTodo size={16} className="text-emerald-500" />
+          <div className="rounded-lg border border-border-default bg-surface-raised overflow-hidden">
+            <div className="flex items-center justify-between border-b border-border-default bg-surface-subtle px-4 py-3">
+              <h4 className="text-xs sm:text-sm font-bold text-text-primary flex items-center gap-2">
+                <ListTodo size={15} className="text-action-primary" />
                 Strategic Sequencing Targets
               </h4>
               <Button variant="secondary" size="sm" onClick={() => onNavigateToStep(6)}>
                 Review Sequencing
               </Button>
-            </CardHeader>
-            <CardBody className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            </div>
+            <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col gap-2">
-                <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider block border-b border-emerald-100 pb-1">
+                <span className="text-xs font-semibold text-emerald-800 block border-b border-border-default pb-1">
                   Quick Wins (High Feasibility)
                 </span>
                 {priorityBrief.quickWins?.length === 0 ? (
-                  <span className="text-xs text-slate-500 italic">None configured</span>
+                  <span className="text-xs text-text-muted italic">None configured</span>
                 ) : (
-                  <ul className="text-xs text-slate-600 flex flex-col gap-1 list-disc pl-4 leading-normal">
+                  <ul className="text-xs text-text-secondary flex flex-col gap-1 list-disc pl-4 leading-normal">
                     {priorityBrief.quickWins?.slice(0, 3).map((qw, i) => (
                       <li key={i} className="line-clamp-2">{qw}</li>
                     ))}
@@ -372,64 +420,64 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
                 )}
               </div>
               <div className="flex flex-col gap-2">
-                <span className="text-[10px] font-bold text-amber-600 uppercase tracking-wider block border-b border-amber-100 pb-1">
+                <span className="text-xs font-semibold text-amber-800 block border-b border-border-default pb-1">
                   Sensitive Reforms (Requires Cover)
                 </span>
                 {priorityBrief.sensitiveReforms?.length === 0 ? (
-                  <span className="text-xs text-slate-500 italic">None configured</span>
+                  <span className="text-xs text-text-muted italic">None configured</span>
                 ) : (
-                  <ul className="text-xs text-slate-600 flex flex-col gap-1 list-disc pl-4 leading-normal">
+                  <ul className="text-xs text-text-secondary flex flex-col gap-1 list-disc pl-4 leading-normal">
                     {priorityBrief.sensitiveReforms?.slice(0, 3).map((sr, i) => (
                       <li key={i} className="line-clamp-2">{sr}</li>
                     ))}
                   </ul>
                 )}
               </div>
-            </CardBody>
-          </Card>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Stakeholder Quadrant Visualizations */}
-      <Card>
-        <CardHeader className="border-b border-slate-100 pb-3">
-          <h4 className="text-sm font-bold text-slate-950 flex items-center gap-2">
-            <Users size={16} className="text-blue-600" />
+      {/* Stakeholder Position Quadrants */}
+      <div className="rounded-lg border border-border-default bg-surface-raised overflow-hidden">
+        <div className="border-b border-border-default bg-surface-subtle px-4 py-3">
+          <h4 className="text-xs sm:text-sm font-bold text-text-primary flex items-center gap-2">
+            <Users size={15} className="text-action-primary" />
             Stakeholder Position Quadrants
           </h4>
-          <p className="mt-1 text-xs leading-relaxed text-slate-600">
+          <p className="mt-0.5 text-xs text-text-muted">
             Decision-support views derived from the current stakeholder ratings and recorded engagement assumptions.
           </p>
-        </CardHeader>
-        <CardBody>
+        </div>
+        <div className="p-4">
           <StakeholderDecisionSupport stakeholders={stakeholders} />
-        </CardBody>
-      </Card>
+        </div>
+      </div>
 
       {/* QC warnings panel */}
       {warnings.length > 0 && (
-        <Card className="border-amber-250 bg-amber-50/15">
-          <CardHeader className="border-b border-amber-100/60 pb-3 flex items-center justify-between">
-            <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-              <AlertTriangle size={16} className="text-amber-500" />
+        <div className="rounded-lg border border-amber-200/80 bg-amber-50/20 p-4">
+          <div className="flex items-center justify-between border-b border-amber-200/60 pb-2.5">
+            <h4 className="text-xs sm:text-sm font-bold text-amber-950 flex items-center gap-2">
+              <AlertTriangle size={15} className="text-amber-600" />
               Strategic Planning Quality-Control Cautions ({warnings.length})
             </h4>
-          </CardHeader>
-          <CardBody className="flex flex-col gap-2.5">
+          </div>
+          <div className="pt-3 flex flex-col gap-2">
             {warnings.map((warn) => (
               <div
                 key={warn.id}
                 className={`
-                  p-3 border rounded-xl flex items-start gap-2.5 text-xs leading-relaxed
+                  p-3 border rounded-md flex items-start gap-2.5 text-xs leading-relaxed
                   ${warn.type === 'warning'
-                    ? 'border-amber-200 bg-amber-50/40 text-amber-900'
-                    : 'border-slate-200 bg-slate-50 text-slate-750'
+                    ? 'border-amber-200/80 bg-amber-50/60 text-amber-900'
+                    : 'border-border-default bg-surface-subtle text-text-secondary'
                   }
                 `}
               >
-                <AlertTriangle size={15} className={`shrink-0 mt-0.5 ${warn.type === 'warning' ? 'text-amber-600' : 'text-slate-500'}`} />
+                <AlertTriangle size={14} className={`shrink-0 mt-0.5 ${warn.type === 'warning' ? 'text-amber-600' : 'text-text-muted'}`} />
                 <div className="flex-1">
-                  <span className="font-semibold block">{warn.message}</span>
+                  <span className="font-medium block">{warn.message}</span>
                 </div>
                 {warn.category === 'profile' && (
                   <Button variant="link" size="sm" onClick={() => onNavigateToStep(1)}>
@@ -448,49 +496,52 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
                 )}
                 {warn.category === 'sequencing' && (
                   <Button variant="link" size="sm" onClick={() => onNavigateToStep(6)}>
-                    Resolve &rarr;
+                    Align &rarr;
+                  </Button>
+                )}
+                {warn.category === 'synthesis' && (
+                  <Button variant="link" size="sm" onClick={() => onNavigateToStep(4)}>
+                    Address &rarr;
                   </Button>
                 )}
               </div>
             ))}
-          </CardBody>
-        </Card>
+          </div>
+        </div>
       )}
 
-      {/* Overview navigation buttons */}
-      <Card>
-        <CardBody className="p-4 flex flex-wrap gap-2.5 justify-center items-center">
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mr-2">Go to Module:</span>
-          {[
-            { label: 'Context & Mandate', step: 1 },
-            { label: 'Diagnostic Analysis', step: 2 },
-            { label: 'Stakeholders & Ownership', step: 3 },
-            { label: 'Analysis Synthesis', step: 4 },
-            { label: 'CBD Priorities', step: 5 },
-            { label: 'Prioritize & Sequence', step: 6 },
-            { label: 'Results & Implementation', step: 7 },
-            { label: 'Export Planning Brief', step: EXPORT_VIEW }
-          ].map(shortcut => (
-            <Button
-              key={shortcut.step}
-              variant="secondary"
-              size="sm"
-              onClick={() => onNavigateToStep(shortcut.step)}
-            >
-              {shortcut.label}
-              <ChevronRight size={12} className="ml-1 text-slate-400" />
-            </Button>
-          ))}
+      {/* Overview navigation shortcuts */}
+      <div className="rounded-lg border border-border-default bg-surface-raised p-3 sm:p-4 flex flex-wrap gap-2 justify-center items-center">
+        <span className="text-xs font-semibold text-text-muted mr-1">Go to Module:</span>
+        {[
+          { label: 'Context & Mandate', step: 1 },
+          { label: 'Diagnostic Analysis', step: 2 },
+          { label: 'Stakeholders & Ownership', step: 3 },
+          { label: 'Analysis Synthesis', step: 4 },
+          { label: 'CBD Priorities', step: 5 },
+          { label: 'Prioritize & Sequence', step: 6 },
+          { label: 'Results & Implementation', step: 7 },
+          { label: 'Export Planning Brief', step: EXPORT_VIEW }
+        ].map(shortcut => (
           <Button
+            key={shortcut.step}
             variant="secondary"
             size="sm"
-            onClick={onOpenExplorer}
+            onClick={() => onNavigateToStep(shortcut.step)}
           >
-            Browse Mission Explorer
-            <Globe size={12} className="ml-1 text-blue-700" />
+            {shortcut.label}
+            <ChevronRight size={12} className="ml-1 text-text-muted" />
           </Button>
-        </CardBody>
-      </Card>
+        ))}
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={onOpenExplorer}
+        >
+          Browse Mission Explorer
+          <Globe size={12} className="ml-1 text-action-primary" />
+        </Button>
+      </div>
     </div>
   );
 };

@@ -9,6 +9,8 @@ import {
   type GuidanceStage
 } from '../lib/guidance';
 
+export { StageLead } from './StageLead';
+
 export const StageGuide: React.FC<{ stage: GuidanceStage }> = ({ stage }) => {
   const contentId = useId();
   const content = STAGE_GUIDANCE[stage];

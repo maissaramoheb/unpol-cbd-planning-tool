@@ -3,7 +3,7 @@ import type { CbdCell, UnpolProjectData, ResultsPlan, PlanningIndicator, ResultA
 import { Button } from '../ui/Button';
 import { TextArea } from '../ui/TextArea';
 import { Select } from '../ui/Select';
-import { StageGuide } from './Guidance';
+import { StageLead } from './StageLead';
 import { AVAILABILITY, DEPENDENCY_STATUS, DEPENDENCY_TYPES, FREQUENCIES, IMPORTANCE, LEVELS, OWNERSHIP_STATUS, RESOURCE_CATEGORIES, RESULT_LEVELS, SUSTAINABILITY_DIMENSIONS, createIndicator, emptyResultsPlan, nextReference, resultsCautions, resultsCompleteness, structuredIndicators } from '../lib/resultsPlanning';
 
 type Option = { value: string; label: string };
@@ -22,7 +22,30 @@ export function ResultsImplementation({ data, onUpdateCell, onPrev, onExport }: 
   const [selected, setSelected] = useState('');
   const keys = Object.keys(data.customCells);
   const key = keys.includes(selected) ? selected : keys[0];
-  return <div className="min-w-0 space-y-6 print:hidden"><StageGuide stage={7} /><header><p className="text-xs font-bold uppercase tracking-wider text-blue-700">Stage 7 · Results &amp; Delivery</p><h2 className="mt-1 text-2xl font-black text-slate-950">Results &amp; Implementation</h2><p className="mt-2 text-sm text-slate-600">Work on one CBD priority at a time. Shared fields stay synchronized with Stage 5. Completeness describes what is recorded, not its quality or approval.</p>{data.profile.missionName.includes('CARANA') && <p className="mt-2 text-xs font-semibold text-amber-800">FICTIONAL EXERCISE MATERIAL — baselines and planning judgements are illustrative, not verified assessments.</p>}</header>{key ? <><Choice label="CBD priority" value={key} items={keys.map(k => ({ value: k, label: k.replace('|', ' × ') }))} onChange={setSelected} /><PriorityPlan key={key} data={data} cell={data.customCells[key]} onChange={cell => onUpdateCell(key, cell)} /></> : <div className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-600">No configured CBD priorities. Record a priority in Stage 5 to begin its Results Plan.</div>}<div className="flex flex-col gap-3 sm:flex-row sm:justify-between"><Button variant="secondary" onClick={onPrev}>Back: Prioritization &amp; Sequencing</Button><Button variant="primary" onClick={onExport}>Open Planning Brief</Button></div></div>;
+  return (
+    <div className="min-w-0 space-y-6 print:hidden">
+      <StageLead stage={7} />
+      {data.profile.missionName.includes('CARANA') && (
+        <div className="rounded-md border border-amber-200 bg-amber-50/60 px-3 py-2 text-xs font-medium text-amber-900">
+          FICTIONAL EXERCISE MATERIAL — baselines and planning judgements are illustrative, not verified assessments.
+        </div>
+      )}
+      {key ? (
+        <>
+          <Choice label="CBD priority" value={key} items={keys.map(k => ({ value: k, label: k.replace('|', ' × ') }))} onChange={setSelected} />
+          <PriorityPlan key={key} data={data} cell={data.customCells[key]} onChange={cell => onUpdateCell(key, cell)} />
+        </>
+      ) : (
+        <div className="rounded-lg border border-dashed border-border-default bg-surface-raised p-6 text-sm text-text-muted text-center">
+          No configured CBD priorities. Record a priority in Stage 5 to begin its Results Plan.
+        </div>
+      )}
+      <div className="flex flex-col gap-3 sm:flex-row sm:justify-between">
+        <Button variant="secondary" onClick={onPrev}>Back: Prioritization &amp; Sequencing</Button>
+        <Button variant="primary" onClick={onExport}>Open Planning Brief</Button>
+      </div>
+    </div>
+  );
 }
 function PriorityPlan({ data, cell, onChange }: { data: UnpolProjectData; cell: CbdCell; onChange: (cell: CbdCell) => void }) {
   const [section, setSection] = useState('7A');

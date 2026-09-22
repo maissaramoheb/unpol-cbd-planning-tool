@@ -5,10 +5,9 @@ import { Card, CardBody, CardHeader } from '../ui/Card';
 import { TextInput } from '../ui/Select';
 import { TextArea } from '../ui/TextArea';
 import { Button } from '../ui/Button';
-import { Badge } from '../ui/Badge';
 import { Shield, BookOpen, Layers, Award, FileText, Globe } from 'lucide-react';
-import { APP_RELEASE_NAME, APP_VERSION } from '../lib/version';
-import { NextStepCue, StageGuide } from './Guidance';
+import { StageLead } from './StageLead';
+import { NextStepCue } from './Guidance';
 import { NEXT_STEP_CUES } from '../lib/guidance';
 
 interface MissionProfileProps {
@@ -36,62 +35,33 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
   const getTemplateIcon = (id: string) => {
     switch (id) {
       case 'peacekeeping':
-        return <Shield size={18} className="text-blue-600" />;
+        return <Shield size={16} className="text-action-primary" />;
       case 'spm':
-        return <BookOpen size={18} className="text-indigo-600" />;
+        return <BookOpen size={16} className="text-action-primary" />;
       case 'ssr':
-        return <Layers size={18} className="text-emerald-600" />;
+        return <Layers size={16} className="text-action-primary" />;
       case 'reform':
-        return <Award size={18} className="text-amber-600" />;
+        return <Award size={16} className="text-action-primary" />;
       case 'capacity':
-        return <FileText size={18} className="text-teal-600" />;
+        return <FileText size={16} className="text-action-primary" />;
       default:
-        return <Shield size={18} className="text-slate-600" />;
+        return <Shield size={16} className="text-text-muted" />;
     }
   };
 
   return (
-    <div className="flex flex-col gap-6 w-full">
-      <StageGuide stage={1} />
-      {/* Intro Banner */}
-      <Card className="border-slate-200 bg-white">
-        <CardBody className="p-6 md:p-8 flex flex-col gap-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <Badge variant="blue">{APP_VERSION}</Badge>
-              <span className="text-xs font-bold text-slate-500">{APP_RELEASE_NAME}</span>
-            </div>
-            <h2 className="text-xl md:text-2xl font-black uppercase text-blue-800 tracking-tight mt-1.5">
-              Unofficial UNPOL Capacity-Building & Development (CBD) Planning Prototype
-            </h2>
-            <p className="text-xs md:text-sm text-slate-600 mt-2 leading-relaxed">
-              This application helps UNPOL Advisory Teams, Security Sector Reform (SSR) specialists, and peace operations planning officers diagnose host-state environmental constraints, map critical stakeholders, and prioritize capacity-building interventions across key operational dimensions. It is an unofficial educational planning-support prototype and does not constitute official United Nations doctrine.
-            </p>
-          </div>
+    <div className="flex flex-col gap-5 w-full">
+      <StageLead stage={1} />
 
-          {/* Workflow Stepper */}
-          <div className="mt-2 pt-4 border-t border-slate-200">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-2">Recommended Planning Workflow</span>
-            <div className="grid grid-cols-1 gap-3 text-xs text-slate-600 sm:grid-cols-2 lg:grid-cols-7">
-              <div><span className="text-blue-700 font-bold block mb-0.5">1. Context &amp; Mandate</span>Define the planning context and purpose.</div>
-              <div><span className="text-blue-700 font-bold block mb-0.5">2. Diagnostic Analysis</span>Examine conditions and evidence.</div>
-              <div><span className="text-blue-700 font-bold block mb-0.5">3. Stakeholders &amp; Ownership</span>Map actors and ownership assumptions.</div>
-              <div><span className="text-blue-700 font-bold block mb-0.5">4. Analysis Synthesis</span>Develop optional SWOT findings and options.</div>
-              <div><span className="text-blue-700 font-bold block mb-0.5">5. CBD Priorities</span>Define problems, objectives and responses.</div>
-              <div><span className="text-blue-700 font-bold block mb-0.5">6. Prioritization &amp; Sequencing</span>Set relative priorities and timing.</div>
-              <div><span className="text-blue-700 font-bold block mb-0.5">7. Results &amp; Implementation</span>Review delivery information already recorded.</div>
-            </div>
-          </div>
-        </CardBody>
-      </Card>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Template Selector Card */}
-        <div className="lg:col-span-1 flex flex-col gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        {/* Template Selector Column */}
+        <div className="lg:col-span-1 flex flex-col gap-3">
           <div>
-            <h3 className="text-lg font-bold text-slate-950">1. Context &amp; Mandate</h3>
-            <p className="text-sm text-slate-600 mt-1">
-              Choose a baseline configuration template. Selecting a template will preload editable planning prompts, assumptions to verify, and low-confidence PESTEL-S starter questions.
+            <h3 className="text-xs font-bold uppercase tracking-wider text-text-primary">
+              Baseline Configuration Templates
+            </h3>
+            <p className="text-xs text-text-muted mt-1 leading-relaxed">
+              Preloads editable planning prompts, assumptions to verify, and initial PESTEL-S diagnostic starter questions.
             </p>
           </div>
 
@@ -99,13 +69,14 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
             variant="secondary"
             onClick={onOpenExplorer}
             fullWidth
+            size="sm"
             className="gap-1.5"
           >
-            <Globe size={14} className="text-slate-500" />
+            <Globe size={14} className="text-action-primary" />
             Browse Mission Explorer Map
           </Button>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
             {defaultMissionTemplates.map((template) => {
               const isSelected = profile.templateId === template.id;
               return (
@@ -114,19 +85,21 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
                   type="button"
                   onClick={() => onTemplateChange(template.id)}
                   className={`
-                    text-left p-4 rounded-xl border-2 transition-colors duration-150 motion-reduce:transition-none flex items-start gap-3 w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2
+                    text-left p-3 rounded-lg border transition-colors duration-150 motion-reduce:transition-none flex items-start gap-3 w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-1
                     ${isSelected
-                      ? 'border-blue-600 bg-blue-50/50 shadow-sm'
-                      : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 bg-white'
+                      ? 'border-action-primary/50 bg-blue-50/70 text-action-primary shadow-none'
+                      : 'border-border-default hover:border-border-strong hover:bg-surface-subtle bg-surface-raised'
                     }
                   `}
                 >
-                  <div className={`p-2 rounded-lg bg-white border border-slate-200 shadow-sm mt-0.5`}>
+                  <div className={`p-1.5 rounded-md bg-surface-subtle border border-border-default shrink-0 mt-0.5`}>
                     {getTemplateIcon(template.id)}
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm text-slate-900">{template.name}</h4>
-                    <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                    <h4 className={`font-semibold text-xs leading-tight ${isSelected ? 'text-action-primary font-bold' : 'text-text-primary'}`}>
+                      {template.name}
+                    </h4>
+                    <p className="text-xs text-text-muted mt-0.5 leading-relaxed">
                       {template.description}
                     </p>
                   </div>
@@ -140,8 +113,8 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
         <div className="lg:col-span-2">
           <Card>
             <CardHeader>
-              <h3 className="text-base font-bold text-slate-950">Country / Mission Profile Editor</h3>
-              <p className="text-xs text-slate-600 mt-0.5">Define core parameters used across the assessment workflow and custom export planning brief.</p>
+              <h3 className="text-sm font-bold text-text-primary">Country / Mission Profile Editor</h3>
+              <p className="text-xs text-text-muted mt-0.5">Define core parameters used across the assessment workflow and custom export planning brief.</p>
             </CardHeader>
             <CardBody className="flex flex-col gap-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

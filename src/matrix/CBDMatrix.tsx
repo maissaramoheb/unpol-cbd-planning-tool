@@ -4,7 +4,8 @@ import { MatrixGrid } from './MatrixGrid';
 import { MatrixListView } from './MatrixListView';
 import { MatrixDetails } from './MatrixDetails';
 import { Button } from '../ui/Button';
-import { NextStepCue, StageGuide } from '../components/Guidance';
+import { NextStepCue } from '../components/Guidance';
+import { StageLead } from '../components/StageLead';
 import { NEXT_STEP_CUES } from '../lib/guidance';
 
 interface CBDMatrixProps {
@@ -55,14 +56,7 @@ export const CBDMatrix: React.FC<CBDMatrixProps> = ({
 
   return (
     <div className="flex flex-col gap-6">
-      <StageGuide stage={5} />
-      {/* Introduction */}
-      <div>
-        <h3 className="text-lg font-bold text-slate-950">5. CBD Priorities</h3>
-        <p className="text-sm text-slate-500 mt-1">
-          Use the CBD Key Areas × Cross-Cutting Analytical Lenses matrix to define capacity problems and responses. This prototype structure supports analysis; it is not presented as a formal UN taxonomy.
-        </p>
-      </div>
+      <StageLead stage={5} />
 
       {/* Responsive Grid Containers */}
       <div className="w-full">

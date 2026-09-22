@@ -10,8 +10,8 @@ export const Card: React.FC<CardProps> = ({
   className = '',
   ...props
 }) => {
-  const baseStyle = 'bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden';
-  const hoverStyle = hoverable ? 'transition-all hover:shadow-md hover:border-slate-300' : '';
+  const baseStyle = 'bg-surface-raised rounded-lg border border-border-default overflow-hidden';
+  const hoverStyle = hoverable ? 'transition-colors hover:border-border-strong' : '';
 
   return (
     <div className={`${baseStyle} ${hoverStyle} ${className}`} {...props}>
@@ -27,7 +27,7 @@ export const CardHeader: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
 }) => {
   return (
     <div
-      className={`px-5 py-4 border-b border-slate-100 bg-slate-50/50 ${className}`}
+      className={`px-5 py-3 border-b border-border-default bg-surface-subtle font-semibold ${className}`}
       {...props}
     >
       {children}

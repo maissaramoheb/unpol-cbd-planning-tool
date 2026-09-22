@@ -1,10 +1,9 @@
-'use client';
-
 import React, { useMemo, useState } from 'react';
 import { ArrowLeft, ArrowRight, Link2, Plus, Trash2 } from 'lucide-react';
 import type { AnalysisSynthesis as AnalysisSynthesisData, StrategicOptionType, SwotCategory, UnpolProjectData } from '../types';
 import { Button } from '../ui/Button';
-import { NextStepCue, StageGuide } from './Guidance';
+import { NextStepCue } from './Guidance';
+import { StageLead } from './StageLead';
 import { NEXT_STEP_CUES } from '../lib/guidance';
 import { TextArea } from '../ui/TextArea';
 import { Select } from '../ui/Select';
@@ -97,48 +96,48 @@ export const AnalysisSynthesis: React.FC<AnalysisSynthesisProps> = ({ data, onCh
 
   return (
     <div className="flex flex-col gap-6">
-      <StageGuide stage={4} />
-      <header className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div className="max-w-3xl">
-            <span className="text-[10px] font-black uppercase tracking-[0.16em] text-blue-700">Stage 4 · SWOT &amp; Strategic Options</span>
-            <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">SWOT Analysis &amp; Strategic Options</h2>
-            <p className="mt-2 text-sm leading-relaxed text-slate-600">Bring together evidence, operating-environment findings and stakeholder analysis before defining CBD priorities.</p>
-          </div>
-          <div className="rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-xs leading-relaxed text-blue-950 lg:max-w-sm">
-            <strong>Professional judgement remains primary.</strong> SWOT classification is analyst-written synthesis. It supports planning judgement; it does not determine the CBD response.
-          </div>
-        </div>
-      </header>
+      <StageLead stage={4} />
+
+      <div className="rounded-lg border border-institutional/20 bg-institutional-subtle px-4 py-3 text-xs leading-relaxed text-text-default">
+        <strong className="font-semibold text-institutional">Professional judgement remains primary.</strong> SWOT classification is analyst-written synthesis. It supports planning judgement; it does not determine the CBD response.
+      </div>
 
       <section aria-labelledby="swot-heading" className="flex flex-col gap-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div><h3 id="swot-heading" className="text-lg font-black text-slate-950">SWOT synthesis</h3><p className="mt-1 text-xs text-slate-500">Internal conditions sit above external conditions. Empty categories are valid.</p></div>
-          <Button variant="secondary" onClick={() => setSourcePanelOpen(open => !open)} aria-expanded={sourcePanelOpen} aria-controls="existing-analysis-picker"><Link2 size={15} className="mr-2" />Add from Existing Analysis</Button>
+          <div>
+            <h3 id="swot-heading" className="text-sm font-semibold uppercase tracking-wider text-text-muted">SWOT Synthesis</h3>
+            <p className="mt-0.5 text-xs text-text-muted">Internal conditions sit above external conditions. Empty categories are valid.</p>
+          </div>
+          <Button variant="secondary" size="sm" onClick={() => setSourcePanelOpen(open => !open)} aria-expanded={sourcePanelOpen} aria-controls="existing-analysis-picker">
+            <Link2 size={14} className="mr-1.5" />
+            Add from Existing Analysis
+          </Button>
         </div>
 
-        {sourcePanelOpen && <div id="existing-analysis-picker" className="rounded-xl border border-blue-200 bg-blue-50/50 p-4">
-          <div className="grid gap-3 md:grid-cols-[1fr_180px_auto] md:items-end">
-            <Select label="Existing analytical source" value={selectedSourceKey} onChange={event => setSelectedSourceKey(event.target.value)} options={[{ value: '', label: 'Choose a source…' }, ...candidates.map(item => ({ value: `${item.reference.type}:${item.reference.id}`, label: `${item.group} — ${item.label}` }))]} />
-            <Select label="Planner classification" value={selectedCategory} onChange={event => setSelectedCategory(event.target.value as SwotCategory)} options={SWOT_CATEGORIES.map(category => ({ value: category, label: category }))} />
-            <Button onClick={() => addFinding(selectedCategory, selectedSourceKey)} disabled={!selectedSourceKey}><Plus size={15} className="mr-2" />Add source</Button>
+        {sourcePanelOpen && (
+          <div id="existing-analysis-picker" className="rounded-lg border border-border-default bg-surface-subtle p-4">
+            <div className="grid gap-3 md:grid-cols-[1fr_180px_auto] md:items-end">
+              <Select label="Existing analytical source" value={selectedSourceKey} onChange={event => setSelectedSourceKey(event.target.value)} options={[{ value: '', label: 'Choose a source…' }, ...candidates.map(item => ({ value: `${item.reference.type}:${item.reference.id}`, label: `${item.group} — ${item.label}` }))]} />
+              <Select label="Planner classification" value={selectedCategory} onChange={event => setSelectedCategory(event.target.value as SwotCategory)} options={SWOT_CATEGORIES.map(category => ({ value: category, label: category }))} />
+              <Button size="sm" onClick={() => addFinding(selectedCategory, selectedSourceKey)} disabled={!selectedSourceKey}><Plus size={14} className="mr-1.5" />Add source</Button>
+            </div>
+            {candidates.find(item => `${item.reference.type}:${item.reference.id}` === selectedSourceKey)?.reference.type === 'interdependency' && <p className="mt-3 whitespace-pre-wrap break-words text-sm text-text-default">{candidates.find(item => `${item.reference.type}:${item.reference.id}` === selectedSourceKey)?.text}</p>}
+            <p className="mt-2 text-xs text-text-muted">The source remains linked. You may edit the SWOT wording without changing the original analysis.</p>
           </div>
-          {candidates.find(item => `${item.reference.type}:${item.reference.id}` === selectedSourceKey)?.reference.type === 'interdependency' && <p className="mt-3 whitespace-pre-wrap break-words text-sm text-slate-700">{candidates.find(item => `${item.reference.type}:${item.reference.id}` === selectedSourceKey)?.text}</p>}
-          <p className="mt-3 text-xs text-blue-900">The source remains linked. You may edit the SWOT wording without changing the original analysis.</p>
-        </div>}
+        )}
 
-        <div className="rounded-xl border border-slate-300 bg-slate-900 px-4 py-2 text-center text-[10px] font-black uppercase tracking-[0.18em] text-slate-200">Internal institutional conditions</div>
+        <div className="rounded-md border border-border-default bg-surface-subtle px-3 py-1.5 text-center text-[10px] font-bold uppercase tracking-wider text-text-muted">Internal institutional conditions</div>
         <div className="grid gap-4 lg:grid-cols-2">{(['Strength', 'Weakness'] as SwotCategory[]).map(category => <SwotZone key={category} category={category} data={data} onAdd={() => addFinding(category)} onUpdate={updateFinding} onDelete={onDeleteFinding} />)}</div>
-        <div className="rounded-xl border border-blue-200 bg-blue-100/70 px-4 py-2 text-center text-[10px] font-black uppercase tracking-[0.18em] text-blue-900">External operating conditions</div>
+        <div className="rounded-md border border-border-default bg-surface-subtle px-3 py-1.5 text-center text-[10px] font-bold uppercase tracking-wider text-text-muted">External operating conditions</div>
         <div className="grid gap-4 lg:grid-cols-2">{(['Opportunity', 'Threat'] as SwotCategory[]).map(category => <SwotZone key={category} category={category} data={data} onAdd={() => addFinding(category)} onUpdate={updateFinding} onDelete={onDeleteFinding} />)}</div>
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <button type="button" onClick={() => setOptionsOpen(open => !open)} aria-expanded={optionsOpen} aria-controls="strategic-options" className="flex w-full items-center justify-between gap-4 rounded-2xl p-5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring">
-          <span><strong className="block text-lg text-slate-950">Develop Strategic Options</strong><span className="mt-1 block text-xs text-slate-500">Combine selected SWOT findings through SO, ST, WO or WT. No option is generated or ranked automatically.</span></span>
-          <span className="text-sm font-black text-blue-700">{optionsOpen ? 'Hide' : 'Open'}</span>
+      <section className="rounded-lg border border-border-default bg-surface-raised overflow-hidden">
+        <button type="button" onClick={() => setOptionsOpen(open => !open)} aria-expanded={optionsOpen} aria-controls="strategic-options" className="flex w-full items-center justify-between gap-4 p-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring hover:bg-surface-hover transition-colors">
+          <span><strong className="block text-sm font-semibold text-text-default">Develop Strategic Options (TOWS)</strong><span className="mt-0.5 block text-xs text-text-muted">Combine selected SWOT findings through SO, ST, WO or WT. No option is generated or ranked automatically.</span></span>
+          <span className="text-xs font-semibold text-institutional">{optionsOpen ? 'Hide' : 'Open'}</span>
         </button>
-        {optionsOpen && <div id="strategic-options" className="border-t border-slate-200 p-5">
+        {optionsOpen && <div id="strategic-options" className="border-t border-border-default p-4">
           <div className="grid gap-4 lg:grid-cols-2">{STRATEGIC_OPTION_TYPES.map(type => <OptionZone key={type} type={type} data={data} selections={optionSelections[type]} onSelections={value => setOptionSelections(current => ({ ...current, [type]: value }))} onAdd={() => addOption(type)} onUpdate={updateOption} onDelete={onDeleteOption} />)}</div>
         </div>}
       </section>

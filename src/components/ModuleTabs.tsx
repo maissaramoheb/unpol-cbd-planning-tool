@@ -32,19 +32,19 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
   return (
     <nav
       aria-label="Planning workflow"
-      className="w-full bg-slate-900 text-white rounded-2xl border border-slate-800 shadow-sm p-3 sm:p-4"
+      className="w-full bg-surface-raised rounded-lg border border-border-default p-2.5 sm:p-3"
     >
-      <div className="mb-3 flex flex-col gap-2 px-1 sm:flex-row sm:items-center sm:justify-between">
-        <span className="truncate text-xs font-bold text-slate-200">{caption}</span>
+      <div className="mb-2.5 flex flex-col gap-2 px-1 sm:flex-row sm:items-center sm:justify-between">
+        <span className="truncate text-xs font-semibold text-text-secondary">{caption}</span>
         <div className="flex gap-2">
           <button
             type="button"
             onClick={() => onViewChange(HOME_VIEW)}
             aria-current={currentView === HOME_VIEW ? 'page' : undefined}
-            className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-[11px] font-bold transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 ${
+            className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-semibold transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-1 ${
               currentView === HOME_VIEW
-                ? 'border-blue-400 bg-action-primary text-text-inverse shadow-subtle'
-                : 'border-slate-700 text-slate-200 hover:bg-slate-800'
+                ? 'border-action-primary/40 bg-blue-50/80 text-action-primary font-bold'
+                : 'border-border-default bg-surface-raised text-text-secondary hover:bg-surface-subtle hover:text-text-primary'
             }`}
           >
             <Home size={13} />Home
@@ -53,10 +53,10 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
             type="button"
             onClick={() => onViewChange(EXPORT_VIEW)}
             aria-current={currentView === EXPORT_VIEW ? 'page' : undefined}
-            className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-[11px] font-bold transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 ${
+            className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-semibold transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-1 ${
               currentView === EXPORT_VIEW
-                ? 'border-blue-400 bg-action-primary text-text-inverse shadow-subtle'
-                : 'border-slate-700 text-slate-200 hover:bg-slate-800'
+                ? 'border-action-primary/40 bg-blue-50/80 text-action-primary font-bold'
+                : 'border-border-default bg-surface-raised text-text-secondary hover:bg-surface-subtle hover:text-text-primary'
             }`}
           >
             <FileText size={13} />Export
@@ -64,9 +64,8 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
         </div>
       </div>
 
-      <div ref={stepperRef} className="overflow-x-auto pb-1 [scrollbar-width:thin]">
-        <div className="relative grid min-w-[910px] grid-cols-7 gap-1.5 lg:min-w-0">
-          <div aria-hidden="true" className="absolute left-[7%] right-[7%] top-[17px] h-px bg-slate-700" />
+      <div ref={stepperRef} className="overflow-x-auto pb-0.5 [scrollbar-width:thin]">
+        <div className="grid min-w-[840px] grid-cols-7 gap-1.5 lg:min-w-0">
           {WORKFLOW_STAGES.map((step) => {
             const isActive = step.id === currentView;
             const isCompleted = isWorkflowStage(currentView) && step.id < currentView;
@@ -78,23 +77,34 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
                 onClick={() => onViewChange(step.id)}
                 aria-current={isActive ? 'step' : undefined}
                 aria-label={`Stage ${step.id}: ${step.label}, ${step.sub}`}
-                className={`relative z-10 flex min-w-0 flex-col items-center rounded-lg border px-2 pb-2.5 pt-1.5 text-center transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 ${
+                className={`flex min-w-0 flex-col rounded-md border p-2 text-left transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-1 ${
                   isActive
-                    ? 'border-blue-400 bg-action-primary text-text-inverse shadow-subtle'
+                    ? 'border-action-primary/40 bg-blue-50/80 text-action-primary font-semibold'
                     : isCompleted
-                      ? 'border-slate-700 bg-slate-900 text-slate-100 hover:border-emerald-700 hover:bg-slate-800'
-                      : 'border-transparent bg-slate-900 text-slate-300 hover:border-slate-700 hover:bg-slate-800'
+                      ? 'border-border-default bg-surface-subtle text-text-primary hover:border-slate-300 hover:bg-slate-100/80'
+                      : 'border-transparent bg-transparent text-text-muted hover:border-border-default hover:bg-surface-subtle hover:text-text-primary'
                 }`}
               >
-                <span className={`flex h-6 w-6 items-center justify-center rounded-full border text-[11px] font-black ${
-                  isActive
-                    ? 'border-blue-200 bg-blue-700 text-white'
-                    : isCompleted
-                      ? 'border-emerald-700 bg-emerald-950 text-emerald-300'
-                      : 'border-slate-600 bg-slate-800 text-slate-300'
-                }`}>{step.id}</span>
-                <span className="mt-2 w-full text-[10px] font-black uppercase leading-tight tracking-[0.04em] lg:text-[11px]">{step.label}</span>
-                <span className={`mt-1 hidden w-full text-[9px] font-semibold leading-tight xl:block ${isActive ? 'text-blue-100' : 'text-slate-500'}`}>{step.sub}</span>
+                <div className="flex items-center justify-between w-full">
+                  <span className={`font-mono tabular-nums text-xs font-bold ${
+                    isActive ? 'text-action-primary' : isCompleted ? 'text-emerald-700' : 'text-text-muted'
+                  }`}>
+                    0{step.id}
+                  </span>
+                  {isCompleted && (
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 shrink-0" aria-hidden="true" />
+                  )}
+                </div>
+                <span className={`mt-1 truncate text-xs leading-snug ${
+                  isActive ? 'font-bold text-action-primary' : 'font-semibold text-text-primary'
+                }`}>
+                  {step.label}
+                </span>
+                <span className={`mt-0.5 hidden truncate text-[11px] leading-tight xl:block ${
+                  isActive ? 'text-blue-900/80' : 'text-text-muted'
+                }`}>
+                  {step.sub}
+                </span>
               </button>
             );
           })}
