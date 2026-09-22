@@ -3,10 +3,8 @@ import { PlanningContext } from '../types/explorer';
 import {
   getContextDifferences,
   getContextSourceCoverage,
-  getContextSpecificStakeholderCategories,
-  getContextSpecificThemes,
-  getSharedStakeholderCategories,
-  getSharedPlanningThemes,
+  getPlanningThemeGroups,
+  getStakeholderCategoryGroups,
   getTransferCheckQuestions,
   hasMixedOperationalStatus,
   normalizeComparisonTerm
@@ -51,10 +49,8 @@ export const MissionExplorerCompare: React.FC<MissionExplorerCompareProps> = ({
 
   const differences = getContextDifferences(contexts);
   const isMixed = hasMixedOperationalStatus(contexts);
-  const sharedThemes = getSharedPlanningThemes(contexts);
-  const specificThemes = getContextSpecificThemes(contexts);
-  const sharedStakeholderCats = getSharedStakeholderCategories(contexts);
-  const specificStakeholderCats = getContextSpecificStakeholderCategories(contexts);
+  const themeGroups = getPlanningThemeGroups(contexts);
+  const stakeholderGroups = getStakeholderCategoryGroups(contexts);
   const transferQuestions = getTransferCheckQuestions();
 
   // Aggregate all unique planning themes across contexts
@@ -81,7 +77,7 @@ export const MissionExplorerCompare: React.FC<MissionExplorerCompareProps> = ({
   const getVerificationBadge = (context: PlanningContext) => {
     switch (context.verificationStatus) {
       case 'current-reference':
-        return { label: 'REAL REFERENCE', variant: 'green' as const };
+        return { label: 'REVIEWED REFERENCE', variant: 'green' as const };
       case 'review-required':
         return { label: 'REVIEW REQUIRED', variant: 'amber' as const };
       case 'training-only':
@@ -593,44 +589,81 @@ export const MissionExplorerCompare: React.FC<MissionExplorerCompareProps> = ({
           </div>
 
           {/* Themes Summary Subpanels */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-slate-100">
+          <div className={`grid grid-cols-1 ${contexts.length === 3 ? 'md:grid-cols-3' : 'md:grid-cols-2'} gap-4 pt-2 border-t border-slate-100`}>
+            {/* Shared Across All / Both */}
             <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">
               <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800">
-                Shared Planning Themes ({sharedThemes.length})
+                {contexts.length === 2 ? 'Shared Across Both' : 'Shared Across All 3'} ({themeGroups.sharedAll.length})
               </h4>
-              {sharedThemes.length > 0 ? (
+              {themeGroups.sharedAll.length > 0 ? (
                 <div className="flex flex-wrap gap-1.5">
-                  {sharedThemes.map((t) => (
+                  {themeGroups.sharedAll.map((p) => (
                     <span
-                      key={t}
+                      key={p.term}
                       className="text-xs font-semibold px-2.5 py-1 bg-white border border-blue-200 text-blue-800 rounded-lg shadow-2xs"
                     >
-                      {t}
+                      {p.term}
                     </span>
                   ))}
                 </div>
               ) : (
                 <p className="text-xs text-slate-500 italic">
-                  No themes are shared universally across all {contexts.length} selected contexts.
+                  {contexts.length === 2
+                    ? 'No themes shared across both contexts.'
+                    : 'No themes shared universally across all 3 contexts.'}
                 </p>
               )}
             </div>
 
+            {/* Shared Across Some (relevant when 3 contexts are compared) */}
+            {contexts.length === 3 && (
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                  Shared Across Some ({themeGroups.sharedSome.length})
+                </h4>
+                {themeGroups.sharedSome.length > 0 ? (
+                  <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                    {themeGroups.sharedSome.map((p) => {
+                      const acronyms = p.contextIds
+                        .map((id) => contexts.find((c) => c.id === id)?.identity.missionAcronym || id)
+                        .join(' · ');
+                      return (
+                        <div
+                          key={p.term}
+                          className="bg-white border border-slate-200 rounded-lg p-2 text-xs flex flex-col gap-0.5"
+                        >
+                          <span className="font-bold text-slate-800">{p.term}</span>
+                          <span className="text-[10px] text-blue-700 font-semibold tracking-wide">
+                            {acronyms}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className="text-xs text-slate-500 italic">
+                    No themes shared across 2 of 3 contexts.
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Unique by Context */}
             <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">
               <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800">
-                Context-Specific Themes
+                Unique by Context
               </h4>
               <div className="space-y-2">
-                {specificThemes.map((st) => {
+                {themeGroups.uniqueByContext.map((st) => {
                   const ctx = contexts.find((c) => c.id === st.contextId);
                   return (
                     <div key={st.contextId} className="text-xs">
                       <span className="font-bold text-slate-900 block mb-1">
                         {ctx?.identity.missionAcronym}:
                       </span>
-                      {st.themes.length > 0 ? (
+                      {st.terms.length > 0 ? (
                         <div className="flex flex-wrap gap-1">
-                          {st.themes.map((t) => (
+                          {st.terms.map((t) => (
                             <span
                               key={t}
                               className="text-[11px] font-medium px-2 py-0.5 bg-white border border-slate-200 text-slate-700 rounded-md"
@@ -640,7 +673,7 @@ export const MissionExplorerCompare: React.FC<MissionExplorerCompareProps> = ({
                           ))}
                         </div>
                       ) : (
-                        <span className="text-slate-400 italic text-[11px]">All themes shared</span>
+                        <span className="text-slate-400 italic text-[11px]">No unique themes</span>
                       )}
                     </div>
                   );
@@ -761,44 +794,81 @@ export const MissionExplorerCompare: React.FC<MissionExplorerCompareProps> = ({
           </div>
 
           {/* Actor Categories Summary */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className={`grid grid-cols-1 ${contexts.length === 3 ? 'md:grid-cols-3' : 'md:grid-cols-2'} gap-4`}>
+            {/* Shared Across All / Both */}
             <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">
               <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800">
-                Shared Actor Categories ({sharedStakeholderCats.length})
+                {contexts.length === 2 ? 'Shared Across Both' : 'Shared Across All 3'} ({stakeholderGroups.sharedAll.length})
               </h4>
-              {sharedStakeholderCats.length > 0 ? (
+              {stakeholderGroups.sharedAll.length > 0 ? (
                 <div className="flex flex-wrap gap-1.5">
-                  {sharedStakeholderCats.map((c) => (
+                  {stakeholderGroups.sharedAll.map((p) => (
                     <span
-                      key={c}
+                      key={p.term}
                       className="text-xs font-semibold px-2.5 py-1 bg-white border border-blue-200 text-blue-800 rounded-lg shadow-2xs"
                     >
-                      {c}
+                      {p.term}
                     </span>
                   ))}
                 </div>
               ) : (
                 <p className="text-xs text-slate-500 italic">
-                  No actor categories shared across all {contexts.length} selected contexts.
+                  {contexts.length === 2
+                    ? 'No actor categories shared across both contexts.'
+                    : 'No actor categories shared across all 3 contexts.'}
                 </p>
               )}
             </div>
 
+            {/* Shared Across Some (relevant when 3 contexts are compared) */}
+            {contexts.length === 3 && (
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                  Shared Across Some ({stakeholderGroups.sharedSome.length})
+                </h4>
+                {stakeholderGroups.sharedSome.length > 0 ? (
+                  <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                    {stakeholderGroups.sharedSome.map((p) => {
+                      const acronyms = p.contextIds
+                        .map((id) => contexts.find((c) => c.id === id)?.identity.missionAcronym || id)
+                        .join(' · ');
+                      return (
+                        <div
+                          key={p.term}
+                          className="bg-white border border-slate-200 rounded-lg p-2 text-xs flex flex-col gap-0.5"
+                        >
+                          <span className="font-bold text-slate-800">{p.term}</span>
+                          <span className="text-[10px] text-blue-700 font-semibold tracking-wide">
+                            {acronyms}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className="text-xs text-slate-500 italic">
+                    No categories shared across exactly 2 contexts.
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Unique by Context */}
             <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">
               <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800">
-                Context-Specific Actor Categories
+                Unique by Context
               </h4>
               <div className="space-y-2">
-                {specificStakeholderCats.map((sc) => {
+                {stakeholderGroups.uniqueByContext.map((sc) => {
                   const ctx = contexts.find((c) => c.id === sc.contextId);
                   return (
                     <div key={sc.contextId} className="text-xs">
                       <span className="font-bold text-slate-900 block mb-1">
                         {ctx?.identity.missionAcronym}:
                       </span>
-                      {sc.categories.length > 0 ? (
+                      {sc.terms.length > 0 ? (
                         <div className="flex flex-wrap gap-1">
-                          {sc.categories.map((c) => (
+                          {sc.terms.map((c) => (
                             <span
                               key={c}
                               className="text-[11px] font-medium px-2 py-0.5 bg-white border border-slate-200 text-slate-700 rounded-md"
@@ -808,7 +878,7 @@ export const MissionExplorerCompare: React.FC<MissionExplorerCompareProps> = ({
                           ))}
                         </div>
                       ) : (
-                        <span className="text-slate-400 italic text-[11px]">All categories shared</span>
+                        <span className="text-slate-400 italic text-[11px]">No unique categories</span>
                       )}
                     </div>
                   );

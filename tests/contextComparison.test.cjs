@@ -9,6 +9,12 @@ const {
   getContextSpecificThemes,
   getSharedStakeholderCategories,
   getContextSpecificStakeholderCategories,
+  getPlanningThemePresence,
+  getPlanningThemeGroups,
+  getStakeholderCategoryPresence,
+  getStakeholderCategoryGroups,
+  getTermPresence,
+  groupTermPresence,
   getContextSourceCoverage,
   hasMixedOperationalStatus,
   getContextDifferences,
@@ -20,15 +26,20 @@ const { filterMissionExplorerEntries, getSearchMatchReason } = require('../.test
 const { defaultExplorerSeeds } = require('../.test-dist/data/explorerSeeds.js');
 
 // ============================================================================
-// 1. COMPARE SELECTION TESTS
+// 1. COMPARE SELECTION & DISTINCT ID TESTS
 // ============================================================================
 
-test('compare selection validates minimum 2 and maximum 3 contexts', () => {
+test('compare selection validates minimum 2 and maximum 3 DISTINCT contexts', () => {
   assert.equal(canCompareContexts([]), false, '0 contexts cannot be compared');
   assert.equal(canCompareContexts(['pk-unmiss']), false, '1 context cannot be compared');
-  assert.equal(canCompareContexts(['pk-unmiss', 'pk-monusco']), true, '2 contexts can be compared');
-  assert.equal(canCompareContexts(['pk-unmiss', 'pk-monusco', 'seed-binuh']), true, '3 contexts can be compared');
+  assert.equal(canCompareContexts(['pk-unmiss', 'pk-monusco']), true, '2 distinct contexts can be compared');
+  assert.equal(canCompareContexts(['pk-unmiss', 'pk-monusco', 'seed-binuh']), true, '3 distinct contexts can be compared');
   assert.equal(canCompareContexts(['pk-unmiss', 'pk-monusco', 'seed-binuh', 'pk-unifil']), false, '4 contexts exceed cap');
+
+  // Duplicate ID rejection contract
+  assert.equal(canCompareContexts(['pk-unmiss', 'pk-unmiss']), false, 'Duplicate 2 IDs rejected');
+  assert.equal(canCompareContexts(['pk-unmiss', 'pk-monusco', 'pk-unmiss']), false, 'Duplicate in 3 IDs rejected');
+  assert.equal(canCompareContexts(['pk-unmiss', 'pk-unmiss', 'pk-unmiss']), false, 'All identical 3 IDs rejected');
 });
 
 test('compare selection state operations (add, remove, clear, 4th rejection)', () => {
@@ -78,10 +89,10 @@ test('compare selection state operations (add, remove, clear, 4th rejection)', (
 });
 
 // ============================================================================
-// 2. THEMES COMPARISON TESTS
+// 2. THEMES COMPARISON TESTS (2-CONTEXT & 3-CONTEXT 3-TIER OVERLAP)
 // ============================================================================
 
-test('exact normalized shared themes detected without semantic inference', () => {
+test('exact normalized shared themes detected without semantic inference in 2-context comparison', () => {
   const unmiss = resolvePlanningContext('pk-unmiss');
   const monusco = resolvePlanningContext('pk-monusco');
   assert.ok(unmiss && monusco);
@@ -120,7 +131,81 @@ test('exact normalized shared themes detected without semantic inference', () =>
   assert.ok(!syntheticShared.includes('Accountability Architecture'));
 });
 
-test('context-specific themes are preserved per context', () => {
+test('three-context theme comparison correctly separates shared all, shared some, and unique', () => {
+  const base = resolvePlanningContext('pk-unmiss');
+  assert.ok(base);
+
+  const ctxA = {
+    ...base,
+    id: 'ctx-a',
+    reference: {
+      ...base.reference,
+      planningThemes: ['Universal Theme', 'Partial Theme', 'Unique A']
+    }
+  };
+  const ctxB = {
+    ...base,
+    id: 'ctx-b',
+    reference: {
+      ...base.reference,
+      planningThemes: ['Universal Theme', 'Partial Theme', 'Unique B']
+    }
+  };
+  const ctxC = {
+    ...base,
+    id: 'ctx-c',
+    reference: {
+      ...base.reference,
+      planningThemes: ['Universal Theme', 'Unique C']
+    }
+  };
+
+  const groups = getPlanningThemeGroups([ctxA, ctxB, ctxC]);
+
+  // A. Shared all (count === 3)
+  assert.equal(groups.sharedAll.length, 1);
+  assert.equal(groups.sharedAll[0].term, 'Universal Theme');
+  assert.equal(groups.sharedAll[0].count, 3);
+  assert.deepEqual(groups.sharedAll[0].contextIds.sort(), ['ctx-a', 'ctx-b', 'ctx-c'].sort());
+
+  // B. Shared some (count === 2)
+  assert.equal(groups.sharedSome.length, 1);
+  assert.equal(groups.sharedSome[0].term, 'Partial Theme');
+  assert.equal(groups.sharedSome[0].count, 2);
+  assert.deepEqual(groups.sharedSome[0].contextIds.sort(), ['ctx-a', 'ctx-b'].sort());
+
+  // C. Unique by context (count === 1)
+  const uniqueA = groups.uniqueByContext.find((u) => u.contextId === 'ctx-a');
+  const uniqueB = groups.uniqueByContext.find((u) => u.contextId === 'ctx-b');
+  const uniqueC = groups.uniqueByContext.find((u) => u.contextId === 'ctx-c');
+
+  assert.deepEqual(uniqueA?.terms, ['Unique A']);
+  assert.deepEqual(uniqueB?.terms, ['Unique B']);
+  assert.deepEqual(uniqueC?.terms, ['Unique C']);
+
+  // Crucial: Partial Theme must NOT be labeled as unique to ctx-a or ctx-b!
+  assert.ok(!uniqueA?.terms.includes('Partial Theme'), 'Partial theme must not be in unique A');
+  assert.ok(!uniqueB?.terms.includes('Partial Theme'), 'Partial theme must not be in unique B');
+});
+
+test('presence primitives getPlanningThemePresence and getTermPresence return structured term records', () => {
+  const unmiss = resolvePlanningContext('pk-unmiss');
+  const monusco = resolvePlanningContext('pk-monusco');
+  assert.ok(unmiss && monusco);
+
+  const presence = getPlanningThemePresence([unmiss, monusco]);
+  assert.ok(presence.length > 0);
+  assert.ok(presence[0].term && typeof presence[0].term === 'string');
+  assert.ok(presence[0].count >= 1 && presence[0].count <= 2);
+  assert.ok(Array.isArray(presence[0].contextIds));
+
+  const rawPresence = getTermPresence([unmiss], (c) => c.reference.planningThemes || []);
+  const grouped = groupTermPresence(rawPresence, [unmiss]);
+  assert.ok(grouped);
+  assert.ok(Array.isArray(getStakeholderCategoryPresence([unmiss])));
+});
+
+test('context-specific themes helper returns only truly unique themes per context', () => {
   const unmiss = resolvePlanningContext('pk-unmiss');
   const monusco = resolvePlanningContext('pk-monusco');
   assert.ok(unmiss && monusco);
@@ -143,7 +228,7 @@ test('context-specific themes are preserved per context', () => {
 });
 
 // ============================================================================
-// 3. STAKEHOLDER CATEGORIES TESTS
+// 3. STAKEHOLDER CATEGORIES TESTS (2-CONTEXT & 3-CONTEXT)
 // ============================================================================
 
 test('shared stakeholder categories derived correctly without assessed values', () => {
@@ -168,6 +253,65 @@ test('shared stakeholder categories derived correctly without assessed values', 
       assert.ok(!sharedCats.map(normalizeComparisonTerm).includes(normalizeComparisonTerm(cat)));
     });
   });
+});
+
+test('three-context stakeholder category comparison correctly separates shared all, shared some, and unique', () => {
+  const base = resolvePlanningContext('pk-unmiss');
+  assert.ok(base);
+
+  const ctxA = {
+    ...base,
+    id: 'actor-ctx-a',
+    planningPrompts: {
+      ...base.planningPrompts,
+      stakeholderPrompts: [],
+      suggestedStakeholderCategories: ['Universal Actor', 'Partial Actor', 'Unique Actor A']
+    }
+  };
+  const ctxB = {
+    ...base,
+    id: 'actor-ctx-b',
+    planningPrompts: {
+      ...base.planningPrompts,
+      stakeholderPrompts: [],
+      suggestedStakeholderCategories: ['Universal Actor', 'Partial Actor', 'Unique Actor B']
+    }
+  };
+  const ctxC = {
+    ...base,
+    id: 'actor-ctx-c',
+    planningPrompts: {
+      ...base.planningPrompts,
+      stakeholderPrompts: [],
+      suggestedStakeholderCategories: ['Universal Actor', 'Unique Actor C']
+    }
+  };
+
+  const groups = getStakeholderCategoryGroups([ctxA, ctxB, ctxC]);
+
+  // A. Shared all
+  assert.equal(groups.sharedAll.length, 1);
+  assert.equal(groups.sharedAll[0].term, 'Universal Actor');
+  assert.equal(groups.sharedAll[0].count, 3);
+
+  // B. Shared some
+  assert.equal(groups.sharedSome.length, 1);
+  assert.equal(groups.sharedSome[0].term, 'Partial Actor');
+  assert.equal(groups.sharedSome[0].count, 2);
+  assert.deepEqual(groups.sharedSome[0].contextIds.sort(), ['actor-ctx-a', 'actor-ctx-b'].sort());
+
+  // C. Unique by context
+  const uniqueA = groups.uniqueByContext.find((u) => u.contextId === 'actor-ctx-a');
+  const uniqueB = groups.uniqueByContext.find((u) => u.contextId === 'actor-ctx-b');
+  const uniqueC = groups.uniqueByContext.find((u) => u.contextId === 'actor-ctx-c');
+
+  assert.deepEqual(uniqueA?.terms, ['Unique Actor A']);
+  assert.deepEqual(uniqueB?.terms, ['Unique Actor B']);
+  assert.deepEqual(uniqueC?.terms, ['Unique Actor C']);
+
+  // Partial actor must not be labeled unique to A or B
+  assert.ok(!uniqueA?.terms.includes('Partial Actor'));
+  assert.ok(!uniqueB?.terms.includes('Partial Actor'));
 });
 
 // ============================================================================
@@ -264,7 +408,7 @@ test('search matches across PESTEL prompts, stakeholder prompts, and categories'
   }
 });
 
-test('quick filter verification status correctly filters contexts', () => {
+test('quick filter verification status correctly filters contexts with reviewed-reference semantics', () => {
   const refResults = filterMissionExplorerEntries(defaultExplorerSeeds, {
     searchQuery: '',
     selectedRegion: 'all',
@@ -309,8 +453,10 @@ test('comparison functions do not mutate canonical PlanningContext records', () 
   // Execute all comparison functions
   getSharedPlanningThemes([unmiss, monusco]);
   getContextSpecificThemes([unmiss, monusco]);
+  getPlanningThemeGroups([unmiss, monusco]);
   getSharedStakeholderCategories([unmiss, monusco]);
   getContextSpecificStakeholderCategories([unmiss, monusco]);
+  getStakeholderCategoryGroups([unmiss, monusco]);
   getContextSourceCoverage(unmiss);
   getContextSourceCoverage(monusco);
   hasMixedOperationalStatus([unmiss, monusco]);

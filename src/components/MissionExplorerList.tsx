@@ -98,7 +98,7 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
     label: string;
   }> = [
     { id: 'all', label: 'All Contexts' },
-    { id: 'current-reference', label: 'Current Reference' },
+    { id: 'current-reference', label: 'Reviewed Reference' },
     { id: 'review-required', label: 'Review Required' },
     { id: 'training-only', label: 'Training Scenario' }
   ];

@@ -23,11 +23,27 @@ export interface TransferCheckQuestion {
   question: string;
 }
 
+export interface TermPresence {
+  term: string;
+  contextIds: string[];
+  count: number;
+}
+
+export interface ComparisonTermGroups {
+  sharedAll: TermPresence[];
+  sharedSome: TermPresence[];
+  uniqueByContext: Array<{ contextId: string; terms: string[] }>;
+}
+
 /**
- * Validates whether the given list of context IDs meets comparison bounds (2 to 3 contexts).
+ * Validates whether the given list of context IDs meets comparison bounds (2 to 3 DISTINCT contexts).
  */
 export function canCompareContexts(ids: string[]): boolean {
-  return ids.length >= 2 && ids.length <= 3;
+  if (!Array.isArray(ids) || ids.length < 2 || ids.length > 3) {
+    return false;
+  }
+  const uniqueIds = new Set(ids);
+  return uniqueIds.size === ids.length;
 }
 
 /**
@@ -38,50 +54,102 @@ export function normalizeComparisonTerm(term: string): string {
 }
 
 /**
- * Returns planning themes present in all of the provided contexts (exact normalized match).
- * Preserves the original casing from the first context where the theme occurs.
+ * Generic term presence extractor across a list of contexts.
+ * Preserves original display casing from the first context where the term occurs.
+ * Results are sorted deterministically by term.
  */
-export function getSharedPlanningThemes(contexts: PlanningContext[]): string[] {
-  if (contexts.length === 0) return [];
-  if (contexts.length === 1) return [...(contexts[0].reference.planningThemes || [])];
+export function getTermPresence(
+  contexts: PlanningContext[],
+  extractor: (ctx: PlanningContext) => string[]
+): TermPresence[] {
+  if (!contexts || contexts.length === 0) return [];
 
-  const firstThemes = contexts[0].reference.planningThemes || [];
-  const shared: string[] = [];
+  const presenceMap = new Map<string, { term: string; contextIds: string[] }>();
 
-  for (const theme of firstThemes) {
-    const norm = normalizeComparisonTerm(theme);
-    const inAll = contexts.slice(1).every((ctx) =>
-      (ctx.reference.planningThemes || []).some(
-        (t) => normalizeComparisonTerm(t) === norm
-      )
-    );
-    if (inAll && !shared.some((s) => normalizeComparisonTerm(s) === norm)) {
-      shared.push(theme);
+  for (const ctx of contexts) {
+    const rawTerms = extractor(ctx) || [];
+    const seenInContext = new Set<string>();
+
+    for (const raw of rawTerms) {
+      if (!raw || typeof raw !== 'string') continue;
+      const norm = normalizeComparisonTerm(raw);
+      if (seenInContext.has(norm)) continue;
+      seenInContext.add(norm);
+
+      const existing = presenceMap.get(norm);
+      if (existing) {
+        existing.contextIds.push(ctx.id);
+      } else {
+        presenceMap.set(norm, {
+          term: raw.trim(),
+          contextIds: [ctx.id]
+        });
+      }
     }
   }
 
-  return shared;
+  const results: TermPresence[] = Array.from(presenceMap.values()).map((entry) => ({
+    term: entry.term,
+    contextIds: entry.contextIds,
+    count: entry.contextIds.length
+  }));
+
+  results.sort((a, b) => a.term.localeCompare(b.term));
+  return results;
 }
 
 /**
- * Returns planning themes specific to each context (i.e. not shared across all contexts).
+ * Groups term presence into three exact-match sets:
+ * A. Shared Across All: present in every compared context (count === contexts.length)
+ * B. Shared Across Some: present in at least 2 contexts but not all (relevant when 3 contexts compared)
+ * C. Unique by Context: present in exactly 1 context (count === 1)
  */
-export function getContextSpecificThemes(
+export function groupTermPresence(
+  presenceList: TermPresence[],
   contexts: PlanningContext[]
-): Array<{ contextId: string; themes: string[] }> {
-  const sharedNormalized = new Set(
-    getSharedPlanningThemes(contexts).map(normalizeComparisonTerm)
-  );
+): ComparisonTermGroups {
+  const total = contexts.length;
+  const sharedAll: TermPresence[] = [];
+  const sharedSome: TermPresence[] = [];
 
-  return contexts.map((ctx) => {
-    const themes = (ctx.reference.planningThemes || []).filter(
-      (theme) => !sharedNormalized.has(normalizeComparisonTerm(theme))
-    );
+  for (const p of presenceList) {
+    if (total >= 2 && p.count === total) {
+      sharedAll.push(p);
+    } else if (p.count > 1 && p.count < total) {
+      sharedSome.push(p);
+    }
+  }
+
+  const uniqueByContext = contexts.map((ctx) => {
+    const terms = presenceList
+      .filter((p) => p.count === 1 && p.contextIds.includes(ctx.id))
+      .map((p) => p.term);
     return {
       contextId: ctx.id,
-      themes
+      terms
     };
   });
+
+  return {
+    sharedAll,
+    sharedSome,
+    uniqueByContext
+  };
+}
+
+/**
+ * Returns planning theme presence records across contexts.
+ */
+export function getPlanningThemePresence(contexts: PlanningContext[]): TermPresence[] {
+  return getTermPresence(contexts, (ctx) => ctx.reference.planningThemes || []);
+}
+
+/**
+ * Returns 3-tier planning theme groups: shared all, shared some (partial), and unique by context.
+ */
+export function getPlanningThemeGroups(contexts: PlanningContext[]): ComparisonTermGroups {
+  const presence = getPlanningThemePresence(contexts);
+  return groupTermPresence(presence, contexts);
 }
 
 /**
@@ -105,49 +173,56 @@ function extractStakeholderCategories(context: PlanningContext): string[] {
 }
 
 /**
- * Returns stakeholder categories present in all of the provided contexts.
+ * Returns stakeholder category presence records across contexts.
  */
-export function getSharedStakeholderCategories(contexts: PlanningContext[]): string[] {
-  if (contexts.length === 0) return [];
-  if (contexts.length === 1) return extractStakeholderCategories(contexts[0]);
-
-  const firstCats = extractStakeholderCategories(contexts[0]);
-  const shared: string[] = [];
-
-  for (const cat of firstCats) {
-    const norm = normalizeComparisonTerm(cat);
-    const inAll = contexts.slice(1).every((ctx) =>
-      extractStakeholderCategories(ctx).some(
-        (c) => normalizeComparisonTerm(c) === norm
-      )
-    );
-    if (inAll && !shared.some((s) => normalizeComparisonTerm(s) === norm)) {
-      shared.push(cat);
-    }
-  }
-
-  return shared;
+export function getStakeholderCategoryPresence(contexts: PlanningContext[]): TermPresence[] {
+  return getTermPresence(contexts, extractStakeholderCategories);
 }
 
 /**
- * Returns stakeholder categories specific to each context.
+ * Returns 3-tier stakeholder category groups: shared all, shared some (partial), and unique by context.
+ */
+export function getStakeholderCategoryGroups(contexts: PlanningContext[]): ComparisonTermGroups {
+  const presence = getStakeholderCategoryPresence(contexts);
+  return groupTermPresence(presence, contexts);
+}
+
+/**
+ * Backward-compatible helper: returns planning themes present in all contexts.
+ */
+export function getSharedPlanningThemes(contexts: PlanningContext[]): string[] {
+  return getPlanningThemeGroups(contexts).sharedAll.map((p) => p.term);
+}
+
+/**
+ * Helper: returns planning themes unique to each context.
+ */
+export function getContextSpecificThemes(
+  contexts: PlanningContext[]
+): Array<{ contextId: string; themes: string[] }> {
+  return getPlanningThemeGroups(contexts).uniqueByContext.map((u) => ({
+    contextId: u.contextId,
+    themes: u.terms
+  }));
+}
+
+/**
+ * Backward-compatible helper: returns stakeholder categories present in all contexts.
+ */
+export function getSharedStakeholderCategories(contexts: PlanningContext[]): string[] {
+  return getStakeholderCategoryGroups(contexts).sharedAll.map((p) => p.term);
+}
+
+/**
+ * Helper: returns stakeholder categories unique to each context.
  */
 export function getContextSpecificStakeholderCategories(
   contexts: PlanningContext[]
 ): Array<{ contextId: string; categories: string[] }> {
-  const sharedNormalized = new Set(
-    getSharedStakeholderCategories(contexts).map(normalizeComparisonTerm)
-  );
-
-  return contexts.map((ctx) => {
-    const categories = extractStakeholderCategories(ctx).filter(
-      (cat) => !sharedNormalized.has(normalizeComparisonTerm(cat))
-    );
-    return {
-      contextId: ctx.id,
-      categories
-    };
-  });
+  return getStakeholderCategoryGroups(contexts).uniqueByContext.map((u) => ({
+    contextId: u.contextId,
+    categories: u.terms
+  }));
 }
 
 /**
