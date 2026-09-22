@@ -220,7 +220,7 @@ export const AnalysisSynthesis: React.FC<AnalysisSynthesisProps> = ({ data, onCh
         </div>
 
         {/* 2. Professional Unified 2x2 SWOT Analytical Matrix for Detailed Findings */}
-        <div className="rounded-lg border border-border-default bg-surface-card overflow-hidden shadow-subtle">
+        <div className="rounded-lg border border-border-strong bg-surface-raised overflow-hidden">
           {/* Row 1 Header: Internal Conditions */}
           <div className="border-b border-border-default bg-surface-subtle px-4 py-2 flex items-center justify-between text-xs font-semibold text-text-default">
             <span className="uppercase tracking-wider">Internal Institutional Conditions</span>
@@ -245,7 +245,7 @@ export const AnalysisSynthesis: React.FC<AnalysisSynthesisProps> = ({ data, onCh
         </div>
       </section>
 
-      <section className="rounded-lg border border-border-default bg-surface-card overflow-hidden shadow-subtle">
+      <section className="rounded-lg border border-border-strong bg-surface-raised overflow-hidden">
         <button
           type="button"
           onClick={() => setOptionsOpen(open => !open)}

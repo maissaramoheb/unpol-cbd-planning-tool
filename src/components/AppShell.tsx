@@ -51,7 +51,7 @@ export const AppShell: React.FC = () => {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center font-sans">
+      <div className="min-h-screen bg-canvas-bg flex items-center justify-center font-sans">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin motion-reduce:animate-none" />
           <span className="text-sm font-bold text-slate-600">Initializing unofficial UNPOL CBD planning prototype...</span>
@@ -261,7 +261,7 @@ export const AppShell: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800 print:bg-white print:text-black">
+    <div className="min-h-screen bg-canvas-bg flex flex-col font-sans text-slate-800 print:bg-white print:text-black">
       {/* Top Header */}
       <Header
         onReset={handleResetWorkspace}

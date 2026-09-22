@@ -49,9 +49,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({
     ghost:
       'bg-transparent hover:bg-surface-subtle active:bg-slate-200/60 text-text-secondary hover:text-text-primary border border-transparent',
     destructive:
-      'bg-action-danger hover:bg-action-danger-hover active:bg-[#7f1d1d] text-text-inverse border border-transparent shadow-subtle focus-visible:ring-red-600',
+      'bg-surface-raised hover:bg-red-50 active:bg-red-100 text-red-700 hover:text-red-800 border border-red-200 hover:border-red-300 shadow-subtle focus-visible:ring-red-600',
     danger:
-      'bg-action-danger hover:bg-action-danger-hover active:bg-[#7f1d1d] text-text-inverse border border-transparent shadow-subtle focus-visible:ring-red-600',
+      'bg-surface-raised hover:bg-red-50 active:bg-red-100 text-red-700 hover:text-red-800 border border-red-200 hover:border-red-300 shadow-subtle focus-visible:ring-red-600',
     quiet:
       'bg-transparent hover:bg-surface-subtle active:bg-slate-200/60 text-text-muted hover:text-text-primary border border-transparent',
     link:

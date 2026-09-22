@@ -132,7 +132,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
       <StageLead stage={3} />
 
       {/* Master-Detail Split Pane */}
-      <div className="bg-surface-raised border border-border-default rounded-lg overflow-hidden flex flex-col lg:flex-row min-h-[640px]">
+      <div className="bg-surface-raised border border-border-strong rounded-lg overflow-hidden flex flex-col lg:flex-row min-h-[640px]">
         {/* Master List Column */}
         <div className="w-full lg:w-80 border-b lg:border-b-0 lg:border-r border-border-default flex flex-col shrink-0 bg-surface-subtle">
           <div className="p-3 border-b border-border-default flex items-center justify-between gap-2 bg-surface-raised">

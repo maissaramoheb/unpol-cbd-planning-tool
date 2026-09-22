@@ -75,7 +75,7 @@ export const MatrixListView: React.FC<MatrixListViewProps> = ({
           const isRowSelected = selectedMode === 'keyArea' && selectedKey === row.id;
 
           return (
-            <div key={row.id} className="border border-border-default rounded-md bg-surface-card overflow-hidden shadow-subtle">
+            <div key={row.id} className="border border-border-strong rounded-md bg-surface-card overflow-hidden">
               {/* Row Header Accordion Trigger */}
               <button
                 type="button"

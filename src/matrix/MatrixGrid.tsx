@@ -69,7 +69,7 @@ export const MatrixGrid: React.FC<MatrixGridProps> = ({
   return (
     <div className="w-full flex flex-col gap-3">
       {/* Coherent Analytical Grid */}
-      <div className="w-full overflow-x-auto rounded-lg border border-border-default bg-surface-card shadow-subtle">
+      <div className="w-full overflow-x-auto rounded-lg border border-border-strong bg-surface-card">
         <div className="min-w-[960px] grid grid-cols-[165px_repeat(6,minmax(130px,1fr))] gap-px bg-border-default">
           {/* Corner Cell */}
           <div className="bg-surface-subtle p-2 text-center flex flex-col justify-center items-center text-text-muted text-[11px] font-semibold uppercase tracking-wider h-16">

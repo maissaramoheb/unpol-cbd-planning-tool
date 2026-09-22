@@ -69,7 +69,7 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
       <StageLead stage={2} />
 
       {/* Master-Detail Worksurface Container */}
-      <div className="rounded-lg border border-border-default bg-surface-raised overflow-hidden flex flex-col lg:flex-row">
+      <div className="rounded-lg border border-border-strong bg-surface-raised overflow-hidden flex flex-col lg:flex-row">
         {/* Left Master List */}
         <div className="w-full lg:w-72 lg:border-r border-border-default bg-surface-subtle/40 shrink-0 flex flex-col">
           <div className="px-4 py-3 border-b border-border-default bg-surface-subtle flex items-center justify-between">

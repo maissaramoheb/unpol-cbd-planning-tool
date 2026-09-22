@@ -105,7 +105,7 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
         {/* Left Column: Analytical Diagnostics & Phase Allocations */}
         <div className="lg:col-span-1 flex flex-col gap-6">
           {/* Intervention Diagnostic */}
-          <div className="rounded-lg border border-border-default bg-surface-card overflow-hidden shadow-subtle">
+          <div className="rounded-lg border border-border-strong bg-surface-raised overflow-hidden">
             <div className="px-4 py-3 bg-surface-subtle border-b border-border-default flex items-center justify-between">
               <h4 className="text-xs font-semibold uppercase tracking-wider text-text-muted flex items-center gap-1.5">
                 <Layers size={14} className="text-institutional" />
@@ -185,7 +185,7 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
           </div>
 
           {/* Manual Implementation Phases */}
-          <div className="rounded-lg border border-border-default bg-surface-card overflow-hidden shadow-subtle">
+          <div className="rounded-lg border border-border-strong bg-surface-raised overflow-hidden">
             <div className="px-4 py-3 bg-surface-subtle border-b border-border-default flex items-center justify-between">
               <h4 className="text-xs font-semibold uppercase tracking-wider text-text-muted">
                 Manual Implementation Phases
@@ -253,7 +253,7 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
 
         {/* Right Column: Strategic Sequencing Formulation & Narrative Synthesis */}
         <div className="lg:col-span-2 flex flex-col gap-6">
-          <div className="rounded-lg border border-border-default bg-surface-card overflow-hidden shadow-subtle">
+          <div className="rounded-lg border border-border-strong bg-surface-raised overflow-hidden">
             <div className="px-4 py-3 bg-surface-subtle border-b border-border-default flex items-center justify-between">
               <h4 className="text-xs font-semibold uppercase tracking-wider text-text-muted">
                 Formulate Strategic Sequencing Groups
@@ -273,12 +273,12 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
               ].map(({ label, field, placeholder }) => {
                 const list = brief[field] || [];
                 return (
-                  <div key={field} className="rounded-md border border-border-default bg-surface-subtle/20 overflow-hidden">
+                  <div key={field} className="rounded-md border border-border-default bg-surface-subtle/50 overflow-hidden">
                     <div className="flex items-center justify-between px-3.5 py-2 bg-surface-subtle border-b border-border-default">
                       <span className="text-xs font-semibold text-text-default uppercase tracking-wider">
                         {label}
                       </span>
-                      <span className="text-[10px] font-mono text-text-muted px-2 py-0.5 rounded bg-surface-card border border-border-default">
+                      <span className="text-[10px] font-mono text-text-muted px-2 py-0.5 rounded bg-surface-raised border border-border-default">
                         {list.length} {list.length === 1 ? 'item' : 'items'}
                       </span>
                     </div>
@@ -295,7 +295,7 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
                             }
                           }}
                           placeholder={placeholder}
-                          className="flex-1 h-8 px-3 border border-border-default rounded-md text-xs bg-surface-card text-text-default placeholder:text-text-muted/60 focus:outline-none focus:ring-2 focus:ring-institutional focus:border-institutional transition-shadow"
+                          className="flex-1 h-8 px-3 border border-border-default rounded-md text-xs bg-surface-raised text-text-default placeholder:text-text-muted/60 focus:outline-none focus:ring-2 focus:ring-institutional focus:border-institutional transition-shadow"
                         />
                         <Button
                           variant="secondary"
@@ -309,7 +309,7 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
                         </Button>
                       </div>
                       {list.length > 0 && (
-                        <ul className="divide-y divide-border-default border border-border-default rounded-md overflow-hidden bg-surface-card">
+                        <ul className="divide-y divide-border-default border border-border-default rounded-md overflow-hidden bg-surface-raised">
                           {list.map((item, idx) => (
                             <li
                               key={idx}
@@ -336,7 +336,7 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
           </div>
 
           {/* Sequencing Narrative: Prominent Executive Analytical Conclusion Framing */}
-          <div className="rounded-lg border-2 border-institutional/25 bg-surface-card overflow-hidden shadow-subtle">
+          <div className="rounded-lg border-2 border-institutional/30 bg-surface-raised overflow-hidden">
             <div className="px-4 py-3 bg-institutional-subtle border-b border-institutional/20">
               <h4 className="text-xs font-semibold uppercase tracking-wider text-institutional">
                 Stage 6 Synthesis: Recommended Sequencing Narrative
@@ -351,7 +351,7 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
                 onChange={(e) => handleFieldChange('sequencingRecommendation', e.target.value)}
                 placeholder="Articulate the strategic sequencing logic and transitional rationale (e.g., Phase 1 focuses on immediate integrity safeguards and quick wins to build operational credibility; Phase 2 introduces middle-management accountability SOPs; Phase 3 anchors reforms in formal statutory Police Act amendments)..."
                 rows={5}
-                className="w-full p-3 border border-border-default rounded-md text-xs bg-surface-card text-text-default placeholder:text-text-muted/60 focus:outline-none focus:ring-2 focus:ring-institutional focus:border-institutional transition-shadow resize-y leading-relaxed font-normal"
+                className="w-full p-3 border border-border-default rounded-md text-xs bg-surface-raised text-text-default placeholder:text-text-muted/60 focus:outline-none focus:ring-2 focus:ring-institutional focus:border-institutional transition-shadow resize-y leading-relaxed font-normal"
               />
             </div>
           </div>

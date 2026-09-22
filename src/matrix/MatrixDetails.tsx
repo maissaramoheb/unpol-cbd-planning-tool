@@ -251,12 +251,16 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
           </div>
         </div>
       </CardHeader>
-      <CardBody className="flex flex-col gap-4">
-        <div className="grid grid-cols-1 gap-3">
-          <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-text-default">Planning Basis</h4>
-            <p className="mt-1 text-xs leading-relaxed text-text-muted">Link strategic options that inform this priority. The links do not populate or determine the CBD response.</p>
+      <CardBody className="flex flex-col gap-5">
+        {/* Section 1: Planning Basis */}
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-primary bg-blue-50/80 border border-blue-200/60 px-1.5 py-0.5 rounded">
+              01
+            </span>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">Planning Basis</h4>
           </div>
+          <p className="text-xs leading-relaxed text-text-muted">Link strategic options that inform this priority. The links do not populate or determine the CBD response.</p>
           <fieldset className="rounded-lg border border-border-default bg-surface-subtle/50 p-3.5">
             <legend className="px-1 text-xs font-semibold text-text-default">Strategic Synthesis Basis</legend>
             {strategicOptions.length ? <div className="grid gap-2 sm:grid-cols-2">
@@ -271,8 +275,14 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
           </fieldset>
         </div>
 
-        <div className="grid grid-cols-1 gap-4">
-          <h4 className="text-xs font-semibold uppercase tracking-wider text-text-default">Planning Logic</h4>
+        {/* Section 2: Planning Logic */}
+        <div className="border-t border-border-default pt-5 flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-primary bg-blue-50/80 border border-blue-200/60 px-1.5 py-0.5 rounded">
+              02
+            </span>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">Planning Logic</h4>
+          </div>
           <TextArea
             label="Capacity Problem / Gap"
             value={activeCell.capacityProblem || ''}
@@ -291,29 +301,43 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
           <FieldGuidance {...FIELD_GUIDANCE.planningObjective} />
         </div>
 
-        <h4 className="border-t border-border-default pt-4 text-xs font-semibold uppercase tracking-wider text-text-default">Intervention Package</h4>
-        <TextArea
-          label="Why this intersection matters for SSR / CBD"
-          value={activeCell.why}
-          onChange={(e) => handleCellChange('why', e.target.value)}
-          placeholder="Explain the theoretical and operational importance..."
-          rows={2}
-        />
+        {/* Section 3: Intervention Package */}
+        <div className="border-t border-border-default pt-5 flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-primary bg-blue-50/80 border border-blue-200/60 px-1.5 py-0.5 rounded">
+              03
+            </span>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">Intervention Package</h4>
+          </div>
+          <TextArea
+            label="Why this intersection matters for SSR / CBD"
+            value={activeCell.why}
+            onChange={(e) => handleCellChange('why', e.target.value)}
+            placeholder="Explain the theoretical and operational importance..."
+            rows={2}
+          />
 
-        {/* 3 Action Levels */}
-        <div>
-          <label className="text-xs font-semibold text-text-secondary uppercase tracking-wider block mb-2">
-            Intervention Examples across the 3 Levels
-          </label>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div><TextArea label="Individual Level (Skills / Mentoring)" value={activeCell.individual} onChange={(e) => handleCellChange('individual', e.target.value)} rows={3} /><FieldGuidance {...FIELD_GUIDANCE.individual} /></div>
-            <div><TextArea label="Organizational Level (SOPs / Systems)" value={activeCell.organizational} onChange={(e) => handleCellChange('organizational', e.target.value)} rows={3} /><FieldGuidance {...FIELD_GUIDANCE.organizational} /></div>
-            <div><TextArea label="Enabling Environment (Law / Oversight)" value={activeCell.environment} onChange={(e) => handleCellChange('environment', e.target.value)} rows={3} /><FieldGuidance {...FIELD_GUIDANCE.enablingEnvironment} /></div>
+          {/* 3 Action Levels */}
+          <div>
+            <label className="text-xs font-semibold text-text-secondary uppercase tracking-wider block mb-2">
+              Intervention Examples across the 3 Levels
+            </label>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div><TextArea label="Individual Level (Skills / Mentoring)" value={activeCell.individual} onChange={(e) => handleCellChange('individual', e.target.value)} rows={3} /><FieldGuidance {...FIELD_GUIDANCE.individual} /></div>
+              <div><TextArea label="Organizational Level (SOPs / Systems)" value={activeCell.organizational} onChange={(e) => handleCellChange('organizational', e.target.value)} rows={3} /><FieldGuidance {...FIELD_GUIDANCE.organizational} /></div>
+              <div><TextArea label="Enabling Environment (Law / Oversight)" value={activeCell.environment} onChange={(e) => handleCellChange('environment', e.target.value)} rows={3} /><FieldGuidance {...FIELD_GUIDANCE.enablingEnvironment} /></div>
+            </div>
           </div>
         </div>
 
-        <div className="border-t border-border-default pt-4">
-          <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-text-default">Implementation</h4>
+        {/* Section 4: Implementation */}
+        <div className="border-t border-border-default pt-5 flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-primary bg-blue-50/80 border border-blue-200/60 px-1.5 py-0.5 rounded">
+              04
+            </span>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">Implementation</h4>
+          </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <label className="flex flex-col gap-1.5 text-xs font-semibold text-text-secondary">
               Lead Stakeholder / Actor
@@ -355,7 +379,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
               />
             </label>
           </div>
-          <div className="mt-4">
+          <div>
             <span className="mb-1 block text-xs font-semibold text-text-secondary">Supporting Stakeholders / Actors</span>
             <p id={supportingHelpId} className="mb-2 text-xs leading-relaxed text-text-muted">{FIELD_GUIDANCE.supportingActors.help}</p>
             <div aria-describedby={supportingHelpId} className="grid max-h-[160px] grid-cols-1 gap-1.5 overflow-y-auto rounded-md border border-border-default bg-surface-subtle p-2.5 md:grid-cols-2">
@@ -369,53 +393,67 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
           </div>
         </div>
 
-        {/* Indicators */}
-        <div className="pt-2 border-t border-border-default">
-          <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-text-default">Monitoring</h4>
-          <label className="text-xs font-semibold text-text-secondary uppercase tracking-wider block mb-2">
-            CBD Assessment Indicators
-          </label>
-          <div id={indicatorHelpId} className="mb-2"><FieldGuidance {...FIELD_GUIDANCE.indicator} /></div>
-          <div className="flex gap-2 mb-2">
-            <input
-              type="text"
-              value={newIndicator}
-              onChange={(e) => setNewIndicator(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleAddIndicator()}
-              placeholder="Add verifiable indicator..."
-              aria-describedby={indicatorHelpId}
-              className="flex-1 px-3 py-1.5 border border-border-default rounded-md text-xs bg-surface-raised text-text-default focus:outline-none focus:ring-2 focus:ring-focus-ring"
-            />
-            <Button variant="secondary" size="sm" onClick={handleAddIndicator}>
-              <Plus size={14} className="mr-1" /> Add
-            </Button>
+        {/* Section 5: Monitoring */}
+        <div className="border-t border-border-default pt-5 flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-primary bg-blue-50/80 border border-blue-200/60 px-1.5 py-0.5 rounded">
+              05
+            </span>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">Monitoring</h4>
           </div>
-          <div className="flex flex-wrap gap-1.5">
-            {activeCell.indicators?.map((indicator, idx) => (
-              <Badge
-                key={idx}
-                variant="slate"
-                className="pl-2.5 pr-1 py-1 flex items-center gap-1.5 text-[11px]"
-              >
-                <span>{indicatorText(indicator)}</span>
-                <button
-                  type="button"
-                  onClick={() => handleRemoveIndicator(idx)}
-                  aria-label={`Remove indicator ${idx + 1}`}
-                  className="p-0.5 rounded-full hover:bg-surface-hover text-text-muted hover:text-action-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+          <div>
+            <label className="text-xs font-semibold text-text-secondary uppercase tracking-wider block mb-2">
+              CBD Assessment Indicators
+            </label>
+            <div id={indicatorHelpId} className="mb-2"><FieldGuidance {...FIELD_GUIDANCE.indicator} /></div>
+            <div className="flex gap-2 mb-2">
+              <input
+                type="text"
+                value={newIndicator}
+                onChange={(e) => setNewIndicator(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleAddIndicator()}
+                placeholder="Add verifiable indicator..."
+                aria-describedby={indicatorHelpId}
+                className="flex-1 px-3 py-1.5 border border-border-default rounded-md text-xs bg-surface-raised text-text-default focus:outline-none focus:ring-2 focus:ring-focus-ring"
+              />
+              <Button variant="secondary" size="sm" onClick={handleAddIndicator}>
+                <Plus size={14} className="mr-1" /> Add
+              </Button>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {activeCell.indicators?.map((indicator, idx) => (
+                <Badge
+                  key={idx}
+                  variant="slate"
+                  className="pl-2.5 pr-1 py-1 flex items-center gap-1.5 text-[11px]"
                 >
-                  <Trash2 size={11} />
-                </button>
-              </Badge>
-            ))}
+                  <span>{indicatorText(indicator)}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveIndicator(idx)}
+                    aria-label={`Remove indicator ${idx + 1}`}
+                    className="p-0.5 rounded-full hover:bg-surface-hover text-text-muted hover:text-action-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+                  >
+                    <Trash2 size={11} />
+                  </button>
+                </Badge>
+              ))}
+            </div>
           </div>
         </div>
 
-        <h4 className="border-t border-border-default pt-4 text-xs font-semibold uppercase tracking-wider text-text-default">Evidence &amp; Assessment</h4>
-        {/* Sliders */}
-        <div className="rounded-md border border-amber-200 bg-amber-50/60 p-3 text-xs leading-relaxed text-amber-950">
-          <strong>Prototype planning heuristic — not UN doctrine.</strong> This indicative score supports discussion; it is not objective and does not replace mandate review, evidence, consultation, or professional judgement. Confidence qualifies the assessment but does not increase the score.
-        </div>
+        {/* Section 6: Evidence & Assessment */}
+        <div className="border-t border-border-default pt-5 flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-primary bg-blue-50/80 border border-blue-200/60 px-1.5 py-0.5 rounded">
+              06
+            </span>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">Evidence &amp; Assessment</h4>
+          </div>
+          {/* Sliders */}
+          <div className="rounded-md border border-amber-200 bg-amber-50/60 p-3 text-xs leading-relaxed text-amber-950">
+            <strong>Prototype planning heuristic — not UN doctrine.</strong> This indicative score supports discussion; it is not objective and does not replace mandate review, evidence, consultation, or professional judgement. Confidence qualifies the assessment but does not increase the score.
+          </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-border-default">
           <Slider
@@ -541,6 +579,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
               })}
             </div>
           </div>
+        </div>
         </div>
 
         <EvidenceLogEditor

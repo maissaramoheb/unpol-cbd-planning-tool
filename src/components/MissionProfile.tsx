@@ -76,7 +76,7 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
             Browse Mission Explorer Map
           </Button>
 
-          <div className="rounded-lg border border-border-default bg-surface-raised overflow-hidden">
+          <div className="rounded-lg border border-border-strong bg-surface-raised overflow-hidden">
             <div className="divide-y divide-border-default">
               {defaultMissionTemplates.map((template) => {
                 const isSelected = profile.templateId === template.id;

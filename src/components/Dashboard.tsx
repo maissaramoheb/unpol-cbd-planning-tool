@@ -110,7 +110,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
         </div>
 
         {showHowItWorks && (
-          <div id="how-it-works-orientation" className="rounded-lg border border-border-default bg-surface-raised p-5 sm:p-6">
+          <div id="how-it-works-orientation" className="rounded-lg border border-border-strong bg-surface-raised p-5 sm:p-6">
             <div className="border-b border-border-default pb-3">
               <h2 className="text-base font-bold text-text-primary">How the planning journey works</h2>
               <p className="mt-0.5 text-xs text-text-muted">Move through the reasoning in order, then revisit earlier steps as evidence improves.</p>
@@ -229,7 +229,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
         </div>
 
         {/* Consolidated Status & Action Strip */}
-        <div className="rounded-lg border border-border-default bg-surface-raised px-4 py-2.5 flex flex-wrap items-center justify-between gap-4">
+        <div className="rounded-lg border border-border-strong bg-surface-raised px-4 py-2.5 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-4 sm:gap-6 divide-x divide-border-default">
             <div>
               <span className="text-[11px] font-semibold text-text-muted">Evidence:</span>
@@ -257,7 +257,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
       </div>
 
       {/* Unified Diagnostic Metrics Strip */}
-      <div className="rounded-lg border border-border-default bg-surface-raised grid grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-border-default overflow-hidden">
+      <div className="rounded-lg border border-border-strong bg-surface-raised grid grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-border-default overflow-hidden">
         {[
           { label: 'Mapped Actors', val: stakeholders.length, sub: `${stakeholders.filter(s => s.position === 'Spoiler risk').length} Spoiler risks`, icon: <Users size={18} className="text-text-muted" /> },
           { label: 'Priorities Configured', val: customInterventionsCount, sub: `${Object.keys(customCells).length} matrix cells edited`, icon: <Grid size={18} className="text-text-muted" /> },
@@ -280,7 +280,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
         {/* Left Side: Pressures and Stakeholder Risks */}
         <div className="flex flex-col gap-5">
           {/* Top 3 PESTEL-S Pressures */}
-          <div className="rounded-lg border border-border-default bg-surface-raised overflow-hidden">
+          <div className="rounded-lg border border-border-strong bg-surface-raised overflow-hidden">
             <div className="flex items-center justify-between border-b border-border-default bg-surface-subtle px-4 py-2.5">
               <h4 className="text-xs sm:text-sm font-bold text-text-primary flex items-center gap-2">
                 <Activity size={15} className="text-action-primary" />
@@ -314,7 +314,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
           </div>
 
           {/* Top Stakeholder Risks */}
-          <div className="rounded-lg border border-border-default bg-surface-raised overflow-hidden">
+          <div className="rounded-lg border border-border-strong bg-surface-raised overflow-hidden">
             <div className="flex items-center justify-between border-b border-border-default bg-surface-subtle px-4 py-2.5">
               <h4 className="text-xs sm:text-sm font-bold text-text-primary flex items-center gap-2">
                 <AlertTriangle size={15} className="text-amber-600" />
@@ -351,7 +351,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
         {/* Right Side: CBD Priorities and Sequencing */}
         <div className="flex flex-col gap-5">
           {/* Top 5 CBD Priorities */}
-          <div className="rounded-lg border border-border-default bg-surface-raised overflow-hidden">
+          <div className="rounded-lg border border-border-strong bg-surface-raised overflow-hidden">
             <div className="flex items-center justify-between border-b border-border-default bg-surface-subtle px-4 py-2.5">
               <h4 className="text-xs sm:text-sm font-bold text-text-primary flex items-center gap-2">
                 <Layers size={15} className="text-action-primary" />
@@ -382,7 +382,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
           </div>
 
           {/* Quick Wins & Sensitive Reforms */}
-          <div className="rounded-lg border border-border-default bg-surface-raised overflow-hidden">
+          <div className="rounded-lg border border-border-strong bg-surface-raised overflow-hidden">
             <div className="flex items-center justify-between border-b border-border-default bg-surface-subtle px-4 py-2.5">
               <h4 className="text-xs sm:text-sm font-bold text-text-primary flex items-center gap-2">
                 <ListTodo size={15} className="text-action-primary" />
@@ -427,7 +427,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
       </div>
 
       {/* Stakeholder Position Quadrants */}
-      <div className="rounded-lg border border-border-default bg-surface-raised overflow-hidden">
+      <div className="rounded-lg border border-border-strong bg-surface-raised overflow-hidden">
         <div className="border-b border-border-default bg-surface-subtle px-4 py-3">
           <h4 className="text-xs sm:text-sm font-bold text-text-primary flex items-center gap-2">
             <Users size={15} className="text-action-primary" />
