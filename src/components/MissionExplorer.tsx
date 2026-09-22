@@ -24,19 +24,30 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
 }) => {
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-
-  useDialogA11y({
-    isOpen: true,
-    onClose,
-    containerRef: dialogRef,
-    initialFocusRef: closeButtonRef
-  });
+  const confirmationDialogRef = useRef<HTMLDivElement>(null);
+  const confirmationInitialFocusRef = useRef<HTMLButtonElement>(null);
 
   // UI State
   const [selectedEntryId, setSelectedEntryId] = useState<string | null>(null);
   const [hoveredEntryId, setHoveredEntryId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'map' | 'list'>('list');
   const [pendingEntry, setPendingEntry] = useState<MissionExplorerEntry | null>(null);
+
+  // Outer Explorer dialog trap: suspended while confirmation dialog is open
+  useDialogA11y({
+    isOpen: !pendingEntry,
+    onClose,
+    containerRef: dialogRef,
+    initialFocusRef: closeButtonRef
+  });
+
+  // Confirmation dialog trap: active while pendingEntry is present
+  useDialogA11y({
+    isOpen: Boolean(pendingEntry),
+    onClose: () => setPendingEntry(null),
+    containerRef: confirmationDialogRef,
+    initialFocusRef: confirmationInitialFocusRef
+  });
 
   const hasExistingWork = hasMeaningfulWork(currentData);
 
@@ -81,7 +92,8 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
       <div
         ref={dialogRef}
         role="dialog"
-        aria-modal="true"
+        aria-modal={!pendingEntry ? 'true' : undefined}
+        aria-hidden={pendingEntry ? true : undefined}
         aria-labelledby="mission-explorer-title"
         className="w-full max-w-7xl bg-white border border-slate-200 rounded-2xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden"
       >
@@ -216,13 +228,16 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
       {/* Safe Initialization Confirmation Modal */}
       {pendingEntry && (
         <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="confirm-plan-dialog-title"
-          aria-describedby="confirm-plan-dialog-desc"
           className="fixed inset-0 z-60 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4"
         >
-          <div className="w-full max-w-md bg-white rounded-2xl border border-slate-200 shadow-2xl p-6 flex flex-col gap-4">
+          <div
+            ref={confirmationDialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="confirm-plan-dialog-title"
+            aria-describedby="confirm-plan-dialog-desc"
+            className="w-full max-w-md bg-white rounded-2xl border border-slate-200 shadow-2xl p-6 flex flex-col gap-4"
+          >
             {hasExistingWork ? (
               <>
                 <div className="flex items-center gap-3">
@@ -253,6 +268,7 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
 
                 <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
                   <Button
+                    ref={confirmationInitialFocusRef}
                     variant="tertiary"
                     size="sm"
                     onClick={() => setPendingEntry(null)}
@@ -296,6 +312,7 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
 
                 <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
                   <Button
+                    ref={confirmationInitialFocusRef}
                     variant="tertiary"
                     size="sm"
                     onClick={() => setPendingEntry(null)}

@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 const assert = require('node:assert/strict');
 const test = require('node:test');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const { CANONICAL_PLANNING_CONTEXTS } = require('../.test-dist/data/planningContexts.js');
 const { resolvePlanningContext, getAllPlanningContexts, getPlanningContextGuidance, hasMeaningfulWork } = require('../.test-dist/lib/planningContext.js');
@@ -683,4 +685,57 @@ test('context guidance prompts are strictly questions/prompts and never pre-asse
       });
     }
   });
+});
+
+// ============================================================================
+// 11. CONTEXTUAL ACTORS INTEGRITY & DIALOG ACCESSIBILITY CONTRACT TESTS
+// ============================================================================
+
+test('contextual actor confirmation contract enforces empty cbdAreas, isCustom: true, and no default Mediums', () => {
+  const stakeholderSource = fs.readFileSync(path.join(__dirname, '../src/components/StakeholderMapping.tsx'), 'utf-8');
+
+  // Extract handleConfirmDraftActor body to test confirmed contextual actor properties specifically
+  const confirmMatch = stakeholderSource.match(/const handleConfirmDraftActor = [\s\S]*?setDraftActor\(null\);/);
+  assert.ok(confirmMatch, 'handleConfirmDraftActor must be found');
+  const confirmFnBody = confirmMatch[0];
+
+  // Assert cbdAreas is strictly initialized as empty array [] for confirmed contextual actors
+  assert.match(confirmFnBody, /cbdAreas:\s*\[\],/, 'Contextual actor must have cbdAreas: []');
+  assert.doesNotMatch(confirmFnBody, /cbdAreas:\s*\['Professionalism & Integrity'\]/, 'Contextual actor must not have pre-assigned CBD area');
+
+  // Assert isCustom is set to true so actor remains user-created and deletable
+  assert.match(confirmFnBody, /isCustom:\s*true/, 'Contextual actor must be user-created/deletable (isCustom: true)');
+
+  // Assert confirmation requires all 5 analyst assessment dimensions before enabling confirm
+  assert.match(stakeholderSource, /isDraftValid/, 'Must validate draft before enabling confirmation');
+  assert.match(stakeholderSource, /draftActor\.position\s*!==\s*''/, 'Position/posture must be explicitly chosen');
+  assert.match(stakeholderSource, /draftActor\.influence\s*!==\s*''/, 'Influence must be explicitly chosen');
+  assert.match(stakeholderSource, /draftActor\.legitimacy\s*!==\s*''/, 'Legitimacy must be explicitly chosen');
+  assert.match(stakeholderSource, /draftActor\.relevance\s*!==\s*''/, 'Relevance must be explicitly chosen');
+  assert.match(stakeholderSource, /draftActor\.capacity\s*!==\s*''/, 'Capacity must be explicitly chosen');
+});
+
+test('dialog accessibility contract: outer Explorer trap suspends when confirmation is open', () => {
+  const explorerSource = fs.readFileSync(path.join(__dirname, '../src/components/MissionExplorer.tsx'), 'utf-8');
+
+  // Both layers invoke useDialogA11y
+  assert.match(explorerSource, /useDialogA11y\(\s*\{\s*isOpen:\s*!pendingEntry/, 'Outer Explorer must suspend focus trap when pendingEntry is active');
+  assert.match(explorerSource, /useDialogA11y\(\s*\{\s*isOpen:\s*Boolean\(pendingEntry\)/, 'Confirmation modal must activate focus trap when pendingEntry is active');
+
+  // Outer dialog receives aria-hidden and conditional aria-modal while confirmation modal is open
+  assert.match(explorerSource, /aria-modal=\{!pendingEntry \? 'true' : undefined\}/, 'Outer dialog must remove active aria-modal while confirmation is open');
+  assert.match(explorerSource, /aria-hidden=\{pendingEntry \? true : undefined\}/, 'Outer dialog must be hidden from assistive tech while confirmation is open');
+
+  // Confirmation dialog refs attached
+  assert.match(explorerSource, /ref=\{confirmationDialogRef\}/, 'confirmationDialogRef must be attached to confirmation modal');
+  assert.match(explorerSource, /ref=\{confirmationInitialFocusRef\}/, 'confirmationInitialFocusRef must be attached to Cancel button');
+});
+
+test('dialog accessibility contract: Stage 3 draft contextual actor modal registers useDialogA11y', () => {
+  const stakeholderSource = fs.readFileSync(path.join(__dirname, '../src/components/StakeholderMapping.tsx'), 'utf-8');
+
+  // Contextual actor modal invokes useDialogA11y
+  assert.match(stakeholderSource, /useDialogA11y\(\s*\{\s*isOpen:\s*Boolean\(draftActor\)/, 'Draft actor modal must use useDialogA11y');
+  assert.match(stakeholderSource, /ref=\{draftActorDialogRef\}/, 'draftActorDialogRef must be attached to draft actor modal');
+  assert.match(stakeholderSource, /ref=\{draftActorInitialFocusRef\}/, 'draftActorInitialFocusRef must be attached to Cancel button');
 });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Stakeholder, StakeholderPosition, EvidenceNote, RatingLevel, CapacityLevel } from '../types';
 import { TextInput, Select } from '../ui/Select';
 import { TextArea } from '../ui/TextArea';
@@ -10,6 +10,7 @@ import { resolvePlanningContext } from '../lib/planningContext';
 import { NextStepCue } from './Guidance';
 import { StageLead } from './StageLead';
 import { NEXT_STEP_CUES } from '../lib/guidance';
+import { useDialogA11y } from '../ui/useDialogA11y';
 
 interface StakeholderMappingProps {
   stakeholders: Stakeholder[];
@@ -102,6 +103,16 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
   const [draftActor, setDraftActor] = useState<DraftContextualActor | null>(null);
   const activeStakeholder = stakeholders.find(s => s.id === selectedId);
 
+  const draftActorDialogRef = useRef<HTMLDivElement>(null);
+  const draftActorInitialFocusRef = useRef<HTMLButtonElement>(null);
+
+  useDialogA11y({
+    isOpen: Boolean(draftActor),
+    onClose: () => setDraftActor(null),
+    containerRef: draftActorDialogRef,
+    initialFocusRef: draftActorInitialFocusRef
+  });
+
   const isDraftValid = Boolean(
     draftActor &&
     draftActor.name.trim() !== '' &&
@@ -129,8 +140,8 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
       risk: '',
       entry: '',
       engagement: '',
-      cbdAreas: ['Professionalism & Integrity'],
-      isCustom: false
+      cbdAreas: [],
+      isCustom: true
     };
     onAdd(newStakeholder);
     setSelectedId(newId);
@@ -555,12 +566,15 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
       {/* Draft Contextual Actor Assessment Modal */}
       {draftActor && (
         <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="draft-actor-modal-title"
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs"
         >
-          <div className="bg-white rounded-xl shadow-2xl max-w-xl w-full border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
+          <div
+            ref={draftActorDialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="draft-actor-modal-title"
+            className="bg-white rounded-xl shadow-2xl max-w-xl w-full border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]"
+          >
             <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
               <div className="flex items-center gap-2">
                 <Compass size={18} className="text-blue-700" />
@@ -694,6 +708,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
 
             <div className="p-4 border-t border-slate-100 flex items-center justify-end gap-2 bg-slate-50">
               <Button
+                ref={draftActorInitialFocusRef}
                 variant="tertiary"
                 size="sm"
                 onClick={() => setDraftActor(null)}
