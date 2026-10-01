@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useId, useMemo, useRef, us
 import { createPortal } from 'react-dom';
 import { PanelRightOpen, X } from 'lucide-react';
 import type { UnpolProjectData } from '../types';
-import { buildTraceabilityIndex, getEntity, traceKey, type InspectorEntityRef, type TraceabilityIndex } from '../lib/traceability';
+import { buildTraceabilityIndex, getEntity, getUpstream, getDownstream, getEvidenceConnections, traceKey, type InspectorEntityRef, type TraceabilityIndex, type TraceEntity } from '../lib/traceability';
 import { WORKFLOW_STAGES, type WorkflowStage } from '../lib/workflow';
 import { Button } from '../ui/Button';
 import { useDialogA11y } from '../ui/useDialogA11y';
@@ -37,7 +37,7 @@ export function WorkbenchRegion({ data, onNavigate, children }: { data: UnpolPro
   </InspectorContext.Provider>;
 }
 
-function WorkbenchInspector({ index, selected, onClose, onNavigate }: {
+function WorkbenchInspector({ index, selected, onInspect, onClose, onNavigate }: {
   index: TraceabilityIndex; selected: InspectorEntityRef; onInspect: (ref: InspectorEntityRef) => void; onClose: () => void; onNavigate: (stage: WorkflowStage) => void;
 }) {
   const desktop = useSyncExternalStore(subscribeWidth, desktopSnapshot, serverSnapshot);
@@ -50,6 +50,25 @@ function WorkbenchInspector({ index, selected, onClose, onNavigate }: {
   const closeCallback = useRef(onClose);
   useEffect(() => { closeCallback.current = onClose; }, [onClose]);
   const entity = getEntity(index, selected);
+  const evidence = getEvidenceConnections(index, selected);
+  const evidenceList = (items: TraceEntity[]) => <ul className="space-y-3">{items.map(item => <li key={item.key} className="rounded-md border border-border-default bg-surface-subtle p-3 space-y-2">
+    <Button variant="link" className="text-start break-words whitespace-normal" onClick={() => onInspect(item.ref)}>{item.title}</Button>
+    <p className="text-xs text-text-muted">{item.evidence?.sourceType} · {item.evidence?.dateVerified || 'Date not recorded'} · Confidence {item.evidence?.confidenceLevel}/5</p>
+    <p dir="auto" className="whitespace-pre-wrap break-words">{item.evidence?.comment || 'No recorded note'}</p>
+  </li>)}</ul>;
+  const connectionList = (direction: 'upstream' | 'downstream') => {
+    const relations = direction === 'upstream' ? getUpstream(index, selected) : getDownstream(index, selected);
+    return <section className="space-y-2"><h3 className="text-xs font-bold uppercase tracking-wide text-text-secondary">{direction} · {relations.length}</h3>
+      {!relations.length ? <p className="text-text-muted text-sm">No recorded connection</p> : <ul className="space-y-2">{relations.map(relation => {
+        const related = index.byKey.get(direction === 'upstream' ? relation.from : relation.to)!;
+        return <li key={JSON.stringify([relation.from, relation.to, relation.relationType])}><button type="button" onClick={() => onInspect(related.ref)} aria-label={`Inspect ${related.reference || related.title}`} className="w-full text-start rounded-md border border-border-default bg-surface-subtle hover:bg-surface-active p-3 space-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring">
+          <span className="block text-xs text-text-muted">{related.typeLabel} · Stage {related.stage}</span>
+          <span dir="auto" className="block font-semibold text-action-link break-words">{related.reference ? `${related.reference} · ` : ''}{related.title}</span>
+          <span className="block text-xs text-text-secondary">{direction === 'upstream' ? `${related.reference || related.typeLabel} → ${entity?.reference || entity?.typeLabel}` : `${entity?.reference || entity?.typeLabel} → ${related.reference || related.typeLabel}`} · {relation.label}</span>
+        </button></li>;
+      })}</ul>}
+    </section>;
+  };
 
   // A portalled sheet leaves every app surface inert while preserving prior state.
   useEffect(() => {
@@ -69,7 +88,12 @@ function WorkbenchInspector({ index, selected, onClose, onNavigate }: {
     if (!desktop) return;
     const previous = document.activeElement as HTMLElement | null;
     const timer = window.setTimeout(() => closeRef.current?.focus(), 0);
-    const escape = (event: KeyboardEvent) => { if (event.key === 'Escape') closeCallback.current(); };
+    const escape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && panelRef.current?.contains(event.target as Node)) {
+        event.stopPropagation();
+        closeCallback.current();
+      }
+    };
     window.addEventListener('keydown', escape);
     return () => {
       window.clearTimeout(timer);
@@ -107,7 +131,13 @@ function WorkbenchInspector({ index, selected, onClose, onNavigate }: {
           <p className="text-xs text-text-muted">{entity.typeLabel} · Stage {entity.stage}</p>
           {entity.ref.type !== 'evidence' && <p className="text-xs text-text-muted">Recorded analyst judgement and planning context.</p>}
           <dl className="space-y-4">{entity.details.map(field => <div key={field.label}><dt className="text-xs font-semibold text-text-secondary">{field.label}</dt><dd dir="auto" className="mt-1 whitespace-pre-wrap break-words text-text-primary">{field.value || 'Not recorded'}</dd></div>)}</dl>
-        </> : name === 'Evidence' ? <p className="text-text-muted">No recorded evidence connection</p> : <p className="text-text-muted">No recorded connection</p>}
+        </> : name === 'Evidence' ? <>
+          <p className="text-xs text-text-muted">Recorded evidence is distinct from analyst judgement. Upstream evidence does not automatically validate downstream conclusions.</p>
+          {!evidence.direct.length && !evidence.upstream.length ? <p className="text-text-muted">No recorded evidence connection</p> : <>
+            <section className="space-y-2"><h3 className="text-xs font-bold uppercase tracking-wide text-text-secondary">Direct evidence · {evidence.direct.length}</h3>{evidence.direct.length ? evidenceList(evidence.direct) : <p className="text-text-muted">No recorded evidence connection</p>}</section>
+            <section className="space-y-2"><h3 className="text-xs font-bold uppercase tracking-wide text-text-secondary">Upstream evidence · {evidence.upstream.length}</h3>{evidence.upstream.length ? evidenceList(evidence.upstream) : <p className="text-text-muted">No recorded evidence connection</p>}</section>
+          </>}
+        </> : <><p className="text-xs text-text-muted">Recorded references and containment. These links do not establish causality or evidence validation.</p>{connectionList('upstream')}{connectionList('downstream')}</>}
       </div>)}
     </div>
     {entity && <div className="shrink-0 border-t border-border-default bg-surface-subtle p-3"><Button variant="secondary" fullWidth onClick={() => onNavigate(entity.stage)}>Open in Stage {entity.stage}</Button><p className="mt-2 text-xs text-text-muted">{WORKFLOW_STAGES.find(stage => stage.id === entity.stage)?.label} · Edit in the stage workspace.</p></div>}
