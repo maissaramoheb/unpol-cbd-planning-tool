@@ -120,7 +120,7 @@ function Multi({
             >
               <input
                 type="checkbox"
-                className="rounded border-border-default text-action-primary focus:ring-focus-ring w-3.5 h-3.5"
+                className="rounded border-border-default text-action-link focus:ring-focus-ring w-3.5 h-3.5"
                 checked={values.includes(o.value)}
                 onChange={e =>
                   onChange(
@@ -143,18 +143,18 @@ function Multi({
 
 const COMPLETENESS_STYLE: Record<string, { dot: string; text: string; bg: string }> = {
   'Recorded': {
-    dot: 'bg-emerald-600',
-    text: 'text-emerald-800',
-    bg: 'bg-emerald-50/40'
+    dot: 'bg-status-success',
+    text: 'text-status-success',
+    bg: 'bg-status-success-bg'
   },
   'Partially recorded': {
-    dot: 'bg-amber-500',
-    text: 'text-amber-800',
-    bg: 'bg-amber-50/40'
+    dot: 'bg-status-warning',
+    text: 'text-status-warning',
+    bg: 'bg-status-warning-bg'
   },
   'Not recorded': {
-    dot: 'bg-slate-400',
-    text: 'text-slate-600',
+    dot: 'bg-text-muted',
+    text: 'text-text-secondary',
     bg: 'bg-surface-subtle'
   }
 };
@@ -176,8 +176,8 @@ export function ResultsImplementation({ data, onUpdateCell, onPrev, onExport }: 
       <StageLead stage={7} />
 
       {data.profile.missionName.includes('CARANA') && (
-        <div className="rounded-md border border-amber-200 bg-amber-50/80 px-4 py-2.5 text-xs font-medium text-amber-900 flex items-center gap-2">
-          <AlertTriangle size={15} className="text-amber-700 shrink-0" />
+        <div className="rounded-md border border-status-warning-border bg-status-warning-bg px-4 py-2.5 text-xs font-medium text-status-warning flex items-center gap-2">
+          <AlertTriangle size={15} className="text-status-warning shrink-0" />
           <span>
             FICTIONAL EXERCISE MATERIAL — baselines and planning judgements are illustrative, not verified assessments.
           </span>
@@ -190,12 +190,12 @@ export function ResultsImplementation({ data, onUpdateCell, onPrev, onExport }: 
           <div className="rounded-lg border border-border-strong bg-surface-raised p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex flex-col gap-1 min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-primary bg-blue-50 px-2 py-0.5 rounded border border-blue-200 shrink-0">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-link bg-status-info-bg px-2 py-0.5 rounded border border-status-info-border shrink-0">
                   CURRENT CBD PRIORITY
                 </span>
                 <span className="text-xs text-text-muted">Results Plan Context</span>
               </div>
-              <h2 className="text-base sm:text-lg font-bold text-text-primary truncate">
+              <h2 className="text-base sm:text-lg font-bold text-text-primary break-words">
                 {key.replace('|', ' × ')}
               </h2>
             </div>
@@ -326,18 +326,18 @@ function PriorityPlan({
 
       {/* 3C. Planning Cautions */}
       {cautions.length > 0 && (
-        <details className="group rounded-lg border border-amber-300 bg-amber-50/50 overflow-hidden">
-          <summary className="cursor-pointer px-4 py-2.5 flex items-center justify-between text-xs font-semibold text-amber-900 select-none hover:bg-amber-50/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring">
+        <details className="group rounded-lg border border-status-warning-border bg-status-warning-bg overflow-hidden">
+          <summary className="cursor-pointer px-4 py-2.5 flex items-center justify-between text-xs font-semibold text-status-warning select-none hover:bg-status-warning-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring">
             <div className="flex items-center gap-2">
-              <AlertTriangle size={15} className="text-amber-600 shrink-0" />
+              <AlertTriangle size={15} className="text-status-warning shrink-0" />
               <span>Planning cautions ({cautions.length}) — optional review</span>
             </div>
             <ChevronDown
               size={14}
-              className="text-amber-700 transition-transform duration-200 group-open:rotate-180"
+              className="text-status-warning transition-transform duration-200 group-open:rotate-180"
             />
           </summary>
-          <ul className="px-4 pb-3 pt-1.5 list-disc space-y-1 ps-8 text-xs text-amber-950/80 border-t border-amber-200/60 bg-amber-50/30">
+          <ul className="px-4 pb-3 pt-1.5 list-disc space-y-1 ps-8 text-xs text-status-warning border-t border-status-warning-border bg-status-warning-bg">
             {cautions.map(c => (
               <li key={c} className="leading-relaxed">
                 {c}
@@ -359,7 +359,7 @@ function PriorityPlan({
           className="flex w-full items-center justify-between gap-3 p-4 sm:p-5 text-start bg-surface-raised hover:bg-surface-subtle transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring"
         >
           <div className="flex items-center gap-3 min-w-0">
-            <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-blue-50 text-action-primary border border-blue-200 shrink-0">
+            <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-status-info-bg text-action-link border border-status-info-border shrink-0">
               07A
             </span>
             <div>
@@ -400,8 +400,8 @@ function PriorityPlan({
               </div>
               <span className="text-text-muted hidden md:inline font-bold self-center">→</span>
               <span className="text-text-muted md:hidden text-center font-bold">↓</span>
-              <div className="flex-1 min-w-0 bg-blue-50/50 p-3 rounded-md border border-blue-200 flex flex-col gap-1">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-primary">
+              <div className="flex-1 min-w-0 bg-status-info-bg p-3 rounded-md border border-status-info-border flex flex-col gap-1">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-link">
                   2. Intended Result / Objective
                 </span>
                 <p className="text-xs font-semibold text-text-primary line-clamp-2">
@@ -508,11 +508,11 @@ function PriorityPlan({
                       className="w-full text-start p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-surface-subtle transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring"
                     >
                       <div className="flex items-start sm:items-center gap-2.5 min-w-0 flex-1">
-                        <span className="font-mono text-xs font-bold text-action-primary shrink-0">
+                        <span className="font-mono text-xs font-bold text-action-link shrink-0">
                           {o.reference}
                         </span>
                         <span className="text-xs text-text-muted">·</span>
-                        <span className="text-xs font-semibold text-text-primary truncate">
+                        <span className="text-xs font-semibold text-text-primary break-words">
                           {o.statement || 'New output'}
                         </span>
                       </div>
@@ -634,8 +634,8 @@ function PriorityPlan({
                   plan({ changeLogic: { ...p.changeLogic, activityIds } })
                 }
               />
-              <div className="p-3 rounded bg-blue-50/50 border border-blue-200 text-xs">
-                <strong className="text-action-primary">THEN — intended result:</strong>{' '}
+              <div className="p-3 rounded bg-status-info-bg border border-status-info-border text-xs">
+                <strong className="text-action-link">THEN — intended result:</strong>{' '}
                 <span className="text-text-primary">
                   {cell.planningObjective || 'Record the shared Planning Objective above.'}
                 </span>
@@ -720,7 +720,7 @@ function PriorityPlan({
                           Assumption {i + 1}
                         </span>
                         <span className="text-xs text-text-muted">·</span>
-                        <span className="text-xs font-semibold text-text-primary truncate">
+                        <span className="text-xs font-semibold text-text-primary break-words">
                           {a.statement || 'New assumption'}
                         </span>
                       </div>
@@ -816,7 +816,7 @@ function PriorityPlan({
           className="flex w-full items-center justify-between gap-3 p-4 sm:p-5 text-start bg-surface-raised hover:bg-surface-subtle transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring"
         >
           <div className="flex items-center gap-3 min-w-0">
-            <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-blue-50 text-action-primary border border-blue-200 shrink-0">
+            <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-status-info-bg text-action-link border border-status-info-border shrink-0">
               07B
             </span>
             <div>
@@ -894,7 +894,7 @@ function PriorityPlan({
                           Indicator {n + 1}
                         </span>
                         <span className="text-xs text-text-muted">·</span>
-                        <span className="text-xs font-semibold text-text-primary truncate">
+                        <span className="text-xs font-semibold text-text-primary break-words">
                           {i.statement || 'New indicator'}
                         </span>
                       </div>
@@ -1136,7 +1136,7 @@ function PriorityPlan({
           className="flex w-full items-center justify-between gap-3 p-4 sm:p-5 text-start bg-surface-raised hover:bg-surface-subtle transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring"
         >
           <div className="flex items-center gap-3 min-w-0">
-            <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-blue-50 text-action-primary border border-blue-200 shrink-0">
+            <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-status-info-bg text-action-link border border-status-info-border shrink-0">
               07C
             </span>
             <div>
@@ -1286,11 +1286,11 @@ function PriorityPlan({
                       className="w-full text-start p-3.5 flex flex-col md:flex-row md:items-center justify-between gap-2 hover:bg-surface-subtle transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring"
                     >
                       <div className="flex items-start md:items-center gap-2.5 min-w-0 flex-1">
-                        <span className="font-mono text-xs font-bold text-action-primary shrink-0">
+                        <span className="font-mono text-xs font-bold text-action-link shrink-0">
                           {a.reference}
                         </span>
                         <span className="text-xs text-text-muted">·</span>
-                        <span className="text-xs font-semibold text-text-primary truncate">
+                        <span className="text-xs font-semibold text-text-primary break-words">
                           {a.statement ||
                             (a.interventionLevel
                               ? options([a.interventionLevel])[0].label + ' intervention'
@@ -1534,7 +1534,7 @@ function PriorityPlan({
                           Dependency {i + 1}
                         </span>
                         <span className="text-xs text-text-muted">·</span>
-                        <span className="text-xs font-semibold text-text-primary truncate">
+                        <span className="text-xs font-semibold text-text-primary break-words">
                           {d.statement || d.type}
                         </span>
                       </div>
@@ -1741,7 +1741,7 @@ function PriorityPlan({
                           Resource {i + 1}
                         </span>
                         <span className="text-xs text-text-muted">·</span>
-                        <span className="text-xs font-semibold text-text-primary truncate">
+                        <span className="text-xs font-semibold text-text-primary break-words">
                           {r.statement || r.category}
                         </span>
                       </div>
@@ -1843,7 +1843,7 @@ function PriorityPlan({
           className="flex w-full items-center justify-between gap-3 p-4 sm:p-5 text-start bg-surface-raised hover:bg-surface-subtle transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring"
         >
           <div className="flex items-center gap-3 min-w-0">
-            <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-blue-50 text-action-primary border border-blue-200 shrink-0">
+            <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-status-info-bg text-action-link border border-status-info-border shrink-0">
               07D
             </span>
             <div>
@@ -2040,7 +2040,7 @@ function PriorityPlan({
                           {s.dimension}
                         </span>
                         <span className="text-xs text-text-muted">·</span>
-                        <span className="text-xs font-semibold text-text-primary truncate">
+                        <span className="text-xs font-semibold text-text-primary break-words">
                           {s.requirement || 'Requirement not recorded'}
                         </span>
                       </div>

@@ -26,10 +26,10 @@ interface AnalysisSynthesisProps {
 }
 
 const CATEGORY_CONTENT: Record<SwotCategory, { prompt: string; scope: string; tone: string }> = {
-  Strength: { prompt: 'What existing internal capability, asset or positive institutional condition can CBD build on?', scope: 'Internal · enabling', tone: 'border-emerald-200 bg-emerald-50/40' },
-  Weakness: { prompt: 'What internal capacity, performance, system or institutional gap needs to be addressed?', scope: 'Internal · constraining', tone: 'border-amber-200 bg-amber-50/40' },
-  Opportunity: { prompt: 'What external condition could enable or accelerate progress?', scope: 'External · enabling', tone: 'border-blue-200 bg-blue-50/40' },
-  Threat: { prompt: 'What external condition could obstruct, delay or reverse progress?', scope: 'External · constraining', tone: 'border-rose-200 bg-rose-50/40' }
+  Strength: { prompt: 'What existing internal capability, asset or positive institutional condition can CBD build on?', scope: 'Internal · enabling', tone: 'border-status-success-border bg-status-success-bg' },
+  Weakness: { prompt: 'What internal capacity, performance, system or institutional gap needs to be addressed?', scope: 'Internal · constraining', tone: 'border-status-warning-border bg-status-warning-bg' },
+  Opportunity: { prompt: 'What external condition could enable or accelerate progress?', scope: 'External · enabling', tone: 'border-status-info-border bg-status-info-bg' },
+  Threat: { prompt: 'What external condition could obstruct, delay or reverse progress?', scope: 'External · constraining', tone: 'border-status-danger-border bg-status-danger-bg' }
 };
 
 const OPTION_CONTENT: Record<StrategicOptionType, { title: string; prompt: string }> = {
@@ -101,8 +101,8 @@ export const AnalysisSynthesis: React.FC<AnalysisSynthesisProps> = ({ data, onCh
     <div className="flex flex-col gap-6">
       <StageLead stage={4} />
 
-      <div className="rounded-lg border border-institutional/20 bg-institutional-subtle px-4 py-3 text-xs leading-relaxed text-text-default">
-        <strong className="font-semibold text-institutional">Professional judgement remains primary.</strong> SWOT classification is analyst-written synthesis. It supports planning judgement; it does not determine the CBD response.
+      <div className="rounded-lg border border-institutional/20 bg-surface-active px-4 py-3 text-xs leading-relaxed text-text-primary">
+        <strong className="font-semibold text-action-link">Professional judgement remains primary.</strong> SWOT classification is analyst-written synthesis. It supports planning judgement; it does not determine the CBD response.
       </div>
 
       <section aria-labelledby="swot-heading" className="flex flex-col gap-4">
@@ -124,7 +124,7 @@ export const AnalysisSynthesis: React.FC<AnalysisSynthesisProps> = ({ data, onCh
               <Select label="Planner classification" value={selectedCategory} onChange={event => setSelectedCategory(event.target.value as SwotCategory)} options={SWOT_CATEGORIES.map(category => ({ value: category, label: category }))} />
               <Button size="sm" onClick={() => addFinding(selectedCategory, selectedSourceKey)} disabled={!selectedSourceKey}><Plus size={14} className="mr-1.5" />Add source</Button>
             </div>
-            {candidates.find(item => `${item.reference.type}:${item.reference.id}` === selectedSourceKey)?.reference.type === 'interdependency' && <p className="mt-3 whitespace-pre-wrap break-words text-sm text-text-default">{candidates.find(item => `${item.reference.type}:${item.reference.id}` === selectedSourceKey)?.text}</p>}
+            {candidates.find(item => `${item.reference.type}:${item.reference.id}` === selectedSourceKey)?.reference.type === 'interdependency' && <p className="mt-3 whitespace-pre-wrap break-words text-sm text-text-primary">{candidates.find(item => `${item.reference.type}:${item.reference.id}` === selectedSourceKey)?.text}</p>}
             <p className="mt-2 text-xs text-text-muted">The source remains linked. You may edit the SWOT wording without changing the original analysis.</p>
           </div>
         )}
@@ -137,28 +137,28 @@ export const AnalysisSynthesis: React.FC<AnalysisSynthesisProps> = ({ data, onCh
             const letter = category[0];
             const styles: Record<SwotCategory, { border: string; bg: string; badge: string; text: string }> = {
               Strength: {
-                border: 'border-emerald-200/80',
-                bg: 'bg-emerald-50/40',
-                badge: 'bg-emerald-100 text-emerald-800 border-emerald-300',
-                text: 'text-emerald-950'
+                border: 'border-status-success-border',
+                bg: 'bg-status-success-bg',
+                badge: 'bg-status-success-bg text-status-success border-status-success-border',
+                text: 'text-status-success'
               },
               Weakness: {
-                border: 'border-amber-200/80',
-                bg: 'bg-amber-50/40',
-                badge: 'bg-amber-100 text-amber-800 border-amber-300',
-                text: 'text-amber-950'
+                border: 'border-status-warning-border',
+                bg: 'bg-status-warning-bg',
+                badge: 'bg-status-warning-bg text-status-warning border-status-warning-border',
+                text: 'text-status-warning'
               },
               Opportunity: {
-                border: 'border-blue-200/80',
-                bg: 'bg-blue-50/40',
-                badge: 'bg-blue-100 text-blue-800 border-blue-300',
-                text: 'text-blue-950'
+                border: 'border-status-info-border',
+                bg: 'bg-status-info-bg',
+                badge: 'bg-status-info-bg text-action-link border-status-info-border',
+                text: 'text-action-link'
               },
               Threat: {
-                border: 'border-rose-200/80',
-                bg: 'bg-rose-50/40',
-                badge: 'bg-rose-100 text-rose-800 border-rose-300',
-                text: 'text-rose-950'
+                border: 'border-status-danger-border',
+                bg: 'bg-status-danger-bg',
+                badge: 'bg-status-danger-bg text-status-danger border-status-danger-border',
+                text: 'text-status-danger'
               }
             };
             const s = styles[category];
@@ -166,7 +166,7 @@ export const AnalysisSynthesis: React.FC<AnalysisSynthesisProps> = ({ data, onCh
             return (
               <div
                 key={category}
-                className={`rounded-lg border ${s.border} ${s.bg} p-3.5 flex flex-col justify-between shadow-subtle transition-all`}
+                className={`rounded-lg border ${s.border} ${s.bg} p-3.5 flex flex-col justify-between transition-colors duration-150`}
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-1.5">
@@ -178,7 +178,7 @@ export const AnalysisSynthesis: React.FC<AnalysisSynthesisProps> = ({ data, onCh
                         {category}
                       </h4>
                     </div>
-                    <span className="font-mono text-[11px] font-semibold text-text-muted px-2 py-0.5 rounded bg-surface-card border border-border-default">
+                    <span className="font-mono text-[11px] font-semibold text-text-muted px-2 py-0.5 rounded bg-surface-base border border-border-default">
                       {items.length} {items.length === 1 ? 'finding' : 'findings'}
                     </span>
                   </div>
@@ -197,7 +197,7 @@ export const AnalysisSynthesis: React.FC<AnalysisSynthesisProps> = ({ data, onCh
                       {items.slice(0, 3).map(item => (
                         <span
                           key={item.id}
-                          className="font-mono text-[10px] font-semibold px-1.5 py-0.5 rounded bg-surface-card border border-border-default text-text-default"
+                          className="font-mono text-[10px] font-semibold px-1.5 py-0.5 rounded bg-surface-base border border-border-default text-text-primary"
                         >
                           {item.reference}
                         </span>
@@ -222,7 +222,7 @@ export const AnalysisSynthesis: React.FC<AnalysisSynthesisProps> = ({ data, onCh
         {/* 2. Professional Unified 2x2 SWOT Analytical Matrix for Detailed Findings */}
         <div className="rounded-lg border border-border-strong bg-surface-raised overflow-hidden">
           {/* Row 1 Header: Internal Conditions */}
-          <div className="border-b border-border-default bg-surface-subtle px-4 py-2 flex items-center justify-between text-xs font-semibold text-text-default">
+          <div className="border-b border-border-default bg-surface-subtle px-4 py-2 flex items-center justify-between text-xs font-semibold text-text-primary">
             <span className="uppercase tracking-wider">Internal Institutional Conditions</span>
             <span className="text-[11px] font-normal text-text-muted">Strength &amp; Weakness</span>
           </div>
@@ -233,7 +233,7 @@ export const AnalysisSynthesis: React.FC<AnalysisSynthesisProps> = ({ data, onCh
           </div>
 
           {/* Row 2 Header: External Conditions */}
-          <div className="border-t border-b border-border-default bg-surface-subtle px-4 py-2 flex items-center justify-between text-xs font-semibold text-text-default">
+          <div className="border-t border-b border-border-default bg-surface-subtle px-4 py-2 flex items-center justify-between text-xs font-semibold text-text-primary">
             <span className="uppercase tracking-wider">External Operating Conditions</span>
             <span className="text-[11px] font-normal text-text-muted">Opportunity &amp; Threat</span>
           </div>
@@ -254,12 +254,12 @@ export const AnalysisSynthesis: React.FC<AnalysisSynthesisProps> = ({ data, onCh
           className="flex w-full items-center justify-between gap-4 p-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring hover:bg-surface-hover transition-colors"
         >
           <div>
-            <strong className="block text-sm font-semibold text-text-default">Develop Strategic Options (TOWS Matrix)</strong>
+            <strong className="block text-sm font-semibold text-text-primary">Develop Strategic Options (TOWS Matrix)</strong>
             <span className="mt-0.5 block text-xs text-text-muted">
               Combine selected SWOT findings through SO, ST, WO or WT. No option is generated or ranked automatically.
             </span>
           </div>
-          <span className="text-xs font-semibold text-institutional">{optionsOpen ? 'Hide Matrix' : 'Open Matrix'}</span>
+          <span className="text-xs font-semibold text-action-link">{optionsOpen ? 'Hide Matrix' : 'Open Matrix'}</span>
         </button>
         {optionsOpen && (
           <div id="strategic-options" className="border-t border-border-default">
@@ -287,10 +287,10 @@ export const AnalysisSynthesis: React.FC<AnalysisSynthesisProps> = ({ data, onCh
 };
 
 const SWOT_ACCENTS: Record<SwotCategory, { dot: string; border: string; badge: string }> = {
-  Strength: { dot: 'bg-emerald-600', border: 'border-l-2 border-l-emerald-600', badge: 'bg-emerald-50 text-emerald-800 border-emerald-200' },
-  Weakness: { dot: 'bg-amber-600', border: 'border-l-2 border-l-amber-600', badge: 'bg-amber-50 text-amber-800 border-amber-200' },
-  Opportunity: { dot: 'bg-institutional', border: 'border-l-2 border-l-institutional', badge: 'bg-blue-50 text-blue-800 border-blue-200' },
-  Threat: { dot: 'bg-rose-600', border: 'border-l-2 border-l-rose-600', badge: 'bg-rose-50 text-rose-800 border-rose-200' }
+  Strength: { dot: 'bg-status-success', border: 'border-l-2 border-l-status-success', badge: 'bg-status-success-bg text-status-success border-status-success-border' },
+  Weakness: { dot: 'bg-status-warning', border: 'border-l-2 border-l-status-warning', badge: 'bg-status-warning-bg text-status-warning border-status-warning-border' },
+  Opportunity: { dot: 'bg-action-primary', border: 'border-l-2 border-l-action-link', badge: 'bg-status-info-bg text-action-link border-status-info-border' },
+  Threat: { dot: 'bg-status-danger', border: 'border-l-2 border-l-status-danger', badge: 'bg-status-danger-bg text-status-danger border-status-danger-border' }
 };
 
 function SwotZone({ category, data, onAdd, onUpdate, onDelete }: { category: SwotCategory; data: UnpolProjectData; onAdd: () => void; onUpdate: (id: string, field: 'finding' | 'cbdImplication' | 'verificationNote' | 'confidence', value: string | number | null) => void; onDelete: (id: string) => void }) {
@@ -305,7 +305,7 @@ function SwotZone({ category, data, onAdd, onUpdate, onDelete }: { category: Swo
         <div>
           <div className="flex items-center gap-2">
             <span className={`h-2 w-2 rounded-full ${accent.dot} shrink-0`} />
-            <h4 id={`swot-${category}`} className="text-xs font-bold uppercase tracking-wider text-text-default">
+            <h4 id={`swot-${category}`} className="text-xs font-bold uppercase tracking-wider text-text-primary">
               {category}
             </h4>
             <span className="font-mono text-xs font-semibold text-text-muted">
@@ -382,14 +382,14 @@ function SwotZone({ category, data, onAdd, onUpdate, onDelete }: { category: Swo
                       item.sourceReferences.map(reference => {
                         const source = candidates.find(candidate => candidate.reference.type === reference.type && candidate.reference.id === reference.id);
                         return (
-                          <span key={`${reference.type}:${reference.id}`} className="rounded-md border border-blue-200 bg-blue-50/70 px-2 py-0.5 text-[11px] font-medium text-blue-800">
+                          <span key={`${reference.type}:${reference.id}`} className="rounded-md border border-status-info-border bg-status-info-bg px-2 py-0.5 text-[11px] font-medium text-action-link">
                             {source?.label ?? `Missing source · ${reference.id}`}
                           </span>
                         );
                       })
                     ) : (
-                      <span className="text-[11px] font-medium text-amber-700 flex items-center gap-1.5">
-                        <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                      <span className="text-[11px] font-medium text-status-warning flex items-center gap-1.5">
+                        <span className="h-1.5 w-1.5 rounded-full bg-status-warning" />
                         Manual synthesis · no supporting source linked
                       </span>
                     )}
@@ -410,10 +410,10 @@ function OptionZone({ type, data, selections, onSelections, onAdd, onUpdate, onD
   const choices = required.map(category => data.analysisSynthesis.swotFindings.filter(item => item.category === category));
 
   const optionBadges: Record<StrategicOptionType, string> = {
-    SO: 'bg-blue-50 text-blue-800 border-blue-200',
-    ST: 'bg-amber-50 text-amber-800 border-amber-200',
-    WO: 'bg-teal-50 text-teal-800 border-teal-200',
-    WT: 'bg-rose-50 text-rose-800 border-rose-200'
+    SO: 'bg-status-info-bg text-action-link border-status-info-border',
+    ST: 'bg-status-warning-bg text-status-warning border-status-warning-border',
+    WO: 'bg-accent-teal-bg text-accent-teal border-accent-teal-border',
+    WT: 'bg-status-danger-bg text-status-danger border-status-danger-border'
   };
 
   return (
@@ -424,7 +424,7 @@ function OptionZone({ type, data, selections, onSelections, onAdd, onUpdate, onD
             <span className={`font-mono text-xs font-bold px-2 py-0.5 rounded border ${optionBadges[type]}`}>
               {type}
             </span>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-text-default">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">
               {OPTION_CONTENT[type].title}
             </h4>
           </div>
@@ -493,8 +493,8 @@ function OptionZone({ type, data, selections, onSelections, onAdd, onUpdate, onD
                 rows={2}
               />
               {!isValidStrategicOptionCombination(option, data.analysisSynthesis.swotFindings) && (
-                <div className="rounded-md border border-amber-300 bg-amber-50/70 p-2 text-xs font-medium text-amber-900 flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-amber-600 shrink-0" />
+                <div className="rounded-md border border-status-warning-border bg-status-warning-bg p-2 text-xs font-medium text-status-warning flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-status-warning shrink-0" />
                   <span>Review required: this option no longer has a complete {type} SWOT basis.</span>
                 </div>
               )}
