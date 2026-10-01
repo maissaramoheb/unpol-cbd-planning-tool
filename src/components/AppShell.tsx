@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { normalizeExecutiveReferences } from '../lib/executiveBrief';
+import { WorkbenchRegion } from './WorkbenchInspector';
 import { Header } from './Header';
 import { ModuleTabs } from './ModuleTabs';
 import { Dashboard } from './Dashboard';
@@ -299,7 +300,7 @@ export const AppShell: React.FC = () => {
 
         {/* Active Module Panel */}
         <div className="flex-1">
-          {renderStepContent()}
+          <WorkbenchRegion data={data} onNavigate={setCurrentView}>{renderStepContent()}</WorkbenchRegion>
         </div>
       </main>
 

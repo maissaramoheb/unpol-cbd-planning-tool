@@ -1,3 +1,4 @@
+import { InspectButton } from './WorkbenchInspector';
 import React, { useState, useRef } from 'react';
 import { Stakeholder, StakeholderPosition, EvidenceNote, RatingLevel, CapacityLevel } from '../types';
 import { TextInput, Select } from '../ui/Select';
@@ -383,6 +384,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                   </div>
                 </div>
                 <div className="shrink-0 flex items-center gap-2">
+                  <InspectButton entityRef={{ type: 'stakeholder', id: activeStakeholder.id }} label={activeStakeholder.name} />
                   {activeStakeholder.isCustom && (
                     <Button
                       variant="destructive"

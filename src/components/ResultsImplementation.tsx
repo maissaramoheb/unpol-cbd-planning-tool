@@ -1,3 +1,4 @@
+import { InspectButton } from './WorkbenchInspector';
 import React, { useState } from 'react';
 import type {
   CbdCell,
@@ -186,6 +187,7 @@ export function ResultsImplementation({ data, onUpdateCell, onPrev, onExport }: 
 
       {key ? (
         <div className="space-y-6">
+          <div className="flex justify-end"><InspectButton entityRef={{ type: 'priority', id: key }} label={key.replace('|', ' × ')} /></div>
           {/* Priority Context Header */}
           <div className="rounded-lg border border-border-strong bg-surface-raised p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex flex-col gap-1 min-w-0">
@@ -500,6 +502,7 @@ function PriorityPlan({
                 const isOpen = openedRecord.outputs === o.id;
                 return (
                   <div key={o.id} className="min-w-0 bg-surface-raised">
+                    <div className="flex justify-end px-3 pt-2"><InspectButton entityRef={{ type: 'output', id: o.id, owner: cell.key }} label={o.reference} /></div>
                     <button
                       type="button"
                       aria-expanded={isOpen}
@@ -1278,6 +1281,7 @@ function PriorityPlan({
                 const isOpen = openedRecord.activities === a.id;
                 return (
                   <div key={a.id} className="min-w-0 bg-surface-raised">
+                    <div className="flex justify-end px-3 pt-2"><InspectButton entityRef={{ type: 'activity', id: a.id, owner: cell.key }} label={a.reference} /></div>
                     <button
                       type="button"
                       aria-expanded={isOpen}

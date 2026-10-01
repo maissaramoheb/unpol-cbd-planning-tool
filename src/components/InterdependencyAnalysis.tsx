@@ -1,3 +1,4 @@
+import { InspectButton } from './WorkbenchInspector';
 import React, { useState } from 'react';
 import type { Interdependency, UnpolProjectData } from '../types';
 import { PESTELS_KEYS } from '../data/pestelsCategories';
@@ -89,6 +90,7 @@ export function InterdependencyAnalysis({ data, open, onOpenChange, draft, onDra
       {pair && <div className="flex flex-wrap items-center gap-2 text-sm"><span>Showing {pair.split(':').map(dimensionName).join(' → ')}</span><Button type="button" variant="tertiary" onClick={() => setPair(null)}>Clear map filter</Button></div>}
       <div className="space-y-3" aria-label="Recorded interdependencies">
         {filtered.map(item => <article key={item.id} className="min-w-0 break-words rounded-lg border border-border-default p-4 space-y-2">
+          <InspectButton entityRef={{ type: 'interdependency', id: item.id }} label={item.reference} />
           <h4 className="font-semibold">{item.reference}{item.isKeyInsight ? ' · Key insight' : ''}{item.includeInMainBrief ? ' · Main brief selected' : ''}</h4>
           <p className="text-sm text-text-secondary">{findingLabel(item.sourceFindingId)} → {findingLabel(item.targetFindingId)}</p>
           <p className="text-sm whitespace-pre-wrap">{item.relationship}</p>

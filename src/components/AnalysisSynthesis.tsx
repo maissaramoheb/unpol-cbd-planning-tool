@@ -1,3 +1,4 @@
+import { InspectButton } from './WorkbenchInspector';
 import React, { useMemo, useState } from 'react';
 import { ArrowLeft, ArrowRight, Link2, Plus, Trash2 } from 'lucide-react';
 import type { AnalysisSynthesis as AnalysisSynthesisData, StrategicOptionType, SwotCategory, UnpolProjectData } from '../types';
@@ -330,6 +331,7 @@ function SwotZone({ category, data, onAdd, onUpdate, onDelete }: { category: Swo
             const linkedOptions = data.analysisSynthesis.strategicOptions.filter(option => option.swotFindingIds.includes(item.id));
             return (
               <article key={item.id} className="p-4 flex flex-col gap-3">
+                <div className="flex justify-end"><InspectButton entityRef={{ type: 'swot', id: item.id }} label={item.reference} /></div>
                 <div className="flex items-center justify-between gap-2">
                   <span className={`font-mono text-xs font-bold px-2 py-0.5 rounded border ${accent.badge}`}>
                     {item.reference}
@@ -467,6 +469,7 @@ function OptionZone({ type, data, selections, onSelections, onAdd, onUpdate, onD
         ) : (
           options.map(option => (
             <article key={option.id} className="p-4 flex flex-col gap-3">
+              <div className="flex justify-end"><InspectButton entityRef={{ type: 'option', id: option.id }} label={option.reference} /></div>
               <div className="flex items-center justify-between gap-2">
                 <strong className={`text-xs font-semibold px-2 py-0.5 rounded border font-mono ${optionBadges[type]}`}>
                   {option.reference} · {option.swotFindingIds.map(id => data.analysisSynthesis.swotFindings.find(item => item.id === id)?.reference).filter(Boolean).join(' + ')}

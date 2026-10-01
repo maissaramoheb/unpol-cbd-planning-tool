@@ -12,6 +12,8 @@
   },
   "include": [
     "src/lib/theme.ts",
+    "src/lib/traceability.ts",
+    "src/components/WorkbenchInspector.tsx",
     "src/ui/ThemeControl.tsx",
     "src/lib/executiveBriefDocx.ts",
     "src/lib/planningOutputs.ts",

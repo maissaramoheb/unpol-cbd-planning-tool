@@ -1,3 +1,4 @@
+import { InspectButton } from './WorkbenchInspector';
 import React, { useState } from 'react';
 import { PriorityBrief, CbdCell } from '../types';
 import { Button } from '../ui/Button';
@@ -144,6 +145,7 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
                         className="grid grid-cols-[1fr_auto_auto] gap-2 items-center px-3.5 py-2.5 hover:bg-surface-subtle transition-colors text-xs"
                       >
                         <div className="min-w-0 pr-1">
+                          <InspectButton entityRef={{ type: 'priority', id: key }} label={key.replace('|', ' × ')} />
                           <div className="font-medium text-text-primary truncate" title={key}>
                             {key}
                           </div>

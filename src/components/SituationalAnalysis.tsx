@@ -1,3 +1,4 @@
+import { InspectButton } from './WorkbenchInspector';
 import React, { useState } from 'react';
 import { Interdependency, PestelsItem, PestelsRating, UnpolProjectData } from '../types';
 import { InterdependencyAnalysis } from './InterdependencyAnalysis';
@@ -142,6 +143,7 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
                   <p className="text-xs text-text-muted mt-0.5">{activeItem.definition}</p>
                 </div>
                 <div className="shrink-0 flex items-center gap-2">
+                  <InspectButton entityRef={{ type: 'pestels', id: activeItem.id }} label={activeItem.name} />
                   <span className="font-mono tabular-nums text-xs font-semibold bg-surface-subtle border border-border-default px-2 py-0.5 rounded text-text-secondary">
                     {activeItem.finding.trim() !== ''
                       ? `Pressure: ${activeItem.rating.impact * activeItem.rating.urgency}/25`

@@ -1,3 +1,4 @@
+import { InspectButton } from '../components/WorkbenchInspector';
 import React, { useId, useState } from 'react';
 import { CbdCell, CbdAxis, PestelsItem, Stakeholder, EvidenceNote, StrategicOption, PlanningIndicator } from '../types';
 import { Card, CardBody, CardHeader } from '../ui/Card';
@@ -252,6 +253,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
         </div>
       </CardHeader>
       <CardBody className="flex flex-col gap-5">
+        {customCells[selectedKey] && <div className="flex justify-end"><InspectButton entityRef={{ type: 'priority', id: selectedKey }} label={selectedKey.replace('|', ' × ')} /></div>}
         {/* Section 1: Planning Basis */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
