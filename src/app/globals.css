@@ -241,7 +241,7 @@ body { background: var(--canvas-bg); color: var(--text-primary); }
 
 @media print {
   :root, html[data-theme="dark"] {
-    color-scheme: light;
+    color-scheme: light !important;
   --canvas-bg: #eef2f7;
   --surface-base: #ffffff;
   --surface-raised: #ffffff;
@@ -453,4 +453,29 @@ body { background: var(--canvas-bg); color: var(--text-primary); }
   .planning-output h3 { margin: 10px 0 6px; }
   .planning-output p { margin-bottom: 6px; line-height: 1.35; orphans: 3; widows: 3; }
   .planning-output .output-table-scroll { overflow: visible; }
+}
+
+/* Shared interaction and reading rhythm. Document typography stays independent. */
+html[data-theme-changing] *, html[data-theme-changing] *::before, html[data-theme-changing] *::after {
+  transition: none !important;
+}
+body { font-family: var(--font-sans); line-height: 1.55; }
+:where(button, a, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+:where(input, textarea)::placeholder { color: var(--text-muted); opacity: 1; }
+:where(input[type="checkbox"], input[type="radio"]) { accent-color: var(--action-primary); }
+:where(button) { white-space: normal; }
+:where(button, a, input, select, textarea, summary) { transition-duration: 150ms; }
+.matrix-scroll { scrollbar-width: thin; scrollbar-color: var(--border-strong) var(--surface-subtle); }
+.matrix-scroll:focus-visible { outline-offset: 3px; }
+@media (pointer: coarse) {
+  :where(button, select, input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), summary) { min-height: 40px; }
+}
+@media (max-width: 639px) {
+  .theme-control button { width: 30px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(button, a, input, select, textarea, summary) { transition-duration: 0ms; }
 }

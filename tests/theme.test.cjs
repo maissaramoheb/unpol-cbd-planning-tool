@@ -78,3 +78,40 @@ test('theme changes leave canonical project, JSON and every professional output 
   for (const mode of ['dark', 'light', 'system']) { e.store.setPreference(mode); e.os(true); assert.equal(JSON.stringify(project), json); assert.equal(e.values.get('unpol-project'), json); assert.deepEqual(outputs(), before); }
   assert.deepEqual([...e.values.keys()].sort(), [THEME_STORAGE_KEY, 'unpol-project'].sort());
 });
+
+test('theme control renders exactly three named keyboard buttons and a stable System server state', () => {
+  const React = require('react');
+  const { renderToStaticMarkup } = require('react-dom/server');
+  const { ThemeControl } = require('../.test-dist/ui/ThemeControl.js');
+  const html = renderToStaticMarkup(React.createElement(ThemeControl));
+  assert.equal((html.match(/<button/g) || []).length, 3);
+  for (const name of ['Light', 'Dark', 'System']) assert.ok(html.includes(`aria-label="${name} theme"`));
+  assert.equal((html.match(/aria-pressed="true"/g) || []).length, 1);
+  assert.match(html, /aria-label="System theme"[^>]*aria-pressed="true"/);
+  assert.equal((html.match(/type="button"/g) || []).length, 3);
+});
+
+for (const mode of ['light', 'dark']) test(`${mode} semantic text, status and primary action contrasts meet AA`, () => {
+  const fs = require('node:fs');
+  const css = fs.readFileSync('src/app/globals.css', 'utf8');
+  const selector = mode === 'light' ? ':root {' : 'html[data-theme="dark"] {';
+  const block = css.split(selector)[1].split('}')[0];
+  const tokens = Object.fromEntries([...block.matchAll(/--([\w-]+):\s*(#[a-fA-F0-9]{6});/g)].map(m => [m[1], m[2]]));
+  const luminance = value => {
+    const channels = [1, 3, 5].map(i => parseInt(value.slice(i, i + 2), 16) / 255).map(c => c <= .04045 ? c / 12.92 : ((c + .055) / 1.055) ** 2.4);
+    return channels.reduce((sum, c, i) => sum + c * [.2126, .7152, .0722][i], 0);
+  };
+  const contrast = (a, b) => { const [lo, hi] = [luminance(tokens[a]), luminance(tokens[b])].sort((x, y) => x - y); return (hi + .05) / (lo + .05); };
+  const surfaces = ['canvas-bg', 'surface-base', 'surface-raised', 'surface-subtle', 'surface-hover', 'surface-active', 'surface-overlay'];
+  const pairs = ['text-primary', 'text-secondary', 'text-muted', 'action-link'].flatMap(text => surfaces.map(surface => [text, surface]));
+  for (const status of ['success', 'warning', 'danger', 'info']) pairs.push([`status-${status}`, `status-${status}-bg`]);
+  for (const action of ['action-primary', 'action-primary-hover', 'action-primary-active']) pairs.push(['text-inverse', action]);
+  for (const [text, background] of pairs) assert.ok(contrast(text, background) >= 4.5, `${text} / ${background} below AA`);
+  for (const surface of surfaces) assert.ok(contrast('focus-ring', surface) >= 3, `focus ring / ${surface} below 3:1`);
+});
+
+
+test('print palette overrides the inline first-paint color scheme', () => {
+  const css = require('node:fs').readFileSync(require('node:path').join(__dirname, '../src/app/globals.css'), 'utf8');
+  assert.match(css, /@media print\s*\{\s*:root, html\[data-theme="dark"\]\s*\{\s*color-scheme: light !important;/);
+});

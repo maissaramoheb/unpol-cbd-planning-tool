@@ -37,7 +37,7 @@ export function InterdependencyAnalysis({ data, open, onOpenChange, draft, onDra
     return resolved ? `${dimensionName(resolved.key)}: ${resolved.finding.finding}` : 'Missing finding — relink required';
   };
   return <section className="min-w-0 rounded-xl border border-border-default bg-surface-base print:hidden">
-    <button type="button" aria-expanded={open} aria-controls="interdependency-workspace" onClick={() => onOpenChange(!open)} className="w-full p-4 text-left rounded-xl focus-visible:outline-2 focus-visible:outline-blue-600">
+    <button type="button" aria-expanded={open} aria-controls="interdependency-workspace" onClick={() => onOpenChange(!open)} className="w-full p-4 text-left rounded-xl focus-visible:outline-2 focus-visible:outline-focus-ring">
       <span className="block font-semibold text-text-primary">PESTEL-S Interdependency Analysis <span className="text-xs font-normal text-text-muted">· Optional · {items.length} recorded</span></span>
       <span className="block mt-1 text-sm text-text-secondary">Explore how important PESTEL-S findings interact and why those relationships matter for CBD planning.</span>
     </button>
@@ -100,7 +100,7 @@ export function InterdependencyAnalysis({ data, open, onOpenChange, draft, onDra
         {filtered.length === 0 && <p className="text-sm text-text-muted">No relationships recorded{pair ? ' for this direction' : ''}. This analysis is optional; you can continue without it.</p>}
       </div>
       <details className="rounded-lg border border-border-default p-3">
-        <summary className="cursor-pointer font-semibold text-sm focus-visible:outline-2 focus-visible:outline-blue-600">PESTEL-S Interdependency Map · Cross-Impact View</summary>
+        <summary className="cursor-pointer font-semibold text-sm focus-visible:outline-2 focus-visible:outline-focus-ring">PESTEL-S Interdependency Map · Cross-Impact View</summary>
         <p className="text-xs text-text-muted my-3">FROM ↓ / TO → · Counts of recorded finding-to-finding relationships, not scores or causal strength. Select a populated direction to filter the cards.</p>
         <table className="hidden md:table w-full table-fixed text-[10px] text-center">
           <thead><tr><th scope="col">FROM / TO</th>{PESTELS_KEYS.map(key => <th key={key} scope="col" className="p-1 break-words">{dimensionName(key)}</th>)}</tr></thead>

@@ -320,7 +320,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
             </div>
           )}
 
-          <div className="flex-1 overflow-y-auto divide-y divide-border-default max-h-[600px] lg:max-h-none">
+          <div className="flex-1 overflow-y-auto divide-y divide-border-default max-h-64 lg:max-h-none">
             {stakeholders.map((sh) => {
               const isSelected = sh.id === selectedId;
               return (
@@ -350,7 +350,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                   </div>
                   <div className="text-[10px] font-mono text-text-muted flex items-center gap-1.5 pt-0.5">
                     <span>Auth: <span className="font-semibold text-text-secondary">{sh.authority || 'N/A'}</span></span>
-                    <span className="text-border-strong">·</span>
+                    <span className="text-text-muted">·</span>
                     <span>Infl: <span className="font-semibold text-text-secondary">{sh.influence || 'N/A'}</span></span>
                   </div>
                 </button>
@@ -372,7 +372,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                       type="text"
                       value={activeStakeholder.name}
                       onChange={(e) => handleFieldChange('name', e.target.value)}
-                      className="text-base font-bold text-text-primary bg-transparent border-b border-transparent hover:border-border-default focus:border-institutional focus:outline-none w-full transition-colors py-0.5"
+                      className="text-base font-bold text-text-primary bg-transparent border-b border-transparent hover:border-border-default focus:border-action-link focus:outline-none w-full transition-colors py-0.5"
                       placeholder="Actor / Stakeholder Name"
                     />
                   </div>
@@ -514,7 +514,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                           className={`
                             flex items-center gap-2.5 p-2.5 rounded-md border text-xs cursor-pointer transition-colors
                             ${isChecked
-                              ? 'border-institutional bg-surface-active text-text-primary font-medium'
+                              ? 'border-action-link bg-surface-active text-text-primary font-medium'
                               : 'border-border-default hover:bg-surface-hover text-text-muted'
                             }
                           `}

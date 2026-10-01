@@ -540,7 +540,7 @@ export const MissionExplorerCompare: React.FC<MissionExplorerCompareProps> = ({
           </div>
 
           {/* Theme Matrix Table */}
-          <div className="overflow-x-auto [scrollbar-width:thin]">
+          <div tabIndex={0} role="region" aria-label="Scrollable analytical comparison" className="overflow-x-auto [scrollbar-width:thin]">
             <table className="w-full text-left border-collapse text-xs">
               <caption className="sr-only">Planning themes presence matrix across compared contexts</caption>
               <thead>

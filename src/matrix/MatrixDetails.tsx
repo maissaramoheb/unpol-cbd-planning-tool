@@ -432,7 +432,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
                     type="button"
                     onClick={() => handleRemoveIndicator(idx)}
                     aria-label={`Remove indicator ${idx + 1}`}
-                    className="p-0.5 rounded-full hover:bg-surface-hover text-text-muted hover:text-action-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+                    className="p-0.5 rounded-full hover:bg-surface-hover text-text-muted hover:text-status-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
                   >
                     <Trash2 size={11} />
                   </button>

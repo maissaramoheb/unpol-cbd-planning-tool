@@ -38,3 +38,14 @@ Responsive rules: Header remains compact, theme icons retain fixed width; stage 
 ## Sequential delivery and verification
 
 A audit/spec → B theme/root/tests → C primitives → D command/navigation/overview → E stages 1–3 → F stages 4–7/matrix → G Explorer/output chrome → H responsive/accessibility/motion/QA. Type-check before each phase and after each major phase. Final lint/types/tests/build/diff check, preserved domain/output files, screenshot matrix, keyboard/dialog/print checks, clean committed feature branch, Preview only. Version remains 0.10.0. Visual owner approval remains pending until owner reviews rendered evidence; engineering pass does not substitute for it.
+
+
+## Phase H: verification and delivery boundary
+
+Final engineering gates: 169 Node tests pass (149 existing, 20 focused theme/accessibility/contrast/print cases); lint, TypeScript, default Turbopack production build, and diff whitespace checks pass. Domain libraries other than new theme.ts, project types, reference data, package manifests/lockfile, and PlanningOutputPreview remain unchanged from c4820e8. Existing professional report article content and report/print CSS are retained; light palette rebinding and a print color-scheme override isolate documents from the application preference.
+
+Browser evidence covers Home, seven stages, Outputs, Explorer, comparison and disclaimer at 1440/1280/1024/768/390 in both modes. Measured checks cover visible text contrast, viewport overflow, dialog fit and white output backgrounds; screenshots are reviewed as separate visual evidence. Additional workflows verify all five output contents across themes, actual JSON export/import, Start Plan replacement/cancellation, contextual guidance/cues/actor assessment, dialog focus and typed-input stability, reset/restore, RTL tab keys, matrix row-label scrolling and reduced motion. Executive PDF printed from Dark is rendered and checked for a fully white page surround. These are targeted Chromium checks, not full WCAG certification or comprehensive Arabic localization testing.
+
+Visual corrections: separate action-fill and action-link colors; replace undefined institutional palette classes; remove transient mixed-palette transitions; keep stage identifiers visible on narrow tracks; shorten mobile reference/master lists; remove excess Explorer panel spacing; preserve dialog typing focus when callback identities change; override inline color-scheme during printing. No dependency additions, project schema migration, score changes or document wording edits. Dependency installation retains the existing lockfile's seven audit advisories; remediation is outside this UI change.
+
+Release is a clean feature branch and Vercel Preview only. Version remains 0.10.0; main and canonical Production are protected. Human visual approval remains pending.

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 import { MissionExplorerEntry, ContextSource } from '../types/explorer';
 import { resolvePlanningContext } from '../lib/planningContext';
 import { Card, CardBody, CardHeader } from '../ui/Card';
@@ -32,6 +32,7 @@ export const MissionExplorerPanel: React.FC<MissionExplorerPanelProps> = ({
   onUseProfile,
   onClearSelection
 }) => {
+  const tabId = useId();
   const [activeTab, setActiveTab] = useState<TabKey>('overview');
 
   if (!entry) {
@@ -135,7 +136,7 @@ export const MissionExplorerPanel: React.FC<MissionExplorerPanelProps> = ({
     context?.planningPrompts?.stakeholderPrompts ?? entry.starterStakeholderPrompts ?? [];
 
   return (
-    <Card className="h-full border-border-default bg-surface-base shadow-sm flex flex-col justify-between overflow-hidden">
+    <Card className="h-full border-border-default bg-surface-base shadow-sm flex flex-col overflow-hidden">
       {/* Header Bar */}
       <CardHeader className="border-b border-border-subtle pb-3 flex flex-col gap-2 shrink-0">
         <div className="flex justify-between items-start gap-2">
@@ -174,11 +175,23 @@ export const MissionExplorerPanel: React.FC<MissionExplorerPanelProps> = ({
         </div>
 
         {/* Tab Navigation Strip */}
-        <div className="flex border-b border-border-default -mx-4 -mb-3 px-4 pt-2 gap-1 bg-surface-subtle" role="tablist">
+        <div className="flex border-b border-border-default -mx-4 -mb-3 px-4 pt-2 gap-1 overflow-x-auto bg-surface-subtle" role="tablist" aria-label="Planning context details" onKeyDown={event => {
+          const tabs = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+          const current = tabs.indexOf(document.activeElement as HTMLButtonElement);
+          const direction = document.documentElement.dir === 'rtl' ? -1 : 1;
+          let next = current;
+          if (event.key === 'ArrowRight') next = (current + direction + tabs.length) % tabs.length;
+          else if (event.key === 'ArrowLeft') next = (current - direction + tabs.length) % tabs.length;
+          else if (event.key === 'Home') next = 0;
+          else if (event.key === 'End') next = tabs.length - 1;
+          else return;
+          event.preventDefault(); tabs[next]?.focus(); tabs[next]?.click();
+        }}>
           <button
             type="button"
             role="tab"
             aria-selected={activeTab === 'overview'}
+            id={`${tabId}-overview`} aria-controls={`${tabId}-panel`} tabIndex={activeTab === 'overview' ? 0 : -1}
             onClick={() => setActiveTab('overview')}
             className={`px-2.5 py-1.5 text-xs font-bold border-b-2 transition-colors cursor-pointer ${
               activeTab === 'overview'
@@ -192,6 +205,7 @@ export const MissionExplorerPanel: React.FC<MissionExplorerPanelProps> = ({
             type="button"
             role="tab"
             aria-selected={activeTab === 'signals'}
+            id={`${tabId}-signals`} aria-controls={`${tabId}-panel`} tabIndex={activeTab === 'signals' ? 0 : -1}
             onClick={() => setActiveTab('signals')}
             className={`px-2.5 py-1.5 text-xs font-bold border-b-2 transition-colors cursor-pointer ${
               activeTab === 'signals'
@@ -205,6 +219,7 @@ export const MissionExplorerPanel: React.FC<MissionExplorerPanelProps> = ({
             type="button"
             role="tab"
             aria-selected={activeTab === 'sources'}
+            id={`${tabId}-sources`} aria-controls={`${tabId}-panel`} tabIndex={activeTab === 'sources' ? 0 : -1}
             onClick={() => setActiveTab('sources')}
             className={`px-2.5 py-1.5 text-xs font-bold border-b-2 transition-colors cursor-pointer flex items-center gap-1 ${
               activeTab === 'sources'
@@ -221,6 +236,7 @@ export const MissionExplorerPanel: React.FC<MissionExplorerPanelProps> = ({
             type="button"
             role="tab"
             aria-selected={activeTab === 'preview'}
+            id={`${tabId}-preview`} aria-controls={`${tabId}-panel`} tabIndex={activeTab === 'preview' ? 0 : -1}
             onClick={() => setActiveTab('preview')}
             className={`px-2.5 py-1.5 text-xs font-bold border-b-2 transition-colors cursor-pointer ${
               activeTab === 'preview'
@@ -234,7 +250,7 @@ export const MissionExplorerPanel: React.FC<MissionExplorerPanelProps> = ({
       </CardHeader>
 
       {/* Main Tab View Content */}
-      <CardBody className="p-4 flex-1 overflow-y-auto xl:max-h-[560px] flex flex-col gap-4 text-xs leading-relaxed">
+      <CardBody role="tabpanel" id={`${tabId}-panel`} aria-labelledby={`${tabId}-${activeTab}`} tabIndex={0} className="p-4 flex-1 overflow-y-auto xl:max-h-[560px] flex flex-col gap-4 text-xs leading-relaxed">
         {/* TAB 1: OVERVIEW */}
         {activeTab === 'overview' && (
           <div className="flex flex-col gap-4">

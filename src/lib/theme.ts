@@ -15,7 +15,7 @@ export function resolveTheme(preference: ThemePreference, systemDark: boolean): 
 export const THEME_INIT_SCRIPT = `(function(){var p='system';try{var v=localStorage.getItem('${THEME_STORAGE_KEY}');if(v==='light'||v==='dark')p=v}catch(e){}var t=p==='system'?(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;var r=document.documentElement;r.dataset.theme=t;r.dataset.themePreference=p;r.style.colorScheme=t})()`;
 
 interface ThemeEnvironment {
-  root: { dataset: { theme?: string; themePreference?: string }; style: { colorScheme: string } };
+  root: { dataset: { theme?: string; themePreference?: string; themeChanging?: string }; style: { colorScheme: string }; getBoundingClientRect?: () => unknown };
   storage: Pick<Storage, 'getItem' | 'setItem'>;
   media: Pick<MediaQueryList, 'matches' | 'addEventListener' | 'removeEventListener'>;
   events: Pick<Window, 'addEventListener' | 'removeEventListener'>;
@@ -31,9 +31,14 @@ export function createThemeStore({ root, storage, media, events }: ThemeEnvironm
   preference = read();
   const apply = () => {
     const theme = resolveTheme(preference, media.matches);
+    // Flush the new palette with control transitions disabled, then restore normal interactions.
+    // This prevents in-flight intermediate colors and does not animate document previews.
+    root.dataset.themeChanging = 'true';
     root.dataset.theme = theme;
     root.dataset.themePreference = preference;
     root.style.colorScheme = theme;
+    root.getBoundingClientRect?.();
+    delete root.dataset.themeChanging;
   };
   const emit = () => { apply(); listeners.forEach(listener => listener()); };
   const onMediaChange = () => { if (preference === 'system') apply(); };

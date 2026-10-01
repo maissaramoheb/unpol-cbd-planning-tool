@@ -37,7 +37,7 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
           `}
           {...props}
         />
-        {error && <span id={feedbackId} className="text-xs font-semibold text-action-danger">{error}</span>}
+        {error && <span id={feedbackId} className="text-xs font-semibold text-status-danger">{error}</span>}
         {!error && helperText && <span id={feedbackId} className="text-xs text-text-muted">{helperText}</span>}
       </div>
     );

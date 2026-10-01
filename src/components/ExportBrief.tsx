@@ -157,7 +157,7 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess,
         <p className="mt-2 text-xs text-text-muted">Planning Brief: decision narrative · Logframe: results logic · M&E Matrix: measurement · Workplan: delivery</p>
         {outputModel ? <div className="mt-4 flex flex-wrap items-center gap-3">
           <label className="text-sm font-medium" htmlFor="output-scope">Output scope</label>
-          <select id="output-scope" className="min-w-0 max-w-full rounded-md border border-border-strong bg-surface-raised p-2 text-sm focus-visible:outline-2 focus-visible:outline-blue-600" value={effectiveScope} onChange={e => setScope(e.target.value)}>
+          <select id="output-scope" className="min-w-0 max-w-full rounded-md border border-border-strong bg-surface-raised p-2 text-sm focus-visible:outline-2 focus-visible:outline-focus-ring" value={effectiveScope} onChange={e => setScope(e.target.value)}>
             <option value="">All CBD Priorities</option>{Object.keys(data.customCells).map(key => <option key={key} value={key}>{key.split('|').join(' × ')}</option>)}
           </select>
           <Button size="sm" variant="secondary" onClick={onPrev}>Edit in Results &amp; Implementation</Button>

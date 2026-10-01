@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useEffectEvent, useRef } from 'react';
 
 interface UseDialogA11yOptions {
   isOpen: boolean;
@@ -22,6 +22,7 @@ export function useDialogA11y({
   containerRef,
   initialFocusRef
 }: UseDialogA11yOptions): void {
+  const closeDialog = useEffectEvent(onClose);
   const previousActiveElementRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -54,7 +55,7 @@ export function useDialogA11y({
       const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'Escape') {
           event.stopPropagation();
-          onClose();
+          closeDialog();
           return;
         }
 
@@ -101,5 +102,5 @@ export function useDialogA11y({
         }
       };
     }
-  }, [isOpen, onClose, containerRef, initialFocusRef]);
+  }, [isOpen, containerRef, initialFocusRef]);
 }

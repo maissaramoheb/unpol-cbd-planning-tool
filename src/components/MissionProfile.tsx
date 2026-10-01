@@ -56,7 +56,7 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Template Selector Column */}
-        <div className="lg:col-span-1 flex flex-col gap-3">
+        <div className="order-2 lg:order-1 lg:col-span-1 flex flex-col gap-3">
           <div>
             <h3 className="text-xs font-bold uppercase tracking-wider text-text-primary">
               Baseline Configuration Templates
@@ -160,7 +160,7 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
         </div>
 
         {/* Form Fields Card */}
-        <div className="lg:col-span-2">
+        <div className="order-1 lg:order-2 lg:col-span-2">
           <Card>
             <CardHeader>
               <h3 className="text-sm font-bold text-text-primary">Analyst Input · Country / Mission Profile</h3>

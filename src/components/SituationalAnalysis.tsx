@@ -90,7 +90,7 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
             </span>
           </div>
 
-          <div className="divide-y divide-border-default grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-col">
+          <div className="divide-y divide-border-default flex overflow-x-auto sm:grid sm:grid-cols-2 lg:flex lg:flex-col">
             {Object.values(pestels).map((item) => {
               const isSelected = item.id === selectedId;
               const hasFinding = item.finding.trim().length > 0;
@@ -101,7 +101,7 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
                   onClick={() => setSelectedId(item.id)}
                   aria-pressed={isSelected}
                   className={`
-                    text-left px-4 py-3.5 transition-colors duration-150 motion-reduce:transition-none flex flex-col gap-1 w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring
+                    text-left px-4 py-3.5 transition-colors duration-150 motion-reduce:transition-none flex flex-col gap-1 min-w-[220px] sm:min-w-0 sm:w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring
                     ${isSelected
                       ? 'bg-status-info-bg border-l-2 border-action-primary'
                       : 'border-l-2 border-transparent hover:bg-surface-subtle/80'
@@ -321,7 +321,7 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
       </div>
 
       <div className="min-w-0">
-        {interdependencyError && <p role="alert" className="mb-3 text-sm text-action-danger">{interdependencyError}</p>}
+        {interdependencyError && <p role="alert" className="mb-3 text-sm text-status-danger">{interdependencyError}</p>}
         <InterdependencyAnalysis data={data} open={interdependencyOpen} onOpenChange={setInterdependencyOpen} draft={draft} onDraftChange={setDraft} onChange={onInterdependenciesChange} />
       </div>
     </div>

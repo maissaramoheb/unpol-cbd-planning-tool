@@ -215,7 +215,7 @@ export const MatrixGrid: React.FC<MatrixGridProps> = ({
                     className={`
                       h-[68px] p-2 text-start transition-colors duration-150 motion-reduce:transition-none flex flex-col justify-center items-start relative focus-visible:outline-none
                       ${cellTint} ${accentBorder} ${selectionClass}
-                      ${!selected ? 'hover:brightness-95 dark:hover:brightness-110' : ''}
+                      ${!selected ? 'hover:ring-1 hover:ring-inset hover:ring-border-strong' : ''}
                     `}
                   >
                     {/* Corner indicator dot for configured cells */}

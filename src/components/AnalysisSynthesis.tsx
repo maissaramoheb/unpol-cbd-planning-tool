@@ -101,7 +101,7 @@ export const AnalysisSynthesis: React.FC<AnalysisSynthesisProps> = ({ data, onCh
     <div className="flex flex-col gap-6">
       <StageLead stage={4} />
 
-      <div className="rounded-lg border border-institutional/20 bg-surface-active px-4 py-3 text-xs leading-relaxed text-text-primary">
+      <div className="rounded-lg border border-status-info-border bg-surface-active px-4 py-3 text-xs leading-relaxed text-text-primary">
         <strong className="font-semibold text-action-link">Professional judgement remains primary.</strong> SWOT classification is analyst-written synthesis. It supports planning judgement; it does not determine the CBD response.
       </div>
 
@@ -342,7 +342,7 @@ function SwotZone({ category, data, onAdd, onUpdate, onDelete }: { category: Swo
                       }
                     }}
                     aria-label={`Delete ${item.reference}`}
-                    className="rounded p-1 text-text-muted hover:text-action-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring transition-colors"
+                    className="rounded p-1 text-text-muted hover:text-status-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring transition-colors"
                   >
                     <Trash2 size={13} />
                   </button>
@@ -475,7 +475,7 @@ function OptionZone({ type, data, selections, onSelections, onAdd, onUpdate, onD
                   type="button"
                   onClick={() => onDelete(option.id)}
                   aria-label={`Delete ${option.reference}`}
-                  className="rounded p-1 text-text-muted hover:text-action-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring transition-colors"
+                  className="rounded p-1 text-text-muted hover:text-status-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring transition-colors"
                 >
                   <Trash2 size={13} />
                 </button>

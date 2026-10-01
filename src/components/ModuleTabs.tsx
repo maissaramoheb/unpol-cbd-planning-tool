@@ -17,11 +17,15 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
   const activeStep = WORKFLOW_STAGES.find((step) => step.id === currentView);
 
   useEffect(() => {
-    if (!activeStep) return;
     const container = stepperRef.current;
+    if (!activeStep) {
+      container?.scrollTo({ left: 0 });
+      return;
+    }
     const active = container?.querySelector<HTMLElement>('[aria-current="step"]');
     if (!container || !active) return;
-    container.scrollTo({ left: active.offsetLeft - (container.clientWidth - active.offsetWidth) / 2 });
+    const relativeLeft = active.getBoundingClientRect().left - container.getBoundingClientRect().left + container.scrollLeft;
+    container.scrollTo({ left: relativeLeft - (container.clientWidth - active.offsetWidth) / 2 });
   }, [activeStep]);
 
   return (
@@ -85,7 +89,7 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
                   0{step.id}
                 </span>
 
-                <span className="text-xs whitespace-nowrap">
+                <span className="hidden sm:inline text-xs whitespace-nowrap">
                   {step.label}
                 </span>
 

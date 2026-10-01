@@ -75,7 +75,7 @@ const StakeholderChip: React.FC<StakeholderChipProps> = ({
     aria-label={`Select ${stakeholder.name}. Posture ${stakeholder.position}; influence ${stakeholder.influence}; legitimacy ${stakeholder.legitimacy}; operational relevance ${stakeholder.relevance}.`}
     className={`inline-flex max-w-full items-center gap-1.5 rounded-md border px-2.5 py-1 text-left text-xs font-medium leading-tight transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring ${
       POSTURE_STYLES[stakeholder.position]
-    } ${selected ? 'ring-2 ring-institutional border-institutional font-semibold shadow-subtle' : 'hover:border-border-muted'}`}
+    } ${selected ? 'ring-2 ring-focus-ring border-action-link font-semibold shadow-subtle' : 'hover:border-border-default'}`}
   >
     <span
       aria-hidden="true"
@@ -298,7 +298,7 @@ export const StakeholderDecisionSupport: React.FC<StakeholderDecisionSupportProp
 
   return (
     <div className="flex flex-col gap-7">
-      <div className="rounded-lg border border-institutional/20 bg-surface-active p-4">
+      <div className="rounded-lg border border-status-info-border bg-surface-active p-4">
         <div className="flex items-start gap-3">
           <ShieldCheck className="mt-0.5 shrink-0 text-action-link" size={18} />
           <div>
@@ -308,7 +308,7 @@ export const StakeholderDecisionSupport: React.FC<StakeholderDecisionSupportProp
             </p>
           </div>
         </div>
-        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 border-t border-institutional/15 pt-3 text-[11px] font-medium text-text-secondary">
+        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 border-t border-status-info-border pt-3 text-[11px] font-medium text-text-secondary">
           {(
             [
               ['Enabler', 'Supportive / enabling'],
@@ -381,7 +381,7 @@ export const StakeholderDecisionSupport: React.FC<StakeholderDecisionSupportProp
                 <span className="text-xs font-semibold text-status-danger">Risk / review issue</span>
                 <p className="mt-1 text-xs leading-relaxed text-status-danger">{selectedStakeholder.risk}</p>
               </div>
-              <div className="rounded-md border border-institutional/20 bg-surface-active p-3">
+              <div className="rounded-md border border-status-info-border bg-surface-active p-3">
                 <span className="text-xs font-semibold text-action-link">Recorded engagement approach</span>
                 <p className="mt-1 text-xs leading-relaxed text-text-primary">{selectedStakeholder.engagement}</p>
               </div>
