@@ -106,7 +106,7 @@ export const MissionExplorerMap: React.FC<MissionExplorerMapProps> = ({
             return (
               <g
                 key={entry.id}
-                className="cursor-pointer outline-none transition-all duration-150 motion-reduce:transition-none"
+                className="cursor-pointer outline-none transition-[fill,stroke,opacity] duration-150 motion-reduce:transition-none"
                 style={{ opacity: isDimmed ? 0.35 : 1 }}
                 role="button"
                 tabIndex={0}
@@ -146,7 +146,7 @@ export const MissionExplorerMap: React.FC<MissionExplorerMapProps> = ({
                     stroke="#38bdf8"
                     strokeWidth="1.5"
                     strokeDasharray="3 3"
-                    className="transition-all duration-150 motion-reduce:transition-none"
+                    className="transition-[fill,stroke,opacity] duration-150 motion-reduce:transition-none"
                   />
                 ) : null}
                 {isEmphasized ? (
@@ -157,7 +157,7 @@ export const MissionExplorerMap: React.FC<MissionExplorerMapProps> = ({
                     fill="none"
                     stroke={isSelected ? '#bfdbfe' : '#cbd5e1'}
                     strokeWidth="2"
-                    className="transition-all duration-150 motion-reduce:transition-none"
+                    className="transition-[fill,stroke,opacity] duration-150 motion-reduce:transition-none"
                   />
                 ) : null}
                 {isSelected ? (
@@ -179,7 +179,7 @@ export const MissionExplorerMap: React.FC<MissionExplorerMapProps> = ({
                   fill={isSelected ? '#3b82f6' : isCompared ? '#0284c7' : '#cbd5e1'}
                   stroke="#0f172a"
                   strokeWidth="2.5"
-                  className="transition-all duration-150 motion-reduce:transition-none"
+                  className="transition-[fill,stroke,opacity] duration-150 motion-reduce:transition-none"
                 />
                 <rect
                   x={labelX - currentLabelWidth / 2}

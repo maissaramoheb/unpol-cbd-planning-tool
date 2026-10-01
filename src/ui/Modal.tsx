@@ -41,37 +41,37 @@ export const Modal: React.FC<ModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-slate-900/60 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-surface-scrim">
       <div
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className={`w-full bg-white rounded-xl shadow-xl overflow-hidden flex flex-col ${sizeClasses[size]} transform transition-all`}
+        className={`w-full max-h-[calc(100dvh-2rem)] bg-surface-overlay rounded-xl shadow-overlay overflow-hidden flex flex-col ${sizeClasses[size]} transform transition-colors duration-150`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
-          <h3 id={titleId} className="text-lg font-bold text-slate-900">{title}</h3>
+        <div className="flex items-center justify-between shrink-0 px-4 sm:px-6 py-3 border-b border-border-subtle bg-surface-subtle">
+          <h3 id={titleId} className="text-lg font-bold text-text-primary">{title}</h3>
           <Button
             ref={closeButtonRef}
             variant="quiet"
             size="icon"
             onClick={onClose}
             aria-label={`Close ${title}`}
-            className="text-slate-400 hover:text-slate-700"
+            className="text-text-muted hover:text-text-secondary"
           >
             <X size={18} />
           </Button>
         </div>
 
         {/* Content */}
-        <div className="flex-1 px-6 py-4 overflow-y-auto max-h-[75vh]">
+        <div className="min-h-0 flex-1 px-4 sm:px-6 py-4 overflow-y-auto">
           {children}
         </div>
 
         {/* Footer */}
         {footer && (
-          <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-100 bg-slate-50/50">
+          <div className="flex items-center justify-end flex-wrap shrink-0 gap-3 px-4 sm:px-6 py-3 border-t border-border-subtle bg-surface-subtle">
             {footer}
           </div>
         )}

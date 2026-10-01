@@ -69,10 +69,10 @@ export const EvidenceLogEditor: React.FC<EvidenceLogEditorProps> = ({
   };
 
   return (
-    <div className="flex flex-col gap-4 border-t border-slate-100 pt-4 mt-2">
+    <div className="flex flex-col gap-4 border-t border-border-subtle pt-4 mt-2">
       <div className="flex justify-between items-center">
-        <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-          <FileText size={14} className="text-blue-500" />
+        <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider flex items-center gap-1.5">
+          <FileText size={14} className="text-action-link" />
           Evidence & Verification Logs ({notes.length})
         </h4>
         {!isAdding && (
@@ -88,26 +88,26 @@ export const EvidenceLogEditor: React.FC<EvidenceLogEditorProps> = ({
       </div>
 
       {isAdding && (
-        <div className="p-4 border border-blue-100 bg-blue-50/20 rounded-xl flex flex-col gap-3">
+        <div className="p-4 border border-status-info-border bg-status-info-bg rounded-lg flex flex-col gap-3">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="flex flex-col gap-1">
-              <label htmlFor={`${fieldIdPrefix}-source-title`} className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Source Title / Reference</label>
+              <label htmlFor={`${fieldIdPrefix}-source-title`} className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Source Title / Reference</label>
               <input
                 id={`${fieldIdPrefix}-source-title`}
                 type="text"
                 value={newNote.sourceTitle}
                 onChange={e => setNewNote({ ...newNote, sourceTitle: e.target.value })}
                 placeholder="e.g. UNSCR 2630 (2022) / Host-State Police Act Art. 4"
-                className="px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
+                className="px-2.5 py-1.5 border border-border-strong rounded-lg text-xs bg-surface-base focus:outline-none focus:ring-2 focus:ring-focus-ring"
               />
             </div>
             <div className="flex flex-col gap-1">
-              <label htmlFor={`${fieldIdPrefix}-source-type`} className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Source Type</label>
+              <label htmlFor={`${fieldIdPrefix}-source-type`} className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Source Type</label>
               <select
                 id={`${fieldIdPrefix}-source-type`}
                 value={newNote.sourceType}
                 onChange={e => setNewNote({ ...newNote, sourceType: e.target.value as EvidenceSourceType })}
-                className="px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
+                className="px-2.5 py-1.5 border border-border-strong rounded-lg text-xs bg-surface-base focus:outline-none focus:ring-2 focus:ring-focus-ring"
               >
                 {SOURCE_TYPES.map(type => (
                   <option key={type} value={type}>{type}</option>
@@ -118,13 +118,13 @@ export const EvidenceLogEditor: React.FC<EvidenceLogEditorProps> = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-center">
             <div className="flex flex-col gap-1">
-              <label htmlFor={`${fieldIdPrefix}-verification-date`} className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Verification Date</label>
+              <label htmlFor={`${fieldIdPrefix}-verification-date`} className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Verification Date</label>
               <input
                 id={`${fieldIdPrefix}-verification-date`}
                 type="date"
                 value={newNote.dateVerified}
                 onChange={e => setNewNote({ ...newNote, dateVerified: e.target.value })}
-                className="px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
+                className="px-2.5 py-1.5 border border-border-strong rounded-lg text-xs bg-surface-base focus:outline-none focus:ring-2 focus:ring-focus-ring"
               />
             </div>
             <div className="flex flex-col gap-1 py-1">
@@ -139,14 +139,14 @@ export const EvidenceLogEditor: React.FC<EvidenceLogEditorProps> = ({
           </div>
 
           <div className="flex flex-col gap-1">
-            <label htmlFor={`${fieldIdPrefix}-comment`} className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Comment / Findings Extract</label>
+            <label htmlFor={`${fieldIdPrefix}-comment`} className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Comment / Findings Extract</label>
             <textarea
               id={`${fieldIdPrefix}-comment`}
               value={newNote.comment}
               onChange={e => setNewNote({ ...newNote, comment: e.target.value })}
               placeholder="Detail the supporting findings, page numbers, or interview context..."
               rows={2}
-              className="px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
+              className="px-2.5 py-1.5 border border-border-strong rounded-lg text-xs bg-surface-base focus:outline-none focus:ring-2 focus:ring-focus-ring"
             />
           </div>
 
@@ -162,7 +162,7 @@ export const EvidenceLogEditor: React.FC<EvidenceLogEditorProps> = ({
       )}
 
       {notes.length === 0 ? (
-        <p className="text-xs text-slate-500 italic bg-slate-50 p-3 rounded-lg border border-dashed border-slate-200">
+        <p className="text-xs text-text-muted italic bg-surface-subtle p-3 rounded-lg border border-dashed border-border-default">
           No evidence notes logged yet. Add current sources and record when each source was reviewed.
         </p>
       ) : (
@@ -170,12 +170,12 @@ export const EvidenceLogEditor: React.FC<EvidenceLogEditorProps> = ({
           {notes.map(note => (
             <div
               key={note.id}
-              className="p-3 border border-slate-200/80 bg-slate-50/50 rounded-xl flex flex-col gap-2 relative hover:border-slate-300 transition-colors"
+              className="p-3 border border-border-default bg-surface-subtle rounded-lg flex flex-col gap-2 relative hover:border-border-strong transition-colors"
             >
               <button
                 type="button"
                 onClick={() => handleDelete(note.id)}
-                className="absolute top-3 right-3 text-slate-500 hover:text-rose-600 transition-colors p-1 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+                className="absolute top-3 right-3 text-text-muted hover:text-status-danger transition-colors p-1 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
                 title="Remove Evidence Note"
                 aria-label="Remove Evidence Note"
               >
@@ -183,7 +183,7 @@ export const EvidenceLogEditor: React.FC<EvidenceLogEditorProps> = ({
               </button>
 
               <div className="flex flex-wrap items-center gap-2 pr-6">
-                <span className="font-bold text-xs text-slate-900 leading-snug">
+                <span className="font-bold text-xs text-text-primary leading-snug">
                   {note.sourceTitle}
                 </span>
                 <Badge variant="blue" className="text-[9px] uppercase font-extrabold tracking-wider">
@@ -195,17 +195,17 @@ export const EvidenceLogEditor: React.FC<EvidenceLogEditorProps> = ({
               </div>
 
               {note.comment && (
-                <p className="text-[11px] text-slate-600 leading-relaxed italic bg-white border border-slate-100 p-2 rounded-lg">
+                <p className="text-[11px] text-text-secondary leading-relaxed italic bg-surface-base border border-border-subtle p-2 rounded-lg">
                   &ldquo;{note.comment}&rdquo;
                 </p>
               )}
 
-              <div className="flex items-center gap-1.5 text-[9px] text-slate-500 font-semibold uppercase tracking-wider">
+              <div className="flex items-center gap-1.5 text-[9px] text-text-muted font-semibold uppercase tracking-wider">
                 <Calendar size={10} />
                 <span>Source reviewed: {note.dateVerified}</span>
-                <span className="text-slate-300 border-l border-slate-300 h-2 px-0.5" />
-                <FileText size={10} className="text-slate-500" />
-                <span className="text-slate-600">Evidence Note</span>
+                <span className="text-text-muted border-l border-border-strong h-2 px-0.5" />
+                <FileText size={10} className="text-text-muted" />
+                <span className="text-text-secondary">Evidence Note</span>
               </div>
             </div>
           ))}

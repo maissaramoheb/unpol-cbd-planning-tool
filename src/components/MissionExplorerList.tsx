@@ -108,7 +108,7 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
       {/* Quick Filter Chips */}
       {onVerificationChange && (
         <div className="flex flex-wrap items-center gap-1.5 px-0.5" role="group" aria-label="Quick filters">
-          <span className="text-[11px] font-bold text-slate-500 mr-1">Quick filter:</span>
+          <span className="text-[11px] font-bold text-text-muted mr-1">Quick filter:</span>
           {quickFilterOptions.map((opt) => {
             const isActive = selectedVerification === opt.id;
             return (
@@ -120,8 +120,8 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
                 className={`
                   text-[11px] font-semibold px-2.5 py-1 rounded-lg transition-colors border
                   ${isActive
-                    ? 'bg-blue-600 text-white border-blue-600 shadow-2xs'
-                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 hover:text-slate-900'
+                    ? 'bg-action-primary text-text-inverse border-action-link shadow-2xs'
+                    : 'bg-surface-base text-text-secondary border-border-default hover:bg-surface-subtle hover:text-text-primary'
                   }
                 `}
               >
@@ -133,28 +133,28 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
       )}
 
       {/* Filter Toolbar Panel */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 p-3 bg-surface-subtle border border-border-default rounded-xl">
         {/* Search */}
         <div className="flex flex-col gap-1">
-          <label htmlFor={`${fieldIdPrefix}-search`} className="text-xs font-bold text-slate-700">Search</label>
+          <label htmlFor={`${fieldIdPrefix}-search`} className="text-xs font-bold text-text-secondary">Search</label>
           <input
             id={`${fieldIdPrefix}-search`}
             type="text"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Country, acronym, question..."
-            className="w-full text-xs px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            className="w-full text-xs px-2.5 py-1.5 bg-surface-base border border-border-strong rounded-lg text-text-primary focus:outline-none focus:border-action-link focus:ring-1 focus:ring-focus-ring"
           />
         </div>
 
         {/* Region */}
         <div className="flex flex-col gap-1">
-          <label htmlFor={`${fieldIdPrefix}-region`} className="text-xs font-bold text-slate-700">Region</label>
+          <label htmlFor={`${fieldIdPrefix}-region`} className="text-xs font-bold text-text-secondary">Region</label>
           <select
             id={`${fieldIdPrefix}-region`}
             value={selectedRegion}
             onChange={(e) => onRegionChange(e.target.value)}
-            className="w-full text-xs px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:border-blue-500"
+            className="w-full text-xs px-2.5 py-1.5 bg-surface-base border border-border-strong rounded-lg text-text-primary focus:outline-none focus:border-action-link"
           >
             <option value="all">All Regions</option>
             {regions.map((r) => (
@@ -167,12 +167,12 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
 
         {/* Mission Type */}
         <div className="flex flex-col gap-1">
-          <label htmlFor={`${fieldIdPrefix}-type`} className="text-xs font-bold text-slate-700">Mandate type</label>
+          <label htmlFor={`${fieldIdPrefix}-type`} className="text-xs font-bold text-text-secondary">Mandate type</label>
           <select
             id={`${fieldIdPrefix}-type`}
             value={selectedType}
             onChange={(e) => onTypeChange(e.target.value)}
-            className="w-full text-xs px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:border-blue-500"
+            className="w-full text-xs px-2.5 py-1.5 bg-surface-base border border-border-strong rounded-lg text-text-primary focus:outline-none focus:border-action-link"
           >
             <option value="all">All Types</option>
             {types.map((t) => (
@@ -185,12 +185,12 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
 
         {/* Status */}
         <div className="flex flex-col gap-1">
-          <label htmlFor={`${fieldIdPrefix}-status`} className="text-xs font-bold text-slate-700">Status</label>
+          <label htmlFor={`${fieldIdPrefix}-status`} className="text-xs font-bold text-text-secondary">Status</label>
           <select
             id={`${fieldIdPrefix}-status`}
             value={selectedStatus}
             onChange={(e) => onStatusChange(e.target.value)}
-            className="w-full text-xs px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:border-blue-500"
+            className="w-full text-xs px-2.5 py-1.5 bg-surface-base border border-border-strong rounded-lg text-text-primary focus:outline-none focus:border-action-link"
           >
             <option value="all">All Statuses</option>
             {statuses.map((s) => (
@@ -203,12 +203,12 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
 
         {/* Classification */}
         <div className="flex flex-col gap-1">
-          <label htmlFor={`${fieldIdPrefix}-classification`} className="text-xs font-bold text-slate-700">Context classification</label>
+          <label htmlFor={`${fieldIdPrefix}-classification`} className="text-xs font-bold text-text-secondary">Context classification</label>
           <select
             id={`${fieldIdPrefix}-classification`}
             value={showFictional}
             onChange={(e) => onShowFictionalChange(e.target.value as 'all' | 'real' | 'fictional')}
-            className="w-full text-xs px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:border-blue-500"
+            className="w-full text-xs px-2.5 py-1.5 bg-surface-base border border-border-strong rounded-lg text-text-primary focus:outline-none focus:border-action-link"
           >
             <option value="all">All Contexts</option>
             <option value="real">Reference and starter profiles</option>
@@ -220,7 +220,7 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
       {/* Grid List representation */}
       <div className="flex-1 overflow-y-auto max-h-[380px] pr-1 flex flex-col gap-2.5">
         {entries.length === 0 ? (
-          <div className="text-center py-8 text-xs text-slate-500 italic bg-white border border-slate-200 rounded-xl">
+          <div className="text-center py-8 text-xs text-text-muted italic bg-surface-base border border-border-default rounded-xl">
             No planning contexts match the selected filters.
           </div>
         ) : (
@@ -240,10 +240,10 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
                 className={`
                   w-full p-3.5 rounded-xl border transition-colors duration-150 motion-reduce:transition-none flex justify-between items-start gap-3
                   ${isSelected
-                    ? 'border-blue-600 bg-blue-50/45 shadow-sm ring-1 ring-blue-500/20'
+                    ? 'border-action-link bg-status-info-bg shadow-sm ring-1 ring-focus-ring'
                     : isHovered
-                      ? 'border-blue-300 bg-blue-50/25'
-                    : 'border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300'
+                      ? 'border-status-info-border bg-status-info-bg'
+                    : 'border-border-default bg-surface-base hover:bg-surface-subtle hover:border-border-strong'
                   }
                 `}
               >
@@ -263,11 +263,11 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
                   className="flex-1 flex flex-col gap-1 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-focus-ring rounded-lg p-0.5"
                 >
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="text-xs font-black text-slate-900 uppercase tracking-wide">
+                    <span className="text-xs font-black text-text-primary uppercase tracking-wide">
                       {entry.missionAcronym}
                     </span>
-                    <span className="text-[9px] text-slate-500 font-extrabold uppercase">|</span>
-                    <span className="text-xs font-semibold text-slate-700">{entry.country}</span>
+                    <span className="text-[9px] text-text-muted font-extrabold uppercase">|</span>
+                    <span className="text-xs font-semibold text-text-secondary">{entry.country}</span>
                     <Badge variant={coverageBadge.variant} className="text-[10px] py-0.5 leading-none">
                       {coverageBadge.label}
                     </Badge>
@@ -275,14 +275,14 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
                       {verificationBadge.label}
                     </Badge>
                   </div>
-                  <h4 className="text-xs text-slate-600 leading-tight font-medium">
+                  <h4 className="text-xs text-text-secondary leading-tight font-medium">
                     {entry.missionName}
                   </h4>
-                  <span className="text-[11px] text-slate-600 font-semibold mt-0.5 block">
+                  <span className="text-[11px] text-text-secondary font-semibold mt-0.5 block">
                     {entry.region} · {entry.sourceCategory}
                   </span>
                   {matchReason && (
-                    <span className="text-[10px] font-medium text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200/80 inline-block mt-1 self-start">
+                    <span className="text-[10px] font-medium text-action-link bg-status-info-bg px-2 py-0.5 rounded border border-status-info-border inline-block mt-1 self-start">
                       {matchReason}
                     </span>
                   )}
@@ -302,12 +302,12 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
                       className={`
                         px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 transition-colors border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring
                         ${isCompared
-                          ? 'bg-blue-600 text-white border-blue-600 hover:bg-blue-700'
-                          : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100 hover:border-slate-400'
+                          ? 'bg-action-primary text-text-inverse border-action-link hover:bg-action-primary'
+                          : 'bg-surface-base text-text-secondary border-border-strong hover:bg-surface-subtle hover:border-border-strong'
                         }
                       `}
                     >
-                      <span className={`w-3 h-3 rounded flex items-center justify-center border text-[9px] ${isCompared ? 'bg-white text-blue-600 border-white' : 'border-slate-400 bg-white'}`}>
+                      <span className={`w-3 h-3 rounded flex items-center justify-center border text-[9px] ${isCompared ? 'bg-surface-base text-action-link border-surface-base' : 'border-border-strong bg-surface-base'}`}>
                         {isCompared && <Check size={10} strokeWidth={3} />}
                       </span>
                       <span>Compare</span>
@@ -321,8 +321,8 @@ export const MissionExplorerList: React.FC<MissionExplorerListProps> = ({
                     className={`
                       px-2 py-0.5 rounded text-[9px] font-extrabold uppercase tracking-wider transition-colors
                       ${isSelected
-                        ? 'text-blue-700 bg-blue-100/60'
-                        : 'text-slate-400 hover:text-slate-600'
+                        ? 'text-action-link bg-status-info-bg'
+                        : 'text-text-muted hover:text-text-secondary'
                       }
                     `}
                   >

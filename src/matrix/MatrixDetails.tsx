@@ -100,14 +100,14 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
     return (
       <Card>
         <CardHeader className="border-b border-border-default bg-surface-subtle p-4 rounded-t-lg">
-          <span className="text-[11px] uppercase font-mono tracking-wider font-semibold text-institutional bg-institutional-subtle border border-institutional/20 px-2 py-0.5 rounded-md inline-block mb-1">
+          <span className="text-[11px] uppercase font-mono tracking-wider font-semibold text-action-link bg-surface-active border border-status-info-border px-2 py-0.5 rounded-md inline-block mb-1">
             Analytical Lens
           </span>
-          <h3 className="text-base font-bold text-text-default">{col.name}</h3>
+          <h3 className="text-base font-bold text-text-primary">{col.name}</h3>
           <p className="text-xs text-text-muted mt-1">{col.definition}</p>
         </CardHeader>
         <CardBody className="flex flex-col gap-4">
-          <h4 className="text-xs font-semibold text-text-default uppercase tracking-wider">
+          <h4 className="text-xs font-semibold text-text-primary uppercase tracking-wider">
             How this dimension manifests across Key Areas
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -117,11 +117,11 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
                 <button
                   key={row.id}
                   onClick={() => onSelectCellByKey(`${row.id}|${col.id}`)}
-                  className="text-left p-3.5 rounded-md border border-border-default bg-surface-card hover:bg-surface-subtle transition-colors duration-150 motion-reduce:transition-none flex flex-col gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+                  className="text-start p-3.5 rounded-md border border-border-default bg-surface-base hover:bg-surface-subtle transition-colors duration-150 motion-reduce:transition-none flex flex-col gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
                 >
-                  <span className="font-semibold text-xs text-text-default uppercase tracking-tight">{row.name}</span>
+                  <span className="font-semibold text-xs text-text-primary uppercase tracking-tight">{row.name}</span>
                   <p className="text-xs text-text-muted line-clamp-3 leading-relaxed">{data.why}</p>
-                  <span className="text-[11px] text-institutional font-semibold self-end mt-1">Configure &rarr;</span>
+                  <span className="text-[11px] text-action-link font-semibold self-end mt-1">Configure &rarr;</span>
                 </button>
               );
             })}
@@ -138,14 +138,14 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
     return (
       <Card>
         <CardHeader className="border-b border-border-default bg-surface-subtle p-4 rounded-t-lg">
-          <span className="text-[11px] uppercase font-mono tracking-wider font-semibold text-institutional bg-institutional-subtle border border-institutional/20 px-2 py-0.5 rounded-md inline-block mb-1">
+          <span className="text-[11px] uppercase font-mono tracking-wider font-semibold text-action-link bg-surface-active border border-status-info-border px-2 py-0.5 rounded-md inline-block mb-1">
             Key Area Analysis
           </span>
-          <h3 className="text-base font-bold text-text-default">{row.name}</h3>
+          <h3 className="text-base font-bold text-text-primary">{row.name}</h3>
           <p className="text-xs text-text-muted mt-1">{row.definition}</p>
         </CardHeader>
         <CardBody className="flex flex-col gap-4">
-          <h4 className="text-xs font-semibold text-text-default uppercase tracking-wider">
+          <h4 className="text-xs font-semibold text-text-primary uppercase tracking-wider">
             How this Key Area is examined through each analytical lens
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -155,11 +155,11 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
                 <button
                   key={col.id}
                   onClick={() => onSelectCellByKey(`${row.id}|${col.id}`)}
-                  className="text-left p-3.5 rounded-md border border-border-default bg-surface-card hover:bg-surface-subtle transition-colors duration-150 motion-reduce:transition-none flex flex-col gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+                  className="text-start p-3.5 rounded-md border border-border-default bg-surface-base hover:bg-surface-subtle transition-colors duration-150 motion-reduce:transition-none flex flex-col gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
                 >
-                  <span className="font-semibold text-xs text-text-default uppercase tracking-tight">{col.name}</span>
+                  <span className="font-semibold text-xs text-text-primary uppercase tracking-tight">{col.name}</span>
                   <p className="text-xs text-text-muted line-clamp-3 leading-relaxed">{data.why}</p>
-                  <span className="text-[11px] text-institutional font-semibold self-end mt-1">Configure &rarr;</span>
+                  <span className="text-[11px] text-action-link font-semibold self-end mt-1">Configure &rarr;</span>
                 </button>
               );
             })}
@@ -217,17 +217,17 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
       <CardHeader className="border-b border-border-default bg-surface-subtle px-5 py-4 rounded-t-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-[11px] uppercase font-mono tracking-wider font-semibold text-institutional bg-institutional-subtle border border-institutional/20 px-2 py-0.5 rounded-md">
+            <span className="text-[11px] uppercase font-mono tracking-wider font-semibold text-action-link bg-surface-active border border-status-info-border px-2 py-0.5 rounded-md">
               Active Intersection Inspector
             </span>
             {customCells[`${rowId}|${colId}`] && (
-              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-status-success bg-status-success-bg border border-status-success-border px-2 py-0.5 rounded-md">
+                <span className="h-1.5 w-1.5 rounded-full bg-status-success" />
                 Customized
               </span>
             )}
           </div>
-          <h3 className="text-sm font-bold text-text-default mt-1.5">
+          <h3 className="text-sm font-bold text-text-primary mt-1.5">
             {rowId} <span className="text-text-muted font-normal mx-1">&times;</span> {colId}
           </h3>
         </div>
@@ -255,20 +255,20 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
         {/* Section 1: Planning Basis */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-primary bg-blue-50/80 border border-blue-200/60 px-1.5 py-0.5 rounded">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-link bg-status-info-bg border border-status-info-border px-1.5 py-0.5 rounded">
               01
             </span>
             <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">Planning Basis</h4>
           </div>
           <p className="text-xs leading-relaxed text-text-muted">Link strategic options that inform this priority. The links do not populate or determine the CBD response.</p>
           <fieldset className="rounded-lg border border-border-default bg-surface-subtle/50 p-3.5">
-            <legend className="px-1 text-xs font-semibold text-text-default">Strategic Synthesis Basis</legend>
+            <legend className="px-1 text-xs font-semibold text-text-primary">Strategic Synthesis Basis</legend>
             {strategicOptions.length ? <div className="grid gap-2 sm:grid-cols-2">
               {strategicOptions.map(option => {
                 const checked = (activeCell.strategicOptionIds || []).includes(option.id);
-                return <label key={option.id} className={`flex cursor-pointer items-start gap-2 rounded-md border p-2.5 text-xs ${checked ? 'border-institutional bg-institutional-subtle text-text-default font-medium' : 'border-border-default bg-surface-card text-text-muted hover:text-text-default'}`}>
-                  <input type="checkbox" checked={checked} onChange={() => handleCellChange('strategicOptionIds', checked ? (activeCell.strategicOptionIds ?? []).filter(id => id !== option.id) : [...(activeCell.strategicOptionIds ?? []), option.id])} className="mt-0.5 h-3.5 w-3.5 rounded border-border-default text-institutional focus:ring-focus-ring" />
-                  <span><strong className="block text-text-default">{option.reference} · {option.type}</strong><span className="mt-0.5 block line-clamp-2">{option.option || 'Strategic option wording not yet recorded.'}</span></span>
+                return <label key={option.id} className={`flex cursor-pointer items-start gap-2 rounded-md border p-2.5 text-xs ${checked ? 'border-action-link bg-surface-active text-text-primary font-medium' : 'border-border-default bg-surface-base text-text-muted hover:text-text-primary'}`}>
+                  <input type="checkbox" checked={checked} onChange={() => handleCellChange('strategicOptionIds', checked ? (activeCell.strategicOptionIds ?? []).filter(id => id !== option.id) : [...(activeCell.strategicOptionIds ?? []), option.id])} className="mt-0.5 h-3.5 w-3.5 rounded border-border-default text-action-link focus:ring-focus-ring" />
+                  <span><strong className="block text-text-primary">{option.reference} · {option.type}</strong><span className="mt-0.5 block line-clamp-2">{option.option || 'Strategic option wording not yet recorded.'}</span></span>
                 </label>;
               })}
             </div> : <p className="text-xs text-text-muted">No Strategic Options recorded. You may continue without Analysis Synthesis.</p>}
@@ -278,7 +278,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
         {/* Section 2: Planning Logic */}
         <div className="border-t border-border-default pt-5 flex flex-col gap-4">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-primary bg-blue-50/80 border border-blue-200/60 px-1.5 py-0.5 rounded">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-link bg-status-info-bg border border-status-info-border px-1.5 py-0.5 rounded">
               02
             </span>
             <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">Planning Logic</h4>
@@ -304,7 +304,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
         {/* Section 3: Intervention Package */}
         <div className="border-t border-border-default pt-5 flex flex-col gap-4">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-primary bg-blue-50/80 border border-blue-200/60 px-1.5 py-0.5 rounded">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-link bg-status-info-bg border border-status-info-border px-1.5 py-0.5 rounded">
               03
             </span>
             <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">Intervention Package</h4>
@@ -333,7 +333,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
         {/* Section 4: Implementation */}
         <div className="border-t border-border-default pt-5 flex flex-col gap-4">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-primary bg-blue-50/80 border border-blue-200/60 px-1.5 py-0.5 rounded">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-link bg-status-info-bg border border-status-info-border px-1.5 py-0.5 rounded">
               04
             </span>
             <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">Implementation</h4>
@@ -349,7 +349,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
                   leadStakeholderId: e.target.value || null,
                   supportingStakeholderIds: (activeCell.supportingStakeholderIds || []).filter(id => id !== e.target.value)
                 })}
-                className="rounded-md border border-border-default bg-surface-raised px-3 py-2 text-xs font-normal text-text-default focus:outline-none focus:ring-2 focus:ring-focus-ring"
+                className="rounded-md border border-border-default bg-surface-raised px-3 py-2 text-xs font-normal text-text-primary focus:outline-none focus:ring-2 focus:ring-focus-ring"
               >
                 <option value="">Not assigned</option>
                 {stakeholders.map(stakeholder => <option key={stakeholder.id} value={stakeholder.id}>{stakeholder.name}</option>)}
@@ -362,7 +362,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
                 aria-describedby={phaseHelpId}
                 value={activeCell.implementationPhase || ''}
                 onChange={(e) => handleCellChange('implementationPhase', e.target.value)}
-                className="rounded-md border border-border-default bg-surface-raised px-3 py-2 text-xs font-normal text-text-default focus:outline-none focus:ring-2 focus:ring-focus-ring"
+                className="rounded-md border border-border-default bg-surface-raised px-3 py-2 text-xs font-normal text-text-primary focus:outline-none focus:ring-2 focus:ring-focus-ring"
               >
                 <option value="">Not assigned</option>
                 <option value="NOW">NOW</option><option value="NEXT">NEXT</option><option value="LATER">LATER</option>
@@ -375,7 +375,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
                 value={activeCell.milestoneTimeframe || ''}
                 onChange={(e) => handleCellChange('milestoneTimeframe', e.target.value)}
                 placeholder="e.g. Pilot review after 90 days"
-                className="rounded-md border border-border-default bg-surface-raised px-3 py-2 text-xs font-normal text-text-default focus:outline-none focus:ring-2 focus:ring-focus-ring"
+                className="rounded-md border border-border-default bg-surface-raised px-3 py-2 text-xs font-normal text-text-primary focus:outline-none focus:ring-2 focus:ring-focus-ring"
               />
             </label>
           </div>
@@ -384,8 +384,8 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
             <p id={supportingHelpId} className="mb-2 text-xs leading-relaxed text-text-muted">{FIELD_GUIDANCE.supportingActors.help}</p>
             <div aria-describedby={supportingHelpId} className="grid max-h-[160px] grid-cols-1 gap-1.5 overflow-y-auto rounded-md border border-border-default bg-surface-subtle p-2.5 md:grid-cols-2">
               {stakeholders.filter(stakeholder => stakeholder.id !== activeCell.leadStakeholderId).map(stakeholder => (
-                <label key={stakeholder.id} className="flex cursor-pointer items-center gap-2 text-xs text-text-secondary hover:text-text-default">
-                  <input type="checkbox" checked={(activeCell.supportingStakeholderIds || []).includes(stakeholder.id)} onChange={() => handleSupportingStakeholderToggle(stakeholder.id)} className="h-3.5 w-3.5 rounded border-border-default text-institutional focus:ring-focus-ring" />
+                <label key={stakeholder.id} className="flex cursor-pointer items-center gap-2 text-xs text-text-secondary hover:text-text-primary">
+                  <input type="checkbox" checked={(activeCell.supportingStakeholderIds || []).includes(stakeholder.id)} onChange={() => handleSupportingStakeholderToggle(stakeholder.id)} className="h-3.5 w-3.5 rounded border-border-default text-action-link focus:ring-focus-ring" />
                   <span>{stakeholder.name}</span>
                 </label>
               ))}
@@ -396,7 +396,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
         {/* Section 5: Monitoring */}
         <div className="border-t border-border-default pt-5 flex flex-col gap-4">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-primary bg-blue-50/80 border border-blue-200/60 px-1.5 py-0.5 rounded">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-link bg-status-info-bg border border-status-info-border px-1.5 py-0.5 rounded">
               05
             </span>
             <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">Monitoring</h4>
@@ -414,7 +414,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
                 onKeyDown={(e) => e.key === 'Enter' && handleAddIndicator()}
                 placeholder="Add verifiable indicator..."
                 aria-describedby={indicatorHelpId}
-                className="flex-1 px-3 py-1.5 border border-border-default rounded-md text-xs bg-surface-raised text-text-default focus:outline-none focus:ring-2 focus:ring-focus-ring"
+                className="flex-1 px-3 py-1.5 border border-border-default rounded-md text-xs bg-surface-raised text-text-primary focus:outline-none focus:ring-2 focus:ring-focus-ring"
               />
               <Button variant="secondary" size="sm" onClick={handleAddIndicator}>
                 <Plus size={14} className="mr-1" /> Add
@@ -432,7 +432,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
                     type="button"
                     onClick={() => handleRemoveIndicator(idx)}
                     aria-label={`Remove indicator ${idx + 1}`}
-                    className="p-0.5 rounded-full hover:bg-surface-hover text-text-muted hover:text-action-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+                    className="p-0.5 rounded-full hover:bg-surface-hover text-text-muted hover:text-status-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
                   >
                     <Trash2 size={11} />
                   </button>
@@ -445,13 +445,13 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
         {/* Section 6: Evidence & Assessment */}
         <div className="border-t border-border-default pt-5 flex flex-col gap-4">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-primary bg-blue-50/80 border border-blue-200/60 px-1.5 py-0.5 rounded">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-action-link bg-status-info-bg border border-status-info-border px-1.5 py-0.5 rounded">
               06
             </span>
             <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">Evidence &amp; Assessment</h4>
           </div>
           {/* Sliders */}
-          <div className="rounded-md border border-amber-200 bg-amber-50/60 p-3 text-xs leading-relaxed text-amber-950">
+          <div className="rounded-md border border-status-warning-border bg-status-warning-bg p-3 text-xs leading-relaxed text-status-warning">
             <strong>Prototype planning heuristic — not UN doctrine.</strong> This indicative score supports discussion; it is not objective and does not replace mandate review, evidence, consultation, or professional judgement. Confidence qualifies the assessment but does not increase the score.
           </div>
 
@@ -534,7 +534,7 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
           {/* Linked PESTEL-S Drivers */}
           <div>
             <span className="font-semibold text-text-secondary block mb-2 uppercase tracking-wider flex items-center gap-1.5">
-              <Link size={14} className="text-institutional" />
+              <Link size={14} className="text-action-link" />
               Link PESTEL-S Contextual Drivers
             </span>
             <div className="flex flex-col gap-1.5 max-h-[160px] overflow-y-auto border border-border-default p-2.5 rounded-md bg-surface-subtle">
@@ -542,12 +542,12 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
                 const p = pestels[key];
                 const checked = activeCell.drivers?.includes(key);
                 return (
-                  <label key={key} className="flex items-center gap-2 cursor-pointer text-text-secondary hover:text-text-default">
+                  <label key={key} className="flex items-center gap-2 cursor-pointer text-text-secondary hover:text-text-primary">
                     <input
                       type="checkbox"
                       checked={checked}
                       onChange={() => handleCheckboxToggle('drivers', key)}
-                      className="rounded border-border-default text-institutional focus:ring-focus-ring w-3.5 h-3.5"
+                      className="rounded border-border-default text-action-link focus:ring-focus-ring w-3.5 h-3.5"
                     />
                     <span className="line-clamp-1">{p.name}</span>
                   </label>
@@ -559,19 +559,19 @@ export const MatrixDetails: React.FC<MatrixDetailsProps> = ({
           {/* Linked Stakeholders */}
           <div>
             <span className="font-semibold text-text-secondary block mb-2 uppercase tracking-wider flex items-center gap-1.5">
-              <Users size={14} className="text-institutional" />
+              <Users size={14} className="text-action-link" />
               Link Advisory Stakeholders
             </span>
             <div className="flex flex-col gap-1.5 max-h-[160px] overflow-y-auto border border-border-default p-2.5 rounded-md bg-surface-subtle">
               {stakeholders.map(s => {
                 const checked = activeCell.stakeholders?.includes(s.id);
                 return (
-                  <label key={s.id} className="flex items-center gap-2 cursor-pointer text-text-secondary hover:text-text-default">
+                  <label key={s.id} className="flex items-center gap-2 cursor-pointer text-text-secondary hover:text-text-primary">
                     <input
                       type="checkbox"
                       checked={checked}
                       onChange={() => handleCheckboxToggle('stakeholders', s.id)}
-                      className="rounded border-border-default text-institutional focus:ring-focus-ring w-3.5 h-3.5"
+                      className="rounded border-border-default text-action-link focus:ring-focus-ring w-3.5 h-3.5"
                     />
                     <span className="line-clamp-1">{s.name}</span>
                   </label>

@@ -19,18 +19,18 @@ const getClassificationStyle = (classification: string) => {
   switch (classification) {
     case 'Quick Win':
       return {
-        text: 'text-emerald-700 font-medium',
-        dot: 'bg-emerald-600'
+        text: 'text-status-success font-medium',
+        dot: 'bg-status-success'
       };
     case 'Sensitive Reform':
       return {
-        text: 'text-rose-700 font-medium',
-        dot: 'bg-rose-600'
+        text: 'text-status-danger font-medium',
+        dot: 'bg-status-danger'
       };
     case 'Long-Term Reform':
       return {
-        text: 'text-indigo-700 font-medium',
-        dot: 'bg-indigo-600'
+        text: 'text-accent-indigo font-medium',
+        dot: 'bg-accent-indigo'
       };
     default:
       return {
@@ -108,17 +108,17 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
           <div className="rounded-lg border border-border-strong bg-surface-raised overflow-hidden">
             <div className="px-4 py-3 bg-surface-subtle border-b border-border-default flex items-center justify-between">
               <h4 className="text-xs font-semibold uppercase tracking-wider text-text-muted flex items-center gap-1.5">
-                <Layers size={14} className="text-institutional" />
+                <Layers size={14} className="text-action-link" />
                 Intervention Diagnostic
               </h4>
-              <span className="text-[11px] font-mono text-text-muted px-2 py-0.5 rounded bg-surface-card border border-border-default">
+              <span className="text-[11px] font-mono text-text-muted px-2 py-0.5 rounded bg-surface-base border border-border-default">
                 {scoredCells.length} {scoredCells.length === 1 ? 'cell' : 'cells'}
               </span>
             </div>
 
             {/* Prominent Heuristic Caveat */}
             <div className="px-4 py-2.5 bg-surface-subtle/60 border-b border-border-default text-[11px] text-text-muted leading-relaxed">
-              <span className="font-semibold text-text-default">Planning Heuristic:</span> Indicative ranking based on weighted criteria (not official UN doctrine). Use to inform strategic sequencing.
+              <span className="font-semibold text-text-primary">Planning Heuristic:</span> Indicative ranking based on weighted criteria (not official UN doctrine). Use to inform strategic sequencing.
             </div>
 
             {scoredCells.length === 0 ? (
@@ -144,7 +144,7 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
                         className="grid grid-cols-[1fr_auto_auto] gap-2 items-center px-3.5 py-2.5 hover:bg-surface-subtle transition-colors text-xs"
                       >
                         <div className="min-w-0 pr-1">
-                          <div className="font-medium text-text-default truncate" title={key}>
+                          <div className="font-medium text-text-primary truncate" title={key}>
                             {key}
                           </div>
                           {(() => {
@@ -161,9 +161,9 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
                           <span
                             className={`text-[10px] font-medium px-1.5 py-0.5 rounded border uppercase tracking-wider ${
                               phase === 'NOW'
-                                ? 'border-action-danger/30 text-action-danger bg-action-danger/5'
+                                ? 'border-action-danger/30 text-status-danger bg-action-danger/5'
                                 : phase === 'NEXT'
-                                ? 'border-institutional/30 text-institutional bg-institutional-subtle'
+                                ? 'border-status-info-border text-action-link bg-surface-active'
                                 : phase === 'LATER'
                                 ? 'border-border-default text-text-muted bg-surface-subtle'
                                 : 'border-dashed border-border-default text-text-muted/60 bg-transparent'
@@ -172,7 +172,7 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
                             {phase === 'UNASSIGNED' ? 'NONE' : phase}
                           </span>
                         </div>
-                        <div className="w-12 text-right font-mono text-xs font-semibold text-institutional tabular-nums shrink-0">
+                        <div className="w-12 text-right font-mono text-xs font-semibold text-action-link tabular-nums shrink-0">
                           {score.toFixed(1)}
                           <span className="text-[10px] text-text-muted font-normal">/5</span>
                         </div>
@@ -202,11 +202,11 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
                 const phaseLabel = group.phase === 'UNASSIGNED' ? 'NOT ASSIGNED' : group.phase;
                 const phaseBadgeStyle =
                   group.phase === 'NOW'
-                    ? 'bg-action-danger/10 text-action-danger border-action-danger/30'
+                    ? 'bg-action-danger/10 text-status-danger border-action-danger/30'
                     : group.phase === 'NEXT'
-                    ? 'bg-institutional-subtle text-institutional border-institutional/30'
+                    ? 'bg-surface-active text-action-link border-status-info-border'
                     : group.phase === 'LATER'
-                    ? 'bg-amber-500/10 text-amber-700 border-amber-500/30'
+                    ? 'bg-status-warning-bg text-status-warning border-status-warning'
                     : 'bg-surface-subtle text-text-muted border-border-default';
 
                 return (
@@ -215,11 +215,11 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
                       <div className="flex items-center gap-2">
                         <span className={`w-2 h-2 rounded-full ${
                           group.phase === 'NOW' ? 'bg-action-danger' :
-                          group.phase === 'NEXT' ? 'bg-institutional' :
-                          group.phase === 'LATER' ? 'bg-amber-500' :
+                          group.phase === 'NEXT' ? 'bg-action-primary' :
+                          group.phase === 'LATER' ? 'bg-status-warning' :
                           'bg-border-strong'
                         }`} />
-                        <span className="text-xs font-semibold text-text-default tracking-wide">
+                        <span className="text-xs font-semibold text-text-primary tracking-wide">
                           {phaseLabel}
                         </span>
                       </div>
@@ -232,10 +232,10 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
                         {group.cells.map(item => (
                           <span
                             key={item.key}
-                            className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-surface-subtle border border-border-default text-[11px] text-text-default"
+                            className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-surface-subtle border border-border-default text-[11px] text-text-primary"
                           >
                             <span className="font-medium">{item.key}</span>
-                            <span className="font-mono text-[10px] text-institutional tabular-nums font-semibold">
+                            <span className="font-mono text-[10px] text-action-link tabular-nums font-semibold">
                               {item.score.toFixed(1)}
                             </span>
                           </span>
@@ -275,7 +275,7 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
                 return (
                   <div key={field} className="rounded-md border border-border-default bg-surface-subtle/50 overflow-hidden">
                     <div className="flex items-center justify-between px-3.5 py-2 bg-surface-subtle border-b border-border-default">
-                      <span className="text-xs font-semibold text-text-default uppercase tracking-wider">
+                      <span className="text-xs font-semibold text-text-primary uppercase tracking-wider">
                         {label}
                       </span>
                       <span className="text-[10px] font-mono text-text-muted px-2 py-0.5 rounded bg-surface-raised border border-border-default">
@@ -295,7 +295,7 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
                             }
                           }}
                           placeholder={placeholder}
-                          className="flex-1 h-8 px-3 border border-border-default rounded-md text-xs bg-surface-raised text-text-default placeholder:text-text-muted/60 focus:outline-none focus:ring-2 focus:ring-institutional focus:border-institutional transition-shadow"
+                          className="flex-1 h-8 px-3 border border-border-default rounded-md text-xs bg-surface-raised text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-focus-ring focus:border-action-link transition-shadow"
                         />
                         <Button
                           variant="secondary"
@@ -313,14 +313,14 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
                           {list.map((item, idx) => (
                             <li
                               key={idx}
-                              className="flex items-start justify-between gap-3 text-xs text-text-default leading-relaxed py-2 px-3 hover:bg-surface-subtle transition-colors"
+                              className="flex items-start justify-between gap-3 text-xs text-text-primary leading-relaxed py-2 px-3 hover:bg-surface-subtle transition-colors"
                             >
                               <span className="flex-1">• {item}</span>
                               <button
                                 type="button"
                                 onClick={() => handleRemoveListItem(field, idx)}
                                 aria-label={`Remove ${item}`}
-                                className="text-text-muted hover:text-action-danger hover:bg-action-danger/10 p-1 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring shrink-0"
+                                className="text-text-muted hover:text-status-danger hover:bg-action-danger/10 p-1 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring shrink-0"
                               >
                                 <Trash2 size={12} />
                               </button>
@@ -336,9 +336,9 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
           </div>
 
           {/* Sequencing Narrative: Prominent Executive Analytical Conclusion Framing */}
-          <div className="rounded-lg border-2 border-institutional/30 bg-surface-raised overflow-hidden">
-            <div className="px-4 py-3 bg-institutional-subtle border-b border-institutional/20">
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-institutional">
+          <div className="rounded-lg border-2 border-status-info-border bg-surface-raised overflow-hidden">
+            <div className="px-4 py-3 bg-surface-active border-b border-status-info-border">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-action-link">
                 Stage 6 Synthesis: Recommended Sequencing Narrative
               </h4>
               <p className="text-[11px] text-text-muted mt-0.5 leading-relaxed">
@@ -351,7 +351,7 @@ export const PrioritySequencing: React.FC<PrioritySequencingProps> = ({
                 onChange={(e) => handleFieldChange('sequencingRecommendation', e.target.value)}
                 placeholder="Articulate the strategic sequencing logic and transitional rationale (e.g., Phase 1 focuses on immediate integrity safeguards and quick wins to build operational credibility; Phase 2 introduces middle-management accountability SOPs; Phase 3 anchors reforms in formal statutory Police Act amendments)..."
                 rows={5}
-                className="w-full p-3 border border-border-default rounded-md text-xs bg-surface-raised text-text-default placeholder:text-text-muted/60 focus:outline-none focus:ring-2 focus:ring-institutional focus:border-institutional transition-shadow resize-y leading-relaxed font-normal"
+                className="w-full p-3 border border-border-default rounded-md text-xs bg-surface-raised text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-focus-ring focus:border-action-link transition-shadow resize-y leading-relaxed font-normal"
               />
             </div>
           </div>

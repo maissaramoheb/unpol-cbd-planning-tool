@@ -57,19 +57,19 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
   if (shouldShowBlankWelcome(isEmptyState)) {
     return (
       <div className="flex flex-col gap-6 w-full">
-        <div className="py-6 sm:py-8 border-b border-border-default max-w-4xl">
+        <div className="p-5 sm:p-6 rounded-lg border border-border-default bg-surface-base shadow-subtle">
           <div>
-            <span className="font-mono text-xs font-bold uppercase tracking-wider text-action-primary">
+            <span className="font-mono text-xs font-bold uppercase tracking-wider text-action-link">
               Institutional Planning Workbench
             </span>
-            <h1 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-text-primary">
+            <h1 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">
               UNPOL CBD Integrated Planning Tool
             </h1>
             <p className="mt-3 max-w-3xl text-sm sm:text-base leading-relaxed text-text-secondary">
               Structure the reasoning from evidence and context to capacity-building priorities, responsibilities, sequencing and a professional planning brief.
             </p>
             <div className="mt-3.5 inline-flex items-center gap-2 text-xs text-text-muted">
-              <span className="h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
+              <span className="h-1.5 w-1.5 rounded-full bg-status-warning shrink-0" />
               <span>Unofficial planning-support prototype · Use fictional or public/unclassified information only</span>
             </div>
           </div>
@@ -90,7 +90,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
               onClick={onLoadDemoTemplate}
               className="px-4"
             >
-              <BookOpen size={16} className="mr-2 text-action-primary" /> Explore CARANA
+              <BookOpen size={16} className="mr-2 text-action-link" /> Explore CARANA
             </Button>
             <Button
               variant="tertiary"
@@ -118,9 +118,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
             <div className="pt-4">
               <ol className="grid gap-2 sm:grid-cols-2 lg:grid-cols-7">
                 {ORIENTATION_STEPS.map((step, index) => (
-                  <li key={step.title} className="rounded-md border border-border-default bg-surface-subtle p-3 flex flex-col justify-between">
+                  <li key={step.title} className="rounded-md border-s-2 border-action-link bg-surface-subtle p-3 flex flex-col justify-between">
                     <div>
-                      <span className="font-mono text-xs font-bold text-action-primary">
+                      <span className="font-mono text-xs font-bold text-action-link">
                         {String(index + 1).padStart(2, '0')}
                       </span>
                       <h3 className="mt-1.5 text-xs font-bold leading-snug text-text-primary">{step.title}</h3>
@@ -256,12 +256,45 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
         </div>
       </div>
 
+      {/* Overview navigation shortcuts */}
+      <div className="rounded-lg border border-border-default bg-surface-raised p-3 sm:p-4 flex flex-wrap gap-2 items-center">
+        <span className="text-xs font-semibold text-text-muted mr-1">Planning workflow:</span>
+        {[
+          { label: 'Context & Mandate', step: 1 },
+          { label: 'Diagnostic Analysis', step: 2 },
+          { label: 'Stakeholders & Ownership', step: 3 },
+          { label: 'Analysis Synthesis', step: 4 },
+          { label: 'CBD Priorities', step: 5 },
+          { label: 'Prioritize & Sequence', step: 6 },
+          { label: 'Results & Implementation', step: 7 },
+          { label: 'Export Planning Brief', step: EXPORT_VIEW }
+        ].map(shortcut => (
+          <Button
+            key={shortcut.step}
+            variant="secondary"
+            size="sm"
+            onClick={() => onNavigateToStep(shortcut.step)}
+          >
+            {shortcut.label}
+            <ChevronRight size={12} className="ml-1 text-text-muted" />
+          </Button>
+        ))}
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={onOpenExplorer}
+        >
+          Browse Mission Explorer
+          <Globe size={12} className="ml-1 text-action-link" />
+        </Button>
+      </div>
+
       {/* Unified Diagnostic Metrics Strip */}
       <div className="rounded-lg border border-border-strong bg-surface-raised grid grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-border-default overflow-hidden">
         {[
           { label: 'Mapped Actors', val: stakeholders.length, sub: `${stakeholders.filter(s => s.position === 'Spoiler risk').length} Spoiler risks`, icon: <Users size={18} className="text-text-muted" /> },
           { label: 'Priorities Configured', val: customInterventionsCount, sub: `${Object.keys(customCells).length} matrix cells edited`, icon: <Grid size={18} className="text-text-muted" /> },
-          { label: 'Diagnostic Warnings', val: warnings.length, sub: `${criticalWarnings} critical cautions`, icon: <AlertTriangle size={18} className={warnings.length > 0 ? "text-amber-600" : "text-text-muted"} /> },
+          { label: 'Diagnostic Warnings', val: warnings.length, sub: `${criticalWarnings} critical cautions`, icon: <AlertTriangle size={18} className={warnings.length > 0 ? "text-status-warning" : "text-text-muted"} /> },
           { label: 'Verification Confidence', val: `${avgConfidence}/5.0`, sub: 'Based on evidence logs', icon: <TrendingUp size={18} className="text-text-muted" /> }
         ].map((kpi, idx) => (
           <div key={idx} className="p-3.5 sm:p-4 flex items-center justify-between gap-3">
@@ -275,15 +308,71 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
         ))}
       </div>
 
+      {/* QC warnings panel */}
+      {warnings.length > 0 && (
+        <div className="rounded-lg border border-status-warning-border bg-status-warning-bg p-4">
+          <div className="flex items-center justify-between border-b border-status-warning-border pb-2.5">
+            <h4 className="text-xs sm:text-sm font-bold text-status-warning flex items-center gap-2">
+              <AlertTriangle size={15} className="text-status-warning" />
+              Strategic Planning Quality-Control Cautions ({warnings.length})
+            </h4>
+          </div>
+          <div className="pt-3 flex flex-col gap-2">
+            {warnings.map((warn) => (
+              <div
+                key={warn.id}
+                className={`
+                  p-3 border rounded-md flex items-start gap-2.5 text-xs leading-relaxed
+                  ${warn.type === 'warning'
+                    ? 'border-status-warning-border bg-status-warning-bg text-status-warning'
+                    : 'border-border-default bg-surface-subtle text-text-secondary'
+                  }
+                `}
+              >
+                <AlertTriangle size={14} className={`shrink-0 mt-0.5 ${warn.type === 'warning' ? 'text-status-warning' : 'text-text-muted'}`} />
+                <div className="flex-1">
+                  <span className="font-medium block">{warn.message}</span>
+                </div>
+                {warn.category === 'profile' && (
+                  <Button variant="link" size="sm" onClick={() => onNavigateToStep(1)}>
+                    Fix &rarr;
+                  </Button>
+                )}
+                {warn.category === 'pestels' && (
+                  <Button variant="link" size="sm" onClick={() => onNavigateToStep(2)}>
+                    Review &rarr;
+                  </Button>
+                )}
+                {warn.category === 'matrix' && (
+                  <Button variant="link" size="sm" onClick={() => onNavigateToStep(5)}>
+                    Adjust &rarr;
+                  </Button>
+                )}
+                {warn.category === 'sequencing' && (
+                  <Button variant="link" size="sm" onClick={() => onNavigateToStep(6)}>
+                    Align &rarr;
+                  </Button>
+                )}
+                {warn.category === 'synthesis' && (
+                  <Button variant="link" size="sm" onClick={() => onNavigateToStep(4)}>
+                    Address &rarr;
+                  </Button>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Main Analysis Column Split */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-5">
         {/* Left Side: Pressures and Stakeholder Risks */}
         <div className="flex flex-col gap-5">
           {/* Top 3 PESTEL-S Pressures */}
           <div className="rounded-lg border border-border-strong bg-surface-raised overflow-hidden">
             <div className="flex items-center justify-between border-b border-border-default bg-surface-subtle px-4 py-2.5">
               <h4 className="text-xs sm:text-sm font-bold text-text-primary flex items-center gap-2">
-                <Activity size={15} className="text-action-primary" />
+                <Activity size={15} className="text-action-link" />
                 Critical Contextual Pressures (Top 3)
               </h4>
               <Button variant="secondary" size="sm" onClick={() => onNavigateToStep(2)}>
@@ -292,7 +381,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
             </div>
             <div className="divide-y divide-border-default">
               {sortedPressures.length === 0 ? (
-                <p className="p-4 text-xs text-text-muted italic">No findings configured in PESTEL-S step.</p>
+                <p className="p-4 text-xs text-text-muted italic">No findings configured. Select Edit PESTEL-S to record your evidence and judgement.</p>
               ) : (
                 sortedPressures.map(p => (
                   <div key={p.id} className="p-3.5 flex flex-col gap-1 hover:bg-surface-subtle/50 transition-colors">
@@ -317,7 +406,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
           <div className="rounded-lg border border-border-strong bg-surface-raised overflow-hidden">
             <div className="flex items-center justify-between border-b border-border-default bg-surface-subtle px-4 py-2.5">
               <h4 className="text-xs sm:text-sm font-bold text-text-primary flex items-center gap-2">
-                <AlertTriangle size={15} className="text-amber-600" />
+                <AlertTriangle size={15} className="text-status-warning" />
                 Key Stakeholder Spoilers / Blockers
               </h4>
               <Button variant="secondary" size="sm" onClick={() => onNavigateToStep(3)}>
@@ -354,7 +443,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
           <div className="rounded-lg border border-border-strong bg-surface-raised overflow-hidden">
             <div className="flex items-center justify-between border-b border-border-default bg-surface-subtle px-4 py-2.5">
               <h4 className="text-xs sm:text-sm font-bold text-text-primary flex items-center gap-2">
-                <Layers size={15} className="text-action-primary" />
+                <Layers size={15} className="text-action-link" />
                 Indicative Matrix Priorities (Top 5)
               </h4>
               <Button variant="secondary" size="sm" onClick={() => onNavigateToStep(5)}>
@@ -363,7 +452,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
             </div>
             <div className="divide-y divide-border-default">
               {scoredCells.length === 0 ? (
-                <p className="p-4 text-xs text-text-muted italic">No customized matrix intersections defined.</p>
+                <p className="p-4 text-xs text-text-muted italic">No customized matrix intersections defined. Open Matrix Grid to configure a capacity response.</p>
               ) : (
                 scoredCells.map(({ key, cell, score }) => (
                   <div key={key} className="p-3.5 flex flex-col gap-1 hover:bg-surface-subtle/50 transition-colors">
@@ -385,7 +474,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
           <div className="rounded-lg border border-border-strong bg-surface-raised overflow-hidden">
             <div className="flex items-center justify-between border-b border-border-default bg-surface-subtle px-4 py-2.5">
               <h4 className="text-xs sm:text-sm font-bold text-text-primary flex items-center gap-2">
-                <ListTodo size={15} className="text-action-primary" />
+                <ListTodo size={15} className="text-action-link" />
                 Strategic Sequencing Targets
               </h4>
               <Button variant="secondary" size="sm" onClick={() => onNavigateToStep(6)}>
@@ -394,7 +483,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
             </div>
             <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4 divide-y md:divide-y-0 md:divide-x divide-border-default">
               <div className="flex flex-col gap-2">
-                <span className="text-xs font-semibold text-emerald-800 block pb-1">
+                <span className="text-xs font-semibold text-status-success block pb-1">
                   Quick Wins (High Feasibility)
                 </span>
                 {priorityBrief.quickWins?.length === 0 ? (
@@ -408,7 +497,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
                 )}
               </div>
               <div className="flex flex-col gap-2 md:pl-4 pt-3 md:pt-0">
-                <span className="text-xs font-semibold text-amber-800 block pb-1">
+                <span className="text-xs font-semibold text-status-warning block pb-1">
                   Sensitive Reforms (Requires Cover)
                 </span>
                 {priorityBrief.sensitiveReforms?.length === 0 ? (
@@ -430,7 +519,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
       <div className="rounded-lg border border-border-strong bg-surface-raised overflow-hidden">
         <div className="border-b border-border-default bg-surface-subtle px-4 py-3">
           <h4 className="text-xs sm:text-sm font-bold text-text-primary flex items-center gap-2">
-            <Users size={15} className="text-action-primary" />
+            <Users size={15} className="text-action-link" />
             Stakeholder Position Quadrants
           </h4>
           <p className="mt-0.5 text-xs text-text-muted">
@@ -442,94 +531,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onNavigateToStep, on
         </div>
       </div>
 
-      {/* QC warnings panel */}
-      {warnings.length > 0 && (
-        <div className="rounded-lg border border-amber-200/80 bg-amber-50/20 p-4">
-          <div className="flex items-center justify-between border-b border-amber-200/60 pb-2.5">
-            <h4 className="text-xs sm:text-sm font-bold text-amber-950 flex items-center gap-2">
-              <AlertTriangle size={15} className="text-amber-600" />
-              Strategic Planning Quality-Control Cautions ({warnings.length})
-            </h4>
-          </div>
-          <div className="pt-3 flex flex-col gap-2">
-            {warnings.map((warn) => (
-              <div
-                key={warn.id}
-                className={`
-                  p-3 border rounded-md flex items-start gap-2.5 text-xs leading-relaxed
-                  ${warn.type === 'warning'
-                    ? 'border-amber-200/80 bg-amber-50/60 text-amber-900'
-                    : 'border-border-default bg-surface-subtle text-text-secondary'
-                  }
-                `}
-              >
-                <AlertTriangle size={14} className={`shrink-0 mt-0.5 ${warn.type === 'warning' ? 'text-amber-600' : 'text-text-muted'}`} />
-                <div className="flex-1">
-                  <span className="font-medium block">{warn.message}</span>
-                </div>
-                {warn.category === 'profile' && (
-                  <Button variant="link" size="sm" onClick={() => onNavigateToStep(1)}>
-                    Fix &rarr;
-                  </Button>
-                )}
-                {warn.category === 'pestels' && (
-                  <Button variant="link" size="sm" onClick={() => onNavigateToStep(2)}>
-                    Review &rarr;
-                  </Button>
-                )}
-                {warn.category === 'matrix' && (
-                  <Button variant="link" size="sm" onClick={() => onNavigateToStep(5)}>
-                    Adjust &rarr;
-                  </Button>
-                )}
-                {warn.category === 'sequencing' && (
-                  <Button variant="link" size="sm" onClick={() => onNavigateToStep(6)}>
-                    Align &rarr;
-                  </Button>
-                )}
-                {warn.category === 'synthesis' && (
-                  <Button variant="link" size="sm" onClick={() => onNavigateToStep(4)}>
-                    Address &rarr;
-                  </Button>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
-      {/* Overview navigation shortcuts */}
-      <div className="rounded-lg border border-border-default bg-surface-raised p-3 sm:p-4 flex flex-wrap gap-2 justify-center items-center">
-        <span className="text-xs font-semibold text-text-muted mr-1">Go to Module:</span>
-        {[
-          { label: 'Context & Mandate', step: 1 },
-          { label: 'Diagnostic Analysis', step: 2 },
-          { label: 'Stakeholders & Ownership', step: 3 },
-          { label: 'Analysis Synthesis', step: 4 },
-          { label: 'CBD Priorities', step: 5 },
-          { label: 'Prioritize & Sequence', step: 6 },
-          { label: 'Results & Implementation', step: 7 },
-          { label: 'Export Planning Brief', step: EXPORT_VIEW }
-        ].map(shortcut => (
-          <Button
-            key={shortcut.step}
-            variant="secondary"
-            size="sm"
-            onClick={() => onNavigateToStep(shortcut.step)}
-          >
-            {shortcut.label}
-            <ChevronRight size={12} className="ml-1 text-text-muted" />
-          </Button>
-        ))}
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={onOpenExplorer}
-        >
-          Browse Mission Explorer
-          <Globe size={12} className="ml-1 text-action-primary" />
-        </Button>
-      </div>
     </div>
   );
 };

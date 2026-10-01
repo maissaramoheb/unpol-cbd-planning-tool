@@ -30,7 +30,7 @@ export const Slider: React.FC<SliderProps> = ({
     <div className="w-full flex flex-col gap-1.5">
       <div className="flex justify-between items-center">
         <label htmlFor={inputId} className="text-xs font-semibold text-text-secondary">{label}</label>
-        <span className="font-mono tabular-nums text-xs font-bold text-action-primary bg-blue-50/80 px-2 py-0.5 rounded border border-blue-200/80">
+        <span className="font-mono tabular-nums text-xs font-bold text-action-link bg-status-info-bg px-2 py-0.5 rounded border border-status-info-border">
           {value}
         </span>
       </div>
@@ -44,7 +44,7 @@ export const Slider: React.FC<SliderProps> = ({
         value={value}
         aria-describedby={helperText ? helperId : undefined}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-action-primary focus:outline-none focus:ring-1 focus:ring-focus-ring"
+        className="w-full h-1.5 bg-surface-hover rounded-lg appearance-none cursor-pointer accent-action-primary focus:outline-none focus:ring-1 focus:ring-focus-ring"
       />
 
       <div className="flex justify-between text-xs text-text-muted">
@@ -66,19 +66,19 @@ export const RatingMetric: React.FC<RatingMetricProps> = ({ label, value }) => {
 
   return (
     <div className="flex flex-col gap-1">
-      <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">{label}</span>
+      <span className="text-xs font-bold text-text-muted uppercase tracking-wider">{label}</span>
       <div className="flex items-center gap-1">
         {stars.map((star) => (
           <div
             key={star}
             className={`w-4 h-4 rounded-sm border ${
               star <= value
-                ? 'bg-blue-600 border-blue-700'
-                : 'bg-slate-100 border-slate-200'
+                ? 'bg-action-primary border-action-link'
+                : 'bg-surface-subtle border-border-default'
             }`}
           />
         ))}
-        <span className="text-sm font-bold text-slate-700 ml-1.5">{value}/5</span>
+        <span className="text-sm font-bold text-text-secondary ml-1.5">{value}/5</span>
       </div>
     </div>
   );

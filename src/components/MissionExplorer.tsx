@@ -136,26 +136,26 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
   }, [compareIds]);
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-surface-scrim flex items-center justify-center p-4 overflow-y-auto">
       <div
         ref={dialogRef}
         role="dialog"
         aria-modal={!pendingEntry ? 'true' : undefined}
         aria-hidden={pendingEntry ? true : undefined}
         aria-labelledby="mission-explorer-title"
-        className="w-full max-w-7xl bg-white border border-slate-200 rounded-2xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden"
+        className="w-full max-w-[1440px] bg-surface-overlay border border-border-default rounded-xl shadow-overlay flex flex-col max-h-[calc(100dvh-2rem)] overflow-hidden"
       >
         {/* Top Header Bar */}
-        <div className="bg-slate-900 text-white px-5 py-4 border-b border-slate-800 flex justify-between items-center shrink-0">
+        <div className="bg-surface-subtle text-text-primary px-4 sm:px-5 py-3 border-b border-border-strong flex justify-between items-center shrink-0">
           <div className="flex items-center gap-3">
-            <div className="bg-blue-600 p-2 rounded-lg flex items-center justify-center">
+            <div className="bg-action-primary p-2 rounded-lg flex items-center justify-center">
               <Globe size={18} />
             </div>
             <div>
-              <h2 id="mission-explorer-title" className="text-sm sm:text-base font-black uppercase tracking-wider">
+              <h2 id="mission-explorer-title" className="text-sm sm:text-base font-bold tracking-tight">
                 Unofficial UNPOL Planning Context Explorer
               </h2>
-              <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-widest leading-none mt-1">
+              <p className="text-[10px] text-text-muted font-semibold uppercase tracking-widest leading-none mt-1">
                 Selected starters, training scenarios, and peacekeeping reference entries
               </p>
             </div>
@@ -166,7 +166,7 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
             size="icon"
             onClick={onClose}
             aria-label="Close Mission Explorer"
-            className="text-slate-400 hover:text-white hover:bg-slate-800"
+            className="text-text-muted hover:text-text-primary hover:bg-surface-hover"
             title="Close Explorer"
           >
             <X size={18} />
@@ -183,9 +183,9 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
           </div>
         ) : (
           <>
-            <div className="shrink-0 border-b border-amber-200 bg-amber-50 px-5 py-3 text-xs leading-relaxed text-amber-950">
+            <div className="shrink-0 border-b border-status-warning-border bg-status-warning-bg px-5 py-3 text-xs leading-relaxed text-status-warning">
               <div className="flex items-start gap-2.5">
-                <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-700" />
+                <AlertTriangle size={16} className="mt-0.5 shrink-0 text-status-warning" />
                 <p>
                   <strong>Coverage notice:</strong> {PEACEKEEPING_REFERENCE_NOTICE} Selected non-peacekeeping starter profiles are not comprehensive DPPA/SPM coverage.
                 </p>
@@ -193,26 +193,26 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
             </div>
 
             {/* Content Body Grid */}
-            <div className="flex-1 overflow-y-auto p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="flex-1 overflow-y-auto p-4 lg:p-6 grid grid-cols-1 xl:grid-cols-3 gap-4">
               {/* Left/Middle: Map & List Lookup */}
-              <div className="lg:col-span-2 flex flex-col gap-4">
-                <div className="flex flex-col gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-700 sm:flex-row sm:items-center sm:justify-between">
+              <div className="xl:col-span-2 flex flex-col gap-4">
+                <div className="flex flex-col gap-2 rounded-xl border border-border-default bg-surface-subtle px-4 py-3 text-xs text-text-secondary sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <span className="font-bold block text-sm text-slate-900">
+                    <span className="font-bold block text-sm text-text-primary">
                       Showing {shownCount} of {totalCount} contexts
                     </span>
-                    <span className="text-slate-500 font-medium mt-0.5 block leading-normal">
+                    <span className="text-text-muted font-medium mt-0.5 block leading-normal">
                       11 current UN Peacekeeping references · selected starter profiles · fictional training scenarios
                     </span>
                   </div>
-                  <span className="text-slate-600 text-[10px] font-semibold bg-white border border-slate-200 px-2.5 py-1.5 rounded-lg shrink-0">
+                  <span className="text-text-secondary text-[10px] font-semibold bg-surface-base border border-border-default px-2.5 py-1.5 rounded-lg shrink-0">
                     Filters apply to both the map pins and the list.
                   </span>
                 </div>
 
                 {/* Tablet toggle; compact mobile remains list-first */}
-                <div className="hidden sm:flex justify-between items-center lg:hidden bg-slate-50 border border-slate-200 p-1.5 rounded-xl">
-                  <span className="text-xs font-bold text-slate-500 pl-2">Display Mode:</span>
+                <div className="hidden sm:flex justify-between items-center lg:hidden bg-surface-subtle border border-border-default p-1.5 rounded-xl">
+                  <span className="text-xs font-bold text-text-muted pl-2">Display Mode:</span>
                   <div className="flex gap-1" role="group" aria-label="Select display mode">
                     <Button
                       variant="tertiary"
@@ -278,7 +278,7 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
               </div>
 
               {/* Right Area: Selected Detail Pane */}
-              <div className="lg:col-span-1 h-full min-h-[320px]">
+              <div className="xl:col-span-1 h-full min-h-[320px]">
                 <MissionExplorerPanel
                   entry={selectedEntry}
                   onUseProfile={(entry) => setPendingEntry(entry)}
@@ -292,19 +292,19 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
               <div
                 role="region"
                 aria-label="Context comparison selection"
-                className="shrink-0 bg-slate-900 text-white px-5 py-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 shadow-lg"
+                className="shrink-0 bg-surface-subtle text-text-primary px-4 sm:px-5 py-3 border-t border-border-strong flex flex-wrap items-center justify-between gap-3 shadow-lg"
               >
                 <div className="flex flex-wrap items-center gap-3">
                   <div>
-                    <span className="text-xs font-black uppercase tracking-wider text-slate-100 block">
+                    <span className="text-xs font-bold tracking-tight text-text-muted block">
                       Compare contexts
                     </span>
-                    <span className="text-[11px] text-blue-300 font-semibold">
+                    <span className="text-[11px] text-action-link font-semibold">
                       {compareIds.length} / 3 selected
                     </span>
                   </div>
 
-                  <div className="h-6 w-px bg-slate-700 hidden sm:block" />
+                  <div className="h-6 w-px bg-surface-raised hidden sm:block" />
 
                   {/* Selected context acronym chips */}
                   <div
@@ -319,14 +319,14 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
                         <span
                           key={id}
                           role="listitem"
-                          className="inline-flex items-center gap-1 bg-slate-800 text-white text-xs font-bold px-2.5 py-1 rounded-lg border border-slate-700"
+                          className="inline-flex items-center gap-1 bg-surface-raised text-text-primary text-xs font-bold px-2.5 py-1 rounded-lg border border-border-strong"
                         >
                           <span>{acronym}</span>
                           <button
                             type="button"
                             onClick={() => handleRemoveCompare(id)}
                             aria-label={`Remove ${acronym} from comparison`}
-                            className="text-slate-400 hover:text-white rounded p-0.5 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-400"
+                            className="text-text-muted hover:text-text-primary rounded p-0.5 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-focus-ring"
                           >
                             <X size={12} />
                           </button>
@@ -339,7 +339,7 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
                     <span
                       role="status"
                       aria-live="polite"
-                      className="text-xs text-amber-300 font-medium bg-amber-950/80 border border-amber-800 px-2 py-0.5 rounded-md"
+                      className="text-xs text-status-warning font-medium bg-status-warning border border-status-warning px-2 py-0.5 rounded-md"
                     >
                       {compareWarning}
                     </span>
@@ -351,7 +351,7 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
                     variant="quiet"
                     size="sm"
                     onClick={handleClearCompare}
-                    className="text-slate-400 hover:text-white text-xs"
+                    className="text-text-muted hover:text-text-primary text-xs"
                   >
                     Clear
                   </Button>
@@ -374,7 +374,7 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
       {/* Safe Initialization Confirmation Modal */}
       {pendingEntry && (
         <div
-          className="fixed inset-0 z-60 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4"
+          className="fixed inset-0 z-60 bg-surface-scrim flex items-center justify-center p-4"
         >
           <div
             ref={confirmationDialogRef}
@@ -382,37 +382,37 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
             aria-modal="true"
             aria-labelledby="confirm-plan-dialog-title"
             aria-describedby="confirm-plan-dialog-desc"
-            className="w-full max-w-md bg-white rounded-2xl border border-slate-200 shadow-2xl p-6 flex flex-col gap-4"
+            className="w-full max-w-md bg-surface-base rounded-2xl border border-border-default shadow-2xl p-6 flex flex-col gap-4"
           >
             {hasExistingWork ? (
               <>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-700 shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-status-warning-bg border border-status-warning-border flex items-center justify-center text-status-warning shrink-0">
                     <AlertTriangle size={20} />
                   </div>
                   <div>
-                    <h3 id="confirm-plan-dialog-title" className="text-sm font-black text-slate-900">
+                    <h3 id="confirm-plan-dialog-title" className="text-sm font-black text-text-primary">
                       Existing Plan Detected
                     </h3>
-                    <span className="text-xs text-amber-800 font-semibold">
+                    <span className="text-xs text-status-warning font-semibold">
                       Current analytical work will be replaced
                     </span>
                   </div>
                 </div>
 
-                <div id="confirm-plan-dialog-desc" className="text-xs text-slate-700 leading-relaxed bg-amber-50/70 border border-amber-200 rounded-xl p-3 space-y-2">
+                <div id="confirm-plan-dialog-desc" className="text-xs text-text-secondary leading-relaxed bg-status-warning-bg border border-status-warning-border rounded-xl p-3 space-y-2">
                   <p>
                     Your current workspace contains recorded analyst findings, stakeholder assessments, or CBD planning data.
                   </p>
-                  <p className="font-semibold text-amber-950">
+                  <p className="font-semibold text-status-warning">
                     Starting a new plan from <strong>{pendingEntry.missionAcronym || pendingEntry.missionName}</strong> will initialize a fresh workspace and replace your current data.
                   </p>
-                  <p className="text-[11px] text-amber-900 italic">
+                  <p className="text-[11px] text-status-warning italic">
                     Export or save your current plan first if you need to retain it.
                   </p>
                 </div>
 
-                <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-border-subtle">
                   <Button
                     ref={confirmationInitialFocusRef}
                     variant="tertiary"
@@ -424,7 +424,7 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
                   <Button
                     variant="primary"
                     size="sm"
-                    className="bg-amber-600 hover:bg-amber-700 text-white font-bold"
+                    className="bg-action-primary hover:bg-action-primary-hover text-text-inverse font-bold"
                     onClick={handleConfirmStartPlan}
                   >
                     Replace Workspace & Start Plan
@@ -434,29 +434,29 @@ export const MissionExplorer: React.FC<MissionExplorerProps> = ({
             ) : (
               <>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center text-blue-700 shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-status-info-bg border border-status-info-border flex items-center justify-center text-action-link shrink-0">
                     <Globe size={20} />
                   </div>
                   <div>
-                    <h3 id="confirm-plan-dialog-title" className="text-sm font-black text-slate-900">
+                    <h3 id="confirm-plan-dialog-title" className="text-sm font-black text-text-primary">
                       Start Plan from {pendingEntry.missionAcronym || pendingEntry.missionName}?
                     </h3>
-                    <span className="text-xs text-slate-500 font-medium">
+                    <span className="text-xs text-text-muted font-medium">
                       {pendingEntry.country} · {pendingEntry.missionType}
                     </span>
                   </div>
                 </div>
 
-                <div id="confirm-plan-dialog-desc" className="text-xs text-slate-600 leading-relaxed bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2">
+                <div id="confirm-plan-dialog-desc" className="text-xs text-text-secondary leading-relaxed bg-surface-subtle border border-border-default rounded-xl p-3 space-y-2">
                   <p>
                     This will set up your workspace profile with reference metadata from <strong>{pendingEntry.missionName}</strong> and provide planning prompts for your investigation.
                   </p>
-                  <p className="font-medium text-slate-800">
+                  <p className="font-medium text-text-primary">
                     No analyst PESTEL-S findings or assessed ratings are created. Stage findings, stakeholders, and CBD matrices will remain unassessed for your analysis.
                   </p>
                 </div>
 
-                <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-border-subtle">
                   <Button
                     ref={confirmationInitialFocusRef}
                     variant="tertiary"

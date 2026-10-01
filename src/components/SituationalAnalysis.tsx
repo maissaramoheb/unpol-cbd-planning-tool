@@ -14,13 +14,13 @@ import { NextStepCue } from './Guidance';
 import { NEXT_STEP_CUES } from '../lib/guidance';
 
 const PESTELS_PALETTE: Record<string, { iconColor: string; dot: string }> = {
-  political: { iconColor: 'text-indigo-600', dot: 'bg-indigo-500' },
-  economic: { iconColor: 'text-teal-600', dot: 'bg-teal-500' },
-  social: { iconColor: 'text-purple-600', dot: 'bg-purple-500' },
-  technological: { iconColor: 'text-cyan-600', dot: 'bg-cyan-500' },
-  environmental: { iconColor: 'text-emerald-600', dot: 'bg-emerald-500' },
-  legal: { iconColor: 'text-amber-600', dot: 'bg-amber-500' },
-  security: { iconColor: 'text-rose-600', dot: 'bg-rose-500' }
+  political: { iconColor: 'text-accent-indigo', dot: 'bg-accent-indigo' },
+  economic: { iconColor: 'text-accent-teal', dot: 'bg-accent-teal' },
+  social: { iconColor: 'text-accent-purple', dot: 'bg-accent-purple' },
+  technological: { iconColor: 'text-accent-cyan', dot: 'bg-accent-cyan' },
+  environmental: { iconColor: 'text-status-success', dot: 'bg-status-success' },
+  legal: { iconColor: 'text-status-warning', dot: 'bg-status-warning' },
+  security: { iconColor: 'text-status-danger', dot: 'bg-status-danger' }
 };
 
 interface SituationalAnalysisProps {
@@ -63,7 +63,7 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
   };
 
   const getPestelsIcon = (id: string) => {
-    const style = PESTELS_PALETTE[id] || { iconColor: 'text-text-muted', dot: 'bg-slate-400' };
+    const style = PESTELS_PALETTE[id] || { iconColor: 'text-text-muted', dot: 'bg-text-muted' };
     switch (id) {
       case 'political': return <Compass size={15} className={`${style.iconColor} shrink-0`} />;
       case 'economic': return <Activity size={15} className={`${style.iconColor} shrink-0`} />;
@@ -90,7 +90,7 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
             </span>
           </div>
 
-          <div className="divide-y divide-border-default flex flex-col">
+          <div className="divide-y divide-border-default flex overflow-x-auto sm:grid sm:grid-cols-2 lg:flex lg:flex-col">
             {Object.values(pestels).map((item) => {
               const isSelected = item.id === selectedId;
               const hasFinding = item.finding.trim().length > 0;
@@ -99,10 +99,11 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
                   key={item.id}
                   type="button"
                   onClick={() => setSelectedId(item.id)}
+                  aria-pressed={isSelected}
                   className={`
-                    text-left px-4 py-3.5 transition-colors duration-150 motion-reduce:transition-none flex flex-col gap-1 w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring
+                    text-left px-4 py-3.5 transition-colors duration-150 motion-reduce:transition-none flex flex-col gap-1 min-w-[220px] sm:min-w-0 sm:w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring
                     ${isSelected
-                      ? 'bg-blue-50/80 border-l-2 border-action-primary'
+                      ? 'bg-status-info-bg border-l-2 border-action-primary'
                       : 'border-l-2 border-transparent hover:bg-surface-subtle/80'
                     }
                   `}
@@ -110,7 +111,7 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
                   <div className="flex items-center justify-between w-full gap-2">
                     <div className="flex items-center gap-2 min-w-0">
                       {getPestelsIcon(item.id)}
-                      <span className={`text-xs truncate ${isSelected ? 'font-bold text-action-primary' : 'font-semibold text-text-primary'}`}>
+                      <span className={`text-xs truncate ${isSelected ? 'font-bold text-action-link' : 'font-semibold text-text-primary'}`}>
                         {item.name.split(' / ')[0]}
                       </span>
                     </div>
@@ -119,7 +120,7 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
                     </span>
                   </div>
                   <p className="text-xs text-text-muted line-clamp-1 leading-snug">
-                    {hasFinding ? item.finding : <span className="italic text-text-muted/70">No finding recorded</span>}
+                    {hasFinding ? item.finding : <span className="italic text-text-muted">No finding recorded</span>}
                   </p>
                 </button>
               );
@@ -155,27 +156,27 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
                 const cue = ctx?.planningPrompts?.pestelsPrompts?.[selectedId];
                 if (!cue) return null;
                 return (
-                  <div className="rounded-xl border border-blue-200 bg-blue-50/50 p-3.5 flex flex-col gap-1.5 text-xs">
+                  <div className="rounded-xl border border-status-info-border bg-status-info-bg p-3.5 flex flex-col gap-1.5 text-xs">
                     <div className="flex items-center justify-between gap-2 flex-wrap">
                       <div className="flex items-center gap-1.5">
-                        <Compass size={14} className="text-blue-700 shrink-0" />
-                        <span className="font-bold text-blue-950 uppercase tracking-wide">
+                        <Compass size={14} className="text-action-link shrink-0" />
+                        <span className="font-bold text-action-link uppercase tracking-wide">
                           Context Verification Cue — {ctx?.identity.missionAcronym || ctx?.identity.countryArea}
                         </span>
                       </div>
-                      <span className="text-[10px] font-semibold text-slate-500 bg-white border border-blue-200 px-1.5 py-0.2 rounded">
+                      <span className="text-[10px] font-semibold text-text-muted bg-surface-base border border-status-info-border px-1.5 py-0.2 rounded">
                         Investigation Prompt
                       </span>
                     </div>
-                    <p className="text-slate-800 leading-relaxed font-medium">
+                    <p className="text-text-primary leading-relaxed font-medium">
                       {cue.prompt}
                     </p>
                     {cue.whyPrompt && (
-                      <p className="text-[11px] text-slate-600 italic">
+                      <p className="text-[11px] text-text-secondary italic">
                         <strong>Why this matters:</strong> {cue.whyPrompt}
                       </p>
                     )}
-                    <div className="text-[10px] text-slate-500 pt-1 border-t border-blue-100 flex items-center justify-between">
+                    <div className="text-[10px] text-text-muted pt-1 border-t border-status-info-border flex items-center justify-between">
                       <span>Context prompt for investigation — not an assessed finding. Record your diagnostic finding below.</span>
                     </div>
                   </div>
@@ -320,7 +321,7 @@ export const SituationalAnalysis: React.FC<SituationalAnalysisProps> = ({
       </div>
 
       <div className="min-w-0">
-        {interdependencyError && <p role="alert" className="mb-3 text-sm text-action-danger">{interdependencyError}</p>}
+        {interdependencyError && <p role="alert" className="mb-3 text-sm text-status-danger">{interdependencyError}</p>}
         <InterdependencyAnalysis data={data} open={interdependencyOpen} onOpenChange={setInterdependencyOpen} draft={draft} onDraftChange={setDraft} onChange={onInterdependenciesChange} />
       </div>
     </div>

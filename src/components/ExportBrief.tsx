@@ -139,8 +139,8 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess,
   return (
     <div className="flex flex-col gap-6">
       <div className="print:hidden">
-        <h2 className="text-xl font-bold text-slate-950">Professional Outputs</h2>
-        <p className="mt-1 text-sm text-slate-600">One planning workspace, complementary read-only outputs. Edit planning information in the seven stages.</p>
+        <h2 className="text-xl font-bold text-text-primary">Professional Outputs</h2>
+        <p className="mt-1 text-sm text-text-secondary">One planning workspace, complementary read-only outputs. Edit planning information in the seven stages.</p>
         <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Select professional output">
           {(['executive', 'brief', 'logframe', 'monitoring', 'workplan'] as const).map(kind => (
             <Button
@@ -154,31 +154,31 @@ export const ExportBrief: React.FC<ExportBriefProps> = ({ data, onImportSuccess,
             </Button>
           ))}
         </div>
-        <p className="mt-2 text-xs text-slate-500">Planning Brief: decision narrative · Logframe: results logic · M&E Matrix: measurement · Workplan: delivery</p>
+        <p className="mt-2 text-xs text-text-muted">Planning Brief: decision narrative · Logframe: results logic · M&E Matrix: measurement · Workplan: delivery</p>
         {outputModel ? <div className="mt-4 flex flex-wrap items-center gap-3">
           <label className="text-sm font-medium" htmlFor="output-scope">Output scope</label>
-          <select id="output-scope" className="min-w-0 max-w-full rounded-md border border-slate-300 bg-white p-2 text-sm focus-visible:outline-2 focus-visible:outline-blue-600" value={effectiveScope} onChange={e => setScope(e.target.value)}>
+          <select id="output-scope" className="min-w-0 max-w-full rounded-md border border-border-strong bg-surface-raised p-2 text-sm focus-visible:outline-2 focus-visible:outline-focus-ring" value={effectiveScope} onChange={e => setScope(e.target.value)}>
             <option value="">All CBD Priorities</option>{Object.keys(data.customCells).map(key => <option key={key} value={key}>{key.split('|').join(' × ')}</option>)}
           </select>
           <Button size="sm" variant="secondary" onClick={onPrev}>Edit in Results &amp; Implementation</Button>
         </div> : null}
       </div>
       <div className="export-toolbar flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between print:hidden">
-        <div><h3 className="text-lg font-bold text-slate-950">Export · {output === 'executive' ? 'Executive CBD Brief' : output === 'brief' ? 'Planning Brief' : OUTPUT_TITLES[output]}</h3><p className="mt-1 text-sm text-slate-500">Create an editable Word document, print/PDF document or Markdown copy. JSON backs up the entire workspace, regardless of output scope.</p></div>
+        <div><h3 className="text-lg font-bold text-text-primary">Export · {output === 'executive' ? 'Executive CBD Brief' : output === 'brief' ? 'Planning Brief' : OUTPUT_TITLES[output]}</h3><p className="mt-1 text-sm text-text-muted">Create an editable Word document, print/PDF document or Markdown copy. JSON backs up the entire workspace, regardless of output scope.</p></div>
         <div className="flex flex-wrap gap-2">
           <Button variant="primary" size="sm" onClick={handleWord} disabled={exportingWord}><FileText size={14} className="mr-1.5" />{exportingWord ? 'Creating Word…' : 'Download Word'}</Button>
-          <Button variant="secondary" size="sm" onClick={() => window.print()}><Printer size={14} className="mr-1.5 text-slate-600" />Print / PDF</Button>
-          <Button variant="secondary" size="sm" onClick={handleCopyMarkdown}>{copied ? <Check size={14} className="mr-1.5 text-emerald-600" /> : <Clipboard size={14} className="mr-1.5 text-slate-600" />}{copied ? 'Copied Markdown' : 'Copy Markdown'}</Button>
-          <Button variant="secondary" size="sm" onClick={() => exportProjectData(data)}><FileDown size={14} className="mr-1.5 text-slate-600" />Save JSON</Button>
-          <Button variant="secondary" size="sm" onClick={() => fileInputRef.current?.click()}><FileUp size={14} className="mr-1.5 text-slate-600" />Upload JSON</Button>
+          <Button variant="secondary" size="sm" onClick={() => window.print()}><Printer size={14} className="mr-1.5 text-text-secondary" />Print / PDF</Button>
+          <Button variant="secondary" size="sm" onClick={handleCopyMarkdown}>{copied ? <Check size={14} className="mr-1.5 text-status-success" /> : <Clipboard size={14} className="mr-1.5 text-text-secondary" />}{copied ? 'Copied Markdown' : 'Copy Markdown'}</Button>
+          <Button variant="secondary" size="sm" onClick={() => exportProjectData(data)}><FileDown size={14} className="mr-1.5 text-text-secondary" />Save JSON</Button>
+          <Button variant="secondary" size="sm" onClick={() => fileInputRef.current?.click()}><FileUp size={14} className="mr-1.5 text-text-secondary" />Upload JSON</Button>
           <input ref={fileInputRef} type="file" accept=".json" className="hidden" onChange={handleFileChange} />
         </div>
       </div>
 
-      <p className="print-note rounded-lg border border-blue-200 bg-blue-50 p-3 text-xs leading-relaxed text-blue-950 print:hidden">For PDF, use the browser print dialog with A4 paper, default margins, background graphics enabled, and browser-generated headers/footers disabled. Browser URL/date headers are controlled by the browser, not this application.</p>
-      {errorMsg ? <div className="flex items-center gap-2 rounded-lg border border-rose-200 bg-rose-50 p-3 text-xs text-rose-800 print:hidden"><AlertTriangle size={16} />{errorMsg}</div> : null}
+      <p className="print-note rounded-lg border border-status-info-border bg-status-info-bg p-3 text-xs leading-relaxed text-action-link print:hidden">For PDF, use the browser print dialog with A4 paper, default margins, background graphics enabled, and browser-generated headers/footers disabled. Browser URL/date headers are controlled by the browser, not this application.</p>
+      {errorMsg ? <div className="flex items-center gap-2 rounded-lg border border-status-danger-border bg-status-danger-bg p-3 text-xs text-status-danger print:hidden"><AlertTriangle size={16} />{errorMsg}</div> : null}
 
-      {output === 'executive' ? <ExecutiveBrief data={data} onChange={onExecutiveSelectionChange} onDetailed={() => setOutput('brief')} /> : outputModel ? <PlanningOutputPreview model={outputModel} /> : <Card className="report-shell mx-auto w-full max-w-[210mm] overflow-hidden border-slate-200 bg-white shadow-sm print:border-0 print:shadow-none">
+      {output === 'executive' ? <ExecutiveBrief data={data} onChange={onExecutiveSelectionChange} onDetailed={() => setOutput('brief')} /> : outputModel ? <PlanningOutputPreview model={outputModel} /> : <Card className="report-shell mx-auto w-full max-w-[210mm] overflow-hidden border-border-default bg-surface-base shadow-sm print:border-0 print:shadow-none">
         <div className="professional-report">
           <ReportPage className="report-cover">
             <div className="report-kicker">Capacity-Building & Development Planning Support</div>

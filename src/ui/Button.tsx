@@ -34,28 +34,28 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({
   const isSelected = selected ?? (props['aria-pressed'] === true || props['aria-pressed'] === 'true');
 
   const baseStyle =
-    'inline-flex items-center justify-center font-semibold select-none rounded-md transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none';
+    'inline-flex items-center justify-center font-semibold select-none rounded-md transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-surface-base disabled:opacity-60 disabled:cursor-not-allowed disabled:pointer-events-none';
 
   // Primary action blue / Institutional navy: #1e40af
   const variants: Record<ButtonVariant, string> = {
     primary:
-      'bg-action-primary hover:bg-action-primary-hover active:bg-[#172554] text-text-inverse border border-transparent shadow-subtle',
+      'bg-action-primary hover:bg-action-primary-hover active:bg-action-primary-active text-text-inverse border border-transparent shadow-subtle',
     secondary:
-      'bg-surface-raised hover:bg-action-secondary-hover active:bg-slate-200/70 text-text-primary border border-border-strong hover:border-slate-400 shadow-subtle',
+      'bg-surface-raised hover:bg-action-secondary-hover active:bg-surface-active text-text-primary border border-border-strong hover:border-border-strong shadow-subtle',
     outline:
-      'bg-surface-raised hover:bg-action-secondary-hover active:bg-slate-200/70 text-text-primary border border-border-strong hover:border-slate-400 shadow-subtle',
+      'bg-surface-raised hover:bg-action-secondary-hover active:bg-surface-active text-text-primary border border-border-strong hover:border-border-strong shadow-subtle',
     tertiary:
-      'bg-transparent hover:bg-surface-subtle active:bg-slate-200/60 text-text-secondary hover:text-text-primary border border-transparent',
+      'bg-transparent hover:bg-surface-subtle active:bg-surface-active text-text-secondary hover:text-text-primary border border-transparent',
     ghost:
-      'bg-transparent hover:bg-surface-subtle active:bg-slate-200/60 text-text-secondary hover:text-text-primary border border-transparent',
+      'bg-transparent hover:bg-surface-subtle active:bg-surface-active text-text-secondary hover:text-text-primary border border-transparent',
     destructive:
-      'bg-surface-raised hover:bg-red-50 active:bg-red-100 text-red-700 hover:text-red-800 border border-red-200 hover:border-red-300 shadow-subtle focus-visible:ring-red-600',
+      'bg-surface-raised hover:bg-status-danger-bg active:bg-status-danger-bg text-status-danger hover:text-status-danger border border-status-danger-border hover:border-status-danger-border shadow-subtle focus-visible:ring-status-danger',
     danger:
-      'bg-surface-raised hover:bg-red-50 active:bg-red-100 text-red-700 hover:text-red-800 border border-red-200 hover:border-red-300 shadow-subtle focus-visible:ring-red-600',
+      'bg-surface-raised hover:bg-status-danger-bg active:bg-status-danger-bg text-status-danger hover:text-status-danger border border-status-danger-border hover:border-status-danger-border shadow-subtle focus-visible:ring-status-danger',
     quiet:
-      'bg-transparent hover:bg-surface-subtle active:bg-slate-200/60 text-text-muted hover:text-text-primary border border-transparent',
+      'bg-transparent hover:bg-surface-subtle active:bg-surface-active text-text-muted hover:text-text-primary border border-transparent',
     link:
-      'bg-transparent text-action-primary hover:text-action-primary-hover underline-offset-2 hover:underline p-0 h-auto border-transparent font-semibold shadow-none focus-visible:ring-offset-1'
+      'bg-transparent text-action-link hover:text-action-link-hover underline-offset-2 hover:underline p-0 h-auto border-transparent font-semibold shadow-none focus-visible:ring-offset-1'
   };
 
   // Restrained selected / toggle treatments that clearly distinguish active state
@@ -64,10 +64,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({
   if (isSelected && variant !== 'primary') {
     if (variant === 'tertiary' || variant === 'quiet' || variant === 'ghost') {
       variantStyle =
-        'bg-surface-raised hover:bg-action-secondary-hover active:bg-slate-200/70 text-action-primary border border-border-strong font-bold shadow-subtle';
+        'bg-surface-raised hover:bg-action-secondary-hover active:bg-surface-active text-action-link border border-border-strong font-bold shadow-subtle';
     } else {
       variantStyle =
-        'bg-blue-50/80 hover:bg-blue-100/70 active:bg-blue-100 text-action-primary border border-action-primary/40 font-bold shadow-subtle';
+        'bg-status-info-bg hover:bg-status-info-bg active:bg-status-info-bg text-action-link border border-action-primary/40 font-bold shadow-subtle';
     }
   }
 

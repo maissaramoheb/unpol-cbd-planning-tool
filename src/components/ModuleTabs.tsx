@@ -17,17 +17,21 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
   const activeStep = WORKFLOW_STAGES.find((step) => step.id === currentView);
 
   useEffect(() => {
-    if (!activeStep) return;
     const container = stepperRef.current;
+    if (!activeStep) {
+      container?.scrollTo({ left: 0 });
+      return;
+    }
     const active = container?.querySelector<HTMLElement>('[aria-current="step"]');
     if (!container || !active) return;
-    container.scrollTo({ left: active.offsetLeft - (container.clientWidth - active.offsetWidth) / 2 });
+    const relativeLeft = active.getBoundingClientRect().left - container.getBoundingClientRect().left + container.scrollLeft;
+    container.scrollTo({ left: relativeLeft - (container.clientWidth - active.offsetWidth) / 2 });
   }, [activeStep]);
 
   return (
     <nav
       aria-label="Planning workflow"
-      className="w-full bg-surface-raised border-b border-border-default px-2 sm:px-3"
+      className="w-full bg-surface-raised rounded-lg border border-border-default shadow-subtle px-1 sm:px-2"
     >
       <div className="flex items-center justify-between gap-1.5 sm:gap-2 h-11 sm:h-12">
         {/* Home Utility */}
@@ -36,9 +40,9 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
             type="button"
             onClick={() => onViewChange(HOME_VIEW)}
             aria-current={currentView === HOME_VIEW ? 'page' : undefined}
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring ${
+            className={`inline-flex items-center gap-1.5 px-2 py-2 rounded-md text-xs font-semibold transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring ${
               currentView === HOME_VIEW
-                ? 'text-action-primary bg-blue-50/80 font-bold'
+                ? 'text-action-link bg-status-info-bg font-bold'
                 : 'text-text-muted hover:text-text-primary hover:bg-surface-subtle'
             }`}
           >
@@ -53,7 +57,8 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
         {/* Continuous Workflow Stages Track */}
         <div
           ref={stepperRef}
-          className="flex-1 flex items-center gap-1 sm:gap-1.5 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden py-1"
+          aria-label="Seven planning stages; scroll to see neighboring stages"
+          className="flex-1 flex items-center gap-1 sm:gap-1.5 overflow-x-auto [scrollbar-width:thin] [scrollbar-color:var(--border-strong)_transparent] py-1"
         >
           {WORKFLOW_STAGES.map((step) => {
             const isActive = step.id === currentView;
@@ -66,9 +71,9 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
                 onClick={() => onViewChange(step.id)}
                 aria-current={isActive ? 'step' : undefined}
                 aria-label={`Stage ${step.id}: ${step.label}, ${step.sub}`}
-                className={`relative px-2 sm:px-2.5 py-1.5 flex items-center gap-1.5 shrink-0 rounded transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring ${
+                className={`relative px-2 sm:px-2 py-2 flex items-center gap-1.5 shrink-0 rounded transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring ${
                   isActive
-                    ? 'text-action-primary font-bold'
+                    ? 'text-action-link bg-surface-active font-bold'
                     : isCompleted
                       ? 'text-text-secondary hover:text-text-primary hover:bg-surface-subtle/70'
                       : 'text-text-muted hover:text-text-secondary hover:bg-surface-subtle/50'
@@ -76,7 +81,7 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
               >
                 <span className={`font-mono tabular-nums text-xs ${
                   isActive
-                    ? 'text-action-primary font-bold'
+                    ? 'text-action-link bg-surface-active font-bold'
                     : isCompleted
                       ? 'text-text-primary font-semibold'
                       : 'text-text-muted'
@@ -84,12 +89,12 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
                   0{step.id}
                 </span>
 
-                <span className="text-xs whitespace-nowrap">
+                <span className="hidden sm:inline text-xs whitespace-nowrap">
                   {step.label}
                 </span>
 
                 {isCompleted && (
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-600/80 shrink-0" aria-hidden="true" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-status-success shrink-0" aria-hidden="true" />
                 )}
 
                 {/* Active indicator line at bottom */}
@@ -113,9 +118,9 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
             type="button"
             onClick={() => onViewChange(EXPORT_VIEW)}
             aria-current={currentView === EXPORT_VIEW ? 'page' : undefined}
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring ${
+            className={`inline-flex items-center gap-1.5 px-2 py-2 rounded-md text-xs font-semibold transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring ${
               currentView === EXPORT_VIEW
-                ? 'text-action-primary bg-blue-50/80 font-bold'
+                ? 'text-action-link bg-status-info-bg font-bold'
                 : 'text-text-muted hover:text-text-primary hover:bg-surface-subtle'
             }`}
           >

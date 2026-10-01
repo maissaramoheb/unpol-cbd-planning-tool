@@ -36,15 +36,15 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
   const getTemplateIcon = (id: string) => {
     switch (id) {
       case 'peacekeeping':
-        return <Shield size={16} className="text-action-primary" />;
+        return <Shield size={16} className="text-action-link" />;
       case 'spm':
-        return <BookOpen size={16} className="text-action-primary" />;
+        return <BookOpen size={16} className="text-action-link" />;
       case 'ssr':
-        return <Layers size={16} className="text-action-primary" />;
+        return <Layers size={16} className="text-action-link" />;
       case 'reform':
-        return <Award size={16} className="text-action-primary" />;
+        return <Award size={16} className="text-action-link" />;
       case 'capacity':
-        return <FileText size={16} className="text-action-primary" />;
+        return <FileText size={16} className="text-action-link" />;
       default:
         return <Shield size={16} className="text-text-muted" />;
     }
@@ -56,7 +56,7 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Template Selector Column */}
-        <div className="lg:col-span-1 flex flex-col gap-3">
+        <div className="order-2 lg:order-1 lg:col-span-1 flex flex-col gap-3">
           <div>
             <h3 className="text-xs font-bold uppercase tracking-wider text-text-primary">
               Baseline Configuration Templates
@@ -73,7 +73,7 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
             size="sm"
             className="gap-1.5"
           >
-            <Globe size={14} className="text-action-primary" />
+            <Globe size={14} className="text-action-link" />
             Browse Mission Explorer Map
           </Button>
 
@@ -86,24 +86,25 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
                     key={template.id}
                     type="button"
                     onClick={() => onTemplateChange(template.id)}
+                    aria-pressed={isSelected}
                     className={`
                       text-left p-3.5 transition-colors duration-150 motion-reduce:transition-none flex items-start gap-3 w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-inset
                       ${isSelected
-                        ? 'bg-blue-50/70 border-l-2 border-l-action-primary'
+                        ? 'bg-status-info-bg border-l-2 border-l-action-primary'
                         : 'hover:bg-surface-subtle bg-surface-raised'
                       }
                     `}
                   >
-                    <div className="shrink-0 mt-0.5 text-action-primary">
+                    <div className="shrink-0 mt-0.5 text-action-link">
                       {getTemplateIcon(template.id)}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-1.5">
-                        <h4 className={`text-xs font-semibold leading-tight ${isSelected ? 'text-action-primary font-bold' : 'text-text-primary'}`}>
+                        <h4 className={`text-xs font-semibold leading-tight ${isSelected ? 'text-action-link font-bold' : 'text-text-primary'}`}>
                           {template.name}
                         </h4>
                         {isSelected && (
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-action-primary bg-blue-100/70 px-1.5 py-0.5 rounded shrink-0">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-action-link bg-status-info-bg px-1.5 py-0.5 rounded shrink-0">
                             Active
                           </span>
                         )}
@@ -123,32 +124,32 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
             const ctx = resolvePlanningContext(profile.templateId)!;
             const guidance = ctx.planningPrompts.stage1Guidance;
             return (
-              <div className="rounded-xl border border-blue-200 bg-blue-50/50 p-3.5 flex flex-col gap-2">
+              <div className="rounded-xl border border-status-info-border bg-status-info-bg p-3.5 flex flex-col gap-2">
                 <div className="flex items-center justify-between gap-1 flex-wrap">
                   <div className="flex items-center gap-1.5">
-                    <Compass size={14} className="text-blue-700 shrink-0" />
-                    <span className="text-xs font-black uppercase tracking-wider text-blue-950">
-                      Context Guidance
+                    <Compass size={14} className="text-action-link shrink-0" />
+                    <span className="text-xs font-black uppercase tracking-wider text-action-link">
+                      Reference Guidance
                     </span>
                   </div>
-                  <span className="text-[10px] font-bold text-blue-700 bg-white border border-blue-200 px-1.5 py-0.5 rounded">
+                  <span className="text-[10px] font-bold text-action-link bg-surface-base border border-status-info-border px-1.5 py-0.5 rounded">
                     {ctx.identity.missionAcronym || ctx.identity.countryArea}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-700 leading-relaxed">
+                <p className="text-[11px] text-text-secondary leading-relaxed">
                   Active planning context for <strong>{ctx.identity.countryArea}</strong> ({ctx.identity.missionType}).
                 </p>
                 {guidance.mandateEnvironmentPrompt && (
-                  <div className="text-[11px] text-slate-600 bg-white/85 p-2 rounded-lg border border-blue-100 italic">
+                  <div className="text-[11px] text-text-secondary bg-surface-base p-2 rounded-lg border border-status-info-border italic">
                     <strong>Investigation cue:</strong> &ldquo;{guidance.mandateEnvironmentPrompt}&rdquo;
                   </div>
                 )}
-                <div className="flex items-center justify-between pt-1 border-t border-blue-100 text-[10px] text-slate-500">
+                <div className="flex items-center justify-between pt-1 border-t border-status-info-border text-[10px] text-text-muted">
                   <span>{ctx.provenance.sources.length} document source(s)</span>
                   <button
                     type="button"
                     onClick={onOpenExplorer}
-                    className="font-bold text-blue-700 hover:text-blue-900 underline cursor-pointer"
+                    className="font-bold text-action-link hover:text-action-link underline cursor-pointer"
                   >
                     View in Explorer
                   </button>
@@ -159,10 +160,10 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
         </div>
 
         {/* Form Fields Card */}
-        <div className="lg:col-span-2">
+        <div className="order-1 lg:order-2 lg:col-span-2">
           <Card>
             <CardHeader>
-              <h3 className="text-sm font-bold text-text-primary">Country / Mission Profile Editor</h3>
+              <h3 className="text-sm font-bold text-text-primary">Analyst Input · Country / Mission Profile</h3>
               <p className="text-xs text-text-muted mt-0.5">Define core parameters used across the assessment workflow and custom export planning brief.</p>
             </CardHeader>
             <CardBody className="flex flex-col gap-4">
@@ -220,7 +221,7 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
                 rows={2}
               />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-slate-100">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-border-subtle">
                 <TextInput
                   label="Analyst / Advisory Team"
                   value={profile.analystName}
@@ -236,7 +237,7 @@ export const MissionProfile: React.FC<MissionProfileProps> = ({
               </div>
 
               <NextStepCue {...NEXT_STEP_CUES[1]} />
-              <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-slate-100">
+              <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-border-subtle">
                 <Button variant="primary" onClick={onNext} className="w-full sm:w-auto">
                   Next: Diagnostic Analysis
                 </Button>

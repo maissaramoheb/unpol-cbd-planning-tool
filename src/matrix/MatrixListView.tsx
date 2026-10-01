@@ -48,24 +48,24 @@ export const MatrixListView: React.FC<MatrixListViewProps> = ({
   const getTagPresentation = (tag: CbdHeatmapTag) => {
     switch (tag) {
       case 'Quick Win':
-        return { text: tag, bg: 'bg-emerald-50 border-emerald-200', textCol: 'text-emerald-800', dotCol: 'bg-emerald-600' };
+        return { text: tag, bg: 'bg-status-success-bg border-status-success-border', textCol: 'text-status-success', dotCol: 'bg-status-success' };
       case 'Sensitive Reform':
-        return { text: 'Sensitive', bg: 'bg-rose-50 border-rose-200', textCol: 'text-rose-800', dotCol: 'bg-rose-600' };
+        return { text: 'Sensitive', bg: 'bg-status-danger-bg border-status-danger-border', textCol: 'text-status-danger', dotCol: 'bg-status-danger' };
       case 'Long-Term Reform':
-        return { text: 'Long-term', bg: 'bg-indigo-50 border-indigo-200', textCol: 'text-indigo-800', dotCol: 'bg-indigo-600' };
+        return { text: 'Long-term', bg: 'bg-accent-indigo-bg border-accent-indigo-border', textCol: 'text-accent-indigo', dotCol: 'bg-accent-indigo' };
       case 'Low Confidence':
-        return { text: 'Low Conf', bg: 'bg-slate-50 border-slate-200', textCol: 'text-slate-700', dotCol: 'bg-slate-500' };
+        return { text: 'Low Conf', bg: 'bg-surface-subtle border-border-default', textCol: 'text-text-secondary', dotCol: 'bg-text-muted' };
       default:
-        return { text: tag, bg: 'bg-amber-50 border-amber-200', textCol: 'text-amber-800', dotCol: 'bg-amber-600' };
+        return { text: tag, bg: 'bg-status-warning-bg border-status-warning-border', textCol: 'text-status-warning', dotCol: 'bg-status-warning' };
     }
   };
 
   return (
     <div className="flex flex-col gap-3 w-full">
-      <div className="bg-institutional-subtle border border-institutional/20 p-3 rounded-md text-text-default text-xs flex items-start gap-2">
-        <Layers size={16} className="shrink-0 mt-0.5 text-institutional" />
+      <div className="bg-surface-active border border-status-info-border p-3 rounded-md text-text-primary text-xs flex items-start gap-2">
+        <Layers size={16} className="shrink-0 mt-0.5 text-action-link" />
         <p>
-          <strong className="font-semibold text-institutional">Mobile Matrix View:</strong> Tap any Key Area to expand, and select an intersection dimension to customize actions.
+          <strong className="font-semibold text-action-link">Mobile Matrix View:</strong> Tap any Key Area to expand, and select an intersection dimension to customize actions.
         </p>
       </div>
 
@@ -75,17 +75,17 @@ export const MatrixListView: React.FC<MatrixListViewProps> = ({
           const isRowSelected = selectedMode === 'keyArea' && selectedKey === row.id;
 
           return (
-            <div key={row.id} className="border border-border-strong rounded-md bg-surface-card overflow-hidden">
+            <div key={row.id} className="border border-border-strong rounded-md bg-surface-base overflow-hidden">
               {/* Row Header Accordion Trigger */}
               <button
                 type="button"
                 onClick={() => toggleRow(row.id)}
                 aria-expanded={isExpanded}
                 className={`
-                  w-full px-4 py-3 flex items-center justify-between text-left font-semibold text-xs transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring
+                  w-full px-4 py-3 flex items-center justify-between text-start font-semibold text-xs transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring
                   ${isRowSelected
-                    ? 'bg-institutional-subtle text-institutional border-l-4 border-l-institutional font-bold'
-                    : 'hover:bg-surface-hover text-text-default bg-surface-card border-l-2 border-l-institutional/60'
+                    ? 'bg-surface-active text-action-link border-s-4 border-s-action-link font-bold'
+                    : 'hover:bg-surface-hover text-text-primary bg-surface-base border-s-2 border-s-action-link/60'
                   }
                 `}
               >
@@ -117,16 +117,16 @@ export const MatrixListView: React.FC<MatrixListViewProps> = ({
                         aria-pressed={selected}
                         aria-label={`${row.name} × ${col.name}. ${custom ? 'Customized. ' : ''}${tags.map(t => t.text).join(', ')}`}
                         className={`
-                          w-full p-3 rounded-md text-left text-xs font-medium border transition-colors duration-150 motion-reduce:transition-none flex items-center justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring
+                          w-full p-3 rounded-md text-start text-xs font-medium border transition-colors duration-150 motion-reduce:transition-none flex items-center justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring
                           ${selected
-                            ? 'border-blue-600 bg-blue-50/70 text-blue-900 font-semibold ring-1 ring-blue-600 shadow-subtle'
-                            : 'border-border-default hover:bg-surface-hover bg-surface-card text-text-default'
+                            ? 'border-action-link bg-status-info-bg text-action-link font-semibold ring-1 ring-focus-ring shadow-subtle'
+                            : 'border-border-default hover:bg-surface-hover bg-surface-base text-text-primary'
                           }
                         `}
                       >
                         <div className="flex flex-col gap-1">
                           <span className="text-[10px] uppercase font-mono tracking-wider text-text-muted">Analytical Lens</span>
-                          <span className="font-semibold text-text-default text-xs">{col.name}</span>
+                          <span className="font-semibold text-text-primary text-xs">{col.name}</span>
                           {tags.length > 0 && (
                             <div className="flex flex-wrap gap-1 mt-1">
                               {tags.map((tag, idx) => (
@@ -144,7 +144,7 @@ export const MatrixListView: React.FC<MatrixListViewProps> = ({
 
                         <div className="flex items-center gap-2 shrink-0">
                           {custom && (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-institutional bg-institutional-subtle border border-institutional/20 px-2 py-0.5 rounded-md">
+                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-action-link bg-surface-active border border-status-info-border px-2 py-0.5 rounded-md">
                               <CheckCircle2 size={11} />
                               Custom
                             </span>
@@ -158,7 +158,7 @@ export const MatrixListView: React.FC<MatrixListViewProps> = ({
                   <button
                     type="button"
                     onClick={() => onSelectKeyArea(row.id)}
-                    className="w-full text-center py-2 text-xs font-semibold text-institutional hover:bg-institutional-subtle/50 transition-colors duration-150 motion-reduce:transition-none border border-dashed border-institutional/30 rounded-md bg-institutional-subtle/20 mt-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+                    className="w-full text-center py-2 text-xs font-semibold text-action-link hover:bg-surface-active/50 transition-colors duration-150 motion-reduce:transition-none border border-dashed border-action-link/30 rounded-md bg-surface-active/20 mt-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
                   >
                     Inspect Full Key Area &rarr;
                   </button>
