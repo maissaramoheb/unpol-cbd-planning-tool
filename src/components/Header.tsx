@@ -3,6 +3,7 @@ import { ShieldAlert, RefreshCw, BookOpen, User } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Modal } from '../ui/Modal';
 import { APP_VERSION_LABEL } from '../lib/version';
+import { ThemeControl } from '../ui/ThemeControl';
 
 interface HeaderProps {
   onReset: () => void;
@@ -38,6 +39,7 @@ export const Header: React.FC<HeaderProps> = ({ onReset, missionName, analystNam
 
         {/* Status / Actions */}
         <div className="flex items-center gap-2 sm:gap-3">
+          <ThemeControl />
           {missionName && (
             <div className="hidden lg:flex items-center gap-1.5 bg-slate-800/90 border border-slate-700/80 px-2.5 py-1 rounded-md text-xs text-slate-300">
               <User size={13} className="text-blue-400 shrink-0" />

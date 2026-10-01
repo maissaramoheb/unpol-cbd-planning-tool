@@ -1,89 +1,301 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-
-  /* Level 0: Canvas application background */
-  --canvas-bg: #f1f5f9;
-
-  /* Level 1: Major Work Surface */
+  color-scheme: light;
+  --canvas-bg: #eef2f7;
   --surface-base: #ffffff;
   --surface-raised: #ffffff;
-
-  /* Level 2: Secondary / Supporting Panel */
-  --surface-subtle: #f8fafc;
-
-  /* Text */
-  --text-primary: #0f172a;
-  --text-secondary: #334155;
-  --text-muted: #64748b;
+  --surface-subtle: #f6f8fb;
+  --surface-hover: #eaf0f7;
+  --surface-active: #e5edfa;
+  --surface-overlay: #ffffff;
+  --surface-scrim: rgb(15 23 42 / .62);
+  --text-primary: #172438;
+  --text-secondary: #3d4e65;
+  --text-muted: #586b83;
+  --text-disabled: #68788d;
   --text-inverse: #ffffff;
-
-  /* Borders: Two-level system */
-  --border-default: #e2e8f0; /* Internal divider / subordinate */
-  --border-strong: #cbd5e1;  /* Panel boundary / major container */
-
-  /* Actions */
-  --action-primary: #1e40af; /* Institutional navy / primary action blue */
+  --border-subtle: #e8edf3;
+  --border-default: #d6dfe9;
+  --border-strong: #b5c3d3;
+  --action-primary: #1e40af;
   --action-primary-hover: #1e3a8a;
+  --action-primary-active: #172554;
   --action-secondary: #ffffff;
-  --action-secondary-hover: #f1f5f9;
+  --action-secondary-hover: #eaf0f7;
   --action-danger: #b91c1c;
   --action-danger-hover: #991b1b;
-
-  /* Focus */
+  --action-link: #244aaa;
+  --action-link-hover: #173276;
   --focus-ring: #2563eb;
+  --status-success: #166544;
+  --status-success-bg: #e9f5ee;
+  --status-success-border: #a7d3b9;
+  --status-warning: #80520b;
+  --status-warning-bg: #fff5df;
+  --status-warning-border: #e7c981;
+  --status-danger: #a52740;
+  --status-danger-bg: #fceef1;
+  --status-danger-border: #e8b0ba;
+  --status-info: #244aaa;
+  --status-info-bg: #edf3ff;
+  --status-info-border: #b6c9ec;
+  --accent-purple: #6c3dab;
+  --accent-purple-bg: #f3edfa;
+  --accent-purple-border: #d1bce9;
+  --accent-teal: #116867;
+  --accent-teal-bg: #e8f5f4;
+  --accent-teal-border: #a4d3cf;
+  --accent-cyan: #14617e;
+  --accent-cyan-bg: #e8f4f9;
+  --accent-cyan-border: #aad1e0;
+  --accent-indigo: #4c49a8;
+  --accent-indigo-bg: #eeeefa;
+  --accent-indigo-border: #c6c4e7;
+  --shadow-subtle: 0 1px 2px rgb(23 36 56 / .05);
+  --shadow-raised: 0 4px 14px rgb(23 36 56 / .07);
+  --shadow-overlay: 0 20px 60px rgb(15 23 42 / .25);
+  --radius-sm: .25rem;
+  --radius-md: .375rem;
+  --radius-lg: .5rem;
+  --background: var(--canvas-bg);
+  --foreground: var(--text-primary);
+}
 
-  /* Shape */
-  --radius-sm: 0.25rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
-
-  /* Elevation */
-  --shadow-subtle: 0 1px 2px 0 rgb(15 23 42 / 0.05);
-  --shadow-raised: 0 4px 6px -1px rgb(15 23 42 / 0.07), 0 2px 4px -2px rgb(15 23 42 / 0.07);
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --canvas-bg: #101925;
+  --surface-base: #182333;
+  --surface-raised: #1c293a;
+  --surface-subtle: #152131;
+  --surface-hover: #28394e;
+  --surface-active: #243b5f;
+  --surface-overlay: #213044;
+  --surface-scrim: rgb(5 12 23 / .72);
+  --text-primary: #edf2f8;
+  --text-secondary: #c4d0df;
+  --text-muted: #a4b4c9;
+  --text-disabled: #90a1b7;
+  --text-inverse: #ffffff;
+  --border-subtle: #2b3b50;
+  --border-default: #3e5169;
+  --border-strong: #59708c;
+  --action-primary: #315fc5;
+  --action-primary-hover: #2956b8;
+  --action-primary-active: #234da6;
+  --action-secondary: #1c293a;
+  --action-secondary-hover: #28394e;
+  --action-danger: #bd354a;
+  --action-danger-hover: #a72c40;
+  --action-link: #aecaff;
+  --action-link-hover: #d0e1ff;
+  --focus-ring: #93b9ff;
+  --status-success: #a0dec0;
+  --status-success-bg: #183b31;
+  --status-success-border: #3e7963;
+  --status-warning: #f0cf8a;
+  --status-warning-bg: #3c3020;
+  --status-warning-border: #876d3e;
+  --status-danger: #f4b2c0;
+  --status-danger-bg: #402736;
+  --status-danger-border: #875264;
+  --status-info: #aecaff;
+  --status-info-bg: #233958;
+  --status-info-border: #506f9f;
+  --accent-purple: #d3b7f5;
+  --accent-purple-bg: #342944;
+  --accent-purple-border: #786090;
+  --accent-teal: #97d9d2;
+  --accent-teal-bg: #193b3c;
+  --accent-teal-border: #467c7b;
+  --accent-cyan: #a0d7ef;
+  --accent-cyan-bg: #1c3547;
+  --accent-cyan-border: #4f7d95;
+  --accent-indigo: #c6c2ff;
+  --accent-indigo-bg: #2e3052;
+  --accent-indigo-border: #6e709c;
+  --shadow-subtle: 0 1px 3px rgb(0 0 0 / .14);
+  --shadow-raised: 0 5px 18px rgb(0 0 0 / .18);
+  --shadow-overlay: 0 20px 60px rgb(0 0 0 / .4);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-
   --color-canvas-bg: var(--canvas-bg);
   --color-surface-base: var(--surface-base);
   --color-surface-raised: var(--surface-raised);
   --color-surface-subtle: var(--surface-subtle);
-
+  --color-surface-hover: var(--surface-hover);
+  --color-surface-active: var(--surface-active);
+  --color-surface-overlay: var(--surface-overlay);
+  --color-surface-scrim: var(--surface-scrim);
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
   --color-text-muted: var(--text-muted);
+  --color-text-disabled: var(--text-disabled);
   --color-text-inverse: var(--text-inverse);
-
+  --color-border-subtle: var(--border-subtle);
   --color-border-default: var(--border-default);
   --color-border-strong: var(--border-strong);
-
   --color-action-primary: var(--action-primary);
   --color-action-primary-hover: var(--action-primary-hover);
+  --color-action-primary-active: var(--action-primary-active);
   --color-action-secondary: var(--action-secondary);
   --color-action-secondary-hover: var(--action-secondary-hover);
   --color-action-danger: var(--action-danger);
   --color-action-danger-hover: var(--action-danger-hover);
-
+  --color-action-link: var(--action-link);
+  --color-action-link-hover: var(--action-link-hover);
   --color-focus-ring: var(--focus-ring);
-
-  --radius-sm: var(--radius-sm);
-  --radius-md: var(--radius-md);
-  --radius-lg: var(--radius-lg);
-
+  --color-status-success: var(--status-success);
+  --color-status-success-bg: var(--status-success-bg);
+  --color-status-success-border: var(--status-success-border);
+  --color-status-warning: var(--status-warning);
+  --color-status-warning-bg: var(--status-warning-bg);
+  --color-status-warning-border: var(--status-warning-border);
+  --color-status-danger: var(--status-danger);
+  --color-status-danger-bg: var(--status-danger-bg);
+  --color-status-danger-border: var(--status-danger-border);
+  --color-status-info: var(--status-info);
+  --color-status-info-bg: var(--status-info-bg);
+  --color-status-info-border: var(--status-info-border);
+  --color-accent-purple: var(--accent-purple);
+  --color-accent-purple-bg: var(--accent-purple-bg);
+  --color-accent-purple-border: var(--accent-purple-border);
+  --color-accent-teal: var(--accent-teal);
+  --color-accent-teal-bg: var(--accent-teal-bg);
+  --color-accent-teal-border: var(--accent-teal-border);
+  --color-accent-cyan: var(--accent-cyan);
+  --color-accent-cyan-bg: var(--accent-cyan-bg);
+  --color-accent-cyan-border: var(--accent-cyan-border);
+  --color-accent-indigo: var(--accent-indigo);
+  --color-accent-indigo-bg: var(--accent-indigo-bg);
+  --color-accent-indigo-border: var(--accent-indigo-border);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --shadow-subtle: var(--shadow-subtle);
   --shadow-raised: var(--shadow-raised);
+  --shadow-overlay: var(--shadow-overlay);
 }
 
-body {
-  background: var(--canvas-bg, #f1f5f9);
-  color: #0f172a;
+body { background: var(--canvas-bg); color: var(--text-primary); }
+
+/* Document content always resolves the light palette, even in a dark workspace. */
+:where(.professional-report, .executive-brief, .planning-output) {
+  color-scheme: light;
+  --canvas-bg: #eef2f7;
+  --surface-base: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-subtle: #f6f8fb;
+  --surface-hover: #eaf0f7;
+  --surface-active: #e5edfa;
+  --surface-overlay: #ffffff;
+  --surface-scrim: rgb(15 23 42 / .62);
+  --text-primary: #172438;
+  --text-secondary: #3d4e65;
+  --text-muted: #586b83;
+  --text-disabled: #68788d;
+  --text-inverse: #ffffff;
+  --border-subtle: #e8edf3;
+  --border-default: #d6dfe9;
+  --border-strong: #b5c3d3;
+  --action-primary: #1e40af;
+  --action-primary-hover: #1e3a8a;
+  --action-primary-active: #172554;
+  --action-secondary: #ffffff;
+  --action-secondary-hover: #eaf0f7;
+  --action-danger: #b91c1c;
+  --action-danger-hover: #991b1b;
+  --action-link: #244aaa;
+  --action-link-hover: #173276;
+  --focus-ring: #2563eb;
+  --status-success: #166544;
+  --status-success-bg: #e9f5ee;
+  --status-success-border: #a7d3b9;
+  --status-warning: #80520b;
+  --status-warning-bg: #fff5df;
+  --status-warning-border: #e7c981;
+  --status-danger: #a52740;
+  --status-danger-bg: #fceef1;
+  --status-danger-border: #e8b0ba;
+  --status-info: #244aaa;
+  --status-info-bg: #edf3ff;
+  --status-info-border: #b6c9ec;
+  --accent-purple: #6c3dab;
+  --accent-purple-bg: #f3edfa;
+  --accent-purple-border: #d1bce9;
+  --accent-teal: #116867;
+  --accent-teal-bg: #e8f5f4;
+  --accent-teal-border: #a4d3cf;
+  --accent-cyan: #14617e;
+  --accent-cyan-bg: #e8f4f9;
+  --accent-cyan-border: #aad1e0;
+  --accent-indigo: #4c49a8;
+  --accent-indigo-bg: #eeeefa;
+  --accent-indigo-border: #c6c4e7;
+  --shadow-subtle: 0 1px 2px rgb(23 36 56 / .05);
+  --shadow-raised: 0 4px 14px rgb(23 36 56 / .07);
+  --shadow-overlay: 0 20px 60px rgb(15 23 42 / .25);
+}
+
+@media print {
+  :root, html[data-theme="dark"] {
+    color-scheme: light;
+  --canvas-bg: #eef2f7;
+  --surface-base: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-subtle: #f6f8fb;
+  --surface-hover: #eaf0f7;
+  --surface-active: #e5edfa;
+  --surface-overlay: #ffffff;
+  --surface-scrim: rgb(15 23 42 / .62);
+  --text-primary: #172438;
+  --text-secondary: #3d4e65;
+  --text-muted: #586b83;
+  --text-disabled: #68788d;
+  --text-inverse: #ffffff;
+  --border-subtle: #e8edf3;
+  --border-default: #d6dfe9;
+  --border-strong: #b5c3d3;
+  --action-primary: #1e40af;
+  --action-primary-hover: #1e3a8a;
+  --action-primary-active: #172554;
+  --action-secondary: #ffffff;
+  --action-secondary-hover: #eaf0f7;
+  --action-danger: #b91c1c;
+  --action-danger-hover: #991b1b;
+  --action-link: #244aaa;
+  --action-link-hover: #173276;
+  --focus-ring: #2563eb;
+  --status-success: #166544;
+  --status-success-bg: #e9f5ee;
+  --status-success-border: #a7d3b9;
+  --status-warning: #80520b;
+  --status-warning-bg: #fff5df;
+  --status-warning-border: #e7c981;
+  --status-danger: #a52740;
+  --status-danger-bg: #fceef1;
+  --status-danger-border: #e8b0ba;
+  --status-info: #244aaa;
+  --status-info-bg: #edf3ff;
+  --status-info-border: #b6c9ec;
+  --accent-purple: #6c3dab;
+  --accent-purple-bg: #f3edfa;
+  --accent-purple-border: #d1bce9;
+  --accent-teal: #116867;
+  --accent-teal-bg: #e8f5f4;
+  --accent-teal-border: #a4d3cf;
+  --accent-cyan: #14617e;
+  --accent-cyan-bg: #e8f4f9;
+  --accent-cyan-border: #aad1e0;
+  --accent-indigo: #4c49a8;
+  --accent-indigo-bg: #eeeefa;
+  --accent-indigo-border: #c6c4e7;
+  --shadow-subtle: 0 1px 2px rgb(23 36 56 / .05);
+  --shadow-raised: 0 4px 14px rgb(23 36 56 / .07);
+  --shadow-overlay: 0 20px 60px rgb(15 23 42 / .25);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
