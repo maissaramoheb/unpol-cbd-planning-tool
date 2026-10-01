@@ -5,12 +5,12 @@ const React = require('react');
 const { renderToStaticMarkup } = require('react-dom/server');
 const { getInitialProjectData } = require('../.test-dist/lib/storage.js');
 const { buildCaranaDemoData } = require('../.test-dist/data/caranaDemo.js');
-const { buildTraceabilityIndex, getEntity, getUpstream, getDownstream, getEvidenceConnections, traceKey } = require('../.test-dist/lib/traceability.js');
+const { buildTraceabilityIndex, getEntity, getUpstream, getDownstream, getEvidenceConnections, getRecordedReasoningPath, traceKey } = require('../.test-dist/lib/traceability.js');
 const { buildPlanningOutput } = require('../.test-dist/lib/planningOutputs.js');
 const { buildExecutiveBriefModel } = require('../.test-dist/lib/executiveBrief.js');
 const { buildPlanningBriefModel } = require('../.test-dist/lib/reportModel.js');
 const { generateMarkdownBrief } = require('../.test-dist/lib/exportMarkdown.js');
-const { WorkbenchRegion, InspectButton } = require('../.test-dist/components/WorkbenchInspector.js');
+const { WorkbenchRegion, InspectButton, getInspectorBackTarget } = require('../.test-dist/components/WorkbenchInspector.js');
 const demo = () => buildCaranaDemoData(getInitialProjectData());
 
 test('Inspector resolves existing IDs and references without inventing professional references', () => {
@@ -156,9 +156,90 @@ test('traceability is pure and leaves all five output projections unchanged', ()
   const executive = buildExecutiveBriefModel(data);
   const freeze = value => { if (value && typeof value === 'object') { Object.freeze(value); Object.values(value).forEach(freeze); } };
   freeze(data);
-  buildTraceabilityIndex(data);
+  const index = buildTraceabilityIndex(data);
+  getRecordedReasoningPath(index, { type: 'pestels', id: 'political' });
   assert.equal(JSON.stringify(data), snapshot);
   assert.deepEqual(kinds.map(kind => buildPlanningOutput(data, kind)), before);
   assert.equal(generateMarkdownBrief(buildPlanningBriefModel(data)), brief);
   assert.deepEqual(buildExecutiveBriefModel(data), executive);
+});
+
+test('primary recorded path exposes the actual CARANA source → synthesis → result chain', () => {
+  const index = buildTraceabilityIndex(demo());
+  const path = getRecordedReasoningPath(index, { type: 'pestels', id: 'political' });
+  assert.deepEqual(path.entities.map(e => e.ref.type), ['evidence', 'pestels', 'swot', 'option', 'priority', 'output', 'indicator']);
+  assert.equal(path.entities[2].reference, 'O01');
+  assert.equal(path.entities[3].reference, 'WO-01');
+  assert.equal(path.entities[4].title, 'Administrative Systems × Police Practice');
+  assert.equal(path.entities[5].title, 'One minimum incident and handover register with a supervisory-review checklist.');
+  assert.deepEqual(path.relations.map(r => r.label), ['Recorded evidence for', 'Recorded source for', 'Contributes to', 'Informs', 'Has recorded output', 'Assigned output indicator']);
+  assert.equal(path.downstreamStop, 'end');
+});
+
+test('recorded path includes upstream context and downstream continuation around a selected option', () => {
+  const index = buildTraceabilityIndex(demo()); const ref = { type: 'option', id: 'carana-option-st1' };
+  const path = getRecordedReasoningPath(index, ref); const position = path.entities.findIndex(e => e.key === traceKey(ref));
+  assert.ok(position > 0 && position < path.entities.length - 1);
+  assert.ok(path.entities.slice(0, position).some(e => e.ref.type === 'pestels'));
+  assert.ok(path.entities.slice(position + 1).some(e => e.ref.type === 'output'));
+  path.relations.forEach((relation, i) => {
+    assert.equal(relation.from, path.entities[i].key); assert.equal(relation.to, path.entities[i + 1].key);
+    assert.ok(index.relations.includes(relation));
+  });
+});
+
+test('recorded paths are deterministic after connection-array order changes', () => {
+  const index = buildTraceabilityIndex(demo()); const ref = { type: 'pestels', id: 'political' };
+  const before = getRecordedReasoningPath(index, ref);
+  index.relations.reverse(); index.upstream.forEach(relations => relations.reverse()); index.downstream.forEach(relations => relations.reverse());
+  assert.deepEqual(getRecordedReasoningPath(index, ref), before);
+});
+
+test('recorded paths never fill missing references or connect similar unlinked findings', () => {
+  const data = getInitialProjectData('blank'); data.pestels.political.finding = data.pestels.economic.finding = 'Same topic';
+  const index = buildTraceabilityIndex(data);
+  assert.equal(getRecordedReasoningPath(index, { type: 'pestels', id: 'political' }).entities.length, 1);
+  assert.equal(getRecordedReasoningPath(index, { type: 'pestels', id: 'missing' }).entities.length, 0);
+});
+
+// Small explicitly linked synthetic indexes exercise traversal limits without changing project fixtures.
+function pathIndex(count, cycle = false) {
+  const entities = Array.from({ length: count }, (_, n) => {
+    const ref = { type: 'pestels', id: String(n) }; return { ref, key: traceKey(ref), typeLabel: 'Finding', title: String(n), stage: 2, details: [] };
+  });
+  const relations = entities.slice(0, cycle ? count : count - 1).map((e, n) => ({ from: e.key, to: entities[(n + 1) % count].key, relationType: 'source', label: 'Recorded source for' }));
+  const upstream = new Map(), downstream = new Map();
+  relations.forEach(r => { upstream.set(r.to, [r]); downstream.set(r.from, [r]); });
+  return { entities, relations, upstream, downstream, byKey: new Map(entities.map(e => [e.key, e])) };
+}
+
+test('cyclic recorded paths terminate without repeating entities', () => {
+  const index = pathIndex(4, true); const path = getRecordedReasoningPath(index, index.entities[0].ref);
+  assert.equal(path.entities.length, new Set(path.entities.map(e => e.key)).size);
+  assert.ok(path.entities.length <= 4);
+  assert.ok(path.upstreamStop === 'cycle' || path.downstreamStop === 'cycle');
+});
+
+test('long recorded paths stay within eight edges and mark display limits', () => {
+  const index = pathIndex(30); const path = getRecordedReasoningPath(index, index.entities[12].ref);
+  assert.equal(path.relations.length, 8); assert.equal(path.entities.length, 9);
+  assert.equal(path.upstreamStop, 'limit'); assert.equal(path.downstreamStop, 'limit');
+  assert.ok(path.entities.some(e => e.key === index.entities[12].key));
+});
+
+test('bounded path traversal leaves the index and project unchanged', () => {
+  const data = demo(); const index = buildTraceabilityIndex(data);
+  const before = JSON.stringify({ data, entities: index.entities, relations: index.relations, upstream: [...index.upstream], downstream: [...index.downstream] });
+  getRecordedReasoningPath(index, { type: 'pestels', id: 'political' });
+  assert.equal(JSON.stringify({ data, entities: index.entities, relations: index.relations, upstream: [...index.upstream], downstream: [...index.downstream] }), before);
+});
+
+test('Inspector Back returns the prior entity, skips deleted entries and leaves history unmodified', () => {
+  const index = buildTraceabilityIndex(demo()); const first = { type: 'pestels', id: 'political' }, second = { type: 'option', id: 'carana-option-st1' };
+  const history = [first, second]; const before = JSON.stringify(history);
+  assert.deepEqual(getInspectorBackTarget(index, history), { selected: second, history: [first] });
+  assert.deepEqual(getInspectorBackTarget(index, [first, { type: 'swot', id: 'deleted' }]), { selected: first, history: [] });
+  assert.equal(getInspectorBackTarget(index, []), null);
+  assert.equal(getInspectorBackTarget(index, [{ type: 'swot', id: 'deleted' }]), null);
+  assert.equal(JSON.stringify(history), before);
 });

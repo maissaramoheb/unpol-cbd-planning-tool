@@ -161,6 +161,63 @@ export const getEntity = (index: TraceabilityIndex, ref: InspectorEntityRef) => 
 export const getUpstream = (index: TraceabilityIndex, ref: InspectorEntityRef) => index.upstream.get(traceKey(ref)) ?? [];
 export const getDownstream = (index: TraceabilityIndex, ref: InspectorEntityRef) => index.downstream.get(traceKey(ref)) ?? [];
 
+export interface RecordedReasoningPath {
+  entities: TraceEntity[];
+  relations: TraceRelation[];
+  upstreamStop: 'end' | 'limit' | 'cycle';
+  downstreamStop: 'end' | 'limit' | 'cycle';
+}
+
+/** Display one recorded route. Ordering chooses navigation context, never analytical priority. */
+export function getRecordedReasoningPath(index: TraceabilityIndex, ref: InspectorEntityRef): RecordedReasoningPath {
+  const selected = getEntity(index, ref);
+  if (!selected) return { entities: [], relations: [], upstreamStop: 'end', downstreamStop: 'end' };
+  const reasoningTypes = new Set<TraceEntityType>(['evidence', 'pestels', 'swot', 'option', 'priority', 'output']);
+  type Route = { entities: TraceEntity[]; relations: TraceRelation[]; stop: RecordedReasoningPath['upstreamStop'] };
+  const walk = (start: TraceEntity, direction: 'upstream' | 'downstream', depth: number, excluded: Set<string>): Route => {
+    const pending: Route[] = [{ entities: [start], relations: [], stop: 'end' }];
+    let best = pending[0];
+    let bestContext = -1;
+    let bestExtraSteps = Infinity;
+    // Fixed depth and visit budgets keep branching/cyclic projects cheap to inspect.
+    for (let visit = 0; visit < pending.length && visit < 128; visit++) {
+      const route = pending[visit];
+      const last = route.entities[route.entities.length - 1];
+      const recorded = direction === 'upstream' ? index.upstream.get(last.key) ?? [] : index.downstream.get(last.key) ?? [];
+      const candidates = recorded.filter(relation => index.byKey.has(direction === 'upstream' ? relation.from : relation.to));
+      const available = candidates.filter(relation => {
+        const key = direction === 'upstream' ? relation.from : relation.to;
+        return !excluded.has(key) && !route.entities.some(entity => entity.key === key);
+      }).sort((a, b) => compare(JSON.stringify([a.from, a.to, a.relationType]), JSON.stringify([b.from, b.to, b.relationType])));
+      route.stop = !candidates.length ? 'end' : !available.length ? 'cycle' : route.relations.length >= depth || pending.length >= 128 ? 'limit' : 'end';
+      const terminal = route.stop !== 'end' || !available.length;
+      const context = new Set(route.entities.filter(entity => reasoningTypes.has(entity.ref.type)).map(entity => entity.ref.type)).size;
+      const extraSteps = route.entities.filter(entity => !reasoningTypes.has(entity.ref.type)).length;
+      // Prefer an explicit source/synthesis/result spine, then its continuation.
+      // Stable candidate ordering breaks ties without using text or ratings.
+      if (terminal && (context > bestContext || context === bestContext && (extraSteps < bestExtraSteps || extraSteps === bestExtraSteps && route.relations.length > best.relations.length))) {
+        best = route;
+        bestContext = context;
+        bestExtraSteps = extraSteps;
+      }
+      if (terminal) continue;
+      available.slice(0, 128 - pending.length).forEach(relation => {
+        const next = index.byKey.get(direction === 'upstream' ? relation.from : relation.to)!;
+        pending.push({ entities: [...route.entities, next], relations: [...route.relations, relation], stop: 'end' });
+      });
+    }
+    return best;
+  };
+  const upstream = walk(selected, 'upstream', 4, new Set());
+  const downstream = walk(selected, 'downstream', 8 - upstream.relations.length, new Set(upstream.entities.slice(1).map(entity => entity.key)));
+  return {
+    entities: [...upstream.entities.slice(1).reverse(), ...downstream.entities],
+    relations: [...upstream.relations].reverse().concat(downstream.relations),
+    upstreamStop: upstream.stop,
+    downstreamStop: downstream.stop
+  };
+}
+
 /** Walk only recorded incoming links; visited keys bound cycles and deduplicate notes. */
 export function getEvidenceConnections(index: TraceabilityIndex, ref: InspectorEntityRef): { direct: TraceEntity[]; upstream: TraceEntity[] } {
   const key = traceKey(ref);
