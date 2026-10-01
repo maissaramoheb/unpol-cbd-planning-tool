@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+title: "UNPOL Capacity-Building & Development (CBD) Integrated Planning Tool"
+type: software
+authors:
+  - family-names: "Selim"
+    given-names: "Maissara"
+version: "0.10.0"
+date-released: 2026-10-01
+license: MIT
+repository-code: "https://github.com/maissaramoheb/unpol-cbd-planning-tool"
+url: "https://unpol-cbd-planning-tool.vercel.app/"
+keywords:
+  - "United Nations Police"
+  - "UNPOL"
+  - "capacity-building"
+  - "security sector reform"
+  - "peace operations"
+  - "police planning"
