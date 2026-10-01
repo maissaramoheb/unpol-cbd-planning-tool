@@ -25,29 +25,29 @@ interface StakeholderDecisionSupportProps {
 type QuadrantId = EngagementQuadrantId | CredibilityQuadrantId;
 
 const QUADRANT_TONES: Record<QuadrantId, string> = {
-  'high-influence-resistance': 'bg-rose-50/25',
-  'high-influence-allies': 'bg-emerald-50/25',
-  monitor: 'bg-amber-50/20',
-  'support-base': 'bg-blue-50/20',
-  'legitimacy-voices': 'bg-indigo-50/20',
-  'core-partners': 'bg-blue-50/25',
+  'high-influence-resistance': 'bg-status-danger-bg',
+  'high-influence-allies': 'bg-status-success-bg',
+  monitor: 'bg-status-warning-bg',
+  'support-base': 'bg-status-info-bg',
+  'legitimacy-voices': 'bg-accent-indigo-bg',
+  'core-partners': 'bg-status-info-bg',
   'lower-priority-monitoring': 'bg-surface-subtle/30',
-  'operationally-sensitive': 'bg-amber-50/25'
+  'operationally-sensitive': 'bg-status-warning-bg'
 };
 
 const POSTURE_STYLES: Record<StakeholderPosition, string> = {
-  Enabler: 'border-emerald-300 bg-emerald-50/70 text-emerald-900',
-  Persuadable: 'border-blue-300 bg-blue-50/70 text-blue-900',
-  Blocker: 'border-amber-300 bg-amber-50/70 text-amber-950',
-  'Spoiler risk': 'border-rose-300 bg-rose-50/70 text-rose-950',
-  'Neutral / unknown': 'border-border-default bg-surface-raised text-text-default'
+  Enabler: 'border-status-success-border bg-status-success-bg text-status-success',
+  Persuadable: 'border-status-info-border bg-status-info-bg text-action-link',
+  Blocker: 'border-status-warning-border bg-status-warning-bg text-status-warning',
+  'Spoiler risk': 'border-status-danger-border bg-status-danger-bg text-status-danger',
+  'Neutral / unknown': 'border-border-default bg-surface-raised text-text-primary'
 };
 
 const POSTURE_DOTS: Record<StakeholderPosition, string> = {
-  Enabler: 'bg-emerald-600',
-  Persuadable: 'bg-institutional',
-  Blocker: 'bg-amber-600',
-  'Spoiler risk': 'bg-rose-600',
+  Enabler: 'bg-status-success',
+  Persuadable: 'bg-action-primary',
+  Blocker: 'bg-status-warning',
+  'Spoiler risk': 'bg-status-danger',
   'Neutral / unknown': 'bg-text-muted'
 };
 
@@ -107,12 +107,12 @@ const QuadrantCard = <TId extends QuadrantId>({
         <span className="text-[11px] font-mono uppercase tracking-wider text-text-muted block mb-0.5">
           {yLabel}
         </span>
-        <h6 id={`${quadrant.id}-title`} className="text-xs font-bold leading-snug text-text-default">
+        <h6 id={`${quadrant.id}-title`} className="text-xs font-bold leading-snug text-text-primary">
           {quadrant.title}
         </h6>
         <p className="mt-1 text-xs leading-relaxed text-text-muted">{quadrant.meaning}</p>
       </div>
-      <span className="flex h-6 min-w-6 shrink-0 items-center justify-center rounded-md border border-border-default bg-surface-card px-1.5 text-xs font-mono font-semibold text-text-secondary shadow-subtle">
+      <span className="flex h-6 min-w-6 shrink-0 items-center justify-center rounded-md border border-border-default bg-surface-base px-1.5 text-xs font-mono font-semibold text-text-secondary shadow-subtle">
         {quadrant.stakeholders.length}
       </span>
     </div>
@@ -133,7 +133,7 @@ const QuadrantCard = <TId extends QuadrantId>({
     </div>
 
     <div className="mt-3 border-t border-border-default pt-2.5 text-xs leading-relaxed text-text-muted flex flex-col gap-1">
-      <p className="text-text-default">
+      <p className="text-text-primary">
         <strong className="font-semibold text-text-secondary">Posture:</strong> {quadrant.recommendation}
       </p>
       <p className="text-[11px] text-text-muted">
@@ -183,14 +183,14 @@ const QuadrantMatrix = <TId extends QuadrantId>({
   return (
     <div className="flex flex-col gap-3">
       <div>
-        <h5 className="text-xs font-semibold uppercase tracking-wider text-text-default">
+        <h5 className="text-xs font-semibold uppercase tracking-wider text-text-primary">
           {title}
         </h5>
         <p className="mt-0.5 text-xs text-text-muted">{description}</p>
       </div>
 
       {/* Outer Shell: Shared Boundary with 1px Hairline Grid */}
-      <div className="rounded-lg border border-border-default bg-surface-card overflow-hidden shadow-subtle flex flex-col">
+      <div className="rounded-lg border border-border-default bg-surface-base overflow-hidden shadow-subtle flex flex-col">
         {/* Horizontal Axis Header Bar */}
         <div className="border-b border-border-default bg-surface-subtle px-4 py-2 flex items-center justify-between text-[11px] font-mono font-medium text-text-muted">
           <span>&larr; {xLabels[0]}</span>
@@ -254,12 +254,12 @@ const InsightList: React.FC<{
   title,
   stakeholders,
   icon,
-  iconColor = 'text-institutional',
+  iconColor = 'text-action-link',
   badgeVariant = 'slate',
   emptyText
 }) => (
-  <div className="rounded-lg bg-surface-card p-3.5 border border-border-default shadow-subtle">
-    <div className="flex items-center gap-2 text-xs font-semibold text-text-default">
+  <div className="rounded-lg bg-surface-base p-3.5 border border-border-default shadow-subtle">
+    <div className="flex items-center gap-2 text-xs font-semibold text-text-primary">
       <span className={iconColor}>{icon}</span>
       <span>{title}</span>
       <span className="ml-auto">
@@ -288,7 +288,7 @@ export const StakeholderDecisionSupport: React.FC<StakeholderDecisionSupportProp
     return (
       <div className="rounded-lg border border-dashed border-border-default bg-surface-subtle p-6 text-center">
         <Users className="mx-auto text-text-muted" size={28} />
-        <h5 className="mt-3 text-xs font-semibold text-text-default uppercase tracking-wider">No stakeholders mapped</h5>
+        <h5 className="mt-3 text-xs font-semibold text-text-primary uppercase tracking-wider">No stakeholders mapped</h5>
         <p className="mt-1 text-xs text-text-muted">
           Add stakeholders and complete their ratings to generate decision-support quadrants.
         </p>
@@ -298,11 +298,11 @@ export const StakeholderDecisionSupport: React.FC<StakeholderDecisionSupportProp
 
   return (
     <div className="flex flex-col gap-7">
-      <div className="rounded-lg border border-institutional/20 bg-institutional-subtle p-4">
+      <div className="rounded-lg border border-institutional/20 bg-surface-active p-4">
         <div className="flex items-start gap-3">
-          <ShieldCheck className="mt-0.5 shrink-0 text-institutional" size={18} />
+          <ShieldCheck className="mt-0.5 shrink-0 text-action-link" size={18} />
           <div>
-            <h5 className="text-xs font-semibold uppercase tracking-wider text-text-default">Analytical Framing</h5>
+            <h5 className="text-xs font-semibold uppercase tracking-wider text-text-primary">Analytical Framing</h5>
             <p className="mt-1 text-xs leading-relaxed text-text-secondary">
               The matrices translate current analyst ratings into engagement priorities. Select an actor in either matrix to review its assumptions, risk note, and recorded engagement approach.
             </p>
@@ -352,13 +352,13 @@ export const StakeholderDecisionSupport: React.FC<StakeholderDecisionSupportProp
         />
       </div>
 
-      <div aria-live="polite" className="rounded-lg border border-border-default bg-surface-card p-4 shadow-subtle">
+      <div aria-live="polite" className="rounded-lg border border-border-default bg-surface-base p-4 shadow-subtle">
         {selectedStakeholder ? (
           <>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <span className="text-xs font-semibold text-institutional uppercase tracking-wider">Selected stakeholder</span>
-                <h5 className="mt-0.5 text-sm font-bold text-text-default">
+                <span className="text-xs font-semibold text-action-link uppercase tracking-wider">Selected stakeholder</span>
+                <h5 className="mt-0.5 text-sm font-bold text-text-primary">
                   {selectedStakeholder.name}
                 </h5>
                 <p className="mt-1 text-xs text-text-muted">
@@ -374,16 +374,16 @@ export const StakeholderDecisionSupport: React.FC<StakeholderDecisionSupportProp
             </div>
             <div className="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-3">
               <div className="rounded-md border border-border-default bg-surface-subtle p-3">
-                <span className="text-xs font-semibold text-text-default">Strategic role</span>
+                <span className="text-xs font-semibold text-text-primary">Strategic role</span>
                 <p className="mt-1 text-xs leading-relaxed text-text-muted">{selectedStakeholder.role}</p>
               </div>
-              <div className="rounded-md border border-rose-200 bg-rose-50/30 p-3">
-                <span className="text-xs font-semibold text-rose-900">Risk / review issue</span>
-                <p className="mt-1 text-xs leading-relaxed text-rose-800">{selectedStakeholder.risk}</p>
+              <div className="rounded-md border border-status-danger-border bg-status-danger-bg p-3">
+                <span className="text-xs font-semibold text-status-danger">Risk / review issue</span>
+                <p className="mt-1 text-xs leading-relaxed text-status-danger">{selectedStakeholder.risk}</p>
               </div>
-              <div className="rounded-md border border-institutional/20 bg-institutional-subtle p-3">
-                <span className="text-xs font-semibold text-institutional">Recorded engagement approach</span>
-                <p className="mt-1 text-xs leading-relaxed text-text-default">{selectedStakeholder.engagement}</p>
+              <div className="rounded-md border border-institutional/20 bg-surface-active p-3">
+                <span className="text-xs font-semibold text-action-link">Recorded engagement approach</span>
+                <p className="mt-1 text-xs leading-relaxed text-text-primary">{selectedStakeholder.engagement}</p>
               </div>
             </div>
           </>
@@ -394,7 +394,7 @@ export const StakeholderDecisionSupport: React.FC<StakeholderDecisionSupportProp
 
       <section aria-labelledby="stakeholder-insights-title">
         <div className="mb-3">
-          <h5 id="stakeholder-insights-title" className="text-xs font-semibold uppercase tracking-wider text-text-default">
+          <h5 id="stakeholder-insights-title" className="text-xs font-semibold uppercase tracking-wider text-text-primary">
             Recommended engagement posture
           </h5>
           <p className="mt-0.5 text-xs text-text-muted">
@@ -406,7 +406,7 @@ export const StakeholderDecisionSupport: React.FC<StakeholderDecisionSupportProp
             title="Priority engagement risks"
             stakeholders={analysis.insights.priorityRisks}
             icon={<AlertTriangle size={15} />}
-            iconColor="text-rose-600"
+            iconColor="text-status-danger"
             badgeVariant="rose"
             emptyText="No elevated engagement risks currently derived."
           />
@@ -414,7 +414,7 @@ export const StakeholderDecisionSupport: React.FC<StakeholderDecisionSupportProp
             title="Leadership-level engagement"
             stakeholders={analysis.insights.leadershipLevel}
             icon={<BriefcaseBusiness size={15} />}
-            iconColor="text-institutional"
+            iconColor="text-action-link"
             badgeVariant="blue"
             emptyText="No high-influence actors currently recorded."
           />
@@ -422,7 +422,7 @@ export const StakeholderDecisionSupport: React.FC<StakeholderDecisionSupportProp
             title="Technical working groups"
             stakeholders={analysis.insights.technicalWorkingGroups}
             icon={<CheckCircle2 size={15} />}
-            iconColor="text-emerald-600"
+            iconColor="text-status-success"
             badgeVariant="green"
             emptyText="No actors currently meet the suggested working-group criteria."
           />
@@ -430,7 +430,7 @@ export const StakeholderDecisionSupport: React.FC<StakeholderDecisionSupportProp
             title="Legitimacy consultation"
             stakeholders={analysis.insights.legitimacyConsultation}
             icon={<Scale size={15} />}
-            iconColor="text-indigo-600"
+            iconColor="text-accent-indigo"
             badgeVariant="blue"
             emptyText="No high-legitimacy actors currently recorded."
           />
@@ -446,7 +446,7 @@ export const StakeholderDecisionSupport: React.FC<StakeholderDecisionSupportProp
       </section>
 
       <p className="rounded-md border border-border-default bg-surface-subtle px-3 py-2.5 text-xs leading-relaxed text-text-muted">
-        <strong className="font-semibold text-text-default">Analytical caveat:</strong> {STAKEHOLDER_RATINGS_CAVEAT}
+        <strong className="font-semibold text-text-primary">Analytical caveat:</strong> {STAKEHOLDER_RATINGS_CAVEAT}
       </p>
     </div>
   );

@@ -53,8 +53,8 @@ export const AppShell: React.FC = () => {
     return (
       <div className="min-h-screen bg-canvas-bg flex items-center justify-center font-sans">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin motion-reduce:animate-none" />
-          <span className="text-sm font-bold text-slate-600">Initializing unofficial UNPOL CBD planning prototype...</span>
+          <div className="w-10 h-10 border-4 border-action-link border-t-transparent rounded-full animate-spin motion-reduce:animate-none" />
+          <span className="text-sm font-bold text-text-secondary">Initializing unofficial UNPOL CBD planning prototype...</span>
         </div>
       </div>
     );
@@ -262,7 +262,7 @@ export const AppShell: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-canvas-bg flex flex-col font-sans text-slate-800 print:bg-white print:text-black">
+    <div className="min-h-screen bg-canvas-bg flex flex-col font-sans text-text-primary print:bg-white print:text-black">
       {/* Top Header */}
       <Header
         onReset={handleResetWorkspace}
@@ -275,17 +275,17 @@ export const AppShell: React.FC = () => {
         {storageRecoveryMessage && (
           <div
             role="alert"
-            className="print:hidden flex items-start justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-900"
+            className="print:hidden flex items-start justify-between gap-3 rounded-xl border border-status-warning-border bg-status-warning-bg px-4 py-3 text-xs text-status-warning"
           >
             <div className="flex items-start gap-2">
-              <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-600" />
+              <AlertTriangle size={16} className="mt-0.5 shrink-0 text-status-warning" />
               <span>{storageRecoveryMessage}</span>
             </div>
             <button
               type="button"
               onClick={() => setStorageRecoveryMessage(null)}
               aria-label="Dismiss storage recovery message"
-              className="rounded p-1 text-amber-700 hover:bg-amber-100 transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+              className="rounded p-1 text-status-warning hover:bg-status-warning-bg transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
             >
               <X size={14} />
             </button>
@@ -304,15 +304,15 @@ export const AppShell: React.FC = () => {
       </main>
 
       {/* Footer (Hidden in print) */}
-      <footer className="bg-slate-900 border-t border-slate-800 text-slate-400 py-8 text-center text-xs print:hidden">
+      <footer className="bg-surface-subtle border-t border-border-default text-text-muted py-5 text-center text-xs print:hidden">
         <div className="max-w-4xl mx-auto px-4 flex flex-col gap-3">
-          <p className="font-semibold text-slate-300">
-            Educational planning-support framework developed by <span className="text-white">Lt.Col Maissara Selim</span>
+          <p className="font-semibold text-text-muted">
+            Educational planning-support framework developed by <span className="text-text-primary">Lt.Col Maissara Selim</span>
           </p>
-          <p className="text-[11px] text-slate-500 leading-relaxed max-w-2xl mx-auto">
+          <p className="text-[11px] text-text-muted leading-relaxed max-w-2xl mx-auto">
             This tool is an educational and planning-support prototype. It is not official United Nations doctrine and does not replace mission mandate, official guidance, host-state law, human rights due diligence, command approval, or verified country analysis. Users should verify all context-specific findings through official and current sources before operational or policy use.
           </p>
-          <div className="mt-2 text-slate-400 font-bold bg-slate-800/50 inline-block px-3 py-1 rounded-full border border-slate-800/80 mx-auto">
+          <div className="mt-2 text-text-muted font-bold bg-surface-base inline-block px-3 py-1 rounded-full border border-border-strong mx-auto">
             {APP_VERSION_LABEL}
           </div>
         </div>
