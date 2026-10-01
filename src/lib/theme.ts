@@ -12,7 +12,7 @@ export function resolveTheme(preference: ThemePreference, systemDark: boolean): 
 }
 
 // Runs synchronously in head, before content can paint. Only constants enter this script.
-export const THEME_INIT_SCRIPT = `(function(){var p='system';try{var v=localStorage.getItem('${THEME_STORAGE_KEY}');if(v==='light'||v==='dark')p=v}catch(e){}var t=p==='system'?(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;var r=document.documentElement;r.dataset.theme=t;r.dataset.themePreference=p;r.style.colorScheme=t})()`;
+export const THEME_INIT_SCRIPT = `(function(){var p='system';try{var v=localStorage.getItem('${THEME_STORAGE_KEY}');if(v==='light'||v==='dark')p=v}catch(e){}var t=p==='system'?(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;try{localStorage.setItem('${THEME_STORAGE_KEY}',t)}catch(e){}var r=document.documentElement;r.dataset.theme=t;r.dataset.themePreference=t;r.style.colorScheme=t})()`;
 
 interface ThemeEnvironment {
   root: { dataset: { theme?: string; themePreference?: string; themeChanging?: string }; style: { colorScheme: string }; getBoundingClientRect?: () => unknown };
@@ -22,15 +22,16 @@ interface ThemeEnvironment {
 }
 
 export function createThemeStore({ root, storage, media, events }: ThemeEnvironment) {
-  let preference = parseThemePreference(root.dataset.themePreference ?? null);
+  let preference: ResolvedTheme = resolveTheme(parseThemePreference(root.dataset.themePreference ?? null), media.matches);
   const listeners = new Set<() => void>();
   const read = () => {
-    try { return parseThemePreference(storage.getItem(THEME_STORAGE_KEY)); }
+    try { return resolveTheme(parseThemePreference(storage.getItem(THEME_STORAGE_KEY)), media.matches); }
     catch { return preference; }
   };
   preference = read();
+  try { storage.setItem(THEME_STORAGE_KEY, preference); } catch { /* Session remains usable. */ }
   const apply = () => {
-    const theme = resolveTheme(preference, media.matches);
+    const theme = preference;
     // Flush the new palette with control transitions disabled, then restore normal interactions.
     // This prevents in-flight intermediate colors and does not animate document previews.
     root.dataset.themeChanging = 'true';
@@ -41,7 +42,6 @@ export function createThemeStore({ root, storage, media, events }: ThemeEnvironm
     delete root.dataset.themeChanging;
   };
   const emit = () => { apply(); listeners.forEach(listener => listener()); };
-  const onMediaChange = () => { if (preference === 'system') apply(); };
   const onStorage = (event: Event) => {
     const storageEvent = event as StorageEvent;
     if (storageEvent.key === THEME_STORAGE_KEY || storageEvent.key === null) {
@@ -50,11 +50,16 @@ export function createThemeStore({ root, storage, media, events }: ThemeEnvironm
     }
   };
 
+  const setPreference = (next: ResolvedTheme) => {
+    preference = next;
+    try { storage.setItem(THEME_STORAGE_KEY, next); } catch { /* Session remains usable. */ }
+    emit();
+  };
+
   return {
     getSnapshot: () => preference,
     subscribe(listener: () => void) {
       if (listeners.size === 0) {
-        media.addEventListener('change', onMediaChange);
         events.addEventListener('storage', onStorage);
         apply();
       }
@@ -62,15 +67,11 @@ export function createThemeStore({ root, storage, media, events }: ThemeEnvironm
       return () => {
         listeners.delete(listener);
         if (listeners.size === 0) {
-          media.removeEventListener('change', onMediaChange);
           events.removeEventListener('storage', onStorage);
         }
       };
     },
-    setPreference(next: ThemePreference) {
-      preference = next;
-      try { storage.setItem(THEME_STORAGE_KEY, next); } catch { /* Session remains usable. */ }
-      emit();
-    }
+    setPreference,
+    toggle() { setPreference(preference === 'light' ? 'dark' : 'light'); }
   };
 }

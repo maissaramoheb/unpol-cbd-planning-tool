@@ -1,8 +1,8 @@
 'use client';
 
 import { useSyncExternalStore } from 'react';
-import { Sun, Moon, Monitor } from 'lucide-react';
-import { createThemeStore, type ThemePreference } from '../lib/theme';
+import { Sun, Moon } from 'lucide-react';
+import { createThemeStore, type ResolvedTheme } from '../lib/theme';
 
 let store: ReturnType<typeof createThemeStore> | undefined;
 function getStore() {
@@ -22,24 +22,18 @@ function getStore() {
 }
 const subscribe = (listener: () => void) => getStore().subscribe(listener);
 const getSnapshot = () => getStore().getSnapshot();
-const getServerSnapshot = (): ThemePreference => 'system';
-const modes = [
-  { value: 'light', label: 'Light', Icon: Sun },
-  { value: 'dark', label: 'Dark', Icon: Moon },
-  { value: 'system', label: 'System', Icon: Monitor }
-] as const;
+const getServerSnapshot = (): ResolvedTheme => 'light';
 
 export function ThemeControl() {
-  const preference = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const theme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const label = theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode';
+  const Icon = theme === 'light' ? Moon : Sun;
   return (
-    <div role="group" aria-label="Appearance" className="theme-control inline-flex shrink-0 gap-0.5 rounded-md border border-border-default bg-surface-subtle p-0.5">
-      {modes.map(({ value, label, Icon }) => (
-        <button key={value} type="button" aria-label={`${label} theme`} title={`${label} theme`}
-          aria-pressed={preference === value} onClick={() => getStore().setPreference(value)}
-          className={`inline-flex h-8 w-8 items-center justify-center rounded transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring ${preference === value ? 'bg-surface-active text-action-link shadow-subtle' : 'text-text-muted hover:bg-surface-hover hover:text-text-primary'}`}>
-          <Icon size={15} aria-hidden="true" />
-        </button>
-      ))}
+    <div className="theme-control inline-flex shrink-0 rounded-md border border-border-default bg-surface-subtle p-0.5">
+      <button type="button" aria-label={label} title={label} onClick={() => getStore().toggle()}
+        className="inline-flex h-8 w-8 items-center justify-center rounded text-text-muted hover:bg-surface-hover hover:text-text-primary transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring">
+        <Icon size={15} aria-hidden="true" />
+      </button>
     </div>
   );
 }

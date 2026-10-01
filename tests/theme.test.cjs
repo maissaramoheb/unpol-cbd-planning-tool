@@ -27,7 +27,7 @@ function environment(saved = null, dark = false, blocked = false) {
     otherTab(value, key = THEME_STORAGE_KEY) { storage.setItem(key, value); storageListeners.forEach(fn => fn({ key })); }
   };
 }
-for (const preference of ['light', 'dark', 'system']) {
+for (const preference of ['light', 'dark']) {
   test(`${preference} preference applies, persists and restores independently`, () => {
     const e = environment(null, true); const off = e.store.subscribe(() => {});
     e.store.setPreference(preference);
@@ -46,10 +46,34 @@ for (const preference of ['light', 'dark', 'system']) {
     assert.equal(e.root.dataset.themePreference, preference);
   });
 }
-test('system follows OS changes immediately without notifying React project consumers', () => {
-  const e = environment('system'); let notifications = 0; e.store.subscribe(() => notifications++);
-  e.os(true); assert.equal(e.root.dataset.theme, 'dark'); e.os(false); assert.equal(e.root.dataset.theme, 'light');
-  assert.equal(e.store.getSnapshot(), 'system'); assert.equal(notifications, 0);
+for (const saved of ['system', null, 'invalid']) for (const dark of [false, true]) {
+  test(`legacy ${saved} resolves ${dark ? 'dark' : 'light'} once and persists explicitly`, () => {
+    const e = environment(saved, dark); let notifications = 0;
+    e.store.subscribe(() => notifications++);
+    const expected = dark ? 'dark' : 'light';
+    assert.equal(e.store.getSnapshot(), expected);
+    assert.equal(e.root.dataset.theme, expected);
+    assert.equal(e.values.get(THEME_STORAGE_KEY), expected);
+    e.os(!dark);
+    assert.equal(e.root.dataset.theme, expected);
+    assert.equal(notifications, 0);
+    const boot = environment(saved, dark);
+    boot.values.delete(THEME_STORAGE_KEY);
+    if (saved !== null) boot.values.set(THEME_STORAGE_KEY, saved);
+    vm.runInNewContext(THEME_INIT_SCRIPT, { localStorage: boot.storage, window: { matchMedia: () => boot.media }, document: { documentElement: boot.root } });
+    assert.equal(boot.root.dataset.theme, expected);
+    assert.equal(boot.root.dataset.themePreference, expected);
+    assert.equal(boot.values.get(THEME_STORAGE_KEY), expected);
+  });
+}
+test('toggle switches resolved state in both directions and persists each explicit choice', () => {
+  const e = environment('light'); let notifications = 0; e.store.subscribe(() => notifications++);
+  e.store.toggle();
+  assert.equal(e.store.getSnapshot(), 'dark'); assert.equal(e.root.dataset.theme, 'dark');
+  assert.equal(e.values.get(THEME_STORAGE_KEY), 'dark');
+  e.store.toggle();
+  assert.equal(e.store.getSnapshot(), 'light'); assert.equal(e.root.dataset.theme, 'light');
+  assert.equal(e.values.get(THEME_STORAGE_KEY), 'light'); assert.equal(notifications, 2);
 });
 for (const preference of ['light', 'dark']) test(`explicit ${preference} ignores OS changes`, () => {
   const e = environment(preference); e.store.subscribe(() => {});
@@ -75,20 +99,21 @@ test('theme changes leave canonical project, JSON and every professional output 
   const json = JSON.stringify(project);
   const outputs = () => [generateMarkdownBrief(buildPlanningBriefModel(project)), executiveBriefMarkdown(buildExecutiveBriefModel(project)), ...['logframe', 'monitoring', 'workplan'].map(kind => planningOutputMarkdown(buildPlanningOutput(project, kind)))];
   const before = outputs(); const e = environment(); e.values.set('unpol-project', json); e.store.subscribe(() => {});
-  for (const mode of ['dark', 'light', 'system']) { e.store.setPreference(mode); e.os(true); assert.equal(JSON.stringify(project), json); assert.equal(e.values.get('unpol-project'), json); assert.deepEqual(outputs(), before); }
+  for (const mode of ['dark', 'light']) { e.store.setPreference(mode); e.os(true); assert.equal(JSON.stringify(project), json); assert.equal(e.values.get('unpol-project'), json); assert.deepEqual(outputs(), before); }
   assert.deepEqual([...e.values.keys()].sort(), [THEME_STORAGE_KEY, 'unpol-project'].sort());
 });
 
-test('theme control renders exactly three named keyboard buttons and a stable System server state', () => {
+test('theme control renders one named action button with the Moon icon in its stable Light server state', () => {
   const React = require('react');
   const { renderToStaticMarkup } = require('react-dom/server');
   const { ThemeControl } = require('../.test-dist/ui/ThemeControl.js');
   const html = renderToStaticMarkup(React.createElement(ThemeControl));
-  assert.equal((html.match(/<button/g) || []).length, 3);
-  for (const name of ['Light', 'Dark', 'System']) assert.ok(html.includes(`aria-label="${name} theme"`));
-  assert.equal((html.match(/aria-pressed="true"/g) || []).length, 1);
-  assert.match(html, /aria-label="System theme"[^>]*aria-pressed="true"/);
-  assert.equal((html.match(/type="button"/g) || []).length, 3);
+  assert.equal((html.match(/<button/g) || []).length, 1);
+  assert.match(html, /aria-label="Switch to dark mode"/);
+  assert.match(html, /title="Switch to dark mode"/);
+  assert.match(html, /lucide-moon/);
+  assert.ok(!html.includes('System'));
+  assert.equal((html.match(/type="button"/g) || []).length, 1);
 });
 
 for (const mode of ['light', 'dark']) test(`${mode} semantic text, status and primary action contrasts meet AA`, () => {
