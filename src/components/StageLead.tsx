@@ -55,7 +55,7 @@ export const StageLead: React.FC<StageLeadProps> = ({
     <header className={`print:hidden pb-3.5 border-b border-border-default ${className}`}>
       <div className="flex flex-col gap-1">
         <div className="flex items-center gap-2">
-          <span className="font-mono tabular-nums text-xs font-bold uppercase tracking-wider text-action-primary">
+          <span className="font-mono tabular-nums text-xs font-bold uppercase tracking-wider text-action-link">
             Stage 0{stage}
           </span>
           <span className="text-text-muted" aria-hidden="true">·</span>
@@ -77,7 +77,7 @@ export const StageLead: React.FC<StageLeadProps> = ({
           onClick={toggle}
           aria-expanded={isOpen}
           aria-controls={contentId}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-action-primary hover:text-action-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-1 rounded py-0.5 transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-action-link hover:text-action-link-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-1 rounded py-0.5 transition-colors"
         >
           <CircleHelp size={14} className="shrink-0" />
           <span>Methodology &amp; Guidance</span>
@@ -93,22 +93,22 @@ export const StageLead: React.FC<StageLeadProps> = ({
         {isOpen && (
           <div
             id={contentId}
-            className="mt-2.5 grid gap-3 rounded-md border border-border-default bg-surface-subtle p-3.5 md:grid-cols-3 text-xs leading-relaxed"
+            className="mt-2.5 grid gap-3 rounded-md border border-border-default bg-surface-subtle border-s-2 border-s-action-link p-3.5 md:grid-cols-3 text-xs leading-relaxed"
           >
             <div>
-              <h4 className="font-bold text-action-primary uppercase tracking-wider text-[11px]">
+              <h4 className="font-bold text-action-link uppercase tracking-wider text-[11px]">
                 What are we doing here?
               </h4>
               <p className="mt-1 text-text-secondary">{content.doing}</p>
             </div>
             <div>
-              <h4 className="font-bold text-action-primary uppercase tracking-wider text-[11px]">
+              <h4 className="font-bold text-action-link uppercase tracking-wider text-[11px]">
                 Why does it matter?
               </h4>
               <p className="mt-1 text-text-secondary">{content.why}</p>
             </div>
             <div>
-              <h4 className="font-bold text-action-primary uppercase tracking-wider text-[11px]">
+              <h4 className="font-bold text-action-link uppercase tracking-wider text-[11px]">
                 What will this feed into next?
               </h4>
               <p className="mt-1 text-text-secondary">{content.next}</p>

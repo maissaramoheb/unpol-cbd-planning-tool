@@ -239,37 +239,37 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
 
           {/* Contextual Actors to Verify Drawer */}
           {context && (candidatePrompts.length > 0 || candidateCategories.length > 0) && (
-            <div className="border-b border-blue-200 bg-blue-50/50">
+            <div className="border-b border-status-info-border bg-status-info-bg">
               <button
                 type="button"
                 onClick={() => setIsContextDrawerOpen((prev) => !prev)}
-                className="w-full px-3.5 py-2.5 flex items-center justify-between text-left hover:bg-blue-100/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                className="w-full px-3.5 py-2.5 flex items-center justify-between text-left hover:bg-status-info-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
               >
                 <div className="flex items-center gap-1.5 min-w-0">
-                  <Compass size={14} className="text-blue-700 shrink-0" />
-                  <span className="text-xs font-bold text-blue-950 truncate">
+                  <Compass size={14} className="text-action-link shrink-0" />
+                  <span className="text-xs font-bold text-action-link truncate">
                     Contextual Actors to Verify
                   </span>
-                  <span className="text-[10px] font-semibold bg-white border border-blue-200 px-1.5 py-0.2 rounded text-blue-800">
+                  <span className="text-[10px] font-semibold bg-surface-base border border-status-info-border px-1.5 py-0.2 rounded text-action-link">
                     {context.identity.missionAcronym || context.identity.countryArea}
                   </span>
                 </div>
                 {isContextDrawerOpen ? (
-                  <ChevronUp size={14} className="text-blue-700 shrink-0" />
+                  <ChevronUp size={14} className="text-action-link shrink-0" />
                 ) : (
-                  <ChevronDown size={14} className="text-blue-700 shrink-0" />
+                  <ChevronDown size={14} className="text-action-link shrink-0" />
                 )}
               </button>
 
               {isContextDrawerOpen && (
-                <div className="p-3 bg-white/95 border-t border-blue-200/80 flex flex-col gap-2.5 text-xs max-h-64 overflow-y-auto">
-                  <p className="text-[11px] text-slate-600 leading-relaxed italic">
+                <div className="p-3 bg-surface-base border-t border-status-info-border flex flex-col gap-2.5 text-xs max-h-64 overflow-y-auto">
+                  <p className="text-[11px] text-text-secondary leading-relaxed italic">
                     Candidate actors to verify in the field. Adding an actor opens an initial assessment dialog; no default ratings are assigned from context data.
                   </p>
 
                   {candidatePrompts.map((promptGroup, gIdx) => (
-                    <div key={gIdx} className="flex flex-col gap-1.5 border-t border-slate-100 pt-1.5 first:border-t-0 first:pt-0">
-                      <span className="font-bold text-slate-800 text-[11px]">{promptGroup.category}</span>
+                    <div key={gIdx} className="flex flex-col gap-1.5 border-t border-border-subtle pt-1.5 first:border-t-0 first:pt-0">
+                      <span className="font-bold text-text-primary text-[11px]">{promptGroup.category}</span>
                       {promptGroup.suggestedStakeholders && promptGroup.suggestedStakeholders.length > 0 ? (
                         <div className="flex flex-col gap-1">
                           {promptGroup.suggestedStakeholders.map((actorName, aIdx) => {
@@ -277,10 +277,10 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                               (s) => s.name.trim().toLowerCase() === actorName.trim().toLowerCase()
                             );
                             return (
-                              <div key={aIdx} className="flex items-center justify-between gap-1.5 py-1 px-2 rounded bg-slate-50 border border-slate-200">
-                                <span className="text-xs text-slate-800 font-medium truncate">{actorName}</span>
+                              <div key={aIdx} className="flex items-center justify-between gap-1.5 py-1 px-2 rounded bg-surface-subtle border border-border-default">
+                                <span className="text-xs text-text-primary font-medium truncate">{actorName}</span>
                                 {isAlreadyAdded ? (
-                                  <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                                  <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-status-success bg-status-success-bg px-1.5 py-0.5 rounded border border-status-success-border">
                                     <Check size={10} />
                                     Added
                                   </span>
@@ -300,7 +300,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                                         capacity: ''
                                       });
                                     }}
-                                    className="inline-flex items-center gap-1 text-[10px] font-bold text-blue-700 bg-white hover:bg-blue-50 px-2 py-0.5 rounded border border-blue-200 transition-colors shrink-0"
+                                    className="inline-flex items-center gap-1 text-[10px] font-bold text-action-link bg-surface-base hover:bg-status-info-bg px-2 py-0.5 rounded border border-status-info-border transition-colors shrink-0"
                                   >
                                     <Plus size={10} />
                                     Add
@@ -311,7 +311,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                           })}
                         </div>
                       ) : (
-                        <p className="text-[11px] text-slate-500 italic">{promptGroup.rolePrompt}</p>
+                        <p className="text-[11px] text-text-muted italic">{promptGroup.rolePrompt}</p>
                       )}
                     </div>
                   ))}
@@ -330,12 +330,12 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                   onClick={() => setSelectedId(sh.id)}
                   className={`w-full text-left px-4 py-3.5 transition-colors duration-150 motion-reduce:transition-none flex flex-col gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring ${
                     isSelected
-                      ? 'bg-blue-50/80 border-l-2 border-action-primary'
+                      ? 'bg-status-info-bg border-l-2 border-action-primary'
                       : 'border-l-2 border-transparent hover:bg-surface-subtle/80'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-1.5 w-full">
-                    <span className={`text-xs line-clamp-1 ${isSelected ? 'font-bold text-action-primary' : 'font-semibold text-text-primary'}`}>
+                    <span className={`text-xs line-clamp-1 ${isSelected ? 'font-bold text-action-link' : 'font-semibold text-text-primary'}`}>
                       {sh.name}
                     </span>
                     {sh.isCustom && (
@@ -367,12 +367,12 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
               <div className="p-4 lg:p-5 border-b border-border-default flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-surface-raised">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <User size={16} className="text-institutional shrink-0" />
+                    <User size={16} className="text-action-link shrink-0" />
                     <input
                       type="text"
                       value={activeStakeholder.name}
                       onChange={(e) => handleFieldChange('name', e.target.value)}
-                      className="text-base font-bold text-text-default bg-transparent border-b border-transparent hover:border-border-default focus:border-institutional focus:outline-none w-full transition-colors py-0.5"
+                      className="text-base font-bold text-text-primary bg-transparent border-b border-transparent hover:border-border-default focus:border-institutional focus:outline-none w-full transition-colors py-0.5"
                       placeholder="Actor / Stakeholder Name"
                     />
                   </div>
@@ -514,7 +514,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                           className={`
                             flex items-center gap-2.5 p-2.5 rounded-md border text-xs cursor-pointer transition-colors
                             ${isChecked
-                              ? 'border-institutional bg-institutional-subtle text-text-default font-medium'
+                              ? 'border-institutional bg-surface-active text-text-primary font-medium'
                               : 'border-border-default hover:bg-surface-hover text-text-muted'
                             }
                           `}
@@ -523,7 +523,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                             type="checkbox"
                             checked={isChecked}
                             onChange={() => handleCbdAreaToggle(area)}
-                            className="rounded border-border-default text-institutional focus:ring-focus-ring w-3.5 h-3.5"
+                            className="rounded border-border-default text-action-link focus:ring-focus-ring w-3.5 h-3.5"
                           />
                           <span>{area}</span>
                         </label>
@@ -566,26 +566,26 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
       {/* Draft Contextual Actor Assessment Modal */}
       {draftActor && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-surface-scrim"
         >
           <div
             ref={draftActorDialogRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="draft-actor-modal-title"
-            className="bg-white rounded-xl shadow-2xl max-w-xl w-full border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]"
+            className="bg-surface-base rounded-xl shadow-2xl max-w-xl w-full border border-border-default overflow-hidden flex flex-col max-h-[calc(100dvh-2rem)]"
           >
-            <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+            <div className="p-4 border-b border-border-subtle flex items-center justify-between bg-surface-subtle">
               <div className="flex items-center gap-2">
-                <Compass size={18} className="text-blue-700" />
-                <h3 id="draft-actor-modal-title" className="text-sm font-bold text-slate-900">
+                <Compass size={18} className="text-action-link" />
+                <h3 id="draft-actor-modal-title" className="text-sm font-bold text-text-primary">
                   Verify &amp; Assess Contextual Actor
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setDraftActor(null)}
-                className="p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 transition-colors"
+                className="p-1 rounded-md text-text-muted hover:text-text-secondary hover:bg-surface-hover transition-colors"
                 aria-label="Close dialog"
               >
                 <X size={16} />
@@ -593,11 +593,11 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
             </div>
 
             <div className="p-5 overflow-y-auto space-y-4 text-xs">
-              <div className="p-3 bg-blue-50/70 border border-blue-200 rounded-lg text-slate-700 flex items-start gap-2.5">
-                <AlertCircle size={16} className="text-blue-700 shrink-0 mt-0.5" />
+              <div className="p-3 bg-status-info-bg border border-status-info-border rounded-lg text-text-secondary flex items-start gap-2.5">
+                <AlertCircle size={16} className="text-action-link shrink-0 mt-0.5" />
                 <div className="space-y-1">
-                  <p className="font-semibold text-blue-950">Analyst Assessment Required</p>
-                  <p className="text-[11px] text-slate-600 leading-relaxed">
+                  <p className="font-semibold text-action-link">Analyst Assessment Required</p>
+                  <p className="text-[11px] text-text-secondary leading-relaxed">
                     Planning context guidance suggests candidate actors for field verification, not assessed analytical findings. You must assign initial institutional assessments before adding this stakeholder.
                   </p>
                 </div>
@@ -633,8 +633,8 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                 placeholder="e.g. Constitutional, Statutory, Executive, Traditional..."
               />
 
-              <div className="pt-3 border-t border-slate-200 space-y-3">
-                <span className="font-bold uppercase tracking-wider text-slate-800 text-[11px] block">
+              <div className="pt-3 border-t border-border-default space-y-3">
+                <span className="font-bold uppercase tracking-wider text-text-primary text-[11px] block">
                   Required Initial Assessment (No Default Ratings)
                 </span>
 
@@ -647,11 +647,11 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                       options={DRAFT_POSITION_OPTIONS}
                     />
                     {draftActor.position ? (
-                      <p className="text-[10px] text-slate-500 mt-1">
+                      <p className="text-[10px] text-text-muted mt-1">
                         {POSTURE_DESCRIPTIONS[draftActor.position as StakeholderPosition]}
                       </p>
                     ) : (
-                      <p className="text-[10px] text-amber-700 mt-1">Required: select posture</p>
+                      <p className="text-[10px] text-status-warning mt-1">Required: select posture</p>
                     )}
                   </div>
 
@@ -663,12 +663,12 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                       options={DRAFT_HML_OPTIONS}
                     />
                     {!draftActor.influence && (
-                      <p className="text-[10px] text-amber-700 mt-1">Required: select influence</p>
+                      <p className="text-[10px] text-status-warning mt-1">Required: select influence</p>
                     )}
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-surface-subtle p-3 rounded-lg border border-border-default">
                   <div>
                     <Select
                       label="Legitimacy *"
@@ -677,7 +677,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                       options={DRAFT_HML_OPTIONS}
                     />
                     {!draftActor.legitimacy && (
-                      <p className="text-[10px] text-amber-700 mt-0.5">Required</p>
+                      <p className="text-[10px] text-status-warning mt-0.5">Required</p>
                     )}
                   </div>
                   <div>
@@ -688,7 +688,7 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                       options={DRAFT_HML_OPTIONS}
                     />
                     {!draftActor.relevance && (
-                      <p className="text-[10px] text-amber-700 mt-0.5">Required</p>
+                      <p className="text-[10px] text-status-warning mt-0.5">Required</p>
                     )}
                   </div>
                   <div>
@@ -699,14 +699,14 @@ export const StakeholderMapping: React.FC<StakeholderMappingProps> = ({
                       options={DRAFT_CAPACITY_OPTIONS}
                     />
                     {!draftActor.capacity && (
-                      <p className="text-[10px] text-amber-700 mt-0.5">Required</p>
+                      <p className="text-[10px] text-status-warning mt-0.5">Required</p>
                     )}
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="p-4 border-t border-slate-100 flex items-center justify-end gap-2 bg-slate-50">
+            <div className="p-4 border-t border-border-subtle flex items-center justify-end gap-2 bg-surface-subtle">
               <Button
                 ref={draftActorInitialFocusRef}
                 variant="tertiary"
