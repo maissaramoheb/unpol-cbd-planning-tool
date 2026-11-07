@@ -34,24 +34,24 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({
   const isSelected = selected ?? (props['aria-pressed'] === true || props['aria-pressed'] === 'true');
 
   const baseStyle =
-    'inline-flex items-center justify-center font-semibold select-none rounded-md transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-surface-base disabled:opacity-60 disabled:cursor-not-allowed disabled:pointer-events-none';
+    'inline-flex items-center justify-center font-semibold select-none rounded-md transition-all duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-surface-base disabled:opacity-60 disabled:cursor-not-allowed disabled:pointer-events-none active:scale-[0.98] motion-reduce:active:scale-100';
 
   // Primary action blue / Institutional navy: #1e40af
   const variants: Record<ButtonVariant, string> = {
     primary:
-      'bg-action-primary hover:bg-action-primary-hover active:bg-action-primary-active text-text-inverse border border-transparent shadow-subtle',
+      'bg-action-primary hover:bg-action-primary-hover active:bg-action-primary-active text-text-inverse border border-transparent shadow-subtle hover:shadow-raised',
     secondary:
-      'bg-surface-raised hover:bg-action-secondary-hover active:bg-surface-active text-text-primary border border-border-strong hover:border-border-strong shadow-subtle',
+      'bg-surface-raised hover:bg-action-secondary-hover active:bg-surface-active text-text-primary border border-border-strong hover:border-text-secondary/50 shadow-subtle',
     outline:
-      'bg-surface-raised hover:bg-action-secondary-hover active:bg-surface-active text-text-primary border border-border-strong hover:border-border-strong shadow-subtle',
+      'bg-surface-raised hover:bg-action-secondary-hover active:bg-surface-active text-text-primary border border-border-strong hover:border-text-secondary/50 shadow-subtle',
     tertiary:
       'bg-transparent hover:bg-surface-subtle active:bg-surface-active text-text-secondary hover:text-text-primary border border-transparent',
     ghost:
       'bg-transparent hover:bg-surface-subtle active:bg-surface-active text-text-secondary hover:text-text-primary border border-transparent',
     destructive:
-      'bg-surface-raised hover:bg-status-danger-bg active:bg-status-danger-bg text-status-danger hover:text-status-danger border border-status-danger-border hover:border-status-danger-border shadow-subtle focus-visible:ring-status-danger',
+      'bg-surface-raised hover:bg-status-danger-bg active:bg-status-danger-bg text-status-danger hover:text-status-danger border border-status-danger-border hover:border-status-danger shadow-subtle focus-visible:ring-status-danger',
     danger:
-      'bg-surface-raised hover:bg-status-danger-bg active:bg-status-danger-bg text-status-danger hover:text-status-danger border border-status-danger-border hover:border-status-danger-border shadow-subtle focus-visible:ring-status-danger',
+      'bg-surface-raised hover:bg-status-danger-bg active:bg-status-danger-bg text-status-danger hover:text-status-danger border border-status-danger-border hover:border-status-danger shadow-subtle focus-visible:ring-status-danger',
     quiet:
       'bg-transparent hover:bg-surface-subtle active:bg-surface-active text-text-muted hover:text-text-primary border border-transparent',
     link:

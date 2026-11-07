@@ -52,14 +52,14 @@ export const StageLead: React.FC<StageLeadProps> = ({
   const displayPurpose = purpose || content.doing;
 
   return (
-    <header className={`print:hidden pb-3.5 border-b border-border-default ${className}`}>
+    <header className={`print:hidden pb-4 border-b border-border-default ${className}`}>
       <div className="flex flex-col gap-1">
         <div className="flex items-center gap-2">
-          <span className="font-mono tabular-nums text-xs font-bold uppercase tracking-wider text-action-link">
+          <span className="font-mono tabular-nums text-xs font-semibold text-action-link bg-status-info-bg/70 px-2 py-0.5 rounded border border-status-info-border/60">
             Stage 0{stage}
           </span>
-          <span className="text-text-muted" aria-hidden="true">·</span>
-          <span className="text-xs font-semibold text-text-muted">
+          <span className="text-border-strong text-xs" aria-hidden="true">·</span>
+          <span className="text-xs font-medium text-text-muted">
             {workflowStep?.sub || content.title}
           </span>
         </div>
@@ -71,13 +71,13 @@ export const StageLead: React.FC<StageLeadProps> = ({
         </p>
       </div>
 
-      <div className="mt-2">
+      <div className="mt-3">
         <button
           type="button"
           onClick={toggle}
           aria-expanded={isOpen}
           aria-controls={contentId}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-action-link hover:text-action-link-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-1 rounded py-0.5 transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-action-link hover:text-action-link-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring rounded-md px-2.5 py-1 bg-surface-subtle border border-border-default hover:bg-surface-hover shadow-2xs transition-all duration-150"
         >
           <CircleHelp size={14} className="shrink-0" />
           <span>Methodology &amp; Guidance</span>
@@ -93,25 +93,25 @@ export const StageLead: React.FC<StageLeadProps> = ({
         {isOpen && (
           <div
             id={contentId}
-            className="mt-2.5 grid gap-3 rounded-md border border-border-default bg-surface-subtle border-s-2 border-s-action-link p-3.5 md:grid-cols-3 text-xs leading-relaxed"
+            className="mt-3 grid gap-4 rounded-xl border border-border-default bg-surface-raised border-s-4 border-s-action-primary p-4 md:grid-cols-3 text-xs leading-relaxed shadow-xs"
           >
-            <div>
-              <h4 className="font-bold text-action-link uppercase tracking-wider text-[11px]">
+            <div className="space-y-1">
+              <h4 className="font-semibold text-action-link text-xs">
                 What are we doing here?
               </h4>
-              <p className="mt-1 text-text-secondary">{content.doing}</p>
+              <p className="text-text-secondary">{content.doing}</p>
             </div>
-            <div>
-              <h4 className="font-bold text-action-link uppercase tracking-wider text-[11px]">
-                Why does it matter?
+            <div className="space-y-1">
+              <h4 className="font-semibold text-text-primary text-xs">
+                Why does this matter?
               </h4>
-              <p className="mt-1 text-text-secondary">{content.why}</p>
+              <p className="text-text-secondary">{content.why}</p>
             </div>
-            <div>
-              <h4 className="font-bold text-action-link uppercase tracking-wider text-[11px]">
-                What will this feed into next?
+            <div className="space-y-1">
+              <h4 className="font-semibold text-text-primary text-xs">
+                What comes next?
               </h4>
-              <p className="mt-1 text-text-secondary">{content.next}</p>
+              <p className="text-text-secondary">{content.next}</p>
             </div>
           </div>
         )}
@@ -121,5 +121,3 @@ export const StageLead: React.FC<StageLeadProps> = ({
     </header>
   );
 };
-
-export default StageLead;

@@ -227,7 +227,7 @@ export const MatrixGrid: React.FC<MatrixGridProps> = ({
                       />
                     )}
 
-                    {/* Status Badge */}
+            {/* Status Badge */}
                     {primaryStatus ? (
                       <div className="flex flex-col gap-1 w-full pr-3">
                         <span
@@ -243,7 +243,14 @@ export const MatrixGrid: React.FC<MatrixGridProps> = ({
                           </span>
                         )}
                       </div>
-                    ) : <span className="text-[11px] text-text-muted">Template</span>}
+                    ) : (
+                      <div className="flex flex-col gap-1 w-full pr-3">
+                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium text-text-muted bg-surface-subtle/80 border border-border-subtle tracking-tight leading-none shrink-0">
+                          <span className="h-1.5 w-1.5 rounded-full border border-text-muted/60 bg-transparent" />
+                          <span className="truncate">Baseline Template</span>
+                        </span>
+                      </div>
+                    )}
                   </button>
                 );
               })}
@@ -288,9 +295,9 @@ export const MatrixGrid: React.FC<MatrixGridProps> = ({
             <span className="h-1.5 w-1.5 rounded-full bg-action-primary" />
             Configured Analysis
           </span>
-          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] text-text-muted bg-surface-base border border-border-default">
-            <span className="h-1.5 w-1.5 rounded-xs border border-border-default bg-surface-base" />
-            Untouched (Default)
+          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium text-text-muted bg-surface-subtle/80 border border-border-subtle">
+            <span className="h-1.5 w-1.5 rounded-full border border-text-muted/60 bg-transparent" />
+            Baseline Template
           </span>
         </div>
       </div>
