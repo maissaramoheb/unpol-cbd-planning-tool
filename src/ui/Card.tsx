@@ -10,8 +10,8 @@ export const Card: React.FC<CardProps> = ({
   className = '',
   ...props
 }) => {
-  const baseStyle = 'bg-surface-raised rounded-lg border border-border-strong overflow-hidden shadow-subtle';
-  const hoverStyle = hoverable ? 'transition-colors duration-150 hover:border-border-strong' : '';
+  const baseStyle = 'bg-surface-raised rounded-xl border border-border-default overflow-hidden shadow-subtle';
+  const hoverStyle = hoverable ? 'transition-all duration-150 hover:border-border-strong hover:shadow-raised' : '';
 
   return (
     <div className={`${baseStyle} ${hoverStyle} ${className}`} {...props}>

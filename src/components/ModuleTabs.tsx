@@ -9,6 +9,16 @@ interface ModuleTabsProps {
   onViewChange: (view: number) => void;
 }
 
+const SHORT_LABELS: Record<number, string> = {
+  1: 'Context',
+  2: 'Diagnostic',
+  3: 'Stakeholders',
+  4: 'Synthesis',
+  5: 'CBD Priorities',
+  6: 'Prioritization',
+  7: 'Results & M&E'
+};
+
 export const ModuleTabs: React.FC<ModuleTabsProps> = ({
   currentView,
   onViewChange
@@ -31,18 +41,19 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
   return (
     <nav
       aria-label="Planning workflow"
-      className="w-full bg-surface-raised rounded-lg border border-border-default shadow-subtle px-1 sm:px-2"
+      className="w-full bg-surface-base rounded-xl border border-border-default shadow-xs px-2 py-1"
     >
-      <div className="flex items-center justify-between gap-1.5 sm:gap-2 h-11 sm:h-12">
+      <div className="flex items-center justify-between gap-1.5 sm:gap-2 h-11">
         {/* Home Utility */}
         <div className="shrink-0 flex items-center">
           <button
             type="button"
             onClick={() => onViewChange(HOME_VIEW)}
             aria-current={currentView === HOME_VIEW ? 'page' : undefined}
-            className={`inline-flex items-center gap-1.5 px-2 py-2 rounded-md text-xs font-semibold transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring ${
+            title="Return to Planning Overview (Home)"
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring ${
               currentView === HOME_VIEW
-                ? 'text-action-link bg-status-info-bg font-bold'
+                ? 'text-action-link bg-status-info-bg shadow-2xs border border-status-info-border/60'
                 : 'text-text-muted hover:text-text-primary hover:bg-surface-subtle'
             }`}
           >
@@ -52,13 +63,13 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
         </div>
 
         {/* Divider between Utilities and Workflow Stages */}
-        <div className="h-5 w-px bg-border-default shrink-0 mx-1" aria-hidden="true" />
+        <div className="h-5 w-px bg-border-default shrink-0 mx-0.5 opacity-70" aria-hidden="true" />
 
-        {/* Continuous Workflow Stages Track */}
+        {/* Continuous Workflow Stages Track - Dynamically Scaled to Fit Desktop */}
         <div
           ref={stepperRef}
-          aria-label="Seven planning stages; scroll to see neighboring stages"
-          className="flex-1 flex items-center gap-1 sm:gap-1.5 overflow-x-auto [scrollbar-width:thin] [scrollbar-color:var(--border-strong)_transparent] py-1"
+          aria-label="Seven planning stages"
+          className="flex-1 flex items-center justify-between gap-1 overflow-x-auto [scrollbar-width:none] py-1"
         >
           {WORKFLOW_STAGES.map((step) => {
             const isActive = step.id === currentView;
@@ -71,36 +82,46 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
                 onClick={() => onViewChange(step.id)}
                 aria-current={isActive ? 'step' : undefined}
                 aria-label={`Stage ${step.id}: ${step.label}, ${step.sub}`}
-                className={`relative px-2 sm:px-2 py-2 flex items-center gap-1.5 shrink-0 rounded transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring ${
+                title={`Stage 0${step.id}: ${step.label} (${step.sub})`}
+                className={`relative flex-1 min-w-[70px] px-1.5 sm:px-2 py-1.5 flex items-center justify-center gap-1.5 rounded-lg transition-all duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring ${
                   isActive
-                    ? 'text-action-link bg-surface-active font-bold'
+                    ? 'text-action-link bg-surface-active/80 font-bold shadow-2xs'
                     : isCompleted
-                      ? 'text-text-secondary hover:text-text-primary hover:bg-surface-subtle/70'
-                      : 'text-text-muted hover:text-text-secondary hover:bg-surface-subtle/50'
+                      ? 'text-text-secondary hover:text-text-primary hover:bg-surface-subtle/80 font-medium'
+                      : 'text-text-muted hover:text-text-secondary hover:bg-surface-subtle/60 font-medium'
                 }`}
               >
-                <span className={`font-mono tabular-nums text-xs ${
-                  isActive
-                    ? 'text-action-link bg-surface-active font-bold'
-                    : isCompleted
-                      ? 'text-text-primary font-semibold'
-                      : 'text-text-muted'
-                }`}>
+                <span
+                  className={`flex items-center justify-center font-mono tabular-nums text-[10px] font-bold px-1.5 py-0.5 rounded transition-colors shrink-0 ${
+                    isActive
+                      ? 'bg-action-primary text-text-inverse shadow-xs'
+                      : isCompleted
+                        ? 'bg-status-success-bg text-status-success border border-status-success-border/60'
+                        : 'bg-surface-subtle text-text-muted border border-border-default'
+                  }`}
+                >
                   0{step.id}
                 </span>
 
-                <span className="hidden sm:inline text-xs whitespace-nowrap">
+                {/* Full label on wide screens, short label on medium/standard desktop, hidden on tiny screens */}
+                <span className="hidden 2xl:inline text-xs truncate">
                   {step.label}
+                </span>
+                <span className="hidden sm:inline 2xl:hidden text-xs truncate">
+                  {SHORT_LABELS[step.id] || step.label}
                 </span>
 
                 {isCompleted && (
-                  <span className="h-1.5 w-1.5 rounded-full bg-status-success shrink-0" aria-hidden="true" />
+                  <span
+                    className="h-1.5 w-1.5 rounded-full bg-status-success shrink-0"
+                    aria-hidden="true"
+                  />
                 )}
 
                 {/* Active indicator line at bottom */}
                 {isActive && (
                   <span
-                    className="absolute bottom-0 left-2 right-2 h-0.5 bg-action-primary rounded-full"
+                    className="absolute bottom-0 left-2 right-2 h-0.5 bg-action-primary rounded-full shadow-xs"
                     aria-hidden="true"
                   />
                 )}
@@ -110,7 +131,7 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
         </div>
 
         {/* Divider between Workflow Stages and Export */}
-        <div className="h-5 w-px bg-border-default shrink-0 mx-1" aria-hidden="true" />
+        <div className="h-5 w-px bg-border-default shrink-0 mx-0.5 opacity-70" aria-hidden="true" />
 
         {/* Export Utility */}
         <div className="shrink-0 flex items-center">
@@ -118,9 +139,10 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
             type="button"
             onClick={() => onViewChange(EXPORT_VIEW)}
             aria-current={currentView === EXPORT_VIEW ? 'page' : undefined}
-            className={`inline-flex items-center gap-1.5 px-2 py-2 rounded-md text-xs font-semibold transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring ${
+            title="Export Planning Briefs and Matrices"
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring ${
               currentView === EXPORT_VIEW
-                ? 'text-action-link bg-status-info-bg font-bold'
+                ? 'text-action-link bg-status-info-bg shadow-2xs border border-status-info-border/60'
                 : 'text-text-muted hover:text-text-primary hover:bg-surface-subtle'
             }`}
           >
@@ -132,4 +154,5 @@ export const ModuleTabs: React.FC<ModuleTabsProps> = ({
     </nav>
   );
 };
+
 export default ModuleTabs;

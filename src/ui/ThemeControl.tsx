@@ -24,14 +24,18 @@ const subscribe = (listener: () => void) => getStore().subscribe(listener);
 const getSnapshot = () => getStore().getSnapshot();
 const getServerSnapshot = (): ResolvedTheme => 'light';
 
+export function useTheme(): ResolvedTheme {
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+}
+
 export function ThemeControl() {
   const theme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const label = theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode';
   const Icon = theme === 'light' ? Moon : Sun;
   return (
-    <div className="theme-control inline-flex shrink-0 rounded-md border border-border-default bg-surface-subtle p-0.5">
+    <div className="theme-control inline-flex shrink-0 rounded-lg border border-border-default bg-surface-subtle p-0.5 shadow-2xs">
       <button type="button" aria-label={label} title={label} onClick={() => getStore().toggle()}
-        className="inline-flex h-8 w-8 items-center justify-center rounded text-text-muted hover:bg-surface-hover hover:text-text-primary transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring">
+        className="inline-flex h-8 w-8 items-center justify-center rounded-md text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring active:scale-95">
         <Icon size={15} aria-hidden="true" />
       </button>
     </div>

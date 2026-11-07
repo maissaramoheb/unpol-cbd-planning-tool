@@ -5,6 +5,16 @@ import { Button } from '../ui/Button';
 import { TextArea } from '../ui/TextArea';
 import { CBD_EFFECTS, PLANNING_SIGNIFICANCE, INTERDEPENDENCY_GUIDANCE, INTERDEPENDENCY_CAUTION, dimensionName, existingEvidence, interdependencyIssues, interdependencyMap, mainBriefSelectionError, newInterdependency, resolveInterdependencyFinding } from '../lib/interdependencies';
 
+const PESTELS_SHORT_CODES: Record<string, string> = {
+  political: 'POL',
+  economic: 'ECO',
+  social: 'SOC',
+  technological: 'TECH',
+  environmental: 'ENV',
+  legal: 'LEG',
+  security: 'SEC'
+};
+
 interface Props {
   data: UnpolProjectData;
   open: boolean;
@@ -99,14 +109,115 @@ export function InterdependencyAnalysis({ data, open, onOpenChange, draft, onDra
         </article>)}
         {filtered.length === 0 && <p className="text-sm text-text-muted">No relationships recorded{pair ? ' for this direction' : ''}. This analysis is optional; you can continue without it.</p>}
       </div>
-      <details className="rounded-lg border border-border-default p-3">
-        <summary className="cursor-pointer font-semibold text-sm focus-visible:outline-2 focus-visible:outline-focus-ring">PESTEL-S Interdependency Map · Cross-Impact View</summary>
+      <details className="rounded-xl border border-border-default bg-surface-subtle/30 p-4 shadow-subtle overflow-hidden" open>
+        <summary className="cursor-pointer font-bold text-sm text-text-primary focus-visible:outline-2 focus-visible:outline-focus-ring flex items-center justify-between">
+          <span>PESTEL-S Interdependency Map · Cross-Impact View</span>
+        </summary>
         <p className="text-xs text-text-muted my-3">FROM ↓ / TO → · Counts of recorded finding-to-finding relationships, not scores or causal strength. Select a populated direction to filter the cards.</p>
-        <table className="hidden md:table w-full table-fixed text-[10px] text-center">
-          <thead><tr><th scope="col">FROM / TO</th>{PESTELS_KEYS.map(key => <th key={key} scope="col" className="p-1 break-words">{dimensionName(key)}</th>)}</tr></thead>
-          <tbody>{PESTELS_KEYS.map(from => <tr key={from}><th scope="row" className="p-1 break-words">{dimensionName(from)}</th>{PESTELS_KEYS.map(to => { const count = map.find(item => item.from === from && item.to === to)?.relationships.length ?? 0; return <td key={to} className="border border-border-default p-1">{from === to ? <span aria-label="Not applicable">N/A</span> : count ? <button type="button" aria-label={`${dimensionName(from)} to ${dimensionName(to)}: ${count} relationships`} onClick={() => setPair(`${from}:${to}`)} className="w-full rounded bg-status-info-bg p-2 font-semibold text-action-link hover:bg-status-info-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring">{count}</button> : '0'}</td>; })}</tr>)}</tbody>
-        </table>
-        <div className="md:hidden space-y-2">{map.filter(item => item.relationships.length).map(item => <Button key={`${item.from}:${item.to}`} type="button" variant="secondary" fullWidth onClick={() => setPair(`${item.from}:${item.to}`)}>{dimensionName(item.from)} → {dimensionName(item.to)} · {item.relationships.length} relationships</Button>)}{!map.some(item => item.relationships.length) && <p className="text-sm">No valid recorded relationships.</p>}</div>
+
+        {/* Selected Pair Indicator */}
+        {pair && (
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-lg bg-surface-active border border-action-primary/30 text-xs">
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-action-link">Active Matrix Filter:</span>
+              <span className="font-mono font-medium text-text-primary">{pair.split(':').map(dimensionName).join(' → ')}</span>
+              <span className="text-text-muted">({filtered.length} recorded)</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setPair(null)}
+              className="text-xs font-semibold text-action-link hover:text-action-link-hover underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring rounded px-1.5 py-0.5"
+            >
+              Clear filter
+            </button>
+          </div>
+        )}
+
+        <div className="overflow-x-auto rounded-lg border border-border-default bg-surface-base">
+          <table className="hidden md:table w-full table-fixed text-[11px] text-center border-collapse">
+            <thead>
+              <tr className="bg-surface-subtle border-b border-border-default">
+                <th scope="col" className="p-2.5 text-center font-bold text-[10px] text-text-muted w-28 uppercase tracking-wider border-r border-border-default bg-surface-subtle">
+                  <span>FROM ↓ / TO →</span>
+                </th>
+                {PESTELS_KEYS.map(key => (
+                  <th key={key} scope="col" className="p-2 text-center border-r last:border-r-0 border-border-default">
+                    <span className="font-mono text-[10px] font-bold text-text-muted uppercase block">{PESTELS_SHORT_CODES[key]}</span>
+                    <span className="text-xs font-semibold text-text-primary block truncate" title={dimensionName(key)}>{dimensionName(key)}</span>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {PESTELS_KEYS.map(from => (
+                <tr key={from} className="border-b last:border-b-0 border-border-default hover:bg-surface-hover/30 transition-colors">
+                  <th scope="row" className="p-2 text-left bg-surface-subtle border-r border-border-default font-semibold text-xs text-text-primary">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-mono text-[10px] font-bold text-text-muted uppercase shrink-0">{PESTELS_SHORT_CODES[from]}</span>
+                      <span className="truncate" title={dimensionName(from)}>{dimensionName(from)}</span>
+                    </div>
+                  </th>
+                  {PESTELS_KEYS.map(to => {
+                    const count = map.find(item => item.from === from && item.to === to)?.relationships.length ?? 0;
+                    const isSelected = pair === `${from}:${to}`;
+                    return (
+                      <td key={to} className={`border-r last:border-r-0 border-border-default p-1 text-center ${from === to ? 'bg-surface-subtle/60' : 'bg-surface-base'}`}>
+                        {from === to ? (
+                          <span className="text-text-muted/40 font-mono text-xs select-none block py-1.5" aria-label="Not applicable">—</span>
+                        ) : count ? (
+                          <button
+                            type="button"
+                            aria-label={`${dimensionName(from)} to ${dimensionName(to)}: ${count} relationships`}
+                            aria-pressed={isSelected}
+                            onClick={() => setPair(isSelected ? null : `${from}:${to}`)}
+                            className={`w-full rounded-md py-1.5 px-1 font-mono text-xs font-bold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring ${
+                              isSelected
+                                ? 'bg-action-primary text-text-inverse shadow-xs ring-2 ring-focus-ring'
+                                : 'bg-status-info-bg text-action-link border border-status-info-border hover:border-action-link hover:shadow-2xs'
+                            }`}
+                          >
+                            {count}
+                          </button>
+                        ) : (
+                          <span className="text-text-muted/40 font-mono text-xs select-none block py-1.5">0</span>
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Legend */}
+        <div className="mt-3 pt-3 border-t border-border-subtle flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-1.5">
+              <span className="inline-flex items-center justify-center h-5 w-5 rounded bg-status-info-bg border border-status-info-border text-action-link font-mono font-bold text-[10px]">
+                1
+              </span>
+              <span className="text-text-secondary text-[11px]">Recorded relationships (Click to filter)</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="inline-flex items-center justify-center h-5 w-5 rounded bg-surface-base border border-border-default text-text-muted/40 font-mono text-[10px]">
+                0
+              </span>
+              <span className="text-text-secondary text-[11px]">No relationships recorded</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="inline-flex items-center justify-center h-5 w-5 rounded bg-surface-subtle border border-border-default text-text-muted/40 font-mono text-[10px]">
+                —
+              </span>
+              <span className="text-text-secondary text-[11px]">Self-interaction (N/A)</span>
+            </div>
+          </div>
+          <span className="text-[10px] text-text-muted italic">
+            Counts represent recorded qualitative relationships, not numerical weight or causal magnitude.
+          </span>
+        </div>
+
+        <div className="md:hidden space-y-2 mt-3">{map.filter(item => item.relationships.length).map(item => <Button key={`${item.from}:${item.to}`} type="button" variant="secondary" fullWidth onClick={() => setPair(`${item.from}:${item.to}`)}>{dimensionName(item.from)} → {dimensionName(item.to)} · {item.relationships.length} relationships</Button>)}{!map.some(item => item.relationships.length) && <p className="text-sm">No valid recorded relationships.</p>}</div>
       </details>
     </div>}
   </section>;

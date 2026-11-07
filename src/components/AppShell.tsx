@@ -268,6 +268,8 @@ export const AppShell: React.FC = () => {
         onReset={handleResetWorkspace}
         missionName={data.profile.missionName}
         analystName={data.profile.analystName}
+        countryName={data.profile.countryName}
+        templateId={data.profile.templateId}
       />
 
       {/* Main Container */}
